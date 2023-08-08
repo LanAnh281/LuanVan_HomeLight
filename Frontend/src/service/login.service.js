@@ -5,7 +5,7 @@ class loginService {
     this.api = createApiClient(baseUrl);
   }
 
-  async getAll() {
+  async getsAll() {
     return (await this.api.get("/")).data;
   }
   async login(data) {

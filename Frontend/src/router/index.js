@@ -23,6 +23,11 @@ const routes = [
     name: "User",
     component: () => import("../view/user/index.vue"),
   },
+  {
+    path: "/user/registration",
+    name: "User.registration",
+    component: () => import("../view/user/user.registration.vue"),
+  },
 ];
 
 const router = createRouter({
