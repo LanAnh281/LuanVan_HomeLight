@@ -42,3 +42,22 @@ exports.create = async (req, res, next) => {
     res.send({ message: error, status: "fail" });
   }
 };
+exports.findAll = async (req, res, next) => {
+  try {
+    const documents = await RegistrationInfo.findAll({});
+    res.send({ message: documents, status: "success" });
+  } catch (error) {
+    res.send({ message: error, status: "fail" });
+  }
+};
+exports.getImg = async function (req, res) {
+  console.log("params:", req.params);
+  const imagePath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "/uploads",
+    `${req.params.id}`
+  );
+  res.sendFile(imagePath);
+};
