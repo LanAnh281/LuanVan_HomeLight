@@ -14,11 +14,12 @@ export default {
     const data = reactive({
       item: {
         userName: "",
-        identificationCard: "",
+        identification: "",
         phone: "",
         address: "",
         email: "",
-        content: "",
+        start: "",
+        end: "",
         files: [],
       },
       files: [],
@@ -70,11 +71,12 @@ export default {
       const formData = new FormData();
       const formFields = [
         "userName",
-        "identificationCard",
+        "identification",
         "phone",
         "address",
         "email",
-        "content",
+        "start",
+        "end",
       ];
       _.forEach(formFields, (field) => {
         formData.append(field, data.item[field]);
@@ -84,7 +86,11 @@ export default {
           formData.append("files", file);
         }
       });
-
+      if (data.uploadFiles.length == 0) {
+        for (let i = 0; i < 2; i++) {
+          formData.append("file", "");
+        }
+      }
       // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
       //Kết nối với backend
       try {
@@ -260,10 +266,10 @@ export default {
             >
             <div class="col-sm-9">
               <input
-                type="text"
+                type="date"
                 class="form-control"
                 id="inputContent"
-                v-model="data.item.content"
+                v-model="data.item.start"
               />
             </div>
           </div>
