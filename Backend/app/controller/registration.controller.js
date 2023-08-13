@@ -1,12 +1,14 @@
-const { RegistrationInfo } = require("../models/index.model");
+const { Users } = require("../models/index.model");
 const fs = require("fs");
 const uploadDir = "./uploads/";
 const path = require("path");
 
 exports.create = async (req, res, next) => {
-  const { userName, identificationCard, phone, address, email, content } =
+  let { userName, identification, phone, address, email, start, end, file } =
     req.body;
   console.log("Body:", req.body);
+  end = end === "" ? null : end;
+  start = start === "" ? null : start;
   try {
     // Access the 'uploads' directory directly and retrieve the name of the saved file.
 
@@ -15,26 +17,33 @@ exports.create = async (req, res, next) => {
         console.error("Error reading upload directory:", err);
         return;
       }
-      //sort the file list by time (using mtime)
-      // sort in descending order
-      files.sort((file1, file2) => {
-        const stat1 = fs.statSync(path.join(uploadDir, file1));
-        const stat2 = fs.statSync(path.join(uploadDir, file2));
-        return stat2.mtime - stat1.mtime;
-      });
+      let newestFiles = [];
+      console.log("file[0]", file[0] == "");
+      if (file[0] != "") {
+        //sort the file list by time (using mtime)
+        // sort in descending order
+        files.sort((file1, file2) => {
+          const stat1 = fs.statSync(path.join(uploadDir, file1));
+          const stat2 = fs.statSync(path.join(uploadDir, file2));
+          return stat2.mtime - stat1.mtime;
+        });
 
-      // Retrieve the two most recent files.
-      const newestFiles = files.slice(0, 2);
-
-      const documents = await RegistrationInfo.create({
+        // Retrieve the two most recent files.
+        newestFiles = files.slice(0, 2);
+      } else {
+        newestFiles = [...file];
+      }
+      console.log("New:", newestFiles);
+      const documents = await Users.create({
         userName: userName,
-        identificationCard: identificationCard,
+        identification: identification,
         imagePrevious: newestFiles[0],
         imageAfter: newestFiles[1],
         phone: phone,
         address: address,
         email: email,
-        content: content,
+        start: start,
+        end: end,
       });
       res.send({ message: documents, status: "success" });
     });
@@ -44,7 +53,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await RegistrationInfo.findAll({});
+    const documents = await Users.findAll({});
     res.send({ message: documents, status: "success" });
   } catch (error) {
     res.send({ message: error, status: "fail" });

@@ -1,4 +1,4 @@
-const { Customer } = require("../models/index.model");
+const { Users } = require("../models/index.model");
 
 exports.create = () => {};
 exports.findAll = (req, res, next) => {

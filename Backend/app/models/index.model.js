@@ -9,15 +9,41 @@ const setPrimary = {
 };
 
 // Models
+const Roles = sequelize.define("Roles", {
+  _id: setPrimary,
+  name: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: "Tên quyền  không được bỏ trống.",
+      },
+    },
+  },
+});
 
-const Account = sequelize.define("Account", {
+const Positions = sequelize.define("Positions", {
+  _id: setPrimary,
+  name: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: "Tên vị trí không được bỏ trống.",
+      },
+    },
+  },
+});
+const Roles_Positions = sequelize.define("Roles_Positions", {});
+
+const Accounts = sequelize.define("Accounts", {
   _id: setPrimary,
   userName: {
     type: DataTypes.TEXT,
     allowNull: false,
     validate: {
       notEmpty: {
-        msg: "Tên tài khoản khách hàng không được bỏ trống.",
+        msg: "Tên tài khoản  không được bỏ trống.",
       },
     },
   },
@@ -26,131 +52,114 @@ const Account = sequelize.define("Account", {
     allowNull: false,
     validate: {
       notEmpty: {
-        msg: "mật khẩu khách hàng không được bỏ trống.",
+        msg: "mật khẩu tài khoản không được bỏ trống.",
       },
     },
   },
-  role: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "mật khẩu khách hàng không được bỏ trống.",
-      },
-    },
+  isActive: {
+    type: DataTypes.BOOLEAN,
   },
 });
-const Customer = sequelize.define("Customer", {
+const Users = sequelize.define("Users", {
   _id: setPrimary,
   userName: {
     type: DataTypes.TEXT,
     allowNull: false,
     validate: {
       notEmpty: {
-        msg: "Tên tài khoản khách hàng không được bỏ trống.",
+        msg: "Họ tên người dùng không được bỏ trống.",
       },
     },
   },
-  password: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "mật khẩu khách hàng không được bỏ trống.",
-      },
-    },
-  },
-  role: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "mật khẩu khách hàng không được bỏ trống.",
-      },
-    },
-  },
-});
-const RegistrationInfo = sequelize.define("RegistrationInfo", {
-  _id: setPrimary,
-  userName: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "Tên khách hàng không được bỏ trống.",
-      },
-    },
-  },
-  identificationCard: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "Số CCCD của khách hàng không được bỏ trống.",
-      },
-    },
-  },
-  imagePrevious: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "Ảnh trước CCCD khách hàng không được bỏ trống.",
-      },
-    },
-  },
-  imageAfter: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "Ảnh sau CCCD khách hàng không được bỏ trống.",
-      },
-    },
-  },
-  phone: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "SĐT khách hàng không được bỏ trống.",
-      },
-    },
+  identification: {
+    type: DataTypes.STRING,
   },
   address: {
     type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "Địa chỉ khách hàng không được bỏ trống.",
-      },
-    },
   },
   email: {
     type: DataTypes.TEXT,
     allowNull: false,
     validate: {
       notEmpty: {
-        msg: "email khách hàng không được bỏ trống.",
+        msg: "Email người dùng không được bỏ trống.",
       },
     },
   },
-  content: {
+  phone: {
+    type: DataTypes.STRING,
+  },
+  imagePrevious: {
     type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: "nội dung yêu câu khách hàng không được bỏ trống.",
-      },
-    },
+  },
+  imageAfter: {
+    type: DataTypes.TEXT,
+  },
+  start: {
+    type: DataTypes.DATE,
+  },
+  end: {
+    type: DataTypes.DATE,
   },
 });
+
+// checked
+//many-to-many relationship
+Roles.belongsToMany(Positions, {
+  through: Roles_Positions,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Positions.belongsToMany(Roles, {
+  through: Roles_Positions,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+// one-to-many relationship
+Positions.hasMany(Accounts, {
+  foreignKey: "positionId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Accounts.belongsTo(Positions, {
+  foreignKey: "positionId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+//one-to-one relationship
+Users.hasOne(Accounts, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Accounts.belongsTo(Users, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+// one-to-many relationship
+// Customer_Types.hasMany(Customer, {
+//   foreignKey: "customerTypesId",
+//   onDelete: "CASCADE",
+//   onUpdate: "CASCADE",
+// });
+// //many-to-one relationship
+// Customer.belongsTo(Customer_Types, {
+//   foreignKey: "customerTypesId",
+//   onDelete: "CASCADE",
+//   onUpdate: "CASCADE",
+// });
 // Sync the model with the database
-Account.sync();
-Customer.sync();
-RegistrationInfo.sync();
+Roles.sync();
+Positions.sync();
+Roles_Positions.sync();
+Accounts.sync();
+Users.sync();
+
 module.exports = {
-  Account,
-  Customer,
-  RegistrationInfo,
+  Roles,
+  Positions,
+  Roles_Positions,
+  Accounts,
+  Users,
 };
