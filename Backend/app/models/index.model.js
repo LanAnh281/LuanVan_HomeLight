@@ -95,14 +95,78 @@ const Users = sequelize.define("Users", {
   imageAfter: {
     type: DataTypes.TEXT,
   },
-  start: {
-    type: DataTypes.DATE,
-  },
-  end: {
-    type: DataTypes.DATE,
-  },
+  isUser: { type: DataTypes.BOOLEAN },
 });
 
+const BorardingHouse = sequelize.define("BoardingHouse", {
+  _id: setPrimary,
+  name: {
+    type: DataTypes.TEXT,
+  },
+  address: {
+    type: DataTypes.TEXT,
+  },
+  rules: {
+    type: DataTypes.TEXT,
+  },
+});
+const Rooms = sequelize.define("Rooms", {
+  _id: setPrimary,
+  name: {
+    type: DataTypes.STRING,
+  },
+  price: { type: DataTypes.STRING },
+  area: { type: DataTypes.STRING },
+});
+const Spending = sequelize.define("Spending", {
+  _id: setPrimary,
+  date: { type: DataTypes.DATE },
+  reason: { type: DataTypes.TEXT },
+  price: { type: DataTypes.STRING },
+  isProfit: { type: DataTypes.BOOLEAN },
+});
+const Bill = sequelize.define("Bill", {
+  _id: setPrimary,
+  start: { type: DataTypes.DATE },
+  end: { type: DataTypes.DATE },
+  previousElectric: { type: DataTypes.INTEGER },
+  currentElectric: { type: DataTypes.INTEGER },
+  previousWater: { type: DataTypes.INTEGER },
+  currentWater: { type: DataTypes.INTEGER },
+  Debt: { type: DataTypes.STRING },
+  Total: { type: DataTypes.STRING },
+});
+const Receipt = sequelize.define("Receipt", {
+  _id: setPrimary,
+  receive: { type: DataTypes.STRING },
+  Debt: { type: DataTypes.STRING },
+});
+const Cycle = sequelize.define("Cycle", {
+  _id: setPrimary,
+  name: { type: DataTypes.STRING },
+  content: { type: DataTypes.TEXT },
+});
+const Media = sequelize.define("Media", {
+  _id: setPrimary,
+  name: { type: DataTypes.STRING },
+});
+const Equipment = sequelize.define("Equipment", {
+  _id: setPrimary,
+  name: { type: DataTypes.STRING },
+});
+const Services = sequelize.define("Service", {
+  start: { type: DataTypes.DATE },
+  end: { type: DataTypes.DATE },
+});
+const Note = sequelize.define("Note", {
+  _id: setPrimary,
+  content: { type: DataTypes.TEXT },
+});
+const Notification = sequelize.define("Notification", {
+  _id: setPrimary,
+  date: { type: DataTypes.DATE },
+  content: { type: DataTypes.TEXT },
+});
 // checked
 //many-to-many relationship
 Roles.belongsToMany(Positions, {
@@ -137,29 +201,180 @@ Accounts.belongsTo(Users, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-// one-to-many relationship
-// Customer_Types.hasMany(Customer, {
-//   foreignKey: "customerTypesId",
-//   onDelete: "CASCADE",
-//   onUpdate: "CASCADE",
-// });
-// //many-to-one relationship
-// Customer.belongsTo(Customer_Types, {
-//   foreignKey: "customerTypesId",
-//   onDelete: "CASCADE",
-//   onUpdate: "CASCADE",
-// });
+
+Users.hasMany(BorardingHouse, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+BorardingHouse.belongsTo(Users, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+BorardingHouse.hasMany(Rooms, {
+  foreignKey: "boardingId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.belongsTo(BorardingHouse, {
+  foreignKey: "boardingId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+BorardingHouse.hasMany(Spending, {
+  foreignKey: "boardingId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Spending.belongsTo(BorardingHouse, {
+  foreignKey: "boardingId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.hasMany(Bill, {
+  foreignKey: "roomId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Bill.belongsTo(Rooms, {
+  foreignKey: "roomId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+const User_Room = sequelize.define("User_Room", {
+  _id: setPrimary,
+  start: { type: DataTypes.DATE },
+  end: { type: DataTypes.DATE },
+});
+Rooms.belongsToMany(Users, {
+  through: User_Room,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Users.belongsToMany(Rooms, {
+  through: User_Room,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Bill.hasMany(Receipt, {
+  foreignKey: "billId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Receipt.belongsTo(Bill, {
+  foreignKey: "billId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Cycle.hasMany(Rooms, {
+  foreignKey: "cycleId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.belongsTo(Cycle, {
+  foreignKey: "cycleId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.hasMany(Media, {
+  foreignKey: "roomId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Media.belongsTo(Rooms, {
+  foreignKey: "roomId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+const Count = sequelize.define("Count", {
+  count: { type: DataTypes.INTEGER },
+});
+Equipment.belongsToMany(Rooms, {
+  through: Count,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.belongsTo(Equipment, {
+  through: Count,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+const Service_Room = sequelize.define("Service_Room", {
+  start: { type: DataTypes.DATE },
+  end: { type: DataTypes.DATE },
+});
+Services.belongsToMany(Rooms, {
+  through: Service_Room,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.belongsToMany(Services, {
+  through: Service_Room,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Accounts.hasMany(Notification, {
+  foreignKey: "accountId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+}),
+  Notification.belongsTo(Accounts, {
+    foreignKey: "accountId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+const Account_Notification = sequelize.define("Account_Notification", {});
+Accounts.belongsToMany(Notification, {
+  through: Account_Notification,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Notification.belongsToMany(Accounts, {
+  through: Account_Notification,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 // Sync the model with the database
 Roles.sync();
 Positions.sync();
 Roles_Positions.sync();
 Accounts.sync();
 Users.sync();
-
+BorardingHouse.sync();
+Rooms.sync();
+Spending.sync();
+Bill.sync();
+User_Room.sync();
+Receipt.sync();
+Cycle.sync();
+Media.sync();
+Equipment.sync();
+Count.sync();
+Services.sync();
+Service_Room.sync();
+Note.sync();
+Notification.sync();
+Account_Notification.sync();
 module.exports = {
   Roles,
   Positions,
   Roles_Positions,
   Accounts,
   Users,
+  BorardingHouse,
+  Rooms,
+  Spending,
+  Bill,
+  User_Room,
+  Receipt,
+  Cycle,
+  Media,
+  Equipment,
+  Count,
+  Services,
+  Service_Room,
+  Note,
+  Notification,
+  Account_Notification,
 };

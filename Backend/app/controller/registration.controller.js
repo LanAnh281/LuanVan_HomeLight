@@ -21,7 +21,7 @@ exports.create = async (req, res, next) => {
       console.log("file[0]", file[0] == "");
       if (file[0] != "") {
         //sort the file list by time (using mtime)
-        // sort in descending order
+        // sort in descending order-
         files.sort((file1, file2) => {
           const stat1 = fs.statSync(path.join(uploadDir, file1));
           const stat2 = fs.statSync(path.join(uploadDir, file2));
