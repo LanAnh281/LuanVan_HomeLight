@@ -13,6 +13,7 @@
     "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
     "lodash": "^4.17.21",
+    "sweetalert2": "^11.7.22",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },

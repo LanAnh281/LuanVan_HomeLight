@@ -1,6 +1,8 @@
 <script>
 import { reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
+//alert
+import { warning } from "../../assets/js/common.alert";
 //service
 import Login from "../../service/login.service";
 import { checkCookieExistence } from "../../assets/js/common.login";
@@ -24,12 +26,16 @@ export default {
 
     const login = async () => {
       const document = await Login.login(data.item);
-      console.log(`document:`, document._id);
-      setCookie("token", document.token, 10); //1 ngày
-      setCookie("role", document.role, 10);
-      if (document.role == "admin") {
-        router.push({ name: "Account" });
-      } else router.push({ name: "User" });
+      console.log(`document:`, document);
+      if (document.status == "success") {
+        setCookie("token", document.token, 1); //1 ngày
+        setCookie("position", document.position, 1);
+        if (document.position == "admin") {
+          router.push({ name: "Account" });
+        } else router.push({ name: "User" });
+      } else {
+        warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
+      }
     };
     return {
       login,
