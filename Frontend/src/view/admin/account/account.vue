@@ -14,8 +14,8 @@ export default {
     onMounted(async () => {
       if (!checkCookieExistence("token")) {
         const document = await loginService.accessToken();
-        setCookie("token", document.token, 10); //1 ngày
-        setCookie("position", document.position, 10);
+        setCookie("token", document.token, 1); //1 day
+        setCookie("position", document.position, 1);
         token.value = getCookieValue("token");
       }
     });

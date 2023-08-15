@@ -26,11 +26,7 @@ export default {
       },
       isImage: false,
     });
-    const videoPlayer = ref(null);
     const checkImage = (file) => {
-      // if(file.endsWith('.png')){
-      //   data.isImage=true;return;
-      // }else{data.isImage=false}
       if (file != null || file != undefined) {
         data.isImage =
           file.endsWith(".png") || file.endsWith(".PNG") ? true : false;
@@ -40,8 +36,8 @@ export default {
     onMounted(async () => {
       if (!checkCookieExistence("token")) {
         const document = await loginService.accessToken();
-        setCookie("token", document.token, 10); //1 ngày
-        setCookie("position", document.position, 10);
+        setCookie("token", document.token, 1); //1 day
+        setCookie("position", document.position, 1);
         token.value = getCookieValue("token");
       }
       const documents = await userService.getAll();
@@ -54,29 +50,7 @@ export default {
       document.removeEventListener("keydown", handleKeyDown);
     });
 
-    const handleKeyDown = (event) => {
-      if (videoPlayer.value) {
-        switch (event.key) {
-          case "ArrowLeft":
-            videoPlayer.value.currentTime -= 5;
-            break;
-          case "ArrowRight":
-            videoPlayer.value.currentTime += 5;
-            break;
-          case " ": // Spacebar
-            if (videoPlayer.value.paused) {
-              videoPlayer.value.play();
-            } else {
-              videoPlayer.value.pause();
-            }
-            event.preventDefault();
-            break;
-          default:
-            break;
-        }
-      }
-    };
-    return { token, data, checkImage, videoPlayer };
+    return { token, data, checkImage };
   },
 };
 </script>
@@ -85,24 +59,24 @@ export default {
     <router-link :to="{ name: 'Account' }">Account</router-link>
     <div v-if="data.items">
       <div v-for="(item, index) in data.items" :key="index">
-        <div class="image-container">
-          {{ checkImage(item.imagePrevious) }}
+        <div
+          class="image-container"
+          v-if="
+            checkImage(item.imagePrevious) &&
+            (item.imagePrevious != null || item.imagePrevious != undefined)
+          "
+        >
           <img
-            v-if="
-              checkImage(item.imagePrevious) &&
-              (item.imagePrevious != null || item.imagePrevious != undefined)
-            "
             :src="`http://localhost:3000/api/users/getImg/${item.imagePrevious}`"
           />
-          <video
-            ref="videoPlayer"
-            controls
-            width="400"
-            v-if="
-              !checkImage(item.imagePrevious) &&
-              (item.imagePrevious != null || item.imagePrevious != undefined)
-            "
-          >
+        </div>
+        <div
+          v-if="
+            !checkImage(item.imagePrevious) &&
+            (item.imagePrevious != null || item.imagePrevious != undefined)
+          "
+        >
+          <video controls width="400">
             <source
               :src="`http://localhost:3000/api/users/getImg/${item.imagePrevious}`"
               type="video/mp4"
