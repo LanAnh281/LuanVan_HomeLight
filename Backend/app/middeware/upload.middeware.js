@@ -20,7 +20,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const storage = multer.diskStorage({
-  destination: "./uploads",
+  destination: "./uploads/images",
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const fileExtension = path.extname(file.originalname);

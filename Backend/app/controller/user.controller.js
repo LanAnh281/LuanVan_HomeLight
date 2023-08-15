@@ -1,6 +1,6 @@
 const { Users } = require("../models/index.model");
 const fs = require("fs");
-const uploadDir = "./uploads/";
+const uploadDir = "./uploads/images";
 const path = require("path");
 
 exports.create = async (req, res, next) => {
@@ -11,15 +11,14 @@ exports.create = async (req, res, next) => {
   start = start === "" ? null : start;
   try {
     // Access the 'uploads' directory directly and retrieve the name of the saved file.
-
     fs.readdir(uploadDir, async (err, files) => {
       if (err) {
         console.error("Error reading upload directory:", err);
         return;
       }
       let newestFiles = [];
-      console.log("file[0]", file[0] == "");
-      if (file[0] != "") {
+      console.log("files[0]", files[0] == "");
+      if (files[0] != "") {
         //sort the file list by time (using mtime)
         // sort in descending order-
         files.sort((file1, file2) => {
@@ -60,12 +59,11 @@ exports.findAll = async (req, res, next) => {
   }
 };
 exports.getImg = async function (req, res) {
-  console.log("params:", req.params);
   const imagePath = path.join(
     __dirname,
     "..",
     "..",
-    "/uploads",
+    "/uploads/images",
     `${req.params.id}`
   );
   res.sendFile(imagePath);
