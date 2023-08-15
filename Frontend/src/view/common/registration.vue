@@ -5,7 +5,7 @@ import axios from "axios";
 import _ from "lodash";
 //service
 import Login from "../../service/login.service";
-import registrationService from "../../service/registration.service";
+import userService from "../../service/user.service";
 import { checkCookieExistence } from "../../assets/js/common.login";
 export default {
   components: {},
@@ -88,21 +88,17 @@ export default {
       });
       if (data.uploadFiles.length == 0) {
         for (let i = 0; i < 2; i++) {
-          formData.append("file", "");
+          formData.append("files", "");
         }
       }
       // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
       //Kết nối với backend
       try {
-        await axios.post(
-          `http://localhost:3000/api/registration/multiple`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        await axios.post(`http://localhost:3000/api/users/multiple`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         data.message = "Files has been uploaded";
         //Đặt lại giá trị ban đầu
         data.files = [];

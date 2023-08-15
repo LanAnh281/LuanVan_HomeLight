@@ -5,7 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { warning } from "../../assets/js/common.alert";
 //service
 import Login from "../../service/login.service";
-import { checkCookieExistence } from "../../assets/js/common.login";
+import { checkCookieExistence, setCookie } from "../../assets/js/common.login";
 export default {
   components: {},
   setup() {
@@ -17,19 +17,12 @@ export default {
     });
     const router = useRouter();
 
-    const setCookie = (cname, cvalue, exdays) => {
-      const d = new Date();
-      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-      let expires = "expires=" + d.toUTCString();
-      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    };
-
     const login = async () => {
       const document = await Login.login(data.item);
       console.log(`document:`, document);
       if (document.status == "success") {
-        setCookie("token", document.token, 1); //1 ngày
-        setCookie("position", document.position, 1);
+        setCookie("token", document.token, 10); //1 ngày
+        setCookie("position", document.position, 10);
         if (document.position == "admin") {
           router.push({ name: "Account" });
         } else router.push({ name: "User" });

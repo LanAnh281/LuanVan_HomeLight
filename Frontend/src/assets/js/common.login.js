@@ -8,6 +8,12 @@ export const checkCookieExistence = (cookieName) => {
   }
   return false;
 };
+export const setCookie = (cname, cvalue, exdays) => {
+  const d = new Date();
+  d.setTime(d.getTime() + exdays * 1000);
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+};
 export const getCookieValue = (cookieName) => {
   const cookies = document.cookie.split("; ");
   for (const cookie of cookies) {

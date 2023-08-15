@@ -41,9 +41,6 @@ export default {
 };
 </script>
 <template>
-  <div class="body" v-if="token">
-    <p>Hello User</p>
-    <router-link :to="{ name: 'Login' }">Login </router-link>
-    <router-link :to="{ name: 'Account' }">Account </router-link>
-  </div>
+  <div v-if="token"></div>
 </template>
+<style scope></style>

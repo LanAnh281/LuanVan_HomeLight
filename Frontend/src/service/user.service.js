@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
-class registrationService {
-  constructor(baseUrl = "/api/registration") {
+class userService {
+  constructor(baseUrl = "/api/users") {
     this.api = createApiClient(baseUrl);
   }
 
@@ -13,4 +13,4 @@ class registrationService {
   }
 }
 
-export default new registrationService();
+export default new userService();

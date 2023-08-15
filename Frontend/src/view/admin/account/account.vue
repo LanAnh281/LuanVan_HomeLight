@@ -1,28 +1,36 @@
-<template>
-  <div class="body">
-    <p>Account</p>
-    <router-link :to="{ name: 'Login' }">Login </router-link>
-    <router-link :to="{ name: 'User' }">User </router-link>
-  </div>
-</template>
 <script>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import {
   checkCookieExistence,
   getCookieValue,
+  setCookie,
 } from "../../../assets/js/common.login";
 import loginService from "../../../service/login.service";
 export default {
   components: {},
   setup() {
+    const token = ref(getCookieValue("token"));
+
     onMounted(async () => {
-      console.log(checkCookieExistence("token"));
       if (!checkCookieExistence("token")) {
-        console.log("đang đăng nhập lại");
         const document = await loginService.accessToken();
-        console.log(document);
+        setCookie("token", document.token, 10); //1 ngày
+        setCookie("position", document.position, 10);
+        token.value = getCookieValue("token");
       }
     });
+    return { token };
   },
 };
 </script>
+<template>
+  <div class="body" v-if="token">
+    <p>Account</p>
+    <router-link :to="{ name: 'Login' }">Login </router-link>
+    <router-link :to="{ name: 'User' }">User </router-link>
+    <router-link :to="{ name: 'User.registration' }"
+      >User.registration
+    </router-link>
+  </div>
+</template>
+<style></style>
