@@ -102,5 +102,5 @@ exports.clearRefreshToken = async (req, res, next) => {
     httpOnly: true,
     secure: true,
   });
-  res.json({ message: "Xóa token thành công", status: "success" });
+  res.json({ message: "deleted token ", status: "success" });
 };
