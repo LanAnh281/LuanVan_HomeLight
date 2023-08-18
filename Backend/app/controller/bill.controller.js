@@ -7,8 +7,8 @@ exports.create = async (req, res, next) => {
     currentElectric,
     previousWater,
     currentWater,
-    Debt,
-    Total,
+    debt,
+    total,
     roomId,
   } = req.body;
   console.log("Bill Body:", req.body);
@@ -20,8 +20,8 @@ exports.create = async (req, res, next) => {
       currentElectric: currentElectric,
       previousWater: previousWater,
       currentWater: currentWater,
-      Debt: Debt,
-      Total: Total,
+      debt: debt,
+      total: total,
       roomId: roomId,
     });
     res.json({ message: document, status: "success" });
@@ -60,8 +60,8 @@ exports.updated = async (req, res, next) => {
     currentElectric,
     previousWater,
     currentWater,
-    Debt,
-    Total,
+    debt,
+    total,
     roomId,
   } = req.body;
   console.log("Bill Body:", req.body);
@@ -74,8 +74,8 @@ exports.updated = async (req, res, next) => {
         currentElectric: currentElectric,
         previousWater: previousWater,
         currentWater: currentWater,
-        Debt: Debt,
-        Total: Total,
+        debt: debt,
+        total: total,
         roomId: roomId,
       },
       {

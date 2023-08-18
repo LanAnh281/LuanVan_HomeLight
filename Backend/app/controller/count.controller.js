@@ -1,12 +1,12 @@
-const { Receipt } = require("../models/index.model.js");
+const { Count } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
-  console.log("Receipt Body:", req.body);
+  const { count, equipmentId, roomId } = req.body;
+  console.log("Count Body:", req.body);
   try {
-    const document = await Receipt.create({
-      receive: receive,
-      debt: debt,
-      billId: billId,
+    const document = await Count.create({
+      count: count,
+      EquipmentId: equipmentId,
+      RoomId: roomId,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -16,7 +16,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Receipt.findAll({});
+    const documents = await Count.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -25,9 +25,9 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Receipt.findAll({
+    const document = await Count.findAll({
       where: {
-        _id: req.params.id,
+        RoomId: req.params.id,
       },
     });
     res.json({ message: document, status: "success" });
@@ -37,18 +37,19 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
-  console.log("Receipt Body:", req.body);
+  const { count, equipmentId, roomId } = req.body;
+  console.log("Count Body:", req.body);
   try {
-    const document = await Receipt.update(
+    const document = await Count.update(
       {
-        receive: receive,
-        debt: debt,
-        billId: billId,
+        count: count,
+        EquipmentId: equipmentId,
+        RoomId: roomId,
       },
       {
         where: {
-          _id: req.params.id,
+          EquipmentId: equipmentId,
+          RoomId: roomId,
         },
       }
     );
@@ -59,10 +60,12 @@ exports.updated = async (req, res, next) => {
   }
 };
 exports.delete = async (req, res, next) => {
+  const { equipmentId, roomId } = req.body;
   try {
-    const document = await Receipt.destroy({
+    const document = await Count.destroy({
       where: {
-        _id: req.params.id,
+        EquipmentId: equipmentId,
+        RoomId: roomId,
       },
     });
     res.json({ message: document, status: "success" });
@@ -73,7 +76,11 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await Receipt.destroy({});
+    const documents = await Count.destroy({
+      where: {
+        RoomId: req.params.id,
+      },
+    });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

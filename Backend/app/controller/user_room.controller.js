@@ -1,12 +1,16 @@
-const { Receipt } = require("../models/index.model.js");
+const { User_Room } = require("../models/index.model.js");
+const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
-  console.log("Receipt Body:", req.body);
+  let { start, end, userId, roomId } = req.body;
+  console.log("User_Room Body:", req.body);
+  start = dateTime(start);
+  end = end == null ? null : dateTime(end);
   try {
-    const document = await Receipt.create({
-      receive: receive,
-      debt: debt,
-      billId: billId,
+    const document = await User_Room.create({
+      start: start,
+      end: end,
+      UserId: userId,
+      RoomId: roomId,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -16,7 +20,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Receipt.findAll({});
+    const documents = await User_Room.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -25,9 +29,9 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Receipt.findAll({
+    const document = await User_Room.findAll({
       where: {
-        _id: req.params.id,
+        RoomId: req.params.id,
       },
     });
     res.json({ message: document, status: "success" });
@@ -37,18 +41,23 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
-  console.log("Receipt Body:", req.body);
+  let { start, end, userId, roomId } = req.body;
+  console.log("User_Room Body:", req.body);
+  start = dateTime(start);
+  end = end == null ? null : dateTime(end);
+
   try {
-    const document = await Receipt.update(
+    const document = await User_Room.update(
       {
-        receive: receive,
-        debt: debt,
-        billId: billId,
+        start: start,
+        end: end,
+        UserId: userId,
+        RoomId: roomId,
       },
       {
         where: {
-          _id: req.params.id,
+          UserId: userId,
+          RoomId: roomId,
         },
       }
     );
@@ -59,10 +68,13 @@ exports.updated = async (req, res, next) => {
   }
 };
 exports.delete = async (req, res, next) => {
+  const { userId, roomId } = req.body;
+
   try {
-    const document = await Receipt.destroy({
+    const document = await User_Room.destroy({
       where: {
-        _id: req.params.id,
+        UserId: userId,
+        RoomId: roomId,
       },
     });
     res.json({ message: document, status: "success" });
@@ -73,7 +85,11 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await Receipt.destroy({});
+    const documents = await User_Room.destroy({
+      where: {
+        RoomId: req.params.id,
+      },
+    });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

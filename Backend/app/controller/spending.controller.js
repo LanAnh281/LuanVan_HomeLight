@@ -1,12 +1,14 @@
-const { Receipt } = require("../models/index.model.js");
+const { Spending } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
-  console.log("Receipt Body:", req.body);
+  const { date, reason, price, isProfit, boardingId } = req.body;
+  console.log("Spending Body:", req.body);
   try {
-    const document = await Receipt.create({
-      receive: receive,
-      debt: debt,
-      billId: billId,
+    const document = await Spending.create({
+      date: date,
+      reason: reason,
+      price: price,
+      isProfit: isProfit,
+      boardingId: boardingId,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -16,7 +18,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Receipt.findAll({});
+    const documents = await Spending.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -25,7 +27,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Receipt.findAll({
+    const document = await Spending.findAll({
       where: {
         _id: req.params.id,
       },
@@ -37,14 +39,16 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
-  console.log("Receipt Body:", req.body);
+  const { date, reason, price, isProfit, boardingId } = req.body;
+  console.log("Spending Body:", req.body);
   try {
-    const document = await Receipt.update(
+    const document = await Spending.update(
       {
-        receive: receive,
-        debt: debt,
-        billId: billId,
+        date: date,
+        reason: reason,
+        price: price,
+        isProfit: isProfit,
+        boardingId: boardingId,
       },
       {
         where: {
@@ -60,7 +64,7 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await Receipt.destroy({
+    const document = await Spending.destroy({
       where: {
         _id: req.params.id,
       },
@@ -73,7 +77,7 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await Receipt.destroy({});
+    const documents = await Spending.destroy({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

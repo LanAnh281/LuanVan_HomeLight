@@ -138,13 +138,13 @@ const Bill = sequelize.define("Bill", {
   currentElectric: { type: DataTypes.INTEGER },
   previousWater: { type: DataTypes.INTEGER },
   currentWater: { type: DataTypes.INTEGER },
-  Debt: { type: DataTypes.STRING },
-  Total: { type: DataTypes.STRING },
+  debt: { type: DataTypes.STRING },
+  total: { type: DataTypes.STRING },
 });
 const Receipt = sequelize.define("Receipt", {
   _id: setPrimary,
   receive: { type: DataTypes.STRING },
-  Debt: { type: DataTypes.STRING },
+  debt: { type: DataTypes.STRING },
 });
 
 const Media = sequelize.define("Media", {
