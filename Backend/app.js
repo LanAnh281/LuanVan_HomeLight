@@ -14,6 +14,12 @@ const userRouter = require("./app/route/user.route");
 const roleRouter = require("./app/route/role.route");
 const positionRouter = require("./app/route/position.route");
 const rolePositionRouter = require("./app/route/role_position.route");
+const cycleRouter = require("./app/route/cycle.route");
+const boardingHouseRouter = require("./app/route/boardinghous.route");
+const roomRouter = require("./app/route/room.route");
+const noteRouter = require("./app/route/note.route");
+const serviceRouter = require("./app/route/service.route");
+const equipmentRouter = require("./app/route/equipment.route");
 // initialize
 const app = express();
 app.use(cors());
@@ -44,6 +50,12 @@ app.use("/api/users", userRouter);
 app.use("/api/role", roleRouter);
 app.use("/api/roleposition", rolePositionRouter);
 app.use("/api/position", positionRouter);
+app.use("/api/cycle", cycleRouter);
+app.use("/api/boardinghouse", boardingHouseRouter);
+app.use("/api/room", roomRouter);
+app.use("/api/note", noteRouter);
+app.use("/api/equipment", equipmentRouter);
+app.use("/api/service", serviceRouter);
 // check errors
 app.use((req, res, next) => {
   return next(createError(404, "Resource Not Found"));

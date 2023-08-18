@@ -97,7 +97,11 @@ const Users = sequelize.define("Users", {
   },
   isUser: { type: DataTypes.BOOLEAN },
 });
-
+const Cycle = sequelize.define("Cycle", {
+  _id: setPrimary,
+  name: { type: DataTypes.STRING },
+  content: { type: DataTypes.TEXT },
+});
 const BorardingHouse = sequelize.define("BoardingHouse", {
   _id: setPrimary,
   name: {
@@ -117,6 +121,7 @@ const Rooms = sequelize.define("Rooms", {
   },
   price: { type: DataTypes.STRING },
   area: { type: DataTypes.STRING },
+  status: { type: DataTypes.BOOLEAN },
 });
 const Spending = sequelize.define("Spending", {
   _id: setPrimary,
@@ -141,11 +146,7 @@ const Receipt = sequelize.define("Receipt", {
   receive: { type: DataTypes.STRING },
   Debt: { type: DataTypes.STRING },
 });
-const Cycle = sequelize.define("Cycle", {
-  _id: setPrimary,
-  name: { type: DataTypes.STRING },
-  content: { type: DataTypes.TEXT },
-});
+
 const Media = sequelize.define("Media", {
   _id: setPrimary,
   name: { type: DataTypes.STRING },
@@ -155,8 +156,9 @@ const Equipment = sequelize.define("Equipment", {
   name: { type: DataTypes.STRING },
 });
 const Services = sequelize.define("Service", {
-  start: { type: DataTypes.DATE },
-  end: { type: DataTypes.DATE },
+  _id: setPrimary,
+  name: { type: DataTypes.TEXT },
+  price: { type: DataTypes.STRING },
 });
 const Note = sequelize.define("Note", {
   _id: setPrimary,
@@ -204,6 +206,16 @@ Accounts.belongsTo(Users, {
 
 Users.hasMany(BorardingHouse, {
   foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Cycle.hasMany(Rooms, {
+  foreignKey: "cycleId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.belongsTo(Cycle, {
+  foreignKey: "cycleId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
@@ -267,16 +279,7 @@ Receipt.belongsTo(Bill, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-Cycle.hasMany(Rooms, {
-  foreignKey: "cycleId",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Rooms.belongsTo(Cycle, {
-  foreignKey: "cycleId",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
+
 Rooms.hasMany(Media, {
   foreignKey: "roomId",
   onDelete: "CASCADE",
@@ -295,7 +298,7 @@ Equipment.belongsToMany(Rooms, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-Rooms.belongsTo(Equipment, {
+Rooms.belongsToMany(Equipment, {
   through: Count,
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
@@ -341,13 +344,14 @@ Positions.sync();
 Roles_Positions.sync();
 Accounts.sync();
 Users.sync();
+Cycle.sync();
 BorardingHouse.sync();
 Rooms.sync();
 Spending.sync();
 Bill.sync();
 User_Room.sync();
 Receipt.sync();
-Cycle.sync();
+
 Media.sync();
 Equipment.sync();
 Count.sync();

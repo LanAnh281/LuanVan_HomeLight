@@ -1,15 +1,10 @@
-const { Rooms } = require("../models/index.model.js");
+const { Note } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const { name, price, area, status, boardingId, cycleId } = req.body;
-  console.log("Rooms Body:", req.body);
+  const { content } = req.body;
+  console.log("Note Body:", req.body);
   try {
-    const document = await Rooms.create({
-      name: name,
-      price: price,
-      area: area,
-      status: status,
-      boardingId: boardingId,
-      cycleId: cycleId,
+    const document = await Note.create({
+      content: content,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -19,7 +14,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Rooms.findAll({});
+    const documents = await Note.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -28,7 +23,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Rooms.findAll({
+    const document = await Note.findAll({
       where: {
         _id: req.params.id,
       },
@@ -40,17 +35,12 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, price, area, status, boardingId, cycleId } = req.body;
-  console.log("Update Rooms", req.body);
+  const { content } = req.body;
+  console.log("Note Body:", req.body);
   try {
-    const document = await Rooms.update(
+    const document = await Note.update(
       {
-        name: name,
-        price: price,
-        area: area,
-        status: status,
-        boardingId: boardingId,
-        cycleId: cycleId,
+        content: content,
       },
       {
         where: {
@@ -66,7 +56,7 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await Rooms.destroy({
+    const document = await Note.destroy({
       where: {
         _id: req.params.id,
       },
@@ -79,7 +69,7 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await Rooms.destroy({});
+    const documents = await Note.destroy({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
