@@ -1,16 +1,14 @@
-const { Spending } = require("../models/index.model.js");
+const { Notification } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
-  let { date, reason, price, isProfit, boardingId } = req.body;
-  console.log("Spending Body:", req.body);
+  let { date, content, accountId } = req.body;
+  console.log("Notification Body:", req.body);
   date = date == null ? null : dateTime(date);
   try {
-    const document = await Spending.create({
+    const document = await Notification.create({
       date: date,
-      reason: reason,
-      price: price,
-      isProfit: isProfit,
-      boardingId: boardingId,
+      content: content,
+      accountId: accountId,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -20,7 +18,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Spending.findAll({});
+    const documents = await Notification.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -29,7 +27,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Spending.findAll({
+    const document = await Notification.findAll({
       where: {
         _id: req.params.id,
       },
@@ -41,18 +39,15 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  let { date, reason, price, isProfit, boardingId } = req.body;
+  let { date, content, accountId } = req.body;
+  console.log("Notification Body:", req.body);
   date = date == null ? null : dateTime(date);
-
-  console.log("Spending Body:", req.body);
   try {
-    const document = await Spending.update(
+    const document = await Notification.update(
       {
         date: date,
-        reason: reason,
-        price: price,
-        isProfit: isProfit,
-        boardingId: boardingId,
+        content: content,
+        accountId: accountId,
       },
       {
         where: {
@@ -68,7 +63,7 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await Spending.destroy({
+    const document = await Notification.destroy({
       where: {
         _id: req.params.id,
       },
@@ -81,7 +76,7 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await Spending.destroy({});
+    const documents = await Notification.destroy({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

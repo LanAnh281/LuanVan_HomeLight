@@ -26,6 +26,8 @@ const userRoomRouter = require("./app/route/user_room.route");
 const serviceRoomRoter = require("./app/route/service_room.route");
 const countRouter = require("./app/route/count.route");
 const spendingRouter = require("./app/route/spending.route");
+const notificationRouter = require("./app/route/notification.route");
+const accountNotification = require("./app/route/account_notification.route");
 // initialize
 const app = express();
 app.use(cors());
@@ -68,6 +70,8 @@ app.use("/api/userroom", userRoomRouter);
 app.use("/api/serviceroom", serviceRoomRoter);
 app.use("/api/count", countRouter);
 app.use("/api/spending", spendingRouter);
+app.use("/api/notification", notificationRouter);
+app.use("/api/accountnotification", accountNotification);
 // check errors
 app.use((req, res, next) => {
   return next(createError(404, "Resource Not Found"));

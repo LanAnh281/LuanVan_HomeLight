@@ -327,7 +327,9 @@ Accounts.hasMany(Notification, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
-const Account_Notification = sequelize.define("Account_Notification", {});
+const Account_Notification = sequelize.define("Account_Notification", {
+  isdelete: { type: DataTypes.BOOLEAN },
+});
 Accounts.belongsToMany(Notification, {
   through: Account_Notification,
   onDelete: "CASCADE",
