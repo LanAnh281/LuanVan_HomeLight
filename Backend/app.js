@@ -20,6 +20,7 @@ const roomRouter = require("./app/route/room.route");
 const noteRouter = require("./app/route/note.route");
 const serviceRouter = require("./app/route/service.route");
 const equipmentRouter = require("./app/route/equipment.route");
+const billRouter = require("./app/route/bill.route");
 // initialize
 const app = express();
 app.use(cors());
@@ -56,6 +57,7 @@ app.use("/api/room", roomRouter);
 app.use("/api/note", noteRouter);
 app.use("/api/equipment", equipmentRouter);
 app.use("/api/service", serviceRouter);
+app.use("/api/bill", billRouter);
 // check errors
 app.use((req, res, next) => {
   return next(createError(404, "Resource Not Found"));
