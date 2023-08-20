@@ -17,6 +17,11 @@ const routes = [
     name: "Account",
     component: () => import("../view/admin/account/account.vue"),
   },
+  {
+    path: "/admin/room",
+    name: "Room",
+    component: () => import("../view/admin/room/index.vue"),
+  },
   //User
   {
     path: "/",

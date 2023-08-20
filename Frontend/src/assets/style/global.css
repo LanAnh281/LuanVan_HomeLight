@@ -12,8 +12,8 @@
     --yellow: #ffc107; 
     --chocolate:#d2691e;
     --beige:#f2f2d3;
-    --header:8vh;
-    --footer:8vh;
+    --header:16vh;
+    --footer:10vh;
     --navbar:10vh;
     --background-login: url('../image/background.jpg');
 
@@ -55,16 +55,19 @@
 }
 .footer{
     height: var(--footer);
-    background-color: var(--orange);
+    background-color: var(--black);
     padding-left:16px ;
+    text-align: center;
+    display: grid;
+    place-items: center;
 }
+
 .login{
-    background-image: var(--background-login);
-    width: 100wh;
-    height: 100vh;
+    background-image: var(--background-login);  
     background-repeat: no-repeat;
     background-size: cover;
 }
+
 .btn-login{
     background-color: var(--chocolate);
     color: var(--white);

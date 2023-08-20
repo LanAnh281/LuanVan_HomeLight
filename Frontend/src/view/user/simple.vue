@@ -1,5 +1,6 @@
 <script>
 import { ref, reactive, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 //service
 import userService from "../../service/user.service";
 import loginService from "../../service/login.service";
@@ -12,6 +13,7 @@ import {
 export default {
   components: {},
   setup() {
+    const router = useRouter();
     const token = ref(getCookieValue("token"));
     const data = reactive({
       items: {

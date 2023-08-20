@@ -128,8 +128,11 @@ export default {
 };
 </script>
 <template>
-  <div class="login container-fluid">
-    <div class="row justify-content-around align-items-center vh-100">
+  <div class="body login container-fluid">
+    <div
+      class="row justify-content-around align-items-center"
+      style="height: 60vh"
+    >
       <div class="card shadow col-4">
         <div class="row justify-content-center">
           <router-link :to="{ name: 'User' }" class="col-3">

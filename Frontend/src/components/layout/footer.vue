@@ -1,6 +1,11 @@
 <template>
   <div class="footer">
-    <p>Footer</p>
+    <p>Copyright &copy; 2023, All right reserved Lan Anh</p>
   </div>
 </template>
-<script></script>
+<style scoped>
+.footer p {
+  margin: 0;
+  color: var(--beige);
+}
+</style>
