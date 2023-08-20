@@ -12,7 +12,8 @@
     --yellow: #ffc107; 
     --chocolate:#d2691e;
     --beige:#f2f2d3;
-    --header:16vh;
+    --backgound:#f0f0f0;
+    --header:12vh;
     --footer:10vh;
     --navbar:10vh;
     --background-login: url('../image/background.jpg');
@@ -35,7 +36,7 @@
    
 }
 .header{
-    background-color: var(--blue);
+    background-color: var(--white);
     width: 100%;
     height: var(--header);  
 }
@@ -45,7 +46,7 @@
     height: var(--navbar);
 }
 .body{
-    height: calc( 100vh - var(--header) - var(--footer) - var(--navbar));
+    height: calc( 100vh - var(--header) - var(--footer) );
     background-color: var(--light);
     display: inline-block;
 }

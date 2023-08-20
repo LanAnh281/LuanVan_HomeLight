@@ -77,28 +77,35 @@ export default {
 </script>
 <template>
   <div class="header container-fluid">
-    <div class="row align-items-center" style="height: 100%">
-      <div class="col-1 mb-2 mt-1">
+    <div
+      class="row align-items-center justify-content-between"
+      style="height: 100%"
+    >
+      <div class="col-1 mr-0">
         <img src="../../assets/image/logo.PNG" style="width: 75%" />
       </div>
       <div class="col">
         <div class="d-flex flex-column">
-          <div class="row mb-2">
-            <div style="top: 3.5px" class="col-1">Trang chủ</div>
-            <div style="top: 3.5px" class="col-1">Đăng ký</div>
-
-            <div style="top: 3.5px" class="col-1">Thông báo</div>
-            <div style="top: 3.5px" class="col-1">Đăng ký</div>
+          <div class="row justify-content-between mb-2">
+            <div class="col-8 row menu">
+              <div class="col-2">Trang chủ</div>
+              <div class="col-2">Bài viết</div>
+              <div class="col-2">Liên hệ</div>
+            </div>
+            <div class="col-4 row justify-content-end menu">
+              <div class="col-3">Đăng ký</div>
+              <div class="col-4">Đăng nhập</div>
+            </div>
           </div>
-          <div class="row input-group">
-            <div class="input-group col-3">
+          <div class="row">
+            <div class="input-group col-2">
               <Select
                 :title="`Chọn thành phố`"
                 :data="data.items.data"
                 @changeCity="(value) => change(value)"
               ></Select>
             </div>
-            <div class="input-group mb-3 col-3">
+            <div class="input-group col-2">
               <Select
                 :title="`Chọn quận huyện`"
                 :data="data.district.data.districts"
@@ -106,9 +113,16 @@ export default {
               ></Select>
             </div>
 
-            <div class="input-group mb-3 col-3">
+            <div class="input-group col-2">
               <Select
                 :title="`Chọn phường xã`"
+                :data="data.ward.data.wards"
+                @changeCity="(value) => changeWard(value)"
+              ></Select>
+            </div>
+            <div class="input-group col-2">
+              <Select
+                :title="`Chọn giá thuê`"
                 :data="data.ward.data.wards"
                 @changeCity="(value) => changeWard(value)"
               ></Select>
@@ -119,4 +133,18 @@ export default {
     </div>
   </div>
 </template>
-<style></style>
+<style scoped>
+.menu div {
+  top: 3.5px;
+  color: var(--black-light);
+
+  transition: color 0.3s ease;
+  text-transform: uppercase;
+}
+.menu div:hover {
+  color: var(--chocolate);
+  opacity: 0.8;
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>

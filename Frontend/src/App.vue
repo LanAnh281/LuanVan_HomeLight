@@ -1,22 +1,3 @@
-<template>
-  <div>
-    <div v-if="isLoginPath == false">
-      <Header></Header>
-      <NavBar></NavBar>
-      <div class="fluid-container">
-        <div class="row m-0 p-0">
-          <SideBar class="col-2"></SideBar>
-          <span class="mr-2"></span>
-          <router-view class="col"></router-view>
-        </div>
-        <Footer></Footer>
-      </div>
-    </div>
-    <div v-if="isLoginPath">
-      <router-view></router-view>
-    </div>
-  </div>
-</template>
 <script>
 import Footer from "./components/layout/footer.vue";
 import NavBar from "./components/layout/navbar.vue";
@@ -24,6 +5,7 @@ import SideBar from "./components/layout/sidebar.vue";
 import Header from "./components/layout/header.vue";
 import { useRouter, useRoute } from "vue-router";
 import { ref, watch, onMounted } from "vue";
+import { getCookieValue } from "./assets/js/common.login";
 export default {
   components: {
     SideBar,
@@ -33,8 +15,12 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const position = ref("");
     const isLoginPath = ref(false);
-    onMounted(() => {});
+    onMounted(() => {
+      position.value = getCookieValue("position");
+      console.log("pos", position.value);
+    });
     watch(
       () => route.fullPath,
       (newPath, oldPath) => {
@@ -51,8 +37,36 @@ export default {
 
     return {
       isLoginPath,
+      position,
     };
   },
 };
 </script>
-<style scoped></style>
+
+<template>
+  <div>
+    <div v-if="isLoginPath == false">
+      <Header v-if="position == 'user'"></Header>
+      <!-- <NavBar></NavBar> -->
+      <div class="fluid-container">
+        <div
+          class="row m-0 p-0"
+          :class="[position != 'user' ? 'isHeader' : '']"
+        >
+          <SideBar class="col-2" v-if="position != 'user'"></SideBar>
+          <span class="mr-2" v-if="position != 'user'"></span>
+          <router-view class="col"></router-view>
+        </div>
+        <Footer></Footer>
+      </div>
+    </div>
+    <div v-if="isLoginPath">
+      <router-view></router-view>
+    </div>
+  </div>
+</template>
+<style scoped>
+.isHeader {
+  height: calc(100vh - var(--footer));
+}
+</style>
