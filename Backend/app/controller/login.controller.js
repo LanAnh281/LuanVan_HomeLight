@@ -1,11 +1,14 @@
 const { Accounts, Positions } = require("../models/index.model.js");
 const jwt = require("jsonwebtoken");
 const secret = "asdfghjkl!@#";
-
+const uuid = require("uuid");
 const crypto = require("crypto");
-
 const encryptionKey = "12345678912345678901234567890121";
 const iv = "0123456789abcdef";
+
+const { dateTime } = require("../middeware/datetime.middeware");
+// const moment = require("moment");
+const moment = require("moment-timezone");
 
 const setEncrypt = (value) => {
   const cipher = crypto.createCipheriv("aes-256-cbc", encryptionKey, iv);
@@ -21,8 +24,8 @@ const getDecrypt = (name) => {
     return decrypted;
   }
 };
+
 exports.login = async (req, res, next) => {
-  console.log("req.body:", req.body);
   const { userName, password } = req.body;
   console.log(userName, password);
   try {
@@ -32,26 +35,48 @@ exports.login = async (req, res, next) => {
         password: password,
       },
     });
-    if (document && document["isActive"]) {
+    if (!document) {
+      res.json({ message: "fail", status: "fail" });
+    }
+    if (document["isActive"]) {
       const position = await Positions.findOne({
         where: { _id: document["positionId"] },
       });
-      const refreshToken = setEncrypt(document["_id"]);
+      const refreshToken = uuid.v4(); // string unique
+      let refreshTokenExprityTime = moment();
+
+      refreshTokenExprityTime = refreshTokenExprityTime.add(2, "minutes"); // add 2 minutes
+
+      const updated = await Accounts.update(
+        {
+          refreshToken: refreshToken,
+          refreshTokenExprityTime: refreshTokenExprityTime,
+        },
+        { where: { _id: document["_id"] } }
+      );
+      //set cookie at client-side
       res.cookie("refreshToken", refreshToken, {
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), //1 year
+        expires: refreshTokenExprityTime.toDate(), //
         httpOnly: true,
         secure: true,
       });
-
-      jwt.sign(document["_id"], secret, function (err, data) {
-        return res.send({
-          message: "success",
-          status: "success",
-          token: data,
-          position: position["name"],
-          _id: document["_id"],
-        });
-      });
+      console.log("ĐN LẠI");
+      //jwt
+      const expiresInMinutes = 1; // Thời gian tồn tại của JWT (vd: 1 phút)
+      const expiryTime = moment().add(expiresInMinutes, "minutes");
+      jwt.sign(
+        { userId: document["_id"], position: position, exp: expiryTime.unix() },
+        secret,
+        function (err, data) {
+          return res.send({
+            message: "success",
+            status: "success",
+            token: data,
+            position: position["name"],
+            expiresIn: expiresInMinutes,
+          });
+        }
+      );
     } else {
       res.json({ message: "fail", status: "fail" });
     }
@@ -60,34 +85,42 @@ exports.login = async (req, res, next) => {
   }
 };
 exports.refreshAccessToken = async (req, res, next) => {
-  const refreshToken = getDecrypt(req.cookies["refreshToken"]);
-  console.log("refreshToken:", refreshToken);
+  const refreshToken = req.cookies["refreshToken"];
+
   try {
     const document = await Accounts.findOne({
       where: {
-        _id: refreshToken,
+        refreshToken: refreshToken,
       },
     });
-    if (document && document["isActive"]) {
+
+    let currentTime = moment();
+    if (!document) {
+      res.json({ message: "fail", status: "fail" });
+    }
+
+    if (
+      document["isActive"] &&
+      currentTime.isBefore(document["refreshTokenExprityTime"])
+    ) {
       const position = await Positions.findOne({
         where: { _id: document["positionId"] },
       });
-      const refreshToken = setEncrypt(document["_id"]);
-      res.cookie("refreshToken", refreshToken, {
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
-        httpOnly: true,
-        secure: true,
-      });
-
-      jwt.sign(document["_id"], secret, function (err, data) {
-        return res.json({
-          message: "success",
-          status: "success",
-          token: data,
-          position: position["name"],
-          _id: document["_id"],
-        });
-      });
+      const expiresInMinutes = 1; // Thời gian tồn tại của JWT (vd: 1 phút)
+      const expiryTime = moment().add(expiresInMinutes, "minutes");
+      jwt.sign(
+        { userId: document["_id"], position: position, exp: expiryTime.unix() },
+        secret,
+        function (err, data) {
+          return res.json({
+            message: "success",
+            status: "success",
+            token: data,
+            position: position["name"],
+            expiresIn: expiresInMinutes,
+          });
+        }
+      );
     } else {
       res.json({ message: "fail", status: "fail" });
     }

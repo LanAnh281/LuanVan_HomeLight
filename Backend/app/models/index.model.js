@@ -59,6 +59,12 @@ const Accounts = sequelize.define("Accounts", {
   isActive: {
     type: DataTypes.BOOLEAN,
   },
+  refreshToken: {
+    type: DataTypes.STRING,
+  },
+  refreshTokenExprityTime: {
+    type: DataTypes.DATE,
+  },
 });
 const Users = sequelize.define("Users", {
   _id: setPrimary,
@@ -95,7 +101,7 @@ const Users = sequelize.define("Users", {
   imageAfter: {
     type: DataTypes.TEXT,
   },
-  isUser: { type: DataTypes.BOOLEAN },
+  isUser: { type: DataTypes.BOOLEAN }, // host or not host
 });
 const Cycle = sequelize.define("Cycle", {
   _id: setPrimary,
