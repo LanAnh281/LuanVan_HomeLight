@@ -1,30 +1,34 @@
 <script>
-import { ref, onMounted } from "vue";
-import {
-  checkCookieExistence,
-  getCookieValue,
-  setCookie,
-} from "../../../assets/js/common.login";
-import loginService from "../../../service/login.service";
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
+import { useRoute, useRouter } from "vue-router";
+//service
+
+//asset/js
+import { checkAccessToken } from "../../../assets/js/common.login";
 export default {
   components: {},
   setup() {
-    const token = ref(getCookieValue("token"));
-
-    onMounted(async () => {
-      if (!checkCookieExistence("token")) {
-        const document = await loginService.accessToken();
-        setCookie("token", document.token, 1); //1 day
-        setCookie("position", document.position, 1);
-        token.value = getCookieValue("token");
-      }
+    const router = useRouter();
+    const data = reactive({
+      items: {},
     });
-    return { token };
+    let intervalId = null;
+    onMounted(async () => {
+      await checkAccessToken(router);
+      intervalId = setInterval(async () => {
+        await checkAccessToken(router);
+      }, 1 * 60 * 1000); // 60000 milliseconds = 1 minutes
+    });
+    onBeforeUnmount(() => {
+      clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
+    });
+
+    return { data };
   },
 };
 </script>
 <template>
-  <div class="body" v-if="token">
+  <div class="body">
     <p>Account</p>
     <router-link :to="{ name: 'Login' }">Login </router-link>
     <router-link :to="{ name: 'User' }">User </router-link>

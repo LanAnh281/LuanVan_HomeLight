@@ -5,7 +5,7 @@ import SideBar from "./components/layout/sidebar.vue";
 import Header from "./components/layout/header.vue";
 import { useRouter, useRoute } from "vue-router";
 import { ref, watch, onMounted } from "vue";
-import { getCookieValue } from "./assets/js/common.login";
+// import { getCookieValue } from "./assets/js/common.login";
 export default {
   components: {
     SideBar,
@@ -18,8 +18,8 @@ export default {
     const position = ref("");
     const isLoginPath = ref(false);
     onMounted(() => {
-      position.value = getCookieValue("position");
-      console.log("pos", position.value);
+      // position.value = getCookieValue("position");
+      // console.log("pos", position.value);
     });
     watch(
       () => route.fullPath,

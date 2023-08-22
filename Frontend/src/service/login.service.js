@@ -14,7 +14,7 @@ class loginService {
   async accessToken() {
     return (await this.api.post("/accessToken")).data;
   }
-  async clearToken() {
+  async clearRefreshToken() {
     return (await this.api.post("/clearToken")).data;
   }
 }

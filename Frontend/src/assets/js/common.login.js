@@ -1,3 +1,39 @@
+import moment from "moment-timezone";
+
+//service
+//service
+import loginService from "../../service/login.service";
+
+export const setLocalStrorage = (token, position, expiresIn) => {
+  const expiresInMinutes = moment();
+  localStorage.setItem("accessToken", token);
+  localStorage.setItem("position", position);
+  localStorage.setItem("expiresIn", expiresInMinutes.add(expiresIn, "minutes"));
+};
+export const cleanLocalStorage = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("position");
+  localStorage.removeItem("expiresIn");
+};
+export const checkAccessToken = async (router) => {
+  const currentTime = moment();
+  if (currentTime.isBefore(moment(localStorage.getItem("expiresIn")))) return;
+  const document = await loginService.accessToken();
+  if (document["status"] == "fail") {
+    console.log("refreshToken hết hạn");
+    cleanLocalStorage();
+    await loginService.clearRefreshToken();
+    router.push({ name: "Login" });
+  } else {
+    console.log("refresh token còn hạn");
+    setLocalStrorage(
+      document["token"],
+      document["position"],
+      document["expiresIn"]
+    );
+  }
+};
+
 export const checkCookieExistence = (cookieName) => {
   const cookies = document.cookie.split("; ");
   for (const cookie of cookies) {

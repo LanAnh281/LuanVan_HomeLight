@@ -1,8 +1,11 @@
 <script>
 import { reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
+// import moment from "moment-timezone";
+
 //alert
 import { warning } from "../../assets/js/common.alert";
+import { setLocalStrorage } from "../../assets/js/common.login";
 //service
 import Login from "../../service/login.service";
 import { checkCookieExistence, setCookie } from "../../assets/js/common.login";
@@ -19,10 +22,14 @@ export default {
 
     const login = async () => {
       const document = await Login.login(data.item);
+      // const expiresIn = moment();
       console.log(`document:`, document);
       if (document.status == "success") {
-        setCookie("token", document.token, 10); //1 ngày
-        setCookie("position", document.position, 10);
+        setLocalStrorage(
+          document["token"],
+          document["position"],
+          document["expiresIn"]
+        );
         if (document.position == "admin") {
           router.push({ name: "Account" });
         } else router.push({ name: "User" });

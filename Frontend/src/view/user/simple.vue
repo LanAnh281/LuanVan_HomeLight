@@ -1,48 +1,36 @@
 <script>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //service
-import userService from "../../service/user.service";
-import loginService from "../../service/login.service";
+
 //asset/js
-import {
-  getCookieValue,
-  checkCookieExistence,
-  setCookie,
-} from "../../assets/js/common.login";
+import { checkAccessToken } from "../../assets/js/common.login";
 export default {
   components: {},
   setup() {
     const router = useRouter();
-    const token = ref(getCookieValue("token"));
     const data = reactive({
-      items: {
-        userName: "",
-        identificationCard: "",
-        imagePrevious: "",
-        imageAfter: "",
-        phone: "",
-        address: "",
-        email: "",
-        content: "",
-      },
+      items: {},
+    });
+    let intervalId = null;
+    onMounted(async () => {
+      await checkAccessToken(router);
+      intervalId = setInterval(async () => {
+        await checkAccessToken(router);
+      }, 1 * 60 * 1000); // 60000 milliseconds = 1 minutes
+    });
+    onBeforeUnmount(() => {
+      clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
 
-    onMounted(async () => {
-      if (!checkCookieExistence("token")) {
-        const document = await loginService.accessToken();
-        setCookie("token", document.token, 10); //1 ngày
-        setCookie("position", document.position, 10);
-        token.value = getCookieValue("token");
-      }
-      const documents = await userService.getAll();
-      data.items = documents.message;
-    });
-    return { token, data };
+    return { data };
   },
 };
 </script>
 <template>
-  <div v-if="token"></div>
+  <div class="body">
+    <p>Hello User</p>
+    <router-link :to="{ name: 'Login' }">Login </router-link>
+    <router-link :to="{ name: 'Account' }">Account </router-link>
+  </div>
 </template>
-<style scope></style>
