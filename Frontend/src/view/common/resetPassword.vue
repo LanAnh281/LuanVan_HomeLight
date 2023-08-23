@@ -1,50 +1,22 @@
 <script>
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-//alert
-import { warning } from "../../assets/js/common.alert";
-import { setLocalStrorage } from "../../assets/js/common.login";
 //service
-import Login from "../../service/login.service";
 
 export default {
   components: {},
   setup() {
-    const data = reactive({
-      item: {
-        userName: "",
-        password: "",
-      },
-    });
     const router = useRouter();
-
-    const login = async () => {
-      const document = await Login.login(data.item);
-      // const expiresIn = moment();
-      console.log(`document:`, document);
-      if (document.status == "success") {
-        setLocalStrorage(
-          document["token"],
-          document["position"],
-          document["expiresIn"]
-        );
-        if (document.position == "admin") {
-          router.push({ name: "Account" });
-        } else router.push({ name: "User" });
-      } else {
-        warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
-      }
+    const route = useRoute();
+    const data = reactive({
+      item: { email: "", password: "", confirmPassword: "" },
+    });
+    const resetPassword = () => {
+      console.log("resetPassword");
+      console.log(route.query.reset);
     };
-    const forgotPassword = async () => {
-      console.log("Quên mật khẩu");
-      router.push({ name: "ForgotPassword" });
-    };
-    return {
-      login,
-      data,
-      forgotPassword,
-    };
+    onMounted(async () => {});
+    return { data, resetPassword };
   },
 };
 </script>
@@ -61,7 +33,7 @@ export default {
           </router-link>
           <h4 class="text-center mt-3 ml-3 col-12">Đăng nhập</h4>
         </div>
-        <form @submit.prevent="login" class="container mt-3">
+        <form @submit.prevent="resetPassword" class="container mt-3">
           <div class="form-group row">
             <label for="inputUserName" class="col-sm-3 col-form-label p-0"
               >Mã tài khoản :</label
@@ -71,13 +43,13 @@ export default {
                 type="text"
                 class="form-control"
                 id="inputUserName"
-                v-model="data.item.userName"
+                v-model="data.item.email"
               />
             </div>
           </div>
           <div class="form-group row">
             <label for="inputPassword" class="col-sm-3 col-form-label p-0"
-              >Mật khẩu :</label
+              >Mật khẩu mới :</label
             >
             <div class="col-sm-9">
               <input
@@ -88,20 +60,31 @@ export default {
               />
             </div>
           </div>
+          <div class="form-group row">
+            <label
+              for="inputConfirmPassword"
+              class="col-sm-3 col-form-label p-0"
+              >Nhập lại mật khẩu:</label
+            >
+            <div class="col-sm-9">
+              <input
+                type="password"
+                class="form-control"
+                id="inputConfirmPassword"
+                v-model="data.item.confirmPassword"
+              />
+            </div>
+          </div>
           <div
             class="form-group row justify-content-around"
             style="margin-top: 26px"
           >
             <button type="submit" class="btn btn-login col-sm-3 mx-2">
-              Đăng nhập
+              Xác nhận
             </button>
           </div>
         </form>
-        <div class="col-12 text-center mt-1" @click="forgotPassword">
-          Quên mật khẩu
-        </div>
       </div>
     </div>
   </div>
 </template>
-<style></style>

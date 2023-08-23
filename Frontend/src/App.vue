@@ -24,7 +24,13 @@ export default {
     watch(
       () => route.fullPath,
       (newPath, oldPath) => {
-        if (newPath == "/login") isLoginPath.value = true;
+        if (
+          newPath == "/login" ||
+          newPath == "/forgotPassword" ||
+          newPath == "/resetPassword" ||
+          newPath.includes("/resetPassword")
+        )
+          isLoginPath.value = true;
         else {
           isLoginPath.value = false;
         }
@@ -44,29 +50,37 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div v-if="isLoginPath == false">
-      <Header v-if="position == 'user'"></Header>
-      <!-- <NavBar></NavBar> -->
-      <div class="fluid-container">
-        <div
-          class="row m-0 p-0"
-          :class="[position != 'user' ? 'isHeader' : '']"
-        >
-          <SideBar class="col-2" v-if="position != 'user'"></SideBar>
-          <span class="mr-2" v-if="position != 'user'"></span>
-          <router-view class="col"></router-view>
-        </div>
-        <Footer></Footer>
+  <div v-cloak>
+    <transition>
+      <div v-if="isLoginPath">
+        <router-view></router-view>
       </div>
-    </div>
-    <div v-if="isLoginPath">
-      <router-view></router-view>
-    </div>
+    </transition>
+    <transition>
+      <div v-if="isLoginPath == false">
+        <Header v-if="position == 'user'"></Header>
+        <!-- <NavBar></NavBar> -->
+        <div class="fluid-container">
+          <div
+            class="row m-0 p-0"
+            :class="[position != 'user' ? 'isHeader' : '']"
+          >
+            <SideBar class="col-2" v-if="position != 'user'"></SideBar>
+            <span class="mr-2" v-if="position != 'user'"></span>
+            <router-view class="col"></router-view>
+          </div>
+          <Footer></Footer>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 <style scoped>
 .isHeader {
   height: calc(100vh - var(--footer));
+}
+.hidden-transition {
+  opacity: 0;
+  transition: opacity 0.5s;
 }
 </style>

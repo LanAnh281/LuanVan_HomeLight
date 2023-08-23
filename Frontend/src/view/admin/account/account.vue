@@ -37,4 +37,8 @@ export default {
     </router-link>
   </div>
 </template>
-<style></style>
+<style scoped>
+.body {
+  height: calc(100vh - var(--footer));
+}
+</style>

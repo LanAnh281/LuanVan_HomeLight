@@ -34,3 +34,8 @@ export default {
     <router-link :to="{ name: 'Account' }">Account </router-link>
   </div>
 </template>
+<style scoped>
+.body {
+  height: calc(100vh - var(--footer));
+}
+</style>

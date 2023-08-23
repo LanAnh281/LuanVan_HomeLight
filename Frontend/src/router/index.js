@@ -7,6 +7,16 @@ const routes = [
     component: () => import("../view/common/login.vue"),
   },
   {
+    path: "/forgotPassword",
+    name: "ForgotPassword",
+    component: () => import("../view/common/fogotPassword.vue"),
+  },
+  {
+    path: "/resetPassword",
+    name: "ResetPassword",
+    component: () => import("../view/common/resetPassword.vue"),
+  },
+  {
     path: "/registration",
     name: "Registration",
     component: () => import("../view/common/registration.vue"),
