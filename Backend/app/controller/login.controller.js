@@ -26,8 +26,9 @@ const getDecrypt = (name) => {
 };
 
 exports.login = async (req, res, next) => {
-  const { userName, password } = req.body;
+  let { userName, password } = req.body;
   console.log(userName, password);
+  password = setEncrypt(password);
   try {
     const document = await Accounts.findOne({
       where: {

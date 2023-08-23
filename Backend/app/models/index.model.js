@@ -175,6 +175,13 @@ const Notification = sequelize.define("Notification", {
   date: { type: DataTypes.DATE },
   content: { type: DataTypes.TEXT },
 });
+const ResetPassword = sequelize.define("ResetPassword", {
+  _id: setPrimary,
+  email: { type: DataTypes.TEXT },
+  resetPasswordExprityTime: {
+    type: DataTypes.DATE,
+  },
+});
 // checked
 //many-to-many relationship
 Roles.belongsToMany(Positions, {
@@ -368,6 +375,7 @@ Service_Room.sync();
 Note.sync();
 Notification.sync();
 Account_Notification.sync();
+ResetPassword.sync();
 module.exports = {
   Roles,
   Positions,
@@ -389,4 +397,5 @@ module.exports = {
   Note,
   Notification,
   Account_Notification,
+  ResetPassword,
 };

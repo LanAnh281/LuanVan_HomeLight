@@ -1,7 +1,27 @@
 const { Accounts } = require("../models/index.model.js");
+
+const crypto = require("crypto");
+const encryptionKey = "12345678912345678901234567890121";
+const iv = "0123456789abcdef";
+const setEncrypt = (value) => {
+  const cipher = crypto.createCipheriv("aes-256-cbc", encryptionKey, iv);
+  let encrypted = cipher.update(value, "utf8", "hex");
+  encrypted += cipher.final("hex");
+  return encrypted;
+};
+const getDecrypt = (name) => {
+  if (name) {
+    const decipher = crypto.createDecipheriv("aes-256-cbc", encryptionKey, iv);
+    let decrypted = decipher.update(name, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+    return decrypted;
+  }
+};
+
 exports.create = async (req, res, next) => {
-  const { userName, password, userId, positionId } = req.body;
+  let { userName, password, userId, positionId } = req.body;
   console.log("Account Body:", req.body);
+  password = setEncrypt(password);
   try {
     const document = await Accounts.create({
       userName: userName,
@@ -39,8 +59,10 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { userName, password, userId, positionId, isActive } = req.body;
+  let { userName, password, userId, positionId, isActive } = req.body;
   console.log("Update account", req.body);
+  password = setEncrypt(password);
+
   try {
     const document = await Accounts.update(
       {
