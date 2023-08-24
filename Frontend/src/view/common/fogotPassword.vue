@@ -3,7 +3,7 @@ import { reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 //alert
-import { warning, success } from "../../assets/js/common.alert";
+import { warning, success, load } from "../../assets/js/common.alert";
 //service
 import resetPasswordService from "../../service/resetPassword.service";
 import mailService from "../../service/mail.service";
@@ -24,12 +24,9 @@ export default {
           warning("Cảnh báo", "Bạn đã cung cấp sai email đăng nhập");
           return;
         }
-        localStorage.setItem("resetPassword", document.message["_id"]);
-        localStorage.setItem(
-          "resetPasswordExprityTime",
-          document.message["resetPasswordExprityTime"]
-        );
+        load("Đang gửi mail");
         //send mail title, content, mail
+
         const mail = await mailService.sendMail({
           mail: data.item.email,
           title: "Khôi phục lại mật khẩu",
@@ -39,10 +36,12 @@ export default {
                 Bạn hãy <a href="http://localhost:3001/resetPassword?reset=${document.message["_id"]}"> click vào đây</a>
                 để đặt lại mật khẩu.
             </p> 
+            <p>Lưu ý đường link thay đổi mật khẩu chỉ có giá trị trong 3 phút.</p>
             <p>Xin cảm ơn</p>
         </html>`,
         });
         success("Thành công", "Bạn hãy kiểm tra email để tạo mật khẩu mới.");
+        data.item.email = "";
       } catch (error) {
         console.log(error);
       }

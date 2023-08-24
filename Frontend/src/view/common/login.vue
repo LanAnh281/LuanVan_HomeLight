@@ -64,7 +64,7 @@ export default {
         <form @submit.prevent="login" class="container mt-3">
           <div class="form-group row">
             <label for="inputUserName" class="col-sm-3 col-form-label p-0"
-              >Mã tài khoản :</label
+              >Email :</label
             >
             <div class="col-sm-9">
               <input

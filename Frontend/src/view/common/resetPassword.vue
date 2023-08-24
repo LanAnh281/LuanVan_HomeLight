@@ -1,8 +1,10 @@
 <script>
 import { reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+//js
+import { success, warning } from "../../assets/js/common.alert";
 //service
-
+import resetPasswordService from "../../service/resetPassword.service";
 export default {
   components: {},
   setup() {
@@ -11,9 +13,22 @@ export default {
     const data = reactive({
       item: { email: "", password: "", confirmPassword: "" },
     });
-    const resetPassword = () => {
-      console.log("resetPassword");
-      console.log(route.query.reset);
+    const resetPassword = async () => {
+      try {
+        const document = await resetPasswordService.update(
+          route.query.reset,
+          data.item
+        );
+        if (document.status === "success") {
+          success("Thành công", "Khôi phục mật khẩu thành công");
+          router.push("Login");
+        } else {
+          warning("Thất bại", "Khôi  phục mật khẩu thất bại");
+        }
+      } catch (error) {
+        console.error(">>>er:", error);
+        warning("Thất bại", "Khôi  phục mật khẩu thất bại");
+      }
     };
     onMounted(async () => {});
     return { data, resetPassword };
@@ -31,22 +46,9 @@ export default {
               style="width: 100%; height: 100%"
             />
           </router-link>
-          <h4 class="text-center mt-3 ml-3 col-12">Đăng nhập</h4>
+          <h4 class="text-center mt-3 ml-3 col-12">Khôi phục mật khẩu</h4>
         </div>
         <form @submit.prevent="resetPassword" class="container mt-3">
-          <div class="form-group row">
-            <label for="inputUserName" class="col-sm-3 col-form-label p-0"
-              >Mã tài khoản :</label
-            >
-            <div class="col-sm-9">
-              <input
-                type="text"
-                class="form-control"
-                id="inputUserName"
-                v-model="data.item.email"
-              />
-            </div>
-          </div>
           <div class="form-group row">
             <label for="inputPassword" class="col-sm-3 col-form-label p-0"
               >Mật khẩu mới :</label

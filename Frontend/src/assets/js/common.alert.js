@@ -35,3 +35,15 @@ export const deleted = (title, text) => {
     },
   });
 };
+export const load = async (title) => {
+  await Swal.fire({
+    showConfirmButton: false, // Ẩn nút "OK"
+    focusConfirm: false,
+    customClass: {
+      popup: "custom-popup-class",
+    },
+    html: ` <div class="spinner-border text-success custom-spinner " role="status">
+              <span class="sr-only" >Loading...</span>
+            </div>`,
+  });
+};
