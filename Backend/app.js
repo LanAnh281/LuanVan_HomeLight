@@ -29,7 +29,7 @@ const spendingRouter = require("./app/route/spending.route");
 const notificationRouter = require("./app/route/notification.route");
 const accountNotification = require("./app/route/account_notification.route");
 const mailRouter = require("./app/route/mail.route");
-const resetPasswordRouter = require("./app/route/resetPassword");
+const resetPasswordRouter = require("./app/route/resetPassword.route");
 // initialize
 const app = express();
 app.use(cors());
