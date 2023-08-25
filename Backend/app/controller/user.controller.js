@@ -3,6 +3,41 @@ const fs = require("fs");
 const uploadDir = "./uploads/images";
 const path = require("path");
 
+const { createUserAndAccount } = require("../models/transaction.service");
+
+exports.createUserAndAccount = async (req, res) => {
+  let {
+    userName,
+    identification,
+    phone,
+    address,
+    email,
+    start,
+    end,
+    file,
+    password,
+  } = req.body;
+
+  try {
+    const userData = {
+      userName: userName,
+      identification: identification,
+      // imagePrevious: newestFiles[0],
+      // imageAfter: newestFiles[1],
+      phone: phone,
+      address: address,
+      email: email,
+      start: start,
+      end: end,
+      password: password,
+    };
+    const result = await createUserAndAccount(userData);
+    res.status(201).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error creating user and order." });
+  }
+};
 exports.create = async (req, res, next) => {
   let { userName, identification, phone, address, email, start, end, file } =
     req.body;
