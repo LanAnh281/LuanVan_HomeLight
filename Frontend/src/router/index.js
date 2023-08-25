@@ -16,11 +16,7 @@ const routes = [
     name: "ResetPassword",
     component: () => import("../view/common/resetPassword.vue"),
   },
-  {
-    path: "/registration",
-    name: "Registration",
-    component: () => import("../view/common/registration.vue"),
-  },
+
   //Admin
   {
     path: "/admin/account",

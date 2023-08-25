@@ -4,9 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import _ from "lodash";
 //service
-import Login from "../../service/login.service";
-import userService from "../../service/user.service";
-import { checkCookieExistence } from "../../assets/js/common.login";
+
 export default {
   components: {},
   setup() {
@@ -27,57 +25,96 @@ export default {
       message: "",
     });
     const filesRef = ref(null);
+    const isModalOpen = ref(false);
     // Khi chọn file
-    const handleFileUpload = (event) => {
+    const handleFileUpload = async (event) => {
+      data.uploadFiles = [];
       const files = event.target.files;
       data.uploadFiles = [...data.uploadFiles, ...files];
+
+      const previewImages = document.getElementById("previewImages");
+      previewImages.innerHTML = "";
+      const rowImages = document.createElement("div");
+      rowImages.classList.add("row");
+      for (const file of data.uploadFiles) {
+        const reader = new FileReader();
+        let invalidMessage = validate(file);
+        if (invalidMessage == "") {
+          reader.onload = function (e) {
+            const colImage = document.createElement("div");
+            colImage.classList.add("col-6");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.width = "192px";
+            img.style.height = "100px";
+            img.style.objectFit = "contain";
+            const br = document.createElement("br");
+            colImage.appendChild(img);
+            colImage.appendChild(br);
+
+            const span = document.createElement("span");
+            span.textContent = `${file.name}`;
+            colImage.appendChild(span);
+
+            rowImages.appendChild(colImage);
+            previewImages.appendChild(rowImages);
+          };
+
+          // reader.onloadend = function () {
+          //   previewImages.appendChild(rowImages);
+          // };
+          reader.readAsDataURL(file);
+        } else {
+          const colImage = document.createElement("div");
+          colImage.classList.add("col-6");
+          const span = document.createElement("span");
+          span.textContent = `${file.name}`;
+          span.style.color = "red";
+          colImage.appendChild(span);
+
+          rowImages.appendChild(colImage);
+          previewImages.appendChild(rowImages);
+        }
+      }
+
       data.files = [
         ...data.files,
         ..._.map(files, (file) => ({
           name: file.name,
           size: file.size,
           type: file.type,
+          url: null,
           invalidMessage: validate(file),
         })),
       ];
     };
+
     //Kiểm tra loại file và kích thước file
     const validate = (file) => {
       const MAX_SIZE = 200000;
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-      const MAX_SIZE_VIDEO = 100000000; //100Mb
-      const allowedTypesVideo = [
-        "video/mp4",
-        "video/avi",
-        "video/webm",
-        "video/mov",
-      ];
 
-      if (
-        !allowedTypes.includes(file.type) &&
-        !allowedTypesVideo.includes(file.type)
-      ) {
-        return "not an image and a video";
+      if (!allowedTypes.includes(file.type)) {
+        return "not an image";
       }
-      const maxSize = allowedTypes.includes(file.type)
-        ? MAX_SIZE
-        : MAX_SIZE_VIDEO;
-      if (file.size > maxSize) {
+
+      if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}kb `;
       }
       return "";
     };
+    const formFields = [
+      "userName",
+      "identification",
+      "phone",
+      "address",
+      "email",
+      "start",
+      "end",
+    ];
     const save = async () => {
       const formData = new FormData();
-      const formFields = [
-        "userName",
-        "identification",
-        "phone",
-        "address",
-        "email",
-        "start",
-        "end",
-      ];
       _.forEach(formFields, (field) => {
         formData.append(field, data.item[field]);
       });
@@ -94,11 +131,14 @@ export default {
       // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
       //Kết nối với backend
       try {
-        await axios.post(`http://localhost:3000/api/users/multiple`, formData, {
+        await axios.post(`http://localhost:3000/api/users`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+
+        const previewImages = document.getElementById("previewImages");
+        previewImages.innerHTML = "";
         data.message = "Files has been uploaded";
         //Đặt lại giá trị ban đầu
         data.files = [];
@@ -111,14 +151,36 @@ export default {
         data.message = err;
       }
     };
+    const openModal = () => {
+      isModalOpen.value = true;
+      console.log("open modal");
+    };
+    const closeModal = () => {
+      console.log("close modal");
+
+      const previewImages = document.getElementById("previewImages");
+      previewImages.innerHTML = "";
+      isModalOpen.value = false;
+      data.message = "Files has been uploaded";
+      //Đặt lại giá trị ban đầu
+      data.files = [];
+      filesRef.value.value = "";
+      data.uploadFiles = [];
+      _.forEach(formFields, (field) => {
+        data.item[field] = "";
+      });
+    };
     onMounted(() => {
-      //lấy thẻ input có id là inputImage
+      //Get input
       filesRef.value = document.getElementById("inputImage");
+      //lắng nghe mở modal
+      $("#registrationModal").on("show.bs.modal", openModal);
+      //lắng nghe đóng modal
+      $("#registrationModal").on("hidden.bs.modal", closeModal);
     });
 
     return {
       data,
-
       handleFileUpload,
       save,
 
@@ -129,17 +191,6 @@ export default {
 </script>
 <template>
   <div class="body">
-    <!-- Button trigger modal -->
-    <!-- <button
-      type="button"
-      class="btn btn-primary"
-      data-toggle="modal"
-      data-target="#exampleModal"
-    >
-      Launch demo modal
-    </button> -->
-
-    <!-- Modal -->
     <div
       class="modal fade"
       id="registrationModal"
@@ -151,7 +202,7 @@ export default {
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Đăng ký</h5>
             <button
               type="button"
               class="close"
@@ -191,7 +242,7 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputidentificationCard"
-                    v-model="data.item.identificationCard"
+                    v-model="data.item.identification"
                   />
                 </div>
               </div>
@@ -199,7 +250,7 @@ export default {
                 <label
                   for="inputImagePrevious"
                   class="col-sm-3 col-form-label p-0"
-                  >Ảnh CCCD :</label
+                  >Ảnh CCCD (mặt trước và sau) :</label
                 >
                 <div class="col-sm-9">
                   <input
@@ -211,32 +262,8 @@ export default {
                     id="inputImage"
                   />
                 </div>
-                <div
-                  v-for="(file, index) in data.files"
-                  :key="index"
-                  :class="`level ${file.invalidMessage && 'has-text-danger'}`"
-                >
-                  <div class="level-left">
-                    <div class="level-item">
-                      {{ file.name }}
-                      <span v-if="file.invalidMessage">
-                        &nbsp; - {{ file.invalidMessage }}</span
-                      >
-                    </div>
-                  </div>
-                  <div class="level-right">
-                    <div class="level-item">
-                      <a
-                        class="material-symbols-outlined"
-                        @click.prevent="
-                          data.files.splice(index, 1);
-                          data.uploadFiles.splice(index, 1);
-                        "
-                      >
-                        delete
-                      </a>
-                    </div>
-                  </div>
+                <div id="previewImages" class="container">
+                  <!-- <div class="row" id="rowImages"></div> -->
                 </div>
               </div>
 
@@ -280,19 +307,6 @@ export default {
                   />
                 </div>
               </div>
-              <div class="form-group row">
-                <label for="inputContent" class="col-sm-3 col-form-label p-0"
-                  >Nội dung yêu cầu :</label
-                >
-                <div class="col-sm-9">
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="inputContent"
-                    v-model="data.item.start"
-                  />
-                </div>
-              </div>
               <div class="form-group row justify-content-around mb-0">
                 <button type="submit" class="btn btn-login col-sm-3">
                   Đăng ký
@@ -305,4 +319,11 @@ export default {
     </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.dangerous {
+  color: red;
+}
+.non-dangerous {
+  color: var(--black-light);
+}
+</style>

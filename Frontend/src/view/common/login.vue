@@ -55,7 +55,7 @@ export default {
         <div class="row justify-content-center">
           <router-link :to="{ name: 'User' }" class="col-3">
             <img
-              src="../../assets/image/logo.PNG"
+              src="../../assets/image/logo.png"
               style="width: 100%; height: 100%"
             />
           </router-link>

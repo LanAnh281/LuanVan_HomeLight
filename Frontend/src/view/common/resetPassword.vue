@@ -21,7 +21,7 @@ export default {
         );
         if (document.status === "success") {
           success("Thành công", "Khôi phục mật khẩu thành công");
-          router.push("Login");
+          router.push({ name: "Login" });
         } else {
           warning("Thất bại", "Khôi  phục mật khẩu thất bại");
         }

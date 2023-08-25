@@ -18,8 +18,8 @@ export default {
     const position = ref("");
     const isLoginPath = ref(false);
     onMounted(() => {
-      // position.value = getCookieValue("position");
-      // console.log("pos", position.value);
+      position.value = localStorage.getItem("position");
+      console.log("pos", position.value);
     });
     watch(
       () => route.fullPath,
@@ -50,29 +50,26 @@ export default {
 </script>
 
 <template>
-  <div v-cloak>
-    <transition>
-      <div v-if="isLoginPath">
-        <router-view></router-view>
-      </div>
-    </transition>
-    <transition>
-      <div v-if="isLoginPath == false">
-        <Header v-if="position == 'user'"></Header>
-        <!-- <NavBar></NavBar> -->
-        <div class="fluid-container">
-          <div
-            class="row m-0 p-0"
-            :class="[position != 'user' ? 'isHeader' : '']"
-          >
-            <SideBar class="col-2" v-if="position != 'user'"></SideBar>
-            <span class="mr-2" v-if="position != 'user'"></span>
-            <router-view class="col"></router-view>
-          </div>
-          <Footer></Footer>
+  <div>
+    <div v-if="isLoginPath">
+      <router-view></router-view>
+    </div>
+
+    <div v-if="isLoginPath == false">
+      <Header v-if="position == 'user'"></Header>
+      <!-- <NavBar></NavBar> -->
+      <div class="fluid-container">
+        <div
+          class="row m-0 p-0"
+          :class="[position != 'user' ? 'isHeader' : '']"
+        >
+          <SideBar class="col-2" v-if="position != 'user'"></SideBar>
+          <span class="mr-2" v-if="position != 'user'"></span>
+          <router-view class="col"></router-view>
         </div>
+        <Footer></Footer>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 <style scoped>

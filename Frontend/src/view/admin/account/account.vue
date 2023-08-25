@@ -17,7 +17,7 @@ export default {
       await checkAccessToken(router);
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
-      }, 1 * 60 * 1000); // 60000 milliseconds = 1 minutes
+      }, 30 * 60 * 1001); // 60000 milliseconds = 1 minutes
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy

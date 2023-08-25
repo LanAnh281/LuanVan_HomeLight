@@ -76,11 +76,11 @@
 .btn-login:hover{
     color: var(--beige)
 }
-/*.custom-popup-class {
+.custom-popup-class {
     width: 400px; 
     max-width: 80%; 
-    background-color: rgba(207, 189, 189, 0.5);
-}*/
+    background-color: rgba(207, 189, 189, 1);
+}
 .swal2-html-container{
     overflow: hidden !important;
 }

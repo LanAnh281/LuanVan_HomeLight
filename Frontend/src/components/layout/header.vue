@@ -3,8 +3,10 @@ import { reactive, onMounted, ref } from "vue";
 import axios from "axios";
 //component
 import Select from "../../components/select/selectdependent.vue";
+//
+import registration from "../../components/form/registration.form.vue";
 export default {
-  components: { Select },
+  components: { Select, registration },
   setup() {
     const data = reactive({
       items: {},
@@ -82,7 +84,7 @@ export default {
       style="height: 100%"
     >
       <div class="col-1 mr-0">
-        <img src="../../assets/image/logo.PNG" style="width: 75%" />
+        <img src="../../assets/image/logo.png" style="width: 75%" />
       </div>
       <div class="col">
         <div class="d-flex flex-column">
@@ -93,7 +95,14 @@ export default {
               <div class="col-2">Liên hệ</div>
             </div>
             <div class="col-4 row justify-content-end menu">
-              <div class="col-3">Đăng ký</div>
+              <div
+                class="col-3"
+                data-toggle="modal"
+                data-target="#registrationModal"
+              >
+                Đăng ký
+              </div>
+
               <div class="col-4">Đăng nhập</div>
             </div>
           </div>
@@ -131,6 +140,7 @@ export default {
         </div>
       </div>
     </div>
+    <registration></registration>
   </div>
 </template>
 <style scoped>

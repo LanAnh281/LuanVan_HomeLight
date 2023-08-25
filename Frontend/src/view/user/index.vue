@@ -14,10 +14,10 @@ export default {
     });
     let intervalId = null;
     onMounted(async () => {
-      await checkAccessToken(router);
+      checkAccessToken(router);
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
-      }, 1 * 60 * 1000); // 60000 milliseconds = 1 minutes
+      }, 30 * 60 * 1001); // 60000 milliseconds = 1 minutes
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
@@ -32,10 +32,12 @@ export default {
     <p>Hello User</p>
     <router-link :to="{ name: 'Login' }">Login </router-link>
     <router-link :to="{ name: 'Account' }">Account </router-link>
+    <!-- <img src="../../assets/image/background.jpg" style="height: 1000px" />
+    <img src="../../assets/image/background.jpg" alt="" /> -->
   </div>
 </template>
 <style scoped>
 .body {
-  height: calc(100vh - var(--footer));
+  height: calc(100vh - var(--header)- var(--footer));
 }
 </style>

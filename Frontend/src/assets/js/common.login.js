@@ -5,10 +5,9 @@ import moment from "moment-timezone";
 import loginService from "../../service/login.service";
 
 export const setLocalStrorage = (token, position, expiresIn) => {
-  const expiresInMinutes = moment();
   localStorage.setItem("accessToken", token);
   localStorage.setItem("position", position);
-  localStorage.setItem("expiresIn", expiresInMinutes.add(expiresIn, "minutes"));
+  localStorage.setItem("expiresIn", expiresIn);
 };
 export const cleanLocalStorage = () => {
   localStorage.removeItem("accessToken");
