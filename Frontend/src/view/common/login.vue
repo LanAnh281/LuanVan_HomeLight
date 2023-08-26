@@ -21,8 +21,6 @@ export default {
 
     const login = async () => {
       const document = await Login.login(data.item);
-      // const expiresIn = moment();
-      console.log(`document:`, document);
       if (document.status == "success") {
         setLocalStrorage(
           document["token"],

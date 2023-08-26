@@ -84,3 +84,7 @@
 .swal2-html-container{
     overflow: hidden !important;
 }
+.invalid-error{
+    color:#dc3545;
+    font-size: 14px;
+}

@@ -31,7 +31,7 @@ const createApiInstance = (baseURL) => {
   apiInstance.interceptors.request.use(
     (config) => {
       // Thêm header Authorization vào mỗi request
-      console.log("in");
+      // console.log("in");
       config.headers.Authorization =
         // "Bearer " + localStorage.getItem("accessToken");
         config.headers.Authorization = localStorage.getItem("accessToken");
@@ -47,7 +47,7 @@ const createApiInstance = (baseURL) => {
   apiInstance.interceptors.response.use(
     (response) => {
       // Kiểm tra và xử lý response tại đây
-      console.log("res", response);
+      // console.log("res", response);
       return response;
     },
     (error) => {
