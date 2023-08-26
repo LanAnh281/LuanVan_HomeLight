@@ -36,8 +36,9 @@ exports.login = async (req, res, next) => {
         password: password,
       },
     });
+    console.log("1");
     if (!document) {
-      res.json({ message: "fail", status: "fail" });
+      return res.json({ message: "fail", status: "fail" });
     }
     if (document["isActive"]) {
       const position = await Positions.findOne({
@@ -61,7 +62,6 @@ exports.login = async (req, res, next) => {
         httpOnly: true,
         secure: true,
       });
-      console.log("ĐN LẠI");
       //jwt
       const expiresInMinutes = 30; // Thời gian tồn tại của JWT (vd: 1 phút)
       const expiryTime = moment().add(expiresInMinutes, "minutes");
