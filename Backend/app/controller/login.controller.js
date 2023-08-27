@@ -36,7 +36,6 @@ exports.login = async (req, res, next) => {
         password: password,
       },
     });
-    console.log("1");
     if (!document) {
       return res.json({ message: "fail", status: "fail" });
     }
@@ -87,17 +86,17 @@ exports.login = async (req, res, next) => {
 };
 exports.refreshAccessToken = async (req, res, next) => {
   const refreshToken = req.cookies["refreshToken"];
-
+  console.log(">>> refreshToken:", refreshToken);
   try {
     const document = await Accounts.findOne({
       where: {
         refreshToken: refreshToken,
       },
     });
-
+    console.log(">>>>doc:", document);
     let currentTime = moment();
     if (!document) {
-      res.json({ message: "fail", status: "fail" });
+      return res.json({ message: "fail", status: "fail" });
     }
 
     if (
