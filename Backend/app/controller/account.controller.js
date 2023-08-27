@@ -15,6 +15,8 @@ const getDecrypt = (name) => {
     let decrypted = decipher.update(name, "hex", "utf8");
     decrypted += decipher.final("utf8");
     return decrypted;
+  } else {
+    console.log(">>>E");
   }
 };
 
@@ -59,29 +61,44 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  let { userName, password, userId, positionId, isActive } = req.body;
-  console.log("Update account", req.body);
-  password = setEncrypt(password);
-
+  console.log(">>req.data:", req._id);
+  let { userName, passwordOld, password, userId, positionId, isActive } =
+    req.body;
+  // password = setEncrypt(password);
+  console.log(">>>body:", req.body);
   try {
-    const document = await Accounts.update(
-      {
-        userName: userName,
-        password: password,
-        isActive: isActive,
-        userId: userId,
-        positionId: positionId,
-      },
-      {
-        where: {
-          _id: req.params.id,
-        },
-      }
+    const account = await Accounts.findOne({ where: { _id: req._id } });
+    console.log(
+      ">>> account:",
+      account,
+      getDecrypt(account["password"]),
+      "??",
+      passwordOld,
+      getDecrypt(account["password"]) === passwordOld
     );
-    res.json({ message: document, status: "success" });
+    if (account && getDecrypt(account["password"]) === passwordOld) {
+      password = setEncrypt(password);
+      const document = await Accounts.update(
+        {
+          userName: userName,
+          password: password,
+          isActive: isActive,
+          userId: userId,
+          positionId: positionId,
+        },
+        {
+          where: {
+            _id: req._id,
+          },
+        }
+      );
+      res.json({ message: document, status: "success" });
+    } else {
+      res.json({ message: "fail", status: "fail" });
+    }
   } catch (error) {
     console.log(error);
-    res.json({ message: error, status: "faild" });
+    res.status(500).json({ message: error, status: "faild" });
   }
 };
 exports.delete = async (req, res, next) => {

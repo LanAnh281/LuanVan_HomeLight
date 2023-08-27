@@ -65,7 +65,7 @@ exports.login = async (req, res, next) => {
       const expiresInMinutes = 30; // Thời gian tồn tại của JWT (vd: 1 phút)
       const expiryTime = moment().add(expiresInMinutes, "minutes");
       jwt.sign(
-        { userId: document["_id"], position: position, exp: expiryTime.unix() },
+        { _id: document["_id"], position: position, exp: expiryTime.unix() },
         secret,
         function (err, data) {
           return res.send({
@@ -109,7 +109,7 @@ exports.refreshAccessToken = async (req, res, next) => {
       const expiresInMinutes = 30; // Thời gian tồn tại của JWT (vd: 1 phút)
       const expiryTime = moment().add(expiresInMinutes, "minutes");
       jwt.sign(
-        { userId: document["_id"], position: position, exp: expiryTime.unix() },
+        { _id: document["_id"], position: position, exp: expiryTime.unix() },
         secret,
         function (err, data) {
           return res.json({

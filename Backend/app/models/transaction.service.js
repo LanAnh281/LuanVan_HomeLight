@@ -1,5 +1,5 @@
 const { sequelize } = require("../config/index");
-const { Users, Accounts } = require("../models/index.model");
+const { Users, Accounts, Positions } = require("../models/index.model");
 
 const crypto = require("crypto");
 const encryptionKey = "12345678912345678901234567890121";
@@ -24,14 +24,15 @@ exports.createUserAndAccount = async (userData) => {
     console.log(">>>userData:", userData);
     const newUser = await Users.create(userData, { transaction });
 
+    const position = await Positions.findOne({ where: { name: "admin" } });
     let password = setEncrypt(userData.password);
     let accountData = {
       userName: newUser.email,
       password: password,
       isActive: 1,
       userId: newUser._id,
-      //   positionId: userData.positionId,
-      positionId: "40c233ed-f002-4b03-809c-9cd43a8391cf",
+      positionId: position._id,
+      // positionId: "40c233ed-f002-4b03-809c-9cd43a8391cf",
     };
     const newAccount = await Accounts.create(accountData, { transaction });
 
