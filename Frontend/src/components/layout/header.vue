@@ -127,14 +127,14 @@ export default {
               <Select
                 :title="`Chọn thành phố`"
                 :data="data.items.data"
-                @changeCity="(value) => change(value)"
+                @choose="(value) => change(value)"
               ></Select>
             </div>
             <div class="input-group col-2">
               <Select
                 :title="`Chọn quận huyện`"
                 :data="data.district.data.districts"
-                @changeCity="(value) => changeDistrict(value)"
+                @choose="(value) => changeDistrict(value)"
               ></Select>
             </div>
 
@@ -142,14 +142,14 @@ export default {
               <Select
                 :title="`Chọn phường xã`"
                 :data="data.ward.data.wards"
-                @changeCity="(value) => changeWard(value)"
+                @choose="(value) => changeWard(value)"
               ></Select>
             </div>
             <div class="input-group col-2">
               <Select
                 :title="`Chọn giá thuê`"
                 :data="data.ward.data.wards"
-                @changeCity="(value) => changeWard(value)"
+                @choose="(value) => changeWard(value)"
               ></Select>
             </div>
           </div>

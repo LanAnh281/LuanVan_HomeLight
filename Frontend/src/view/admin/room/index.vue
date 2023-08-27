@@ -4,6 +4,9 @@ import { useRoute, useRouter } from "vue-router";
 //service
 import loginService from "../../../service/login.service";
 //asset/js
+
+//components
+import select from "../../../components/select/selectdependent.vue";
 import {
   getCookieValue,
   checkCookieExistence,
@@ -22,19 +25,23 @@ export default {
       },
     });
 
-    onMounted(async () => {
-      // if (!checkCookieExistence("token")) {
-      //   const document = await loginService.accessToken();
-      //   setCookie("token", document.token, 1); //1 day
-      //   setCookie("position", document.position, 1);
-      //   token.value = getCookieValue("token");
-      // }
-    });
+    onMounted(async () => {});
     return { token, data };
   },
 };
 </script>
 <template>
-  <div class="body">room</div>
+  <div class="body m-0">
+    <div class="border-radius my-3">Room</div>
+    <div class="border-radius my-3"></div>
+  </div>
 </template>
-<style scope></style>
+<style scope>
+.body {
+  height: calc(100vh - var(--footer));
+}
+.border-radius {
+  border: 1px solid #eae6e6;
+  border-radius: 5px;
+}
+</style>

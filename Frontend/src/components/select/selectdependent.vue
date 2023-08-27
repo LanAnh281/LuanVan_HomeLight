@@ -8,7 +8,7 @@ export default {
   },
   setup(props, { emit }) {
     const change = (e) => {
-      emit("changeCity", e.target.value);
+      emit("choose", e.target.value);
     };
     return {
       change,

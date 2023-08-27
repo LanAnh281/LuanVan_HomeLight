@@ -15,6 +15,7 @@
     --chocolate:#d2691e;
     --beige:#f2f2d3;
     --backgound:#f0f0f0;
+    --gray-dark:#171717;
     --header:12vh;
     --footer:10vh;
     --navbar:10vh;
@@ -58,7 +59,7 @@
 }
 .footer{
     height: var(--footer);
-    background-color: var(--black);
+    background-color: var(--gray-dark);
     padding-left:16px ;
     text-align: center;
     display: grid;

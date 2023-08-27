@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 //js
 import { success, warning } from "../../assets/js/common.alert";
 //service
+import accountService from "../../service/account.service";
 export default {
   components: {},
   setup() {
@@ -11,16 +12,25 @@ export default {
     const route = useRoute();
     const data = reactive({
       item: { passwordOld: "", password: "", confirmPassword: "" },
+      error: { passwordOld: "", password: "", confirmPassword: "" },
+      flag: false,
     });
+    const refreshData = () => {
+      data.item = { passwordOld: "", password: "", confirmPassword: "" };
+    };
     const changePassword = async () => {
       try {
-        const document = await abc;
-
-        if (document.status === "success") {
-          success("Thành công", "Khôi phục mật khẩu thành công");
-          router.push({ name: "Login" });
-        } else {
-          warning("Thất bại", "Khôi  phục mật khẩu thất bại");
+        if (!data.flag) {
+          const document = await accountService.update(data.item);
+          if (document.status === "success") {
+            success("Thành công", "Thay đổi mật khẩu thành công");
+            refreshData();
+          } else {
+            warning(
+              "Thất bại",
+              "Thay đổi mật khẩu thất bại. Bạn hãy kiểm tra lại mật khẩu cũ đã đúng chưa."
+            );
+          }
         }
       } catch (error) {
         console.error(">>>er:", error);
@@ -86,8 +96,25 @@ export default {
                 type="password"
                 class="form-control"
                 id="inputConfirmPassword"
+                required
+                @blur="
+                  () => {
+                    if (data.item.password !== data.item.confirmPassword) {
+                      data.flag = true;
+                      data.error.confirmPassword =
+                        'mật khẩu nhấc lại chưa đúng';
+                    }
+                  }
+                "
+                @input="
+                  data.flag = false;
+                  data.error.confirmPassword = '';
+                "
                 v-model="data.item.confirmPassword"
               />
+              <div v-if="data.error.confirmPassword" class="invalid-error">
+                {{ data.error.confirmPassword }}
+              </div>
             </div>
           </div>
           <div

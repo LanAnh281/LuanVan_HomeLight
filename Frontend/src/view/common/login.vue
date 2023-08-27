@@ -27,13 +27,14 @@ export default {
           document["position"],
           document["expiresIn"]
         );
-        if (document.position == "admin") {
+        if (
+          document.position == "admin" ||
+          document.position == "super-admin"
+        ) {
           router.push({
             name: "Account",
-            query: { pos: document["position"] },
           });
-        } else
-          router.push({ name: "User", query: { pos: document["position"] } });
+        } else router.push({ name: "User" });
       } else {
         warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
       }
@@ -61,7 +62,12 @@ export default {
               style="width: 100%; height: 100%"
             />
           </router-link>
-          <h4 class="text-center mt-3 ml-3 col-12">Đăng nhập</h4>
+          <h4
+            class="text-center mt-3 ml-3 col-12"
+            style="color: var(--chocolate)"
+          >
+            Đăng nhập
+          </h4>
         </div>
         <form @submit.prevent="login" class="container mt-3">
           <div class="form-group row">
@@ -99,11 +105,16 @@ export default {
             </button>
           </div>
         </form>
-        <div class="col-12 text-center mt-1" @click="forgotPassword">
+        <div class="col-12 text-center forgot" @click="forgotPassword">
           Quên mật khẩu
         </div>
       </div>
     </div>
   </div>
 </template>
-<style></style>
+<style scoped>
+.forgot:hover {
+  color: var(--chocolate);
+  text-shadow: 0 0 2px rgba(245, 234, 111, 0.8);
+}
+</style>

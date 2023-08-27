@@ -38,6 +38,8 @@ export default {
         // Xử lý khi chuyển trang xảy ra
         console.log("Đã chuyển từ:", oldPath);
         console.log("Đã chuyển đến:", newPath);
+        position.value = localStorage.getItem("position");
+        console.log("pos", position.value);
         // Thực hiện các hành động khác khi chuyển trang xảy ra
       }
     );
@@ -58,15 +60,18 @@ export default {
     </div>
 
     <div v-if="isLoginPath == false">
-      <Header v-if="position == 'user'"></Header>
+      <Header v-if="position == 'user' || position == null"></Header>
       <!-- <NavBar></NavBar> -->
       <div class="fluid-container">
         <div
           class="row m-0 p-0"
           :class="[position != 'user' ? 'isHeader' : '']"
         >
-          <SideBar class="col-2" v-if="position != 'user'"></SideBar>
-          <span class="mr-2" v-if="position != 'user'"></span>
+          <SideBar
+            class="col-2"
+            v-if="position != 'user' && position != null"
+          ></SideBar>
+          <!-- <span class="mr-2" v-if="position != 'user'"></span> -->
           <router-view class="col"></router-view>
         </div>
         <Footer></Footer>

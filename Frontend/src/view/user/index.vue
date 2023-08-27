@@ -14,13 +14,13 @@ export default {
     });
     let intervalId = null;
     onMounted(async () => {
-      checkAccessToken(router);
-      intervalId = setInterval(async () => {
-        await checkAccessToken(router);
-      }, 30 * 60 * 1001); // 60000 milliseconds = 1 minutes
+      // checkAccessToken(router);
+      // intervalId = setInterval(async () => {
+      //   await checkAccessToken(router);
+      // }, 30 * 60 * 1001); // 60000 milliseconds = 1 minutes
     });
     onBeforeUnmount(() => {
-      clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
+      // clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
 
     return { data };
