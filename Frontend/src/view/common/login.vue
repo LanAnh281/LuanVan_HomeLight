@@ -28,8 +28,12 @@ export default {
           document["expiresIn"]
         );
         if (document.position == "admin") {
-          router.push({ name: "Account" });
-        } else router.push({ name: "User" });
+          router.push({
+            name: "Account",
+            query: { pos: document["position"] },
+          });
+        } else
+          router.push({ name: "User", query: { pos: document["position"] } });
       } else {
         warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
       }

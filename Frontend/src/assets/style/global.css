@@ -2,6 +2,7 @@
     --white: #fff;
     --black: #000;
     --black-light:#222121;
+    --black-light-sidebar:#333333;
     --light: #f6f6f6;
     --blue:#0000FF;
     --blue-light: #647eff;
@@ -10,6 +11,7 @@
     --red: #ea5455;
     --orange: #ff9f43;
     --yellow: #ffc107; 
+    --yellow-light:#fffcf1;
     --chocolate:#d2691e;
     --beige:#f2f2d3;
     --backgound:#f0f0f0;
@@ -51,7 +53,7 @@
     display: inline-block;
 }
 .sidebar{
-    background-color: var(--red);
+    background-color: var(--black-light-sidebar);
     display: inline-block;
 }
 .footer{

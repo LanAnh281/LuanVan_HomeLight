@@ -16,12 +16,22 @@ const routes = [
     name: "ResetPassword",
     component: () => import("../view/common/resetPassword.vue"),
   },
-
+  {
+    path: "/changePassword",
+    name: "Password",
+    component: () => import("../view/common/changePassword.vue"),
+  },
   //Admin
   {
     path: "/admin/account",
     name: "Account",
     component: () => import("../view/admin/account/account.vue"),
+  },
+  //dashboard
+  {
+    path: "/admin/dashboard",
+    name: "Dashboard",
+    component: () => import("../view/admin/dashboard/index.vue"),
   },
   {
     path: "/admin/room",

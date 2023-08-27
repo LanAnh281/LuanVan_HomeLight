@@ -15,6 +15,7 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const position = ref("");
     const isLoginPath = ref(false);
     onMounted(() => {
@@ -44,6 +45,7 @@ export default {
     return {
       isLoginPath,
       position,
+      route,
     };
   },
 };
@@ -75,9 +77,5 @@ export default {
 <style scoped>
 .isHeader {
   height: calc(100vh - var(--footer));
-}
-.hidden-transition {
-  opacity: 0;
-  transition: opacity 0.5s;
 }
 </style>
