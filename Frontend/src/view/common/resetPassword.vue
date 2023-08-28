@@ -21,7 +21,7 @@ export default {
         );
         if (document.status === "success") {
           success("Thành công", "Khôi phục mật khẩu thành công");
-          router.push({ name: "Login" });
+          router.push({ name: "login" });
         } else {
           warning("Thất bại", "Khôi  phục mật khẩu thất bại");
         }
@@ -40,12 +40,12 @@ export default {
     <div class="row justify-content-around align-items-center vh-100">
       <div class="card shadow col-4">
         <div class="row justify-content-center">
-          <router-link :to="{ name: 'User' }" class="col-3">
+          <!-- <router-link :to="{ name: 'user' }" class="col-3">
             <img
               src="../../assets/image/logo.PNG"
               style="width: 100%; height: 100%"
             />
-          </router-link>
+          </router-link> -->
           <h4 class="text-center mt-3 ml-3 col-12">Khôi phục mật khẩu</h4>
         </div>
         <form @submit.prevent="resetPassword" class="container mt-3">

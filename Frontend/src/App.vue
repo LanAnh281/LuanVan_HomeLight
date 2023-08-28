@@ -72,7 +72,7 @@ export default {
             v-if="position != 'user' && position != null"
           ></SideBar>
           <!-- <span class="mr-2" v-if="position != 'user'"></span> -->
-          <router-view class="col"></router-view>
+          <router-view class="col-10"></router-view>
         </div>
         <Footer></Footer>
       </div>

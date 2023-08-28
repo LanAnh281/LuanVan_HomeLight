@@ -51,22 +51,33 @@
 
 .body{
     min-height: calc( 100vh - var(--header) - var(--footer) );
+    right: calc(  83.333% - 100% );
     background-color: var(--light);
     display: inline-block;
+    overflow-y: auto;
+    flex: 1;
 }
 
 
 .sidebar{
     background-color: var(--black-light-sidebar);
     display: inline-block;
+    position: fixed; 
+    width: 20%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 1;
 }
 .footer{
     display: grid;
+    position: relative;
     place-items: center;
     height: var(--footer);
     background-color: var(--gray-dark);
     padding-left:16px ;
-   
+    z-index: 2;
 }
 
 .login{
@@ -93,4 +104,7 @@
 .invalid-error{
     color:#dc3545;
     font-size: 14px;
+}
+.title{
+    color:var(--chocolate)
 }

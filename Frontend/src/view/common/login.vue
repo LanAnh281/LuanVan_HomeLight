@@ -41,8 +41,8 @@ export default {
             );
             const allowedPositions = ["admin", "super-admin"];
             const routeName = allowedPositions.includes(document["position"])
-              ? "Account"
-              : "User";
+              ? "account"
+              : "user";
             router.push({ name: routeName });
           } else {
             warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
@@ -53,7 +53,7 @@ export default {
       }
     };
     const forgotPassword = async () => {
-      router.push({ name: "ForgotPassword" });
+      router.push({ name: "forgotPassword" });
     };
     return {
       login,
@@ -70,7 +70,7 @@ export default {
     <div class="row justify-content-around align-items-center vh-100">
       <div class="card shadow col-4">
         <div class="row justify-content-center">
-          <router-link :to="{ name: 'User' }" class="col-3">
+          <router-link :to="{ name: 'user' }" class="col-3">
             <img
               src="../../assets/image/logo.png"
               style="width: 100%; height: 100%"

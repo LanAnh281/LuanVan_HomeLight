@@ -1,7 +1,7 @@
 <template>
-  <div class="body m-0">Dashboard</div>
+  <div class="body m-0">electric</div>
 </template>
-<style scoped>
+<style>
 .body {
   min-height: calc(100vh - var(--footer));
 }

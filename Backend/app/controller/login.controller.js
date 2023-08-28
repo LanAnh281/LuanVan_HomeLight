@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
       const refreshToken = uuid.v4(); // string unique
       let refreshTokenExprityTime = moment();
 
-      refreshTokenExprityTime = refreshTokenExprityTime.add(2, "hours"); // add 2 hours
+      refreshTokenExprityTime = refreshTokenExprityTime.add(24, "hours"); // add 2 hours
 
       const updated = await Accounts.update(
         {
@@ -62,8 +62,8 @@ exports.login = async (req, res, next) => {
         secure: true,
       });
       //jwt
-      const expiresInMinutes = 30; // Thời gian tồn tại của JWT (vd: 1 phút)
-      const expiryTime = moment().add(expiresInMinutes, "minutes");
+      const expiresInMinutes = 3; // Thời gian tồn tại của JWT (vd: 1 phút)
+      const expiryTime = moment().add(expiresInMinutes, "hours");
       jwt.sign(
         { _id: document["_id"], position: position, exp: expiryTime.unix() },
         secret,
@@ -107,7 +107,7 @@ exports.refreshAccessToken = async (req, res, next) => {
         where: { _id: document["positionId"] },
       });
       const expiresInMinutes = 30; // Thời gian tồn tại của JWT (vd: 1 phút)
-      const expiryTime = moment().add(expiresInMinutes, "minutes");
+      const expiryTime = moment().add(expiresInMinutes, "hours");
       jwt.sign(
         { _id: document["_id"], position: position, exp: expiryTime.unix() },
         secret,

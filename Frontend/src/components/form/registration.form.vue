@@ -134,7 +134,7 @@ export default {
     ];
 
     const save = async () => {
-      if (data.flag) {
+      if (!data.flag) {
         const formData = new FormData();
         _.forEach(formFields, (field) => {
           formData.append(field, data.item[field]);
@@ -263,13 +263,13 @@ export default {
                         let isCheck = checkString(data.item.userName);
                         if (isCheck) {
                           data.error.userName = 'Họ tên phải là ký tự';
-                          data.flag = false;
+                          data.flag = true;
                         }
                       }
                     "
                     @input="
                       data.error.userName = '';
-                      data.flag = true;
+                      data.flag = false;
                     "
                     v-model="data.item.userName"
                   />
@@ -297,13 +297,13 @@ export default {
                         );
                         if (isCheck) {
                           data.error.identification = 'CCCD gồm 12 số';
-                          data.flag = false;
+                          data.flag = true;
                         }
                       }
                     "
                     @input="
                       data.error.identification = '';
-                      data.flag = true;
+                      data.flag = false;
                     "
                     v-model="data.item.identification"
                   />
@@ -326,13 +326,13 @@ export default {
                       () => {
                         if (data.uploadFiles.length != 2) {
                           data.error.image = 'Ảnh cccd trước và sau';
-                          data.flag = false;
+                          data.flag = true;
                         }
                       }
                     "
                     @input="
                       data.error.image = '';
-                      data.flag = true;
+                      data.flag = false;
                     "
                     ref="files"
                     multiple
@@ -361,13 +361,13 @@ export default {
                         let isCheck = checkMail(data.item.email);
                         if (isCheck) {
                           data.error.email = 'Chưa đúng định dạng email';
-                          data.flag = false;
+                          data.flag = true;
                         }
                       }
                     "
                     @input="
                       data.error.email = '';
-                      data.flag = true;
+                      data.flag = false;
                     "
                     v-model="data.item.email"
                   />
@@ -391,13 +391,13 @@ export default {
                         let isCheck = checkPhone(data.item.phone);
                         if (isCheck) {
                           data.error.phone = 'SĐT gồm 10 số';
-                          data.flag = false;
+                          data.flag = true;
                         }
                       }
                     "
                     @input="
                       data.error.phone = '';
-                      data.flag = true;
+                      data.flag = false;
                     "
                     v-model="data.item.phone"
                   />
@@ -420,13 +420,13 @@ export default {
                         if (isCheck) {
                           data.error.address =
                             'Địa chỉ không chứa các kí tự đặc biệt';
-                          data.flag = false;
+                          data.flag = true;
                         }
                       }
                     "
                     @input="
                       data.error.address = '';
-                      data.flag = true;
+                      data.flag = false;
                     "
                     v-model="data.item.address"
                   ></textarea>
@@ -448,6 +448,7 @@ export default {
     </div>
   </div>
 </template>
+
 <style scoped>
 .dangerous {
   color: red;

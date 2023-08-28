@@ -43,14 +43,14 @@ export default {
 };
 </script>
 <template>
-  <div class="body container-fluid">
+  <div class="body m-0 container-fluid">
     <div
       class="row justify-content-around align-items-center"
       style="height: calc(100vh - var(--footer))"
     >
       <div class="card shadow col-5">
         <div class="row justify-content-center">
-          <router-link :to="{ name: 'User' }" class="col-3">
+          <router-link :to="{ name: 'user' }" class="col-3">
             <img
               src="../../assets/image/logo.PNG"
               style="width: 100%; height: 100%"
@@ -132,6 +132,6 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: calc(100vh - var(--footer));
+  min-height: calc(100vh - var(--footer));
 }
 </style>

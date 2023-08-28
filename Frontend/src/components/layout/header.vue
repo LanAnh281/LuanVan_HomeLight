@@ -23,7 +23,7 @@ export default {
       localStorage.removeItem("expiresIn");
       localStorage.removeItem("position");
       const document = await loginService.clearRefreshToken();
-      router.push({ name: "Login" });
+      router.push({ name: "login" });
     };
     onMounted(async () => {
       position.value = localStorage.getItem("position");
@@ -117,7 +117,7 @@ export default {
               </div>
 
               <div class="col-4" v-if="!position">
-                <router-link :to="{ name: 'Login' }">Đăng nhập </router-link>
+                <router-link :to="{ name: 'login' }">Đăng nhập </router-link>
               </div>
               <div class="col-4" v-if="position" @click="logout">Đăng xuất</div>
             </div>

@@ -22,7 +22,7 @@ export const checkAccessToken = async (router) => {
     console.log("refreshToken hết hạn");
     cleanLocalStorage();
     await loginService.clearRefreshToken();
-    router.push({ name: "Login" });
+    router.push({ name: "login" });
   } else {
     console.log("refresh token còn hạn");
     setLocalStrorage(

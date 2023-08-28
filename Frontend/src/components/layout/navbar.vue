@@ -20,7 +20,7 @@ export default {
       // clearCookieValue();
       //clear refresh token saved in backend
       const document = await loginService.clearToken();
-      router.push({ name: "Login" });
+      router.push({ name: "login" });
     };
     return {
       signOut,

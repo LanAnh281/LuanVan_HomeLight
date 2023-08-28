@@ -10,32 +10,41 @@ export default {
     const route = useRoute();
     const data = reactive({
       item: [
-        { name: "Thống kê", icon: "bar_chart_4_bars", active: "Dashboard" },
-        { name: "Phòng", icon: "holiday_village", active: "Room" },
+        { name: "Thống kê", icon: "bar_chart_4_bars", active: "dashboard" },
+        { name: "Phòng", icon: "holiday_village", active: "room" },
+        { name: "Chỉ số điện", icon: "offline_bolt", active: "electric" },
+        { name: "Chỉ số nước", icon: "water_drop", active: "water" },
         {
           name: "Dịch vụ",
           icon: "energy_program_time_used",
           active: "service",
         },
-        { name: "Chỉ số điện", icon: "offline_bolt", active: "Electric" },
-        { name: "Chỉ số nước", icon: "water_drop", active: "Water" },
-
-        { name: "Đổi mật khẩu", icon: "key", active: "Password" },
-        { name: "Đăng xuất", icon: "power_settings_new", active: "Logout" },
+        {
+          name: "Báo cáo",
+          icon: "text_snippet",
+          active: "report",
+        },
+        { name: "Đổi mật khẩu", icon: "key", active: "changepassword" },
+        { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
       ],
-      active: "",
+      active: "dashboard",
     });
     const logout = async () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("expiresIn");
       localStorage.removeItem("position");
       const document = await loginService.clearRefreshToken();
-      router.push({ name: "Login" });
+      router.push({ name: "login" });
     };
+    watch(
+      () => route.fullPath,
+      (newPath, oldPath) => {
+        data.active = newPath.substring(newPath.lastIndexOf("/") + 1);
+        console.log("Path:", data.active);
+      }
+    );
 
-    onMounted(() => {
-      data.active = "Dashboard";
-    });
+    onMounted(() => {});
     return { data, router, logout };
   },
 };
@@ -52,7 +61,12 @@ export default {
         class="col-4 mx-3"
       />
       <div class="col row mt-3">
-        <p class="col-12" style="color: var(--beige)">Xin chào</p>
+        <p
+          class="col-12"
+          style="color: var(--beige); text-shadow: 0 0 5px #ffff"
+        >
+          Xin chào
+        </p>
         <p class="col-12">Home light</p>
       </div>
     </div>
@@ -67,7 +81,7 @@ export default {
           :class="data.active == value.active ? 'isActive' : ''"
           @click="
             () => {
-              if (value.active === 'Logout') {
+              if (value.active === 'logout') {
                 logout();
                 return;
               }

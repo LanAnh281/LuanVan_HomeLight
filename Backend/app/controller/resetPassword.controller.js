@@ -15,9 +15,9 @@ exports.create = async (req, res, next) => {
   const { email } = req.body;
   const resetPasswordExprityTime = moment().add(3, "minutes");
   try {
-    const user = await Users.findOne({
+    const user = await Accounts.findOne({
       where: {
-        email: email,
+        userName: email,
       },
     });
     if (user) {

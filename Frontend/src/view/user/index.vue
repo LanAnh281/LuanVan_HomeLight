@@ -33,7 +33,7 @@ export default {
         checkAccessToken(router);
         intervalId = setInterval(async () => {
           await checkAccessToken(router);
-        }, 30 * 60 * 1001); // 60000 milliseconds = 1 minutes
+        }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
       }
     });
     onBeforeUnmount(() => {

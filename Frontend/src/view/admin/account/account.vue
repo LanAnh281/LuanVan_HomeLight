@@ -17,7 +17,7 @@ export default {
       await checkAccessToken(router);
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
-      }, 30 * 60 * 1001); // 60000 milliseconds = 1 minutes
+      }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
@@ -30,11 +30,6 @@ export default {
 <template>
   <div class="body">
     <p>Account</p>
-    <router-link :to="{ name: 'Login' }">Login </router-link>
-    <router-link :to="{ name: 'User' }">User </router-link>
-    <router-link :to="{ name: 'User.registration' }"
-      >User.registration
-    </router-link>
   </div>
 </template>
 <style scoped>
