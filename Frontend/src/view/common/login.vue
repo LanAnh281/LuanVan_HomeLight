@@ -1,7 +1,8 @@
 <script>
 import { reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
+//js
+import { checkMail, sanitizeInput } from "../../assets/js/checkInput.common";
 //alert
 import { warning } from "../../assets/js/common.alert";
 import { setLocalStrorage } from "../../assets/js/common.login";
@@ -11,42 +12,55 @@ import Login from "../../service/login.service";
 export default {
   components: {},
   setup() {
+    const router = useRouter();
     const data = reactive({
       item: {
         userName: "",
         password: "",
       },
+      error: {
+        userName: "",
+        password: "",
+      },
+      flag: true,
     });
-    const router = useRouter();
-
     const login = async () => {
-      const document = await Login.login(data.item);
-      if (document.status == "success") {
-        setLocalStrorage(
-          document["token"],
-          document["position"],
-          document["expiresIn"]
-        );
-        if (
-          document.position == "admin" ||
-          document.position == "super-admin"
-        ) {
-          router.push({
-            name: "Account",
-          });
-        } else router.push({ name: "User" });
-      } else {
-        warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
+      if (data.flag) {
+        data.error.userName = "Sai định dạng email";
+        data.error.password = "Bạn chưa nhập mật khẩu";
+        return;
+      }
+      if (!data.flag) {
+        try {
+          const document = await Login.login(data.item);
+          if (document.status == "success") {
+            setLocalStrorage(
+              document["token"],
+              document["position"],
+              document["expiresIn"]
+            );
+            const allowedPositions = ["admin", "super-admin"];
+            const routeName = allowedPositions.includes(document["position"])
+              ? "Account"
+              : "User";
+            router.push({ name: routeName });
+          } else {
+            warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
+          }
+        } catch (error) {
+          console.error("Error in login");
+        }
       }
     };
     const forgotPassword = async () => {
-      console.log("Quên mật khẩu");
       router.push({ name: "ForgotPassword" });
     };
     return {
       login,
       data,
       forgotPassword,
+      checkMail,
+      sanitizeInput,
     };
   },
 };
@@ -79,8 +93,25 @@ export default {
                 type="text"
                 class="form-control"
                 id="inputUserName"
+                autocomplete="username"
+                @blur="
+                  () => {
+                    let isCheck = checkMail(data.item.userName);
+                    if (isCheck) {
+                      data.error.userName = 'Sai định dạng email';
+                      data.flag = true;
+                    }
+                  }
+                "
+                @input="
+                  data.error.userName = '';
+                  data.flag = false;
+                "
                 v-model="data.item.userName"
               />
+              <div v-if="data.error.userName" class="invalid-error">
+                {{ data.error.userName }}
+              </div>
             </div>
           </div>
           <div class="form-group row">
@@ -92,8 +123,17 @@ export default {
                 type="password"
                 class="form-control"
                 id="inputPassword"
+                autocomplete="current-password"
+                @blur="data.item.password = sanitizeInput(data.item.password)"
+                @input="
+                  data.error.password = '';
+                  data.flag = false;
+                "
                 v-model="data.item.password"
               />
+              <div v-if="data.error.password" class="invalid-error">
+                {{ data.error.password }}
+              </div>
             </div>
           </div>
           <div

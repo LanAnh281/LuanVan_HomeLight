@@ -81,6 +81,6 @@ export default {
 </template>
 <style scoped>
 .isHeader {
-  height: calc(100vh - var(--footer));
+  height: calc(100vh - - var(--header) - var(--footer));
 }
 </style>
