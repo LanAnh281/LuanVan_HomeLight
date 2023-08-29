@@ -24,7 +24,7 @@ export default {
           icon: "text_snippet",
           active: "report",
         },
-        { name: "Đổi mật khẩu", icon: "key", active: "changepassword" },
+        { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },
         { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
       ],
       active: "dashboard",
@@ -122,10 +122,10 @@ li div > * {
 
 li:hover > div > * {
   color: var(--yellow-light);
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
 .isActive {
   color: var(--yellow-light);
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
 </style>

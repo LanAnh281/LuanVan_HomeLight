@@ -8,9 +8,9 @@ class userService {
   async getAll() {
     return (await this.api.get("/")).data;
   }
-  async upload(data) {
-    return (await this.api.post("/multiple", data)).data;
-  }
+  // async upload(data) {
+  //   return (await this.api.post("/multiple", data)).data;
+  // }
 }
 
 export default new userService();

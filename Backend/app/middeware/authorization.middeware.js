@@ -10,10 +10,11 @@ exports.authorization = (req, res, next) => {
         return res.status(401).send({ message: "Invalid token" });
       }
       // JWT hợp lệ, "decoded" chứa thông tin giải mã từ payload của JWT
-      const _id = decoded._id;
-      const position = decoded.position;
-      req._id = _id;
-      req.position = position;
+      // const _id = decoded._id;
+      // const position = decoded.position;
+      req._id = decoded._id;
+      req.position = decoded.position;
+      req.userId = decoded.userId;
       next();
     });
   } catch (error) {

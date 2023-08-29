@@ -1,5 +1,7 @@
 <script>
 import { reactive, ref, onMounted } from "vue";
+//service
+import boardinghouseService from "../../service/boardinghouse.service";
 //js
 import {
   checkIdentification,
@@ -8,6 +10,7 @@ import {
   checkPhone,
   checkMail,
 } from "../../assets/js/checkInput.common";
+import { successAd } from "../../assets/js/common.alert";
 export default {
   components: {},
   setup(props, { emit }) {
@@ -17,9 +20,17 @@ export default {
       flag: true,
     });
     const isModalOpen = ref(false);
-    const save = () => {
+    const save = async () => {
       console.log("save");
-      emit("add", data.item);
+      try {
+        const document = await boardinghouseService.create(data.item);
+        if (document["status"] === "success") {
+          successAd(`Đã thêm nhà trọ ${document.message["name"]}`);
+          emit("add", data.item);
+        }
+      } catch (error) {
+        console.error(">>Error:", error);
+      }
     };
     const openModal = () => {
       isModalOpen.value = true;
@@ -87,7 +98,6 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputname"
-                    required
                     @blur="
                       () => {
                         let isCheck = checkString(data.item.name);

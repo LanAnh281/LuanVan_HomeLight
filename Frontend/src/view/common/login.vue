@@ -26,8 +26,6 @@ export default {
     });
     const login = async () => {
       if (data.flag) {
-        data.error.userName = "Sai định dạng email";
-        data.error.password = "Bạn chưa nhập mật khẩu";
         return;
       }
       if (!data.flag) {
@@ -41,7 +39,7 @@ export default {
             );
             const allowedPositions = ["admin", "super-admin"];
             const routeName = allowedPositions.includes(document["position"])
-              ? "account"
+              ? "dashboard"
               : "user";
             router.push({ name: routeName });
           } else {
@@ -124,7 +122,16 @@ export default {
                 class="form-control"
                 id="inputPassword"
                 autocomplete="current-password"
-                @blur="data.item.password = sanitizeInput(data.item.password)"
+                @blur="
+                  () => {
+                    if (data.item.password != '')
+                      data.item.password = sanitizeInput(data.item.password);
+                    else {
+                      data.error.password = 'Chưa nhập mật khẩu';
+                      data.flag = true;
+                    }
+                  }
+                "
                 @input="
                   data.error.password = '';
                   data.flag = false;

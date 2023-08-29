@@ -3,6 +3,8 @@ import { reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //js
 import { success, warning } from "../../assets/js/common.alert";
+import { checkMail, sanitizeInput } from "../../assets/js/checkInput.common";
+
 //service
 import accountService from "../../service/account.service";
 export default {
@@ -20,6 +22,7 @@ export default {
     };
     const changePassword = async () => {
       try {
+        console.log("Data:", data.item);
         if (!data.flag) {
           const document = await accountService.update(data.item);
           if (document.status === "success") {
@@ -38,7 +41,7 @@ export default {
       }
     };
     onMounted(async () => {});
-    return { data, changePassword };
+    return { data, changePassword, sanitizeInput };
   },
 };
 </script>
@@ -68,8 +71,27 @@ export default {
                 type="password"
                 class="form-control"
                 id="inputPasswordOld"
+                @blur="
+                  () => {
+                    if (data.item.passwordOld != '')
+                      data.item.passwordOld = sanitizeInput(
+                        data.item.passwordOld
+                      );
+                    else {
+                      data.error.passwordOld = 'Chưa nhập mật khẩu';
+                      data.flag = true;
+                    }
+                  }
+                "
+                @input="
+                  data.error.passwordOld = '';
+                  data.flag = false;
+                "
                 v-model="data.item.passwordOld"
               />
+              <div v-if="data.error.passwordOld" class="invalid-error">
+                {{ data.error.passwordOld }}
+              </div>
             </div>
           </div>
           <div class="form-group row">
@@ -81,8 +103,25 @@ export default {
                 type="password"
                 class="form-control"
                 id="inputPassword"
+                @blur="
+                  () => {
+                    if (data.item.password != '')
+                      data.item.password = sanitizeInput(data.item.password);
+                    else {
+                      data.error.password = 'Chưa nhập mật khẩu mới';
+                      data.flag = true;
+                    }
+                  }
+                "
+                @input="
+                  data.error.password = '';
+                  data.flag = false;
+                "
                 v-model="data.item.password"
               />
+              <div v-if="data.error.password" class="invalid-error">
+                {{ data.error.password }}
+              </div>
             </div>
           </div>
           <div class="form-group row">
@@ -96,13 +135,15 @@ export default {
                 type="password"
                 class="form-control"
                 id="inputConfirmPassword"
-                required
                 @blur="
                   () => {
+                    data.item.confirmPassword = sanitizeInput(
+                      data.item.confirmPassword
+                    );
                     if (data.item.password !== data.item.confirmPassword) {
                       data.flag = true;
                       data.error.confirmPassword =
-                        'mật khẩu nhấc lại chưa đúng';
+                        'Mật khẩu nhắc lại chưa đúng';
                     }
                   }
                 "

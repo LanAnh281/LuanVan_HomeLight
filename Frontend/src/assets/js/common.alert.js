@@ -11,6 +11,23 @@ export const success = (title, text) => {
     },
   });
 };
+export const successAd = (title) => {
+  Swal.fire({
+    position: "top-end",
+    icon: "", // Loại bỏ biểu tượng mặc định
+    title: "",
+    showConfirmButton: false,
+    timer: 1000,
+    customClass: {
+      popup: "custom-popup-successAd",
+    },
+    html: `<div class="successAd row justify-content-around m-0 p-0"> 
+            <span class="material-symbols-outlined col-1 m-0 p-0">done</span>
+            <p class="col-11 " style="display:inline-block;text-align: start;">${title}</p>
+          </div>`,
+  });
+};
+
 export const warning = (title, text) => {
   Swal.fire({
     icon: "warning",

@@ -98,6 +98,22 @@
     max-width: 80%; 
     background-color: rgba(207, 189, 189, 1);
 }
+.custom-popup-successAd {
+    width: auto; /* Đổi kích thước theo mong muốn */
+    height: auto; /* Hoặc bạn có thể định nghĩa chiều cao cố định nếu cần */
+    background-color: var(--white);
+    padding-bottom: 0px;
+}
+.custom-popup-successAd .swal2-html-container{
+    padding-top:8px;
+    margin: 0 ;
+   
+}
+.successAd > .material-symbols-outlined{
+    font-size: 24px;
+    color: greenyellow;
+   
+}
 .swal2-html-container{
     overflow: hidden !important;
 }

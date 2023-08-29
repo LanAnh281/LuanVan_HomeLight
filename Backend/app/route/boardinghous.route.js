@@ -1,8 +1,11 @@
 const express = require("express");
 const BorardingHouse = require("../controller/boardinghouse.controller");
-
+const authorization = require("../middeware/authorization.middeware");
 const router = express.Router();
-router.route("/").get(BorardingHouse.findAll).post(BorardingHouse.create);
+router
+  .route("/")
+  .get(BorardingHouse.findAll)
+  .post([authorization.authorization, BorardingHouse.create]);
 router
   .route("/:id")
   .get(BorardingHouse.findOne)

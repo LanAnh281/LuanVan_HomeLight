@@ -2,9 +2,10 @@
 import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //service
+import boardinghouseService from "../../../service/boardinghouse.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
-
+import { successAd } from "../../../assets/js/common.alert";
 //components
 import Select from "../../../components/select/select.vue";
 import BoardingForm from "../../../components/form/boarding.form.vue";
@@ -44,14 +45,12 @@ export default {
     let intervalId = null;
     const boardingModal = ref(false);
     const create = async (value) => {
-      console.log("create new room", value);
-      data.boarding.push({
-        name: value.name,
-        address: value.address,
-        rules: value.rules,
-      });
+      const document = await boardinghouseService.getAll();
+      data.boarding = document.message;
     };
     onMounted(async () => {
+      const document = await boardinghouseService.getAll();
+      data.boarding = document.message;
       await checkAccessToken(router);
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
@@ -102,8 +101,12 @@ export default {
       </div>
     </div>
     <div class="border-radius my-3 mx-0 row justify-content-between">
-      <div class="col-8">
-        <button v-for="(value, index) in data.boarding" :key="index">
+      <div class="col-8 boarding">
+        <button
+          v-for="(value, index) in data.boarding"
+          :key="index"
+          class="btn px-2 mr-1"
+        >
           {{ value.name }}
         </button>
       </div>
@@ -136,14 +139,10 @@ export default {
     <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
       <Box class="m-2"></Box>
       <Box class="m-2"></Box>
-      <Box class="m-2"></Box>
-      <Box class="m-2"></Box>
-      <Box class="m-2"></Box>
-      <Box class="m-2"></Box>
     </div>
 
     <BoardingForm
-      v-if="boardingModal"
+      v-show="boardingModal"
       @add="(value) => create(value)"
       @closeModal="boardingModal = !boardingModal"
     ></BoardingForm>
@@ -160,5 +159,11 @@ export default {
 }
 .plus:hover > * {
   text-shadow: 0 0 2px #ffff;
+}
+.boarding > * {
+  height: 36px;
+  margin-top: 6px;
+  background-color: var(--chocolate);
+  color: var(--white);
 }
 </style>

@@ -18,7 +18,7 @@ const routes = [
   },
   {
     path: "/changePassword",
-    name: "changepassword",
+    name: "changePassword",
     component: () => import("../view/common/changePassword.vue"),
   },
   //Admin
