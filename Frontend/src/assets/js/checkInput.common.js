@@ -1,3 +1,7 @@
+export const checkStringAndNumber = (value) => {
+  const pattern = /^[\w\s\u00C0-\u1EF9]+$/;
+  return !pattern.test(value);
+};
 export const checkString = (value) => {
   const pattern = /^[\p{L}\s]+$/u;
   return !pattern.test(value);

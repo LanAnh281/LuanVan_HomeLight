@@ -67,12 +67,11 @@ export default {
           class="row m-0 p-0"
           :class="[position != 'user' ? 'isHeader' : '']"
         >
-          <SideBar
-            class="col-2"
-            v-if="position != 'user' && position != null"
-          ></SideBar>
+          <SideBar class="col-2" v-if="position != 'user'"></SideBar>
           <!-- <span class="mr-2" v-if="position != 'user'"></span> -->
-          <router-view class="col-10"></router-view>
+          <router-view
+            :class="position == 'user' ? 'col-12' : 'col-10'"
+          ></router-view>
         </div>
         <Footer></Footer>
       </div>
@@ -82,5 +81,8 @@ export default {
 <style scoped>
 .isHeader {
   height: calc(100vh - - var(--header) - var(--footer));
+}
+.none {
+  display: none;
 }
 </style>

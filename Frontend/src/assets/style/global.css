@@ -54,7 +54,6 @@
     right: calc(  83.333% - 100% );
     background-color: var(--light);
     display: inline-block;
-    overflow-y: auto;
     flex: 1;
 }
 
@@ -67,7 +66,6 @@
     top: 0;
     left: 0;
     bottom: 0;
-    overflow-y: auto;
     z-index: 1;
 }
 .footer{

@@ -3,6 +3,7 @@ import { reactive, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //service
 import loginService from "../../service/login.service";
+import userService from "../../service/user.service";
 export default {
   components: {},
   setup() {
@@ -28,6 +29,7 @@ export default {
         { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
       ],
       active: "dashboard",
+      user: { userName: "" },
     });
     const logout = async () => {
       localStorage.removeItem("accessToken");
@@ -44,7 +46,10 @@ export default {
       }
     );
 
-    onMounted(() => {});
+    onMounted(async () => {
+      const document = await userService.get("user");
+      data.user = document.message;
+    });
     return { data, router, logout };
   },
 };
@@ -57,17 +62,28 @@ export default {
     >
       <img
         src="../../assets/image/logo.png"
-        style="object-fit: contain"
-        class="col-4 mx-3"
+        style="
+          object-fit: contain;
+          box-shadow: 0 0 20px 1px rgba(255, 255, 0, 0.3);
+        "
+        class="col-3 ml-4 mr-0 p-0"
       />
-      <div class="col row mt-3">
-        <p
-          class="col-12"
-          style="color: var(--beige); text-shadow: 0 0 5px #ffff"
-        >
-          Xin chào
-        </p>
-        <p class="col-12">Home light</p>
+      <div class="col row mt-0">
+        <div class="col-12 my-3">
+          <span
+            style="
+              display: block;
+              color: var(--beige);
+              text-shadow: 0 0 5px #ffff;
+              margin-bottom: 12px;
+            "
+          >
+            Xin chào</span
+          >
+          <span style="color: var(--beige); text-shadow: 0 0 5px #ffff">
+            {{ data.user.userName }}
+          </span>
+        </div>
       </div>
     </div>
     <!-- Sử dụng inline styles để tùy chỉnh dòng gạch ngang -->

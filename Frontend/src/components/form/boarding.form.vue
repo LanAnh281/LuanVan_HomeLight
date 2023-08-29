@@ -1,23 +1,36 @@
 <script>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, onMounted, ref } from "vue";
+import axios from "axios";
+
 //service
 import boardinghouseService from "../../service/boardinghouse.service";
+//component
+import Select from "../../components/select/selectdependent.vue";
+
 //js
 import {
-  checkIdentification,
-  checkString,
+  checkStringAndNumber,
   checkAddress,
-  checkPhone,
-  checkMail,
 } from "../../assets/js/checkInput.common";
 import { successAd } from "../../assets/js/common.alert";
+import { city, district, ward } from "../../assets/js/dependent.common";
 export default {
-  components: {},
+  components: { Select },
   setup(props, { emit }) {
     const data = reactive({
-      item: { name: "", address: "", rules: "" },
+      item: {
+        name: "",
+        city: "",
+        district: "",
+        ward: "",
+        address: "",
+        rules: "",
+      },
       error: { name: "", address: "", rules: "" },
       flag: true,
+      city: {},
+      district: { data: { districts: [] } },
+      ward: { data: { wards: [] } },
     });
     const isModalOpen = ref(false);
     const save = async () => {
@@ -40,20 +53,79 @@ export default {
       console.log("close modal boarding");
       emit("closeModal");
     };
-    onMounted(() => {
-      //lắng nghe mở modal
-      $("#boardingModal").on("show.bs.modal", openModal);
-      //lắng nghe đóng modal
-      $("#boardingModal").on("hidden.bs.modal", closeModal);
+    const change = async (value) => {
+      try {
+        const document = await city(value);
+        data.item.city = document.city;
+        data.district = document.district;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const changeDistrict = async (value) => {
+      try {
+        const document = await district(data.item.city.code, value);
+        data.item.district = document.district;
+        data.ward = document.ward;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const changeWard = async (value) => {
+      //city,district,value
+      try {
+        const document = await ward(
+          data.item.city.code,
+          data.item.district.code,
+          value
+        );
+        data.item.ward = document.ward;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    onMounted(async () => {
+      $("#boardingModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#boardingModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+      // 3 cấp tỉnh thành
+      try {
+        await axios
+          .get(`https://provinces.open-api.vn/api/?depth=1`, {})
+          .then((response) => {
+            data.city = response;
+          });
+      } catch (error) {
+        console.log(error);
+      }
     });
+
     return {
       data,
       save,
-      checkString,
-      checkIdentification,
+      checkStringAndNumber,
       checkAddress,
-      checkPhone,
-      checkMail,
+      // 3 cấp
+      change,
+      changeDistrict,
+      changeWard,
     };
   },
 };
@@ -100,9 +172,9 @@ export default {
                     id="inputname"
                     @blur="
                       () => {
-                        let isCheck = checkString(data.item.name);
+                        let isCheck = checkStringAndNumber(data.item.name);
                         if (isCheck) {
-                          data.error.name = 'Tên nhà trọ phải là ký tự';
+                          data.error.name = 'Không chứa các ký tự đặc biệt.';
                           data.flag = true;
                         }
                       }
@@ -116,6 +188,43 @@ export default {
                   <div v-if="data.error.name" class="invalid-error">
                     {{ data.error.name }}
                   </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                  >Thành phố :</label
+                >
+                <div class="col-sm-9">
+                  <Select
+                    :title="`Chọn thành phố`"
+                    :data="data.city.data"
+                    @choose="(value) => change(value)"
+                  ></Select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                  >Quận huyện :</label
+                >
+                <div class="col-sm-9">
+                  <Select
+                    :title="`Chọn quận huyện`"
+                    :data="data.district.data.districts"
+                    @choose="(value) => changeDistrict(value)"
+                  ></Select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                  >Quận huyện :</label
+                >
+                <div class="col-sm-9">
+                  <Select
+                    :title="`Chọn phường xã`"
+                    :data="data.ward.data.wards"
+                    @choose="(value) => changeWard(value)"
+                  ></Select>
                 </div>
               </div>
               <div class="form-group row">

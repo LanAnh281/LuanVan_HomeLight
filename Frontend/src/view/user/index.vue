@@ -45,15 +45,20 @@ export default {
 };
 </script>
 <template>
-  <div class="body">
-    <div class="row">
-      <div class="col-12" v-for="(value, index) in data.items" :key="index">
-        <img src="" />
-        <span>Diện tích: {{ value.area }} m²</span>
-        <span>Giá tiền</span>
-        <p>Địa chỉ</p>
-      </div>
+  <div class="body row px-0 mx-0">
+    <div class="col-12" v-for="(value, index) in data.items" :key="index">
+      <img src="" />
+      <span>Diện tích: {{ value.area }} m²</span>
+      <span>Giá tiền</span>
+      <p>Địa chỉ</p>
     </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.body {
+  right: 0;
+  min-height: calc(100vh - var(--header) - var(--footer));
+  padding-right: 0;
+  margin-right: 0;
+}
+</style>

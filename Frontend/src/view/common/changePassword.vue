@@ -17,17 +17,23 @@ export default {
       error: { passwordOld: "", password: "", confirmPassword: "" },
       flag: false,
     });
-    const refreshData = () => {
+    const refresh = () => {
       data.item = { passwordOld: "", password: "", confirmPassword: "" };
+      data.error = { passwordOld: "", password: "", confirmPassword: "" };
     };
     const changePassword = async () => {
       try {
-        console.log("Data:", data.item);
+        for (const key in data.item) {
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập mật khẩu";
+            data.flag = true;
+          }
+        }
         if (!data.flag) {
           const document = await accountService.update(data.item);
           if (document.status === "success") {
-            success("Thành công", "Thay đổi mật khẩu thành công");
-            refreshData();
+            success("Thành công", "Thay đổi mật khẩu thành công.");
+            refresh();
           } else {
             warning(
               "Thất bại",
@@ -37,7 +43,7 @@ export default {
         }
       } catch (error) {
         console.error(">>>er:", error);
-        warning("Thất bại", "Khôi  phục mật khẩu thất bại");
+        warning("Thất bại", "Thay đổi mật khẩu thất bại.");
       }
     };
     onMounted(async () => {});

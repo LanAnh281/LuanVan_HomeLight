@@ -139,6 +139,8 @@ export default {
     <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
       <Box class="m-2"></Box>
       <Box class="m-2"></Box>
+      <Box class="m-2"></Box>
+      <Box class="m-2"></Box>
     </div>
 
     <BoardingForm
