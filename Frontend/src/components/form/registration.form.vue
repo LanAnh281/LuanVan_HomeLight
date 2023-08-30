@@ -12,9 +12,13 @@ import {
   checkPhone,
   checkMail,
 } from "../../assets/js/checkInput.common";
-import { success, warning } from "../../assets/js/common.alert";
+import { success, warning, load } from "../../assets/js/common.alert";
+import { city, district, ward } from "../../assets/js/dependent.common";
+//componment
+import Select from "../../components/select/selectdependent.vue";
+
 export default {
-  components: {},
+  components: { Select },
   setup() {
     const router = useRouter();
     const data = reactive({
@@ -22,6 +26,10 @@ export default {
         userName: "",
         identification: "",
         phone: "",
+        city: "",
+        district: "",
+        ward: "",
+        number: "",
         address: "",
         email: "",
         start: "",
@@ -32,15 +40,17 @@ export default {
         userName: "",
         identification: "",
         phone: "",
-        address: "",
+        number: "",
         email: "",
-        start: "",
-        end: "",
         image: "",
       },
       files: [],
       uploadFiles: [],
       message: "",
+      //3 cấp
+      city: {},
+      district: { data: { districts: [] } },
+      ward: { data: { wards: [] } },
       flag: true,
     });
     const filesRef = ref(null);
@@ -50,8 +60,8 @@ export default {
       data.uploadFiles = [];
       const files = event.target.files;
       data.uploadFiles = [...data.uploadFiles, ...files];
-
       const previewImages = document.getElementById("previewImages");
+
       previewImages.innerHTML = "";
       const rowImages = document.createElement("div");
       rowImages.classList.add("row");
@@ -65,8 +75,8 @@ export default {
 
             const img = document.createElement("img");
             img.src = e.target.result;
-            img.style.width = "192px";
-            img.style.height = "100px";
+            img.style.width = "190px";
+            img.style.height = "70px";
             img.style.objectFit = "contain";
             const br = document.createElement("br");
             colImage.appendChild(img);
@@ -127,56 +137,130 @@ export default {
       "userName",
       "identification",
       "phone",
+      "number",
+      "city",
+      "district",
+      "ward",
       "address",
       "email",
       "start",
       "end",
     ];
-
+    const change = async (value) => {
+      try {
+        const document = await city(value);
+        data.item.city = document.city;
+        data.district = document.district;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const changeDistrict = async (value) => {
+      try {
+        const document = await district(data.item.city.code, value);
+        data.item.district = document.district;
+        data.ward = document.ward;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const changeWard = async (value) => {
+      //city,district,value
+      try {
+        const document = await ward(
+          data.item.city.code,
+          data.item.district.code,
+          value
+        );
+        data.item.ward = document.ward;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     const save = async () => {
-      if (!data.flag) {
-        const formData = new FormData();
-        _.forEach(formFields, (field) => {
-          formData.append(field, data.item[field]);
-        });
-        _.forEach(data.uploadFiles, (file) => {
-          if (validate(file) === "") {
-            formData.append("files", file);
-          }
-        });
-        if (data.uploadFiles.length == 0) {
-          for (let i = 0; i < 2; i++) {
-            formData.append("files", "");
+      try {
+        for (const key in data.error) {
+          console.log(`${key}: ${data.item[key]}`);
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập thông tin.";
+            data.flag = true;
+            console.log("1");
           }
         }
-        // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
-        //Kết nối với backend
-        try {
-          await axios.post(`http://localhost:3000/api/users`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-
-          const previewImages = document.getElementById("previewImages");
-          previewImages.innerHTML = "";
-          data.message = "Files has been uploaded";
-          //Đặt lại giá trị ban đầu
-          data.files = [];
-          filesRef.value.value = "";
-          data.uploadFiles = [];
+        if (!data.flag) {
+          data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+          const formData = new FormData();
           _.forEach(formFields, (field) => {
-            data.item[field] = "";
+            formData.append(field, data.item[field]);
           });
-          success(
-            "Thành công",
-            "Đã tạo tài khoản thành công. Bạn hãy kiểm tra email đã đăng ký để đăng nhập"
+          _.forEach(data.uploadFiles, (file) => {
+            if (validate(file) === "") {
+              formData.append("files", file);
+            }
+          });
+          if (data.uploadFiles.length == 0) {
+            for (let i = 0; i < 2; i++) {
+              formData.append("files", "");
+            }
+          }
+          // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
+          //Kết nối với backend
+          setTimeout(() => {
+            load();
+          }, 1000);
+          const documents = await axios.post(
+            `http://localhost:3000/api/users`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
           );
-        } catch (err) {
-          data.message = err;
+          console.log("Doc:", documents.data.status);
+          if (documents.data.status == "success") {
+            success(
+              "Thành công",
+              "Đã tạo tài khoản thành công. Bạn hãy kiểm tra email đã đăng ký để đăng nhập."
+            );
+            const previewImages = document.getElementById("previewImages");
+            previewImages.innerHTML = "";
+            data.message = "Files has been uploaded";
+            //Đặt lại giá trị ban đầu
+            data.files = [];
+            filesRef.value.value = "";
+            data.uploadFiles = [];
+            _.forEach(formFields, (field) => {
+              data.item[field] = "";
+            });
+          }
         }
-      } else {
-        warning("Thất bại", "Bạn cần kiểm tra lại thông tin.");
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
       }
     };
     const openModal = () => {
@@ -197,13 +281,19 @@ export default {
         data.item[field] = "";
       });
     };
-    onMounted(() => {
-      //Get input
-      filesRef.value = document.getElementById("inputImage");
-      //lắng nghe mở modal
-      $("#registrationModal").on("show.bs.modal", openModal);
-      //lắng nghe đóng modal
-      $("#registrationModal").on("hidden.bs.modal", closeModal);
+    onMounted(async () => {
+      filesRef.value = document.getElementById("inputImage"); //Get input
+      $("#registrationModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#registrationModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+      try {
+        await axios
+          .get(`https://provinces.open-api.vn/api/?depth=1`, {})
+          .then((response) => {
+            data.city = response;
+          });
+      } catch (error) {
+        console.log(error);
+      }
     });
 
     return {
@@ -215,6 +305,10 @@ export default {
       checkAddress,
       checkPhone,
       checkMail,
+      //3 cấp
+      change,
+      changeDistrict,
+      changeWard,
     };
   },
 };
@@ -257,12 +351,11 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputUserName"
-                    required
                     @blur="
                       () => {
                         let isCheck = checkString(data.item.userName);
                         if (isCheck) {
-                          data.error.userName = 'Họ tên phải là ký tự';
+                          data.error.userName = 'Họ tên phải là ký tự.';
                           data.flag = true;
                         }
                       }
@@ -289,14 +382,13 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputidentificationCard"
-                    required
                     @blur="
                       () => {
                         let isCheck = checkIdentification(
                           data.item.identification
                         );
                         if (isCheck) {
-                          data.error.identification = 'CCCD gồm 12 số';
+                          data.error.identification = 'CCCD gồm 12 số.';
                           data.flag = true;
                         }
                       }
@@ -325,7 +417,7 @@ export default {
                     @blur="
                       () => {
                         if (data.uploadFiles.length != 2) {
-                          data.error.image = 'Ảnh cccd trước và sau';
+                          data.error.image = 'Ảnh cccd trước và sau.';
                           data.flag = true;
                         }
                       }
@@ -355,12 +447,11 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputEmail"
-                    required
                     @blur="
                       () => {
                         let isCheck = checkMail(data.item.email);
                         if (isCheck) {
-                          data.error.email = 'Chưa đúng định dạng email';
+                          data.error.email = 'Chưa đúng định dạng email.';
                           data.flag = true;
                         }
                       }
@@ -385,12 +476,11 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputPhone"
-                    required
                     @blur="
                       () => {
                         let isCheck = checkPhone(data.item.phone);
                         if (isCheck) {
-                          data.error.phone = 'SĐT gồm 10 số';
+                          data.error.phone = 'SĐT gồm 10 số.';
                           data.flag = true;
                         }
                       }
@@ -406,32 +496,71 @@ export default {
                   </div>
                 </div>
               </div>
+
+              <!-- 3 cấp -->
+              <div class="form-group row">
+                <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                  >Thành phố :</label
+                >
+                <div class="col-sm-9">
+                  <Select
+                    :title="`Chọn thành phố`"
+                    :data="data.city.data"
+                    @choose="(value) => change(value)"
+                  ></Select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                  >Quận huyện :</label
+                >
+                <div class="col-sm-9">
+                  <Select
+                    :title="`Chọn quận huyện`"
+                    :data="data.district.data.districts"
+                    @choose="(value) => changeDistrict(value)"
+                  ></Select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                  >Quận huyện :</label
+                >
+                <div class="col-sm-9">
+                  <Select
+                    :title="`Chọn phường xã`"
+                    :data="data.ward.data.wards"
+                    @choose="(value) => changeWard(value)"
+                  ></Select>
+                </div>
+              </div>
               <div class="form-group row">
                 <label for="inputaddress" class="col-sm-3 col-form-label p-0"
                   >Địa chỉ :</label
                 >
                 <div class="col-sm-9">
-                  <textarea
+                  <input
+                    type="text"
                     class="form-control"
                     id="inputaddress"
                     @blur="
                       () => {
-                        let isCheck = checkAddress(data.item.address);
+                        let isCheck = checkAddress(data.item.number);
                         if (isCheck) {
-                          data.error.address =
-                            'Địa chỉ không chứa các kí tự đặc biệt';
+                          data.error.number =
+                            'Địa chỉ không được bỏ trống và chứa các kí tự đặc biệt.';
                           data.flag = true;
                         }
                       }
                     "
                     @input="
-                      data.error.address = '';
+                      data.error.number = '';
                       data.flag = false;
                     "
-                    v-model="data.item.address"
-                  ></textarea>
-                  <div v-if="data.error.address" class="invalid-error">
-                    {{ data.error.address }}
+                    v-model="data.item.number"
+                  />
+                  <div v-if="data.error.number" class="invalid-error">
+                    {{ data.error.number }}
                   </div>
                 </div>
               </div>

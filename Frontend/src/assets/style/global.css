@@ -93,9 +93,9 @@
     color: var(--beige)
 }
 .custom-popup-class {
-    width: 400px; 
-    max-width: 80%; 
-    background-color: rgba(207, 189, 189, 1);
+    width:auto; 
+    height: 76px;
+    background-color: white;
 }
 .custom-popup-successAd {
     width: auto; /* Đổi kích thước theo mong muốn */

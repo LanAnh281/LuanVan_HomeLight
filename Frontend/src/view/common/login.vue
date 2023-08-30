@@ -127,12 +127,9 @@ export default {
                 autocomplete="current-password"
                 @blur="
                   () => {
-                    if (data.item.password != '')
-                      data.item.password = sanitizeInput(data.item.password);
-                    else {
+                    if (data.item.password == '')
                       data.error.password = 'Chưa nhập mật khẩu';
-                      data.flag = true;
-                    }
+                    data.flag = true;
                   }
                 "
                 @input="

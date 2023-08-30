@@ -79,11 +79,7 @@ export default {
                 id="inputPasswordOld"
                 @blur="
                   () => {
-                    if (data.item.passwordOld != '')
-                      data.item.passwordOld = sanitizeInput(
-                        data.item.passwordOld
-                      );
-                    else {
+                    if (data.item.passwordOld == '') {
                       data.error.passwordOld = 'Chưa nhập mật khẩu';
                       data.flag = true;
                     }
@@ -111,9 +107,7 @@ export default {
                 id="inputPassword"
                 @blur="
                   () => {
-                    if (data.item.password != '')
-                      data.item.password = sanitizeInput(data.item.password);
-                    else {
+                    if (data.item.password == '') {
                       data.error.password = 'Chưa nhập mật khẩu mới';
                       data.flag = true;
                     }
@@ -143,9 +137,6 @@ export default {
                 id="inputConfirmPassword"
                 @blur="
                   () => {
-                    data.item.confirmPassword = sanitizeInput(
-                      data.item.confirmPassword
-                    );
                     if (data.item.password !== data.item.confirmPassword) {
                       data.flag = true;
                       data.error.confirmPassword =
