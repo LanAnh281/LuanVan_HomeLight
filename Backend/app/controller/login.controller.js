@@ -29,6 +29,7 @@ exports.login = async (req, res, next) => {
   let { userName, password } = req.body;
   console.log(userName, password);
   password = setEncrypt(password);
+  console.log("***req,body:", req.body);
   try {
     const document = await Accounts.findOne({
       where: {

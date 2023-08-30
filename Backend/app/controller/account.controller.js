@@ -68,7 +68,6 @@ exports.updated = async (req, res, next) => {
   console.log(">>>body:", req.body);
   try {
     const account = await Accounts.findOne({ where: { _id: req._id } });
-
     if (account && getDecrypt(account["password"]) === passwordOld) {
       password = setEncrypt(password);
       const document = await Accounts.update(
