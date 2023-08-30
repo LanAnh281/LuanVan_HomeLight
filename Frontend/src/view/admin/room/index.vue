@@ -5,7 +5,12 @@ import { useRoute, useRouter } from "vue-router";
 import boardinghouseService from "../../../service/boardinghouse.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
-import { successAd } from "../../../assets/js/common.alert";
+import {
+  successAd,
+  deleted,
+  success,
+  warning,
+} from "../../../assets/js/common.alert";
 //components
 import Select from "../../../components/select/select.vue";
 import BoardingForm from "../../../components/form/boarding.form.vue";
@@ -34,6 +39,7 @@ export default {
         },
         { _id: true, name: "Đã thanh toán" },
       ],
+      isActiveBoarding: "",
     });
     const refresh = () => {};
     const changeStatus = (value) => {
@@ -44,27 +50,62 @@ export default {
     };
     let intervalId = null;
     const boardingModal = ref(false);
-    const create = async (value) => {
+    const create = async () => {
+      await refreshBoarding();
+    };
+    const handleDeleteClick = async (id, name) => {
+      console.log("xóa");
+      try {
+        const isDelete = await deleted(
+          "Xóa nhà trọ",
+          `Bạn có chắc chắn xóa nhà trọ ${name}`
+        );
+        if (isDelete) {
+          const document = await boardinghouseService.delete(id);
+          document.status == "success"
+            ? successAd(`Xóa thành công nhà trọ ${name} `)
+            : warning("Xóa thất bại", `Xóa thất bại nhà trọ ${name}`);
+          await refreshBoarding();
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const refreshBoarding = async () => {
       const document = await boardinghouseService.getAll();
       data.boarding = document.message;
     };
     onMounted(async () => {
-      const document = await boardinghouseService.getAll();
-      data.boarding = document.message;
+      await refreshBoarding();
+      data.isActiveBoarding = data.boarding[0]._id;
       await checkAccessToken(router);
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
-      }, 30 * 60 * 1001); // 60000 milliseconds = 1 minutes
+      }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
-    return { data, boardingModal, changeStatus, changefee, create };
+    return {
+      data,
+      boardingModal,
+      changeStatus,
+      changefee,
+      create,
+      handleDeleteClick,
+    };
   },
 };
 </script>
 <template>
   <div class="body m-0">
+    <!-- Status  and fee-->
     <div class="border-radius my-3 row m-0 justify-content-between">
       <div class="input-group col-2 align-items-center">
         <Select
@@ -100,14 +141,27 @@ export default {
         </button>
       </div>
     </div>
+    <!-- Boarding -->
     <div class="border-radius my-3 mx-0 row justify-content-between">
       <div class="col-8 boarding">
         <button
           v-for="(value, index) in data.boarding"
           :key="index"
-          class="btn px-2 mr-1"
+          class="btn px-2 mr-1 board-item"
+          :class="value._id == data.isActiveBoarding ? 'isActiveBoarding' : ''"
+          @click="
+            () => {
+              data.isActiveBoarding = value._id;
+            }
+          "
         >
           {{ value.name }}
+          <span
+            class="delete-icon"
+            @click.stop="handleDeleteClick(value._id, value.name)"
+          >
+            x
+          </span>
         </button>
       </div>
       <div class="col-4">
@@ -142,10 +196,10 @@ export default {
       <Box class="m-2"></Box>
       <Box class="m-2"></Box>
     </div>
-
+    <!-- componment -->
     <BoardingForm
       v-show="boardingModal"
-      @add="(value) => create(value)"
+      @add="create"
       @closeModal="boardingModal = !boardingModal"
     ></BoardingForm>
   </div>
@@ -167,5 +221,41 @@ export default {
   margin-top: 6px;
   background-color: var(--chocolate);
   color: var(--white);
+}
+.isActiveBoarding {
+  background-color: var(--ruby);
+  text-shadow: 0 0 2px #fff;
+}
+.board-item {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  text-align: center;
+  line-height: 0;
+  min-width: 80px;
+}
+.delete-icon {
+  position: absolute;
+  top: -10px;
+  right: -4px;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.board-item:hover {
+  color: var(--white);
+  text-shadow: 0 0 2px #fff;
+}
+.board-item:hover .delete-icon {
+  opacity: 1;
+  color: var(--red);
+  font-weight: 500;
 }
 </style>

@@ -59,12 +59,12 @@ export default {
     >
       <div class="card shadow col-5">
         <div class="row justify-content-center">
-          <router-link :to="{ name: 'user' }" class="col-3">
+          <!-- <router-link :to="{ name: 'user' }" class="col-3">
             <img
               src="../../assets/image/logo.PNG"
               style="width: 100%; height: 100%"
             />
-          </router-link>
+          </router-link> -->
           <h4 class="text-center mt-3 ml-3 col-12">Đổi mật khẩu</h4>
         </div>
         <form @submit.prevent="changePassword" class="container mt-3">

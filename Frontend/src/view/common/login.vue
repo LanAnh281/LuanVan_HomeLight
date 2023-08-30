@@ -25,11 +25,14 @@ export default {
       flag: true,
     });
     const login = async () => {
-      if (data.flag) {
-        return;
-      }
-      if (!data.flag) {
-        try {
+      try {
+        for (const key in data.item) {
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập thông tin.";
+            data.flag = true;
+          }
+        }
+        if (!data.flag) {
           const document = await Login.login(data.item);
           if (document.status == "success") {
             setLocalStrorage(
@@ -45,9 +48,9 @@ export default {
           } else {
             warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
           }
-        } catch (error) {
-          console.error("Error in login");
         }
+      } catch (error) {
+        console.error("Error in login");
       }
     };
     const forgotPassword = async () => {
@@ -68,12 +71,12 @@ export default {
     <div class="row justify-content-around align-items-center vh-100">
       <div class="card shadow col-4">
         <div class="row justify-content-center">
-          <router-link :to="{ name: 'user' }" class="col-3">
+          <!-- <router-link :to="{ name: 'user' }" class="col-3">
             <img
               src="../../assets/image/logo.png"
               style="width: 100%; height: 100%"
             />
-          </router-link>
+          </router-link> -->
           <h4
             class="text-center mt-3 ml-3 col-12"
             style="color: var(--chocolate)"
@@ -152,7 +155,7 @@ export default {
             </button>
           </div>
         </form>
-        <div class="col-12 text-center forgot" @click="forgotPassword">
+        <div class="col-12 text-center forgot title" @click="forgotPassword">
           Quên mật khẩu
         </div>
       </div>

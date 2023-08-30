@@ -23,28 +23,17 @@ export default {
         city: "",
         district: "",
         ward: "",
+        number: "",
         address: "",
         rules: "",
       },
-      error: { name: "", address: "", rules: "" },
+      error: { name: "", number: "" },
       flag: true,
       city: {},
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
     });
     const isModalOpen = ref(false);
-    const save = async () => {
-      console.log("save");
-      try {
-        const document = await boardinghouseService.create(data.item);
-        if (document["status"] === "success") {
-          successAd(`Đã thêm nhà trọ ${document.message["name"]}`);
-          emit("add", data.item);
-        }
-      } catch (error) {
-        console.error(">>Error:", error);
-      }
-    };
     const openModal = () => {
       isModalOpen.value = true;
       console.log("open modal boarding");
@@ -100,6 +89,46 @@ export default {
         } else {
           console.log("Errors:", error.message);
         }
+      }
+    };
+    const refresh = () => {
+      data.item = {
+        name: "",
+        city: "",
+        district: "",
+        ward: "",
+        number: "",
+        address: "",
+        rules: "",
+      };
+      data.error = { name: "", number: "" };
+      data.flag = true;
+    };
+    const save = async () => {
+      console.log("save");
+      const keys = ["name", "number"];
+      try {
+        for (const key of keys) {
+          console.log("key", data.item[key]);
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập thông tin.";
+            data.flag = true;
+            console.log("1");
+          }
+        }
+        console.log("data.flag:", data.flag);
+        if (!data.flag) {
+          data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+          console.log("Data.item:", data.item);
+          const document = await boardinghouseService.create(data.item);
+          if (document["status"] === "success") {
+            successAd(`Đã thêm nhà trọ ${document.message["name"]}`);
+            refresh();
+            emit("add");
+          }
+        }
+      } catch (error) {
+        console.error(">>Error:", error);
       }
     };
     onMounted(async () => {
@@ -237,27 +266,27 @@ export default {
                     id="inputaddress"
                     @blur="
                       () => {
-                        let isCheck = checkAddress(data.item.address);
+                        let isCheck = checkAddress(data.item.number);
                         if (isCheck) {
-                          data.error.address =
-                            'Địa chỉ không chứa các kí tự đặc biệt';
+                          data.error.number =
+                            'Địa chỉ không được bỏ trống và chứa các kí tự đặc biệt.';
                           data.flag = true;
                         }
                       }
                     "
                     @input="
-                      data.error.address = '';
+                      data.error.number = '';
                       data.flag = false;
                     "
-                    v-model="data.item.address"
+                    v-model="data.item.number"
                   ></textarea>
-                  <div v-if="data.error.address" class="invalid-error">
-                    {{ data.error.address }}
+                  <div v-if="data.error.number" class="invalid-error">
+                    {{ data.error.number }}
                   </div>
                 </div>
               </div>
 
-              <div class="form-group row">
+              <!-- <div class="form-group row">
                 <label for="inputrules" class="col-sm-3 col-form-label p-0"
                   >Quy định :</label
                 >
@@ -285,7 +314,7 @@ export default {
                     {{ data.error.rules }}
                   </div>
                 </div>
-              </div>
+              </div> -->
 
               <div class="form-group row justify-content-around mb-0">
                 <button type="submit" class="btn btn-login col-sm-3">

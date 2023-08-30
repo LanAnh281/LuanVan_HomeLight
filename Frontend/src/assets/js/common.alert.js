@@ -40,17 +40,25 @@ export const warning = (title, text) => {
     },
   });
 };
-export const deleted = (title, text) => {
-  Swal.fire({
-    icon: "delete",
+export const deleted = async (title, text) => {
+  const result = await Swal.fire({
+    icon: "error",
     title: title,
     text: text,
+    showCancelButton: true,
+    confirmButtonText: "Đồng ý",
+    cancelButtonText: "Hủy",
     background: "#fff",
     didOpen: () => {
       const popup = Swal.getPopup();
       popup.style.border = "2px solid #ccc";
     },
   });
+  if (result.isConfirmed) {
+    return true; // Trả về true nếu người dùng đồng ý xóa
+  } else {
+    return false; // Trả về false nếu người dùng không đồng ý xóa
+  }
 };
 export const load = async (title) => {
   await Swal.fire({
