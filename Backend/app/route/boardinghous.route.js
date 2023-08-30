@@ -10,5 +10,5 @@ router
   .route("/:id")
   .get(BorardingHouse.findOne)
   .put(BorardingHouse.updated)
-  .delete(BorardingHouse.delete);
+  .delete([authorization.authorization, BorardingHouse.delete]);
 module.exports = router;
