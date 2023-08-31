@@ -14,10 +14,11 @@ import {
 //components
 import Select from "../../../components/select/select.vue";
 import BoardingForm from "../../../components/form/boarding.form.vue";
+import Rule from "../../../components/form/rules.form.vue";
 import Box from "../../../components/box/boarding.box.vue";
 
 export default {
-  components: { Select, BoardingForm, Box },
+  components: { Select, BoardingForm, Box, Rule },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -41,6 +42,10 @@ export default {
       ],
       isActiveBoarding: "",
     });
+    let intervalId = null;
+    const isBoardingModal = ref(false);
+    const isRuleModal = ref(false);
+
     const refresh = () => {};
     const changeStatus = (value) => {
       console.log("Status:", value);
@@ -48,8 +53,6 @@ export default {
     const changefee = (value) => {
       console.log("Status:", value);
     };
-    let intervalId = null;
-    const boardingModal = ref(false);
     const create = async () => {
       await refreshBoarding();
     };
@@ -94,7 +97,8 @@ export default {
     });
     return {
       data,
-      boardingModal,
+      isBoardingModal,
+      isRuleModal,
       changeStatus,
       changefee,
       create,
@@ -106,7 +110,7 @@ export default {
 <template>
   <div class="body m-0">
     <!-- Status  and fee-->
-    <div class="border-radius my-3 row m-0 justify-content-between">
+    <div class="border-radius my-3 row m-0 justify-content-start">
       <div class="input-group col-2 align-items-center">
         <Select
           :title="`Trạng thái phòng`"
@@ -121,28 +125,48 @@ export default {
           @choose="(value) => changefee(value)"
         ></Select>
       </div>
-      <div
-        class="col-2 ml-auto"
-        style="right: -5.5%"
-        @click="boardingModal = !boardingModal"
-      >
-        <button
-          class="btn btn-primary p-0"
-          style="width: 103px; height: 36px; margin-top: 6px"
-          data-toggle="modal"
-          data-target="#boardingModal"
-        >
-          <div class="row justify-content-center plus">
-            <span class="material-symbols-outlined" style="color: var(--white)">
-              domain_add
-            </span>
-            <span style="color: var(--white)">Thêm nhà</span>
-          </div>
-        </button>
+      <div class="col-8 m-0 p-0 row justify-content-end">
+        <div class="mr-1" @click="isBoardingModal = !isBoardingModal">
+          <button
+            class="btn btn-primary p-0"
+            style="width: 103px; height: 36px; margin-top: 6px"
+            data-toggle="modal"
+            data-target="#boardingModal"
+          >
+            <div class="row justify-content-center plus">
+              <span
+                class="material-symbols-outlined"
+                style="color: var(--white)"
+              >
+                domain_add
+              </span>
+              <span style="color: var(--white)">Thêm nhà</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="m-0" @click="isRuleModal = !isRuleModal">
+          <button
+            class="btn btn-primary p-0 mr-0"
+            style="width: 103px; height: 36px; margin-top: 6px"
+            data-toggle="modal"
+            data-target="#ruleModal"
+          >
+            <div class="row justify-content-center">
+              <span
+                class="material-symbols-outlined"
+                style="color: var(--white)"
+              >
+                post_add
+              </span>
+              <span style="color: var(--white)">Quy định</span>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
     <!-- Boarding -->
-    <div class="border-radius my-3 mx-0 row justify-content-between">
+    <div class="border-radius my-3 mx-0 row justify-content-end">
       <div class="col-8 boarding">
         <button
           v-for="(value, index) in data.boarding"
@@ -198,10 +222,11 @@ export default {
     </div>
     <!-- componment -->
     <BoardingForm
-      v-show="boardingModal"
+      v-if="isBoardingModal"
       @add="create"
-      @closeModal="boardingModal = !boardingModal"
+      @closeModal="isBoardingModal = !isBoardingModal"
     ></BoardingForm>
+    <Rule v-if="isRuleModal" @closeModal="isRuleModal = !isRuleModal"></Rule>
   </div>
 </template>
 <style scope>
@@ -213,6 +238,7 @@ export default {
   border-radius: 5px;
   min-height: 50px;
 }
+
 .plus:hover > * {
   text-shadow: 0 0 2px #ffff;
 }

@@ -5,7 +5,11 @@ const router = express.Router();
 router
   .route("/")
   .get(BorardingHouse.findAll)
-  .post([authorization.authorization, BorardingHouse.create]);
+  .post([
+    authorization.authentication,
+    authorization.authorization("create-boarding"),
+    BorardingHouse.create,
+  ]);
 router
   .route("/:id")
   .get(BorardingHouse.findOne)

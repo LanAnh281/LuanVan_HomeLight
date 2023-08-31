@@ -31,6 +31,7 @@ const accountNotification = require("./app/route/account_notification.route");
 const mailRouter = require("./app/route/mail.route");
 const resetPasswordRouter = require("./app/route/resetPassword.route");
 const uploadRouter = require("./app/route/upload.route");
+const ruleRouter = require("./app/route/rule.route");
 // initialize
 const app = express();
 app.use(cors());
@@ -81,6 +82,8 @@ app.use("/api/accountnotification", accountNotification);
 app.use("/api/mail", mailRouter);
 app.use("/api/resetPassword", resetPasswordRouter);
 app.use("/api/upload", uploadRouter);
+app.use("/api/rule", ruleRouter);
+
 // check errors
 app.use((req, res, next) => {
   return next(createError(404, "Resource Not Found"));

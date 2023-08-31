@@ -116,6 +116,9 @@ const BorardingHouse = sequelize.define("BoardingHouse", {
   address: {
     type: DataTypes.TEXT,
   },
+});
+const Rule = sequelize.define("Rule", {
+  _id: setPrimary,
   rules: {
     type: DataTypes.TEXT,
   },
@@ -257,6 +260,7 @@ Spending.belongsTo(BorardingHouse, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+
 Rooms.hasMany(Bill, {
   foreignKey: "roomId",
   onDelete: "CASCADE",
@@ -376,6 +380,8 @@ Note.sync();
 Notification.sync();
 Account_Notification.sync();
 ResetPassword.sync();
+
+Rule.sync();
 module.exports = {
   Roles,
   Positions,
@@ -398,4 +404,5 @@ module.exports = {
   Notification,
   Account_Notification,
   ResetPassword,
+  Rule,
 };

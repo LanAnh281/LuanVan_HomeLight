@@ -12,7 +12,7 @@ import {
   checkStringAndNumber,
   checkAddress,
 } from "../../assets/js/checkInput.common";
-import { successAd } from "../../assets/js/common.alert";
+import { successAd, warning } from "../../assets/js/common.alert";
 import { city, district, ward } from "../../assets/js/dependent.common";
 export default {
   components: { Select },
@@ -120,15 +120,20 @@ export default {
         if (!data.flag) {
           data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
           console.log("Data.item:", data.item);
-          const document = await boardinghouseService.create(data.item);
-          if (document["status"] === "success") {
+          if (document.data["status"] === "success") {
             successAd(`Đã thêm nhà trọ ${document.message["name"]}`);
             refresh();
             emit("add");
+          } else {
+            console.log("Thất bại");
+            warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
           }
         }
       } catch (error) {
-        console.error(">>Error:", error);
+        if (error) {
+          warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
+        }
+        console.log(error);
       }
     };
     onMounted(async () => {

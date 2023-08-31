@@ -1,21 +1,12 @@
-const { BorardingHouse } = require("../models/index.model.js");
-
-const role = ["super-admin", "admin"];
-
+const { Rule } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const { name, address } = req.body;
-  console.log(">>>Body:", req.body);
+  const { rules } = req.body;
+  console.log("Rule Body:", req.body);
   try {
-    if (role.includes(req.user.position["name"])) {
-      const document = await BorardingHouse.create({
-        name: name,
-        address: address,
-        userId: req.user.userId,
-      });
-      console.log(">>>DOC:", document);
-      return res.status(200).json({ message: document, status: "success" });
-    }
-    return res.json({ message: "fail", status: "fail" });
+    const document = await Rule.create({
+      rules: rules,
+    });
+    res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });
@@ -23,7 +14,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await BorardingHouse.findAll({});
+    const documents = await Rule.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -32,7 +23,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await BorardingHouse.findOne({
+    const document = await Rule.findOne({
       where: {
         _id: req.params.id,
       },
@@ -44,15 +35,13 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, address, rules, userId } = req.body;
-  console.log("Update BorardingHouse", req.body);
+  const { name, content } = req.body;
+  console.log("Rule Body:", req.body);
   try {
-    const document = await BorardingHouse.update(
+    const document = await Rule.update(
       {
         name: name,
-        address: address,
-        rules: rules,
-        userId: userId,
+        content: content,
       },
       {
         where: {
@@ -68,16 +57,12 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    if (role.includes(req.position.name)) {
-      const document = await BorardingHouse.destroy({
-        where: {
-          _id: req.params.id,
-        },
-      });
-      return res.json({ message: document, status: "success" });
-    } else {
-      return res.json({ message: "fail", status: "fail" });
-    }
+    const document = await Rule.destroy({
+      where: {
+        _id: req.params.id,
+      },
+    });
+    res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });
@@ -85,7 +70,7 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await BorardingHouse.destroy({});
+    const documents = await Rule.destroy({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

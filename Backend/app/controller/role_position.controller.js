@@ -13,10 +13,19 @@ exports.create = async (req, res, next) => {
     res.json({ message: error, status: "faild" });
   }
 };
+exports.findAll = async (req, res, next) => {
+  try {
+    const document = await Roles_Positions.findAll({});
+    res.json({ message: document, status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error, status: "faild" });
+  }
+};
 //findone a position
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Roles_Positions.findAll({
+    const document = await Roles_Positions.findOne({
       where: {
         PositionId: req.params.id,
       },
