@@ -32,6 +32,9 @@ const mailRouter = require("./app/route/mail.route");
 const resetPasswordRouter = require("./app/route/resetPassword.route");
 const uploadRouter = require("./app/route/upload.route");
 const ruleRouter = require("./app/route/rule.route");
+
+//midderware
+const requestMidderware = require("./app/middeware/request.midderware");
 // initialize
 const app = express();
 app.use(cors());

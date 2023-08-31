@@ -9,7 +9,8 @@ router
   .post(accounts.create)
   .put([
     request.sanitizeDataMiddleware,
-    authorization.authorization,
+    authorization.authentication,
+    authorization.authorization("update-password"),
     accounts.updated,
   ]);
 router.route("/:id").get(accounts.findOne).delete(accounts.delete);

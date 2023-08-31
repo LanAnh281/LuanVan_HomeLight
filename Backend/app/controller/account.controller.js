@@ -61,13 +61,13 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  console.log(">>req.data:", req._id);
+  const _id = req.user._id;
+  console.log(">>req.data:", req.user._id);
   let { userName, passwordOld, password, userId, positionId, isActive } =
     req.body;
-  // password = setEncrypt(password);
   console.log(">>>body:", req.body);
   try {
-    const account = await Accounts.findOne({ where: { _id: req._id } });
+    const account = await Accounts.findOne({ where: { _id: _id } });
     if (account && getDecrypt(account["password"]) === passwordOld) {
       password = setEncrypt(password);
       const document = await Accounts.update(
@@ -80,7 +80,7 @@ exports.updated = async (req, res, next) => {
         },
         {
           where: {
-            _id: req._id,
+            _id: _id,
           },
         }
       );

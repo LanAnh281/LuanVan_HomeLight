@@ -9,7 +9,7 @@ router
 router.route("/").get(user.findAll).delete(user.delete);
 router
   .route("/:id")
-  .get([authorization.authorization, user.findOne])
+  .get([user.findOne])
   .delete(user.deleteOne)
   .put([upload.upload.array("files"), user.update]);
 router.route("/getImg/:id").get(user.getImg);
