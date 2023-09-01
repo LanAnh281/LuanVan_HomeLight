@@ -1,4 +1,8 @@
-const { Roles_Positions } = require("../models/index.model.js");
+const {
+  Roles_Positions,
+  Roles,
+  Positions,
+} = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { RoleId, PositionId } = req.body;
   console.log("Roles_Positions Body:", req.body);

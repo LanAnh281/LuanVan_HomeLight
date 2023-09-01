@@ -13,5 +13,9 @@ router
     authorization.authorization("update-password"),
     accounts.updated,
   ]);
-router.route("/:id").get(accounts.findOne).delete(accounts.delete);
+router
+  .route("/:id")
+  .get(accounts.findOne)
+  .delete(accounts.delete)
+  .put(accounts.updatedActive);
 module.exports = router;

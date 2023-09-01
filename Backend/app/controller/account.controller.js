@@ -1,4 +1,4 @@
-const { Accounts } = require("../models/index.model.js");
+const { Accounts, Positions } = require("../models/index.model.js");
 
 const crypto = require("crypto");
 const encryptionKey = "12345678912345678901234567890121";
@@ -40,7 +40,16 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Accounts.findAll({});
+    const accounts = await Accounts.findAll({
+      include: {
+        model: Positions,
+      },
+    });
+    const documents = JSON.parse(JSON.stringify(accounts));
+    for (let i = 0; i < documents.length; i++) {
+      console.log("name:", documents[i].Position["name"]);
+      documents[i].positionName = documents[i].Position["name"];
+    }
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -88,6 +97,23 @@ exports.updated = async (req, res, next) => {
     } else {
       res.json({ message: "fail", status: "fail" });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error, status: "faild" });
+  }
+};
+exports.updatedActive = async (req, res, next) => {
+  let { isActive } = req.body;
+  try {
+    const document = await Accounts.update(
+      {
+        isActive: isActive,
+      },
+      {
+        where: { _id: req.params.id },
+      }
+    );
+    res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error, status: "faild" });

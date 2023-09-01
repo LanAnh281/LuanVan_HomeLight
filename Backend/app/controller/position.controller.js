@@ -1,4 +1,4 @@
-const { Positions } = require("../models/index.model.js");
+const { Positions, Roles } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { name } = req.body;
   console.log("Positions Body:", req.body);
@@ -14,7 +14,16 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Positions.findAll({});
+    const documents = await Positions.findAll({
+      include: [
+        {
+          model: Roles,
+          through: {
+            attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
+          },
+        },
+      ],
+    });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
