@@ -30,7 +30,7 @@ const routes = [
   {
     path: "/admin/account",
     name: "account",
-    component: () => import("../view/admin/account/account.vue"),
+    component: () => import("../view/admin/account/index.vue"),
   },
   //dashboard
   {
@@ -65,12 +65,25 @@ const routes = [
     name: "user",
     component: () => import("../view/user/index.vue"),
   },
-  // {
-  //   path: "/user/registration",
-  //   name: "User.registration",
-  //   component: () => import("../view/user/user.registration.vue"),
-  // },
 ];
+
+// router.beforeEach((to, from, next) => {
+//   // Đây là nơi bạn thực hiện kiểm tra người dùng
+//   // Ví dụ: kiểm tra xác thực, vai trò, quyền truy cập, ...
+//   try {
+
+//     if (nguoiDungDaXacThuc) {
+//     // Nếu người dùng đã xác thực, cho phép truy cập
+//     next()
+//   } else {
+//     // Nếu người dùng chưa xác thực, điều hướng đến trang đăng nhập
+//     next({name:'login'})
+//   }
+//   } catch (error) {
+
+//   }
+
+// })
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

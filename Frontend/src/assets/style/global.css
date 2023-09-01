@@ -71,12 +71,15 @@
 }
 .footer{
     display: grid;
-    position: relative;
+    position: fixed; 
+    left: 0;
+    bottom: 0;
+    right: 0;
     place-items: center;
     height: var(--footer);
     background-color: var(--gray-dark);
     padding-left:16px ;
-    z-index: 2;
+    z-index: 3;
 }
 
 .login{
@@ -92,6 +95,7 @@
 .btn-login:hover{
     color: var(--beige)
 }
+/*Alert*/
 .custom-popup-class {
     width:auto; 
     height: 76px;
@@ -116,10 +120,28 @@
 .swal2-html-container{
     overflow: hidden !important;
 }
+
+.border-radius {
+    border: 1px solid #eae6e6;
+    border-radius: 5px;
+    min-height: 50px;
+  }
 .invalid-error{
     color:#dc3545;
     font-size: 14px;
 }
+
 .title{
     color:var(--chocolate)
+}
+.radius{
+    border-radius: 50%;
+    background-color:var(--beige);
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    line-height: 1;
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;;
 }

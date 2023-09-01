@@ -25,6 +25,11 @@ export default {
           icon: "text_snippet",
           active: "report",
         },
+        {
+          name: "Tài khoản",
+          icon: "manage_accounts",
+          active: "account",
+        },
         { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },
         { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
       ],

@@ -125,7 +125,7 @@ export default {
           @choose="(value) => changefee(value)"
         ></Select>
       </div>
-      <div class="col-8 m-0 p-0 row justify-content-end">
+      <div class="col-8 mr-1 p-0 row justify-content-end">
         <div class="mr-1" @click="isBoardingModal = !isBoardingModal">
           <button
             class="btn btn-primary p-0"
@@ -145,7 +145,7 @@ export default {
           </button>
         </div>
 
-        <div class="m-0" @click="isRuleModal = !isRuleModal">
+        <div class="" @click="isRuleModal = !isRuleModal">
           <button
             class="btn btn-primary p-0 mr-0"
             style="width: 103px; height: 36px; margin-top: 6px"
