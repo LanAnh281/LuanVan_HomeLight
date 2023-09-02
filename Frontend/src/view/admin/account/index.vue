@@ -1,5 +1,12 @@
 <script>
-import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue";
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 //service
 import roleService from "../../../service/role.service";
@@ -7,32 +14,64 @@ import positionService from "../../../service/position.service";
 import accountService from "../../../service/account.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
+import { success, warning } from "../../../assets/js/common.alert";
+
 //component
 import roleForm from "../../../components/form/role.form.vue";
 import accuountForm from "../../../components/form/account.form.vue";
 import tablePosition_role from "../../../components/table/position_role.table.vue";
 import Table from "../../../components/table/table.vue";
-import { success, warning } from "../../../assets/js/common.alert";
+import role_positionForm from "../../../components/form/role_position.form.vue";
+import pagination from "../../../components/pagination/pagination.vue";
+import Pagination from "../../../components/pagination/pagination.vue";
+
 export default {
-  components: { roleForm, accuountForm, tablePosition_role, Table },
+  components: {
+    roleForm,
+    accuountForm,
+    tablePosition_role,
+    role_positionForm,
+    Table,
+    Pagination,
+  },
   setup() {
     const router = useRouter();
     const data = reactive({
       items: [{ name: "", Roles: [{ name: "" }] }],
       accounts: [],
+      rolePosition: [{ name: "", Roles: [{ name: "" }] }],
       flag: true,
+      positionId: "",
+      pageAccounts: [],
+      sizePage: 2,
+      currentPage: 1,
+      previousPage: 0,
+      totalPage: 0,
     });
+    data.totalPage = computed(() =>
+      data.accounts.length
+        ? Math.round(Math.ceil(data.accounts.length) / data.sizePage)
+        : 0
+    );
+    data.pageAccounts = computed(() =>
+      data.accounts.slice(
+        (data.currentPage - 1) * data.sizePage,
+        data.currentPage * data.sizePage
+      )
+    );
     const css = reactive({
       director: [{ name: "Tài khoản" }, { name: "Vai trò" }],
       isDirector: "Tài khoản",
     });
     const component = reactive({
       roleModal: false,
+      checkPosition: "",
       accountModal: false,
       tablePosition_role: false,
       table: true,
     });
     let intervalId = null;
+
     watch(
       () => css.isDirector,
       (newValue, oldValue) => {
@@ -46,12 +85,22 @@ export default {
       }
     );
     onMounted(async () => {
+      //Positions : display form add role and table
       const document = await positionService.getAll();
       data.items = document.message;
+      //accounts : display table 'Tài khoản'
       const documentAccount = await accountService.getAll();
       data.accounts = documentAccount.message;
+      //box director 'Tài khoản' and 'Vai trò'
       component.isDirector = "Tài khoản";
-
+      // display form checked roles.
+      const documentRolePosition = await positionService.getAll();
+      data.rolePosition = documentRolePosition.message;
+      const length = data.rolePosition.length;
+      for (let i = 0; i < length; i++) {
+        data.rolePosition[i].disable = false;
+      }
+      // accesstoken
       await checkAccessToken(router);
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
@@ -67,10 +116,12 @@ export default {
     };
     const createAccount = async () => {
       console.log("create Account");
+      const documentAccount = await accountService.getAll();
+      data.accounts = documentAccount.message;
     };
-    const togge_off = async (value) => {
+    const togge_off = async (value, isActive) => {
       const document = await accountService.updateActive(value, {
-        isActive: false,
+        isActive: isActive,
       });
       if (document.status == "success") {
         success("Thành công", "");
@@ -78,7 +129,26 @@ export default {
         data.accounts = documentAccount.message;
       } else warning("Thất bại", "");
     };
-    return { data, css, createRole, createAccount, component, togge_off };
+    const refreshRolePosition = async () => {
+      const documentRolePosition = await positionService.getAll();
+      data.rolePosition = documentRolePosition.message;
+      for (let index in data.rolePosition) {
+        data.rolePosition[index].checked =
+          data.rolePosition[index]._id == data.positionId ? true : false;
+        data.rolePosition[index].disable =
+          data.rolePosition[index]._id == data.positionId ? false : true;
+      }
+    };
+    return {
+      data,
+      css,
+      createRole,
+      createAccount,
+      component,
+      togge_off,
+      positionService,
+      refreshRolePosition,
+    };
   },
 };
 </script>
@@ -129,33 +199,84 @@ export default {
           {{ value.name }}
         </button>
       </div>
-      <div class="col mx-3 p-0 row justify-content-end">
-        <button class="my-2 btn btn-warning">Áp dụng</button>
+      <div
+        class="col mx-3 my-0 p-0 row justify-content-end"
+        v-if="css.isDirector == 'Vai trò'"
+      >
+        <button
+          class="my-1 btn btn-warning"
+          data-toggle="modal"
+          data-target="#rolePositionModal"
+        >
+          Áp dụng
+        </button>
       </div>
     </div>
     <!-- componment -->
     <tablePosition_role
       v-if="component.tablePosition_role"
+      :data="data.rolePosition"
+      :fileds="['Vai trò', 'Danh sách quyền']"
+      @checked="
+        (value) => {
+          component.checkPosition = true;
+          data.positionId = value;
+        }
+      "
+      @unchecked="
+        (value) => {
+          component.checkPosition = false;
+          data.positionId = '';
+        }
+      "
     ></tablePosition_role>
     <Table
       v-if="component.table"
-      :data="data.accounts"
+      :data="data.pageAccounts"
       :fields="['Emai', 'Vai trò']"
       :titles="['userName', 'positionName']"
       :action="true"
-      @togge_off="(value) => togge_off(value)"
-      @togge_on="console.log('on')"
+      :currentPage="data.currentPage"
+      :sizePage="data.sizePage"
+      @togge_off="(value) => togge_off(value, false)"
+      @togge_on="(value) => togge_off(value, true)"
     ></Table>
+    <pagination
+      v-if="component.table"
+      :totalPage="data.totalPage"
+      :currentPage="data.currentPage"
+      :size="data.sizePage"
+      @page="(value) => (data.currentPage = value)"
+      @previous="
+        () => {
+          if (data.currentPage > 1) {
+            data.currentPage = data.currentPage - 1;
+          }
+        }
+      "
+      @next="
+        () => {
+          if (data.currentPage < data.totalPage) {
+            data.currentPage = data.currentPage + 1;
+          }
+        }
+      "
+    ></pagination>
     <roleForm
       @add="createRole"
       @closeModal="component.roleModal = !component.roleModal"
       v-if="component.roleModal"
     ></roleForm>
     <accuountForm
+      v-if="component.accountModal"
       @add="createAccount"
       @closeModal="component.accountModal = !component.accountModal"
-      v-if="component.accountModal"
     ></accuountForm>
+    <role_positionForm
+      v-if="component.checkPosition"
+      :position="data.positionId"
+      @add="refreshRolePosition()"
+    ></role_positionForm>
   </div>
 </template>
 <style scoped>

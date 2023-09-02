@@ -19,11 +19,21 @@ const getDecrypt = (name) => {
     console.log(">>>E");
   }
 };
+const setPassword = () => {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let password = "";
 
+  for (let i = 0; i < 9; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+};
 exports.create = async (req, res, next) => {
-  let { userName, password, userId, positionId } = req.body;
+  const { userName, userId, positionId } = req.body;
   console.log("Account Body:", req.body);
-  password = setEncrypt(password);
+  const password = setEncrypt(setPassword());
   try {
     const document = await Accounts.create({
       userName: userName,

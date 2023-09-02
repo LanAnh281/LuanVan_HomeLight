@@ -165,133 +165,130 @@ export default {
 };
 </script>
 <template>
-  <div class="body">
-    <div
-      class="modal fade"
-      id="boardingModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title title" id="exampleModalLabel">
-              Thêm nhà trọ
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form
-              @submit.prevent="save"
-              enctype="multipart/form-data"
-              class="container mt-3"
-            >
-              <div class="form-group row">
-                <label for="inputname" class="col-sm-3 col-form-label p-0"
-                  >Tên nhà trọ :</label
-                >
-                <div class="col-sm-9">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="inputname"
-                    @blur="
-                      () => {
-                        let isCheck = checkStringAndNumber(data.item.name);
-                        if (isCheck) {
-                          data.error.name = 'Không chứa các ký tự đặc biệt.';
-                          data.flag = true;
-                        }
+  <div
+    class="modal fade"
+    id="boardingModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title title" id="exampleModalLabel">Thêm nhà trọ</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form
+            @submit.prevent="save"
+            enctype="multipart/form-data"
+            class="container mt-3"
+          >
+            <div class="form-group row">
+              <label for="inputname" class="col-sm-3 col-form-label p-0"
+                >Tên nhà trọ :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputname"
+                  @blur="
+                    () => {
+                      let isCheck = checkStringAndNumber(data.item.name);
+                      if (isCheck) {
+                        data.error.name = 'Không chứa các ký tự đặc biệt.';
+                        data.flag = true;
                       }
-                    "
-                    @input="
-                      data.error.name = '';
-                      data.flag = false;
-                    "
-                    v-model="data.item.name"
-                  />
-                  <div v-if="data.error.name" class="invalid-error">
-                    {{ data.error.name }}
-                  </div>
+                    }
+                  "
+                  @input="
+                    data.error.name = '';
+                    data.flag = false;
+                  "
+                  v-model="data.item.name"
+                />
+                <div v-if="data.error.name" class="invalid-error">
+                  {{ data.error.name }}
                 </div>
               </div>
-              <div class="form-group row">
-                <label for="inputrules" class="col-sm-3 col-form-label p-0"
-                  >Thành phố :</label
-                >
-                <div class="col-sm-9">
-                  <Select
-                    :title="`Chọn thành phố`"
-                    :data="data.city.data"
-                    @choose="(value) => change(value)"
-                  ></Select>
-                </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                >Thành phố :</label
+              >
+              <div class="col-sm-9">
+                <Select
+                  :title="`Chọn thành phố`"
+                  :data="data.city.data"
+                  @choose="(value) => change(value)"
+                ></Select>
               </div>
+            </div>
 
-              <div class="form-group row">
-                <label for="inputrules" class="col-sm-3 col-form-label p-0"
-                  >Quận huyện :</label
-                >
-                <div class="col-sm-9">
-                  <Select
-                    :title="`Chọn quận huyện`"
-                    :data="data.district.data.districts"
-                    @choose="(value) => changeDistrict(value)"
-                  ></Select>
-                </div>
+            <div class="form-group row">
+              <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                >Quận huyện :</label
+              >
+              <div class="col-sm-9">
+                <Select
+                  :title="`Chọn quận huyện`"
+                  :data="data.district.data.districts"
+                  @choose="(value) => changeDistrict(value)"
+                ></Select>
               </div>
-              <div class="form-group row">
-                <label for="inputrules" class="col-sm-3 col-form-label p-0"
-                  >Quận huyện :</label
-                >
-                <div class="col-sm-9">
-                  <Select
-                    :title="`Chọn phường xã`"
-                    :data="data.ward.data.wards"
-                    @choose="(value) => changeWard(value)"
-                  ></Select>
-                </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputrules" class="col-sm-3 col-form-label p-0"
+                >Quận huyện :</label
+              >
+              <div class="col-sm-9">
+                <Select
+                  :title="`Chọn phường xã`"
+                  :data="data.ward.data.wards"
+                  @choose="(value) => changeWard(value)"
+                ></Select>
               </div>
-              <div class="form-group row">
-                <label for="inputaddress" class="col-sm-3 col-form-label p-0"
-                  >Địa chỉ :</label
-                >
-                <div class="col-sm-9">
-                  <textarea
-                    class="form-control"
-                    id="inputaddress"
-                    @blur="
-                      () => {
-                        let isCheck = checkAddress(data.item.number);
-                        if (isCheck) {
-                          data.error.number =
-                            'Địa chỉ không được bỏ trống và chứa các kí tự đặc biệt.';
-                          data.flag = true;
-                        }
+            </div>
+            <div class="form-group row">
+              <label for="inputaddress" class="col-sm-3 col-form-label p-0"
+                >Địa chỉ :</label
+              >
+              <div class="col-sm-9">
+                <textarea
+                  class="form-control"
+                  id="inputaddress"
+                  @blur="
+                    () => {
+                      let isCheck = checkAddress(data.item.number);
+                      if (isCheck) {
+                        data.error.number =
+                          'Địa chỉ không được bỏ trống và chứa các kí tự đặc biệt.';
+                        data.flag = true;
                       }
-                    "
-                    @input="
-                      data.error.number = '';
-                      data.flag = false;
-                    "
-                    v-model="data.item.number"
-                  ></textarea>
-                  <div v-if="data.error.number" class="invalid-error">
-                    {{ data.error.number }}
-                  </div>
+                    }
+                  "
+                  @input="
+                    data.error.number = '';
+                    data.flag = false;
+                  "
+                  v-model="data.item.number"
+                ></textarea>
+                <div v-if="data.error.number" class="invalid-error">
+                  {{ data.error.number }}
                 </div>
               </div>
+            </div>
 
-              <!-- <div class="form-group row">
+            <!-- <div class="form-group row">
                 <label for="inputrules" class="col-sm-3 col-form-label p-0"
                   >Quy định :</label
                 >
@@ -321,13 +318,10 @@ export default {
                 </div>
               </div> -->
 
-              <div class="form-group row justify-content-around mb-0">
-                <button type="submit" class="btn btn-login col-sm-3">
-                  Thêm
-                </button>
-              </div>
-            </form>
-          </div>
+            <div class="form-group row justify-content-around mb-0">
+              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

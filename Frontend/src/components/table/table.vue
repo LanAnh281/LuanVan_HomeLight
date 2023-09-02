@@ -8,6 +8,8 @@ export default {
     titles: { type: Array, default: [] },
     action: { type: Boolean, default: false },
     actionList: { type: Array, default: [] },
+    currentPage: "",
+    sizePage: "",
   },
   setup(props, emit) {
     return {};
@@ -28,9 +30,13 @@ export default {
       </thead>
       <tbody>
         <tr v-for="(value, index) in data" :key="index">
-          <th scope="row">{{ index + 1 }}</th>
+          <th scope="row">{{ (currentPage - 1) * sizePage + index + 1 }}</th>
 
-          <td v-for="(title, index1) in titles" :key="index1">
+          <td
+            v-for="(title, index1) in titles"
+            :key="index1"
+            style="max-width: 10px"
+          >
             {{ value[title] }}
           </td>
           <td v-if="action" class="ml-2">

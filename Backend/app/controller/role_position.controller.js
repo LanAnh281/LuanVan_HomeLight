@@ -29,7 +29,7 @@ exports.findAll = async (req, res, next) => {
 //findone a position
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Roles_Positions.findOne({
+    const document = await Roles_Positions.findAll({
       where: {
         PositionId: req.params.id,
       },

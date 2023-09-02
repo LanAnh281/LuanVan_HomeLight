@@ -86,85 +86,60 @@ export default {
 };
 </script>
 <template>
-  <div class="body">
-    <div
-      class="modal fade"
-      id="roleModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title title" id="exampleModalLabel">
-              Thêm nhà trọ
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="save" class="container mt-3">
-              <div class="form-group row justify-content-end mr-2">
-                <span
-                  class="radius mr-1"
-                  style="color: yellowgreen"
-                  @click="add"
-                  >+</span
-                >
-                <span class="radius" style="color: red" @click="remove">
-                  -
-                </span>
-              </div>
-              <div
-                class="form-group row"
-                v-for="(value, index) in data.item"
-                :key="index"
+  <div
+    class="modal fade"
+    id="roleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title title" id="exampleModalLabel">Thêm quyền</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="save" class="container mt-1">
+            <div class="form-group row justify-content-end mr-2">
+              <span class="radius mr-1" style="color: yellowgreen" @click="add"
+                >+</span
               >
-                <label for="inputrole" class="col-sm-3 col-form-label p-0"
-                  >Tên quyền :</label
-                >
-                <div class="col-sm-9">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="inputrole"
-                    v-model="data.item[index].name"
-                  />
-                  <div v-if="data.error[index].name" class="invalid-error">
-                    {{ data.error[index].name }}
-                  </div>
+              <span class="radius" style="color: red" @click="remove"> - </span>
+            </div>
+            <div
+              class="form-group row"
+              v-for="(value, index) in data.item"
+              :key="index"
+            >
+              <label for="inputrole" class="col-sm-3 col-form-label p-0"
+                >Tên quyền :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputrole"
+                  v-model="data.item[index].name"
+                />
+                <div v-if="data.error[index].name" class="invalid-error">
+                  {{ data.error[index].name }}
                 </div>
               </div>
+            </div>
 
-              <div class="form-group row justify-content-around mb-0">
-                <button type="submit" class="btn btn-login col-sm-3">
-                  Thêm
-                </button>
-              </div>
-            </form>
-            <!-- @blur="
-            () => {
-              let isCheck = checkString(data.item[index].name);
-              if (isCheck) {
-                data.error[index].name =
-                  'Không chứa các ký tự đặc biệt.';
-                data.flag = true;
-              }
-            }
-          "
-          @input="
-            data.error[index].name = '';
-            data.flag = false;
-          " -->
-          </div>
+            <div class="form-group row justify-content-around mb-0">
+              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
