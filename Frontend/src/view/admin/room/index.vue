@@ -3,6 +3,7 @@ import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
+import roomService from "../../../service/room.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import {
@@ -14,11 +15,12 @@ import {
 //components
 import Select from "../../../components/select/select.vue";
 import BoardingForm from "../../../components/form/boarding.form.vue";
+import roomForm from "../../../components/form/room.form.vue";
 import Rule from "../../../components/form/rules.form.vue";
-import Box from "../../../components/box/boarding.box.vue";
+import Box from "../../../components/box/room.box.vue";
 
 export default {
-  components: { Select, BoardingForm, Box, Rule },
+  components: { Select, BoardingForm, roomForm, Box, Rule },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -83,6 +85,8 @@ export default {
     const refreshBoarding = async () => {
       const document = await boardinghouseService.getAll();
       data.boarding = document.message;
+      const documentRoom = await roomService.getAll();
+      data.items = documentRoom.message;
     };
     onMounted(async () => {
       await refreshBoarding();
@@ -103,6 +107,7 @@ export default {
       changefee,
       create,
       handleDeleteClick,
+      roomService,
     };
   },
 };
@@ -192,6 +197,8 @@ export default {
         <button
           class="btn btn-primary p-0 mr-1"
           style="width: 34%; height: 36px; margin-top: 6px"
+          data-toggle="modal"
+          data-target="#roomModal"
         >
           <div class="row justify-content-center plus">
             <span class="material-symbols-outlined" style="color: var(--white)">
@@ -214,12 +221,7 @@ export default {
         </button>
       </div>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
-      <Box class="m-2"></Box>
-      <Box class="m-2"></Box>
-      <Box class="m-2"></Box>
-      <Box class="m-2"></Box>
-    </div>
+    <Box class="m-2" :data="data.items"></Box>
     <!-- componment -->
     <BoardingForm
       v-if="isBoardingModal"
@@ -227,6 +229,15 @@ export default {
       @closeModal="isBoardingModal = !isBoardingModal"
     ></BoardingForm>
     <Rule v-if="isRuleModal" @closeModal="isRuleModal = !isRuleModal"></Rule>
+    <roomForm
+      @add="
+        async () => {
+          console.log(`đã thêm phòng trọ mới`);
+          const documentRoom = await roomService.getAll();
+          data.items = documentRoom.message;
+        }
+      "
+    ></roomForm>
   </div>
 </template>
 <style scope>

@@ -32,6 +32,7 @@ const secret = "asdfghjkl!@#";
 // Middleware xác thực
 exports.authentication = (req, res, next) => {
   const token = req.headers.authorization;
+  console.log("token:", token);
   try {
     if (!token) {
       return res
@@ -56,6 +57,7 @@ exports.authentication = (req, res, next) => {
 exports.authorization = (requiredPermission) => {
   return async (req, res, next) => {
     const { user } = req;
+    console.log("user", user);
     if (!user) {
       return res.status(403).json({ message: "Access denied" });
     }

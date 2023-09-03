@@ -10,8 +10,16 @@ router
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,
-    authorization.authorization("create-role"),
+    authorization.authorization("thêm quyền"),
     role.create,
   ]);
-router.route("/:id").get(role.findOne).put(role.updated).delete(role.delete);
+router
+  .route("/:id")
+  .get(role.findOne)
+  .put([
+    authorization.authentication,
+    authorization.authorization("thay đổi quyền"),
+    role.updated,
+  ])
+  .delete(role.delete);
 module.exports = router;

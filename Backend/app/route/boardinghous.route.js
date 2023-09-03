@@ -7,7 +7,7 @@ router
   .get(BorardingHouse.findAll)
   .post([
     authorization.authentication,
-    authorization.authorization("create-boarding"),
+    authorization.authorization("thêm nhà trọ"),
     BorardingHouse.create,
   ]);
 router
@@ -16,7 +16,7 @@ router
   .put(BorardingHouse.updated)
   .delete([
     authorization.authentication,
-    authorization.authorization("delete-boarding"),
+    authorization.authorization("xóa nhà trọ"),
     BorardingHouse.delete,
   ]);
 module.exports = router;

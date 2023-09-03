@@ -10,7 +10,7 @@ router
   .put([
     request.sanitizeDataMiddleware,
     authorization.authentication,
-    authorization.authorization("update-password"),
+    authorization.authorization("thay đổi mật khẩu"),
     accounts.updated,
   ]);
 router

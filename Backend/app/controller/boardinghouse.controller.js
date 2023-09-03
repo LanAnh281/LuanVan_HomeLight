@@ -2,15 +2,14 @@ const { BorardingHouse } = require("../models/index.model.js");
 
 exports.create = async (req, res, next) => {
   const { name, address } = req.body;
-  console.log(">>>Body:", req.body);
   try {
     const document = await BorardingHouse.create({
       name: name,
       address: address,
       userId: req.user.userId,
     });
-    console.log(">>>DOC:", document);
-    return res.status(200).json({ message: document, status: "success" });
+    console.log("doc", document);
+    res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });

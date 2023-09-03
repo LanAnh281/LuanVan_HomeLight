@@ -12,7 +12,8 @@ exports.sanitizeDataMiddleware = (req, res, next) => {
   if (req.body) {
     for (const key in req.body) {
       if (Object.hasOwnProperty.call(req.body, key)) {
-        req.body[key] = sanitizeString(req.body[key]);
+        if (req.body[key] != null)
+          req.body[key] = sanitizeString(req.body[key]);
       }
     }
   }

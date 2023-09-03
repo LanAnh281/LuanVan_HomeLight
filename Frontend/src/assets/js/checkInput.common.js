@@ -6,6 +6,10 @@ export const checkString = (value) => {
   const pattern = /^[\p{L}\s]+$/u;
   return !pattern.test(value);
 };
+export const checkNumber = (value) => {
+  const pattern = /^[-+]?\d+$/; //kiểm tra số nguyên
+  return !pattern.test(value);
+};
 export const checkIdentification = (value) => {
   const pattern = /^\d{12}$/;
   return !pattern.test(value);

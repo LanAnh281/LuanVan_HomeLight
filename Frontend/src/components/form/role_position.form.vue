@@ -131,7 +131,6 @@ export default {
                 type="checkbox"
                 v-model="value.checked"
                 :checked="value.checked"
-                @click="console.log(data.item)"
               />
 
               {{ value.name }}

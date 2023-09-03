@@ -147,6 +147,6 @@ li:hover > div > * {
 }
 .isActive {
   color: var(--yellow-light);
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 1);
 }
 </style>

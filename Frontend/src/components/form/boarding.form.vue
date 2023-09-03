@@ -119,8 +119,9 @@ export default {
         console.log("data.flag:", data.flag);
         if (!data.flag) {
           data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-          console.log("Data.item:", data.item);
-          if (document.data["status"] === "success") {
+          const document = await boardinghouseService.create(data.item);
+          console.log("doc", document);
+          if (document["status"] == "success") {
             successAd(`Đã thêm nhà trọ ${document.message["name"]}`);
             refresh();
             emit("add");

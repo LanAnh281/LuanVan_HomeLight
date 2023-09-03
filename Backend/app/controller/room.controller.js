@@ -1,7 +1,9 @@
 const { Rooms } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const { name, price, area, status, boardingId, cycleId } = req.body;
-  console.log("Rooms Body:", req.body);
+  const { name, price, area, boardingId, cycleId } = req.body;
+  let status = req.body.status;
+  if (!req.body.status) status = false;
+  else status = true;
   try {
     const document = await Rooms.create({
       name: name,
