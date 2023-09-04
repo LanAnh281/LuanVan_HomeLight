@@ -1,5 +1,6 @@
 <script>
 import { reactive, onMounted, ref } from "vue";
+import _ from "lodash";
 
 //service
 import boardinghouseService from "../../service/boardinghouse.service";
@@ -23,6 +24,7 @@ export default {
         area: "",
         boardingId: "",
         cycleId: null,
+        countFiles: 0,
       },
       error: {
         name: "",
@@ -30,10 +32,14 @@ export default {
         area: "",
         boardingId: "",
       },
+      uploadFiles: [],
+      files: [],
       flag: true,
       boarding: {},
     });
     const isModalOpen = ref(false);
+    const filesRef = ref(null);
+
     const openModal = () => {
       isModalOpen.value = true;
       console.log("open modal boarding");
@@ -50,6 +56,7 @@ export default {
         area: "",
         boardingId: "",
         cycleId: null,
+        countFiles: 0,
       };
       data.error = {
         name: "",
@@ -59,6 +66,94 @@ export default {
       };
       data.flag = true;
     };
+    const handleFileUpload = (event) => {
+      data.uploadFiles = [];
+      const files = event.target.files;
+      data.uploadFiles = [...data.uploadFiles, ...files];
+      const previewImage = document.getElementById("previewImages");
+      previewImage.innerHTML = "";
+      const rowImages = document.createElement("div");
+      rowImages.classList.add("row");
+      for (const file of data.uploadFiles) {
+        const reader = new FileReader();
+        let invalidMessage = validate(file);
+        if (invalidMessage == "") {
+          reader.onload = function (e) {
+            const colImage = document.createElement("div");
+            colImage.classList.add("col-6");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.width = "190px";
+            img.style.height = "70px";
+            img.style.objectFit = "contain";
+            const br = document.createElement("br");
+            colImage.appendChild(img);
+            colImage.appendChild(br);
+
+            const span = document.createElement("span");
+            span.textContent = `${file.name}`;
+            colImage.appendChild(span);
+
+            rowImages.appendChild(colImage);
+            previewImage.appendChild(rowImages);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          const colImage = document.createElement("div");
+          colImage.classList.add("col-6");
+          const span = document.createElement("span");
+          span.textContent = `${file.name}`;
+          span.style.color = "red";
+          colImage.appendChild(span);
+
+          rowImages.appendChild(colImage);
+          previewImages.appendChild(rowImages);
+        }
+      }
+      data.files = [
+        ...data.files,
+        ..._.map(files, (file) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          url: null,
+          invalidMessage: validate(file),
+        })),
+      ];
+    };
+    const validate = (file) => {
+      const MAX_SIZE = 200000;
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const MAX_SIZE_VIDEO = 100000000; //100Mb
+      const allowedTypesVideo = [
+        "video/mp4",
+        "video/avi",
+        "video/webm",
+        "video/mov",
+      ];
+      if (
+        !allowedTypes.includes(file.type) &&
+        !allowedTypesVideo.includes(file.type)
+      ) {
+        return "not an image and a video";
+      }
+      const maxSize = allowedTypes.includes(file.type)
+        ? MAX_SIZE
+        : MAX_SIZE_VIDEO;
+      if (file.size > maxSize) {
+        return `Max size: ${MAX_SIZE / 1000}kb `;
+      }
+      return "";
+    };
+    const formFields = [
+      "name",
+      "price",
+      "area",
+      "boardingId",
+      "cycleId",
+      "countFiles",
+    ];
     const save = async () => {
       console.log("save");
       try {
@@ -72,8 +167,20 @@ export default {
         }
         console.log("data.flag:", data.flag);
         if (!data.flag) {
-          console.log("data.otems:", data.item);
-          const document = await roomService.create(data.item);
+          data.item["countFiles"] = data.uploadFiles.length;
+
+          const formData = new FormData();
+          _.forEach(formFields, (field) => {
+            formData.append(field, data.item[field]);
+          });
+          _.forEach(data.uploadFiles, (file) => {
+            if (validate(file) === "") {
+              formData.append("files", file);
+            }
+          });
+
+          console.log("data.otems:", formData);
+          const document = await roomService.create(formData);
 
           console.log("doc", document);
           if (document["status"] == "success") {
@@ -93,8 +200,10 @@ export default {
       }
     };
     onMounted(async () => {
-      const document = await boardinghouseService.getAll();
-      data.boarding = document.message;
+      const documentBoarding = await boardinghouseService.getAll();
+      data.boarding = documentBoarding.message;
+      filesRef.value = document.getElementById("inputImage"); //Get input
+
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
@@ -105,6 +214,7 @@ export default {
       checkStringAndNumber,
       checkAddress,
       checkNumber,
+      handleFileUpload,
     };
   },
 };
@@ -242,7 +352,30 @@ export default {
                 </div>
               </div>
             </div>
-
+            <!-- Image -->
+            <div class="form-group row">
+              <label
+                for="inputImagePrevious"
+                class="col-sm-3 col-form-label p-0"
+                >Ảnh phòng trọ :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="file"
+                  @blur="() => {}"
+                  @input="() => {}"
+                  ref="files"
+                  multiple
+                  @change="handleFileUpload($event)"
+                  class="form-control"
+                  id="inputImage"
+                />
+                <!-- <div v-if="data.error.image" class="invalid-error">
+                  {{ data.error.image }}
+                </div> -->
+              </div>
+              <div id="previewImages" class="container"></div>
+            </div>
             <div class="form-group row justify-content-around mb-0">
               <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
             </div>
