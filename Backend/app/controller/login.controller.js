@@ -28,7 +28,9 @@ const getDecrypt = (name) => {
 exports.login = async (req, res, next) => {
   let { userName, password } = req.body;
   console.log(userName, password);
-  password = setEncrypt(password);
+  if (password != undefined) {
+    password = setEncrypt(password);
+  }
   console.log("***req,body:", req.body);
   try {
     const document = await Accounts.findOne({
@@ -84,10 +86,10 @@ exports.login = async (req, res, next) => {
         }
       );
     } else {
-      res.json({ message: "fail", status: "fail" });
+      return res.json({ message: "fail", status: "fail" });
     }
   } catch (error) {
-    res.json({ message: error, status: "fail" });
+    return res.json({ message: error, status: "fail" });
   }
 };
 exports.refreshAccessToken = async (req, res, next) => {

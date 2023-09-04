@@ -2,6 +2,7 @@ const express = require("express");
 const room = require("../controller/room.controller");
 const authorization = require("../middeware/authorization.middeware");
 const request = require("../middeware/request.midderware");
+const upload = require("../middeware/upload.middeware");
 
 const router = express.Router();
 router
@@ -10,6 +11,7 @@ router
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,
+    upload.upload.array("files"),
     authorization.authorization("thêm phòng trọ"),
     room.create,
   ]);

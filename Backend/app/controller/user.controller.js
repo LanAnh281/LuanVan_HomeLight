@@ -99,13 +99,14 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    console.log("userId:", req.userId);
+    console.log("userId:", req.user["userId"]);
     const document =
-      req.userId != null
+      req.user["userId"] != null && req.user["userId"] != undefined
         ? await Users.findOne({
-            where: { _id: req.userId },
+            where: { _id: req.user["userId"] },
           })
         : { userName: "Quản trị viên" };
+    console.log(document);
     res.json({ message: document, status: "success" });
   } catch (error) {
     res.json({ message: error, status: "fail" });
