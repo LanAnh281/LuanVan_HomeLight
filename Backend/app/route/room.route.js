@@ -11,18 +11,25 @@ router
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,
-    upload.upload.array("files"),
+    upload.uploadStatic.array("files"),
     authorization.authorization("thêm phòng trọ"),
     room.create,
   ]);
 router
   .route("/:id")
   .get(room.findOne)
-  .put(room.updated)
+  .put([
+    request.sanitizeDataMiddleware,
+    authorization.authentication,
+    authorization.authorization("thay đổi phòng trọ"),
+    upload.uploadStatic.array("files"),
+
+    room.updated,
+  ])
   .delete([
     request.sanitizeDataMiddleware,
     authorization.authentication,
-    authorization.authorization("thêm phòng trọ"),
+    authorization.authorization("xóa phòng trọ"),
     room.delete,
   ]);
 module.exports = router;

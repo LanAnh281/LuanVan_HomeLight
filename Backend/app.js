@@ -32,6 +32,7 @@ const mailRouter = require("./app/route/mail.route");
 const resetPasswordRouter = require("./app/route/resetPassword.route");
 const uploadRouter = require("./app/route/upload.route");
 const ruleRouter = require("./app/route/rule.route");
+const mediaRouter = require("./app/route/media.route");
 
 //midderware
 const requestMidderware = require("./app/middeware/request.midderware");
@@ -86,6 +87,7 @@ app.use("/api/mail", mailRouter);
 app.use("/api/resetPassword", resetPasswordRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/rule", ruleRouter);
+app.use("/api/media", mediaRouter);
 
 // check errors
 app.use((req, res, next) => {

@@ -27,10 +27,25 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + "-" + uniqueSuffix + fileExtension);
   },
 });
-
+const storageStatic = multer.diskStorage({
+  destination: "./static/images",
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const fileExtension = path.extname(file.originalname);
+    cb(null, file.fieldname + "-" + uniqueSuffix + fileExtension);
+  },
+});
 const MAX_SIZE = 200000000;
 exports.upload = multer({
   storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: MAX_SIZE,
+  },
+});
+
+exports.uploadStatic = multer({
+  storage: storageStatic,
   fileFilter: fileFilter,
   limits: {
     fileSize: MAX_SIZE,

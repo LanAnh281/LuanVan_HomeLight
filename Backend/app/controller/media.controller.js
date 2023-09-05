@@ -49,28 +49,15 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.findAll = async (req, res, next) => {
+exports.findOne = async (req, res, next) => {
   try {
-    const documents = await Media.findAll({});
+    const documents = await Media.findAll({ where: { roomId: req.params.id } });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     res.json({ message: error, status: "fail" });
   }
 };
-exports.findOne = async (req, res, next) => {
-  try {
-    console.log("userId:", req.userId);
-    const document =
-      req.userId != null
-        ? await Media.findOne({
-            where: { _id: req.userId },
-          })
-        : { userName: "Quản trị viên" };
-    res.json({ message: document, status: "success" });
-  } catch (error) {
-    res.json({ message: error, status: "fail" });
-  }
-};
+//
 exports.getImg = async function (req, res) {
   const imagePath = path.join(
     __dirname,
