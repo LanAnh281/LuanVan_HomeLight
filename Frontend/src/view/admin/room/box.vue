@@ -22,7 +22,6 @@ export default {
           "Xóa",
           "Bạn có chắc chắc xóa phòng trọ."
         );
-        console.log("isDeelete:", isDeleted);
         if (isDeleted) {
           const document = await roomService.delete(value);
           document["status"] == "success"
@@ -39,55 +38,51 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
-      <div class="card m-1" v-for="(value, index) in data" :key="index">
-        <div class="card-item">
-          <img
-            class="card-img-top m-0"
-            src="../../../assets/image/background.jpg"
-            style="object-fit: contain"
-          />
-          <p class="card-title"><b>Phòng:</b> {{ value.name }}</p>
-          <p class="card-text"><b>Giá phòng:</b> {{ value.price }}</p>
-          <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
-          <div><button class="btn btn-primary">Thêm khách</button></div>
-          <div>
-            <span
-              class="material-symbols-outlined m-2 view"
-              title="chi tiết"
-              @click="
-                () => {
-                  console.log('view', value._id);
-                }
-              "
-            >
-              visibility
-            </span>
-            <span
-              class="material-symbols-outlined out"
-              title="trả phòng"
-              @click="
-                () => {
-                  console.log('out', value._id);
-                }
-              "
-            >
-              logout
-            </span>
-          </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
+    <div class="card m-1" v-for="(value, index) in data" :key="index">
+      <div class="card-item">
+        <img
+          class="card-img-top m-0"
+          src="../../../assets/image/background.jpg"
+          style="object-fit: contain"
+        />
+        <p class="card-title"><b>Phòng:</b> {{ value.name }}</p>
+        <p class="card-text"><b>Giá phòng:</b> {{ value.price }}</p>
+        <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
+        <div><button class="btn btn-primary">Thêm khách</button></div>
+        <div>
+          <span
+            class="material-symbols-outlined m-2 view"
+            title="chi tiết"
+            @click="
+              () => {
+                console.log('view', value._id);
+              }
+            "
+          >
+            visibility
+          </span>
+          <span
+            class="material-symbols-outlined out"
+            title="trả phòng"
+            @click="
+              () => {
+                console.log('out', value._id);
+              }
+            "
+          >
+            logout
+          </span>
         </div>
-        <span class="delete-icon" @click.stop="handleDelete(value._id)">
-          x
-        </span>
-        <p
-          data-toggle="modal"
-          data-target="#roomUpdateModal"
-          @click="$emit('edit', value._id)"
-        >
-          <span class="material-symbols-outlined edit-icon"> edit </span>
-        </p>
       </div>
+      <span class="delete-icon" @click.stop="handleDelete(value._id)"> x </span>
+      <p
+        data-toggle="modal"
+        data-target="#roomUpdateModal"
+        @click="$emit('edit', value._id)"
+      >
+        <span class="material-symbols-outlined edit-icon"> edit </span>
+      </p>
     </div>
   </div>
 </template>

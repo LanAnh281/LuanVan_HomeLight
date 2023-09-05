@@ -19,7 +19,9 @@ export default {
 </script>
 <template>
   <select class="custom-select" id="inputGroupSelect01" @change="change">
-    <option>{{ title }}</option>
+    <option value="''" :selected="selected == '' ? selected : null">
+      {{ title }}
+    </option>
     <option
       v-for="(value, index) in data"
       :key="index"

@@ -16,6 +16,7 @@ import {
 import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
+  props: { boarding: [] },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -55,7 +56,7 @@ export default {
         price: "",
         area: "",
         boardingId: "",
-        cycleId: null,
+        // cycleId: null,
         countFiles: 0,
       };
       data.error = {
@@ -65,6 +66,11 @@ export default {
         boardingId: "",
       };
       data.flag = true;
+      data.files = [];
+
+      data.uploadFiles = [];
+      const previewImage = document.getElementById("previewImages");
+      previewImage.innerHTML = "";
     };
     const handleFileUpload = (event) => {
       data.uploadFiles = [];
@@ -155,7 +161,6 @@ export default {
       "countFiles",
     ];
     const save = async () => {
-      console.log("save");
       try {
         for (const key in data.error) {
           console.log("key", key, data.item[key]);
@@ -165,48 +170,51 @@ export default {
             console.log("1", key);
           }
         }
-        console.log("data.flag:", data.flag);
+
         if (!data.flag) {
           data.item["countFiles"] = data.uploadFiles.length;
 
           const formData = new FormData();
+          if (data.item.countFiles > 0) {
+            _.forEach(data.uploadFiles, (file) => {
+              if (validate(file) === "") {
+                formData.append("files", file);
+              }
+            });
+          }
           _.forEach(formFields, (field) => {
             formData.append(field, data.item[field]);
           });
-          _.forEach(data.uploadFiles, (file) => {
-            if (validate(file) === "") {
-              formData.append("files", file);
-            }
-          });
+          // _.forEach(data.uploadFiles, (file) => {
+          //   if (validate(file) === "") {
+          //     formData.append("files", file);
+          //   }
+          // });
 
-          console.log("data.otems:", formData);
           const document = await roomService.create(formData);
-
-          console.log("doc", document);
           if (document["status"] == "success") {
             successAd(`Đã thêm phòng trọ ${document.message["name"]}`);
             refresh();
             emit("add");
+            filesRef.value.value = "";
           } else {
-            console.log("Thất bại");
             warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
           }
         }
       } catch (error) {
-        if (error) {
-          warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
         }
-        console.log(error);
       }
     };
 
     onBeforeMount(async () => {
       console.log("1");
-      const documentBoarding = await boardinghouseService.getAll();
-      data.boarding = documentBoarding.message;
-
       filesRef.value = document.getElementById("inputImage"); //Get input
-
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
@@ -260,7 +268,8 @@ export default {
               <div class="col-sm-9">
                 <Select
                   :title="'Chọn nhà trọ'"
-                  :data="data.boarding"
+                  :data="boarding"
+                  :selected="data.item.boardingId"
                   @choose="(value) => (data.item.boardingId = value)"
                 ></Select>
               </div>
@@ -357,9 +366,7 @@ export default {
             </div>
             <!-- Image -->
             <div class="form-group row">
-              <label
-                for="inputImagePrevious"
-                class="col-sm-3 col-form-label p-0"
+              <label for="inputImage" class="col-sm-3 col-form-label p-0"
                 >Ảnh phòng trọ :</label
               >
               <div class="col-sm-9">

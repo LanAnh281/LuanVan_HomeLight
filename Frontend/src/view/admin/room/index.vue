@@ -1,5 +1,12 @@
 <script>
-import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
+import {
+  ref,
+  reactive,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+  readonly,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
@@ -14,9 +21,9 @@ import {
 } from "../../../assets/js/common.alert";
 //components
 import Select from "../../../components/select/select.vue";
-import BoardingForm from "../../../components/form/boarding.form.vue";
+import BoardingForm from "./addBoarding.form.vue";
 
-import Rule from "../../../components/form/rules.form.vue";
+import Rule from "./addRules.form.vue";
 import Box from "./box.vue";
 //
 import roomForm from "./add.vue";
@@ -47,26 +54,70 @@ export default {
       isActiveBoarding: "",
       roomId: "",
     });
+    const component = reactive({
+      isBoardingModal: false,
+      isRuleModal: false,
+      isEditRoomModal: false,
+    });
     let intervalId = null;
-    const isBoardingModal = ref(false);
-    const isRuleModal = ref(false);
-    const isEditRoomModal = ref(false);
-    const refresh = () => {};
     const changeStatus = (value) => {
       console.log("Status:", value);
     };
     const changefee = (value) => {
       console.log("Status:", value);
     };
-    const create = async () => {
-      await refreshBoarding();
+    // const create = async () => {
+    //   await refreshBoarding();
+    // };
+    const refresh = async () => {
+      try {
+        const document = await boardinghouseService.getAll(); // api getAll borading houses
+        data.boarding = document.message;
+        data.isActiveBoarding = data.boarding[0]._id;
+        const documentRoom = await roomService.getAll(); //api getAll rooms
+        data.items = documentRoom.message;
+        //filter rooms of a boarding house
+        data.items = data.items.filter(
+          (item) => item.boardingId == data.isActiveBoarding
+        );
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const refreshBoarding = async () => {
+      const document = await boardinghouseService.getAll();
+      data.boarding = document.message;
+    };
+    const refreshRoom = async () => {
+      try {
+        const documentRoom = await roomService.getAll(); //api getAll rooms
+        data.items = documentRoom.message;
+        //filter rooms of a boarding house
+        console.log(">>>id", data.isActiveBoarding);
+        data.items = data.items.filter(
+          (item) => item.boardingId == data.isActiveBoarding
+        );
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
     const handleDeleteClick = async (id, name) => {
-      console.log("xóa");
       try {
         const isDelete = await deleted(
-          "Xóa nhà trọ",
-          `Bạn có chắc chắn xóa nhà trọ ${name}`
+          `Xóa nhà trọ ${name}`,
+          `Bạn sẽ xóa tất cả phòng trọ thuộc nhà trọ ${name}`
         );
         if (isDelete) {
           const document = await boardinghouseService.delete(id);
@@ -85,25 +136,11 @@ export default {
         }
       }
     };
-    // data.items = computed(async () => {
-    //   let documentRoom = await roomService.getAll();
-    //   documentRoom = documentRoom.message;
-    //   documentRoom.filter((item) => item.boardingId == data.isActiveBoarding);
-    // });
-    const refreshBoarding = async () => {
-      const document = await boardinghouseService.getAll();
-      data.boarding = document.message;
-      const documentRoom = await roomService.getAll();
-      data.items = documentRoom.message;
-      data.items = data.items.filter(
-        (item) => item.boardingId == data.isActiveBoarding
-      );
-      console.log("data.items:", data.items);
-    };
+
     onMounted(async () => {
-      await refreshBoarding();
-      data.isActiveBoarding = data.boarding[0]._id;
-      await checkAccessToken(router);
+      await refresh();
+
+      await checkAccessToken(router); //access token
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
@@ -113,15 +150,16 @@ export default {
     });
     return {
       data,
-      isBoardingModal,
-      isRuleModal,
-      isEditRoomModal,
+      component,
+      refresh,
+      refreshRoom,
+      refreshBoarding,
+
       changeStatus,
       changefee,
-      create,
+      // create,
       handleDeleteClick,
       roomService,
-      refreshBoarding,
     };
   },
 };
@@ -144,8 +182,12 @@ export default {
           @choose="(value) => changefee(value)"
         ></Select>
       </div>
+      <!-- btn add boarding house -->
       <div class="col-8 mr-1 p-0 row justify-content-end">
-        <div class="mr-1" @click="isBoardingModal = !isBoardingModal">
+        <div
+          class="mr-1"
+          @click="component.isBoardingModal = !component.isBoardingModal"
+        >
           <button
             class="btn btn-primary p-0"
             style="width: 103px; height: 36px; margin-top: 6px"
@@ -163,8 +205,19 @@ export default {
             </div>
           </button>
         </div>
+        <!-- component  -->
+        <BoardingForm
+          v-if="component.isBoardingModal"
+          @add="
+            async () => {
+              await refreshBoarding();
+            }
+          "
+          @closeModal="component.isBoardingModal = !component.isBoardingModal"
+        ></BoardingForm>
 
-        <div class="" @click="isRuleModal = !isRuleModal">
+        <!-- btn add rules -->
+        <div class="" @click="component.isRuleModal = !component.isRuleModal">
           <button
             class="btn btn-primary p-0 mr-0"
             style="width: 103px; height: 36px; margin-top: 6px"
@@ -182,15 +235,20 @@ export default {
             </div>
           </button>
         </div>
+        <!-- component add rules -->
+        <Rule
+          v-if="component.isRuleModal"
+          @closeModal="component.isRuleModal = !component.isRuleModal"
+        ></Rule>
       </div>
     </div>
-    <!-- Boarding -->
+    <!-- Boarding house items -->
     <div class="border-radius my-3 mx-0 row justify-content-end">
       <div class="col-8 boarding">
         <button
+          class="btn px-2 mr-1 board-item"
           v-for="(value, index) in data.boarding"
           :key="index"
-          class="btn px-2 mr-1 board-item"
           :class="value._id == data.isActiveBoarding ? 'isActiveBoarding' : ''"
           @click="
             async () => {
@@ -209,9 +267,11 @@ export default {
             @click.stop="handleDeleteClick(value._id, value.name)"
           >
             x
+            <!--click.stop not parent element -->
           </span>
         </button>
       </div>
+      <!-- btn add room -->
       <div class="col-4">
         <button
           class="btn btn-primary p-0 mr-1"
@@ -226,7 +286,18 @@ export default {
             <span style="color: var(--white)">Thêm phòng</span>
           </div>
         </button>
+        <!-- compomnent add room -->
+        <roomForm
+          :boarding="data.boarding"
+          @add="
+            async () => {
+              console.log(`đã thêm phòng trọ mới`);
+              await refreshRoom();
+            }
+          "
+        ></roomForm>
 
+        <!-- btn edit room -->
         <button
           class="btn btn-warning p-0 mr-1"
           style="width: 34%; height: 36px; margin-top: 6px"
@@ -240,35 +311,22 @@ export default {
         </button>
       </div>
     </div>
+    <!-- componment -->
+    <!-- Box rooms have icon click delete and edit -->
     <Box
       class="m-2"
       :data="data.items"
-      @handleDelete="refreshBoarding()"
+      @handleDelete="refreshRoom()"
       @edit="
         (value) => {
           data.roomId = value;
-          isEditRoomModal = !isEditRoomModal;
+          component.isEditRoomModal = !component.isEditRoomModal;
         }
       "
     ></Box>
-    <!-- componment -->
-    <BoardingForm
-      v-if="isBoardingModal"
-      @add="create"
-      @closeModal="isBoardingModal = !isBoardingModal"
-    ></BoardingForm>
-    <Rule v-if="isRuleModal" @closeModal="isRuleModal = !isRuleModal"></Rule>
-    <roomForm
-      @add="
-        async () => {
-          console.log(`đã thêm phòng trọ mới`);
-          const documentRoom = await roomService.getAll();
-          data.items = documentRoom.message;
-        }
-      "
-    ></roomForm>
+
     <Edit
-      v-if="isEditRoomModal"
+      v-if="component.isEditRoomModal"
       :_id="data.roomId"
       @edit="
         async () => {

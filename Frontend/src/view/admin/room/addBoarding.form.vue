@@ -3,17 +3,17 @@ import { reactive, onMounted, ref } from "vue";
 import axios from "axios";
 
 //service
-import boardinghouseService from "../../service/boardinghouse.service";
+import boardinghouseService from "../../../service/boardinghouse.service";
 //component
-import Select from "../../components/select/selectdependent.vue";
+import Select from "../../../components/select/selectdependent.vue";
 
 //js
 import {
   checkStringAndNumber,
   checkAddress,
-} from "../../assets/js/checkInput.common";
-import { successAd, warning } from "../../assets/js/common.alert";
-import { city, district, ward } from "../../assets/js/dependent.common";
+} from "../../../assets/js/checkInput.common";
+import { successAd, warning } from "../../../assets/js/common.alert";
+import { city, district, ward } from "../../../assets/js/dependent.common";
 export default {
   components: { Select },
   setup(props, { emit }) {
