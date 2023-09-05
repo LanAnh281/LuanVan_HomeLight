@@ -1,5 +1,5 @@
 <script>
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
@@ -15,12 +15,14 @@ import {
 //components
 import Select from "../../../components/select/select.vue";
 import BoardingForm from "../../../components/form/boarding.form.vue";
-import roomForm from "../../../components/form/room.form.vue";
-import Rule from "../../../components/form/rules.form.vue";
-import Box from "../../../components/box/room.box.vue";
 
+import Rule from "../../../components/form/rules.form.vue";
+import Box from "./box.vue";
+//
+import roomForm from "./add.vue";
+import Edit from "./edit.vue";
 export default {
-  components: { Select, BoardingForm, roomForm, Box, Rule },
+  components: { Select, BoardingForm, roomForm, Box, Rule, Edit },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -43,11 +45,12 @@ export default {
         { _id: true, name: "Đã thanh toán" },
       ],
       isActiveBoarding: "",
+      roomId: "",
     });
     let intervalId = null;
     const isBoardingModal = ref(false);
     const isRuleModal = ref(false);
-
+    const isEditRoomModal = ref(false);
     const refresh = () => {};
     const changeStatus = (value) => {
       console.log("Status:", value);
@@ -82,11 +85,20 @@ export default {
         }
       }
     };
+    // data.items = computed(async () => {
+    //   let documentRoom = await roomService.getAll();
+    //   documentRoom = documentRoom.message;
+    //   documentRoom.filter((item) => item.boardingId == data.isActiveBoarding);
+    // });
     const refreshBoarding = async () => {
       const document = await boardinghouseService.getAll();
       data.boarding = document.message;
       const documentRoom = await roomService.getAll();
       data.items = documentRoom.message;
+      data.items = data.items.filter(
+        (item) => item.boardingId == data.isActiveBoarding
+      );
+      console.log("data.items:", data.items);
     };
     onMounted(async () => {
       await refreshBoarding();
@@ -103,11 +115,13 @@ export default {
       data,
       isBoardingModal,
       isRuleModal,
+      isEditRoomModal,
       changeStatus,
       changefee,
       create,
       handleDeleteClick,
       roomService,
+      refreshBoarding,
     };
   },
 };
@@ -179,8 +193,13 @@ export default {
           class="btn px-2 mr-1 board-item"
           :class="value._id == data.isActiveBoarding ? 'isActiveBoarding' : ''"
           @click="
-            () => {
+            async () => {
               data.isActiveBoarding = value._id;
+              const documentRoom = await roomService.getAll();
+              data.items = documentRoom.message;
+              data.items = data.items.filter(
+                (item) => item.boardingId == data.isActiveBoarding
+              );
             }
           "
         >
@@ -221,7 +240,17 @@ export default {
         </button>
       </div>
     </div>
-    <Box class="m-2" :data="data.items"></Box>
+    <Box
+      class="m-2"
+      :data="data.items"
+      @handleDelete="refreshBoarding()"
+      @edit="
+        (value) => {
+          data.roomId = value;
+          isEditRoomModal = !isEditRoomModal;
+        }
+      "
+    ></Box>
     <!-- componment -->
     <BoardingForm
       v-if="isBoardingModal"
@@ -238,11 +267,22 @@ export default {
         }
       "
     ></roomForm>
+    <Edit
+      v-if="isEditRoomModal"
+      :_id="data.roomId"
+      @edit="
+        async () => {
+          console.log('Edit index.vue');
+          const documentRoom = await roomService.getAll();
+          data.items = documentRoom.message;
+        }
+      "
+    ></Edit>
   </div>
 </template>
 <style scope>
 .body {
-  min-height: calc(100vh - var(--footer));
+  min-height: calc(100vh);
 }
 .border-radius {
   border: 1px solid #eae6e6;

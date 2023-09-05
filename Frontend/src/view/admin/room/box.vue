@@ -1,18 +1,18 @@
 <script>
 import { reactive, ref } from "vue";
 //service
-import roomService from "../../service/room.service";
+import roomService from "../../../service/room.service";
 //asset  js
 import {
   successAd,
   success,
   deleted,
   warning,
-} from "../../assets/js/common.alert";
+} from "../../../assets/js/common.alert";
 //component
-import RoomForm from "../../components/form/room.form.vue";
+import Edit from "./edit.vue";
 export default {
-  comments: { RoomForm },
+  comments: { Edit },
   props: { data: [] },
   setup(props, { emit }) {
     const isUpdateForm = ref(false);
@@ -45,7 +45,7 @@ export default {
         <div class="card-item">
           <img
             class="card-img-top m-0"
-            src="../../assets/image/background.jpg"
+            src="../../../assets/image/background.jpg"
             style="object-fit: contain"
           />
           <p class="card-title"><b>Phòng:</b> {{ value.name }}</p>
@@ -82,17 +82,11 @@ export default {
         </span>
         <p
           data-toggle="modal"
-          data-target="#roomModal"
-          @click="isUpdateForm = !isUpdateForm"
+          data-target="#roomUpdateModal"
+          @click="$emit('edit', value._id)"
         >
           <span class="material-symbols-outlined edit-icon"> edit </span>
         </p>
-        {{ value._id }}
-        <RoomForm
-          v-if="isUpdateForm"
-          :isUpdate="true"
-          :id="value._id"
-        ></RoomForm>
       </div>
     </div>
   </div>

@@ -5,6 +5,7 @@ export default {
   props: {
     title: "",
     data: "",
+    selected: "",
   },
   setup(props, { emit }) {
     const change = (e) => {
@@ -18,8 +19,13 @@ export default {
 </script>
 <template>
   <select class="custom-select" id="inputGroupSelect01" @change="change">
-    <option selected>{{ title }}</option>
-    <option v-for="(value, index) in data" :key="index" :value="value._id">
+    <option>{{ title }}</option>
+    <option
+      v-for="(value, index) in data"
+      :key="index"
+      :value="value._id"
+      :selected="selected !== '' ? selected : null"
+    >
       {{ value.name }}
     </option>
   </select>

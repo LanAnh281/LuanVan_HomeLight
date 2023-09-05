@@ -22,7 +22,6 @@ import accuountForm from "../../../components/form/account.form.vue";
 import tablePosition_role from "../../../components/table/position_role.table.vue";
 import Table from "../../../components/table/table.vue";
 import role_positionForm from "../../../components/form/role_position.form.vue";
-import pagination from "../../../components/pagination/pagination.vue";
 import Pagination from "../../../components/pagination/pagination.vue";
 
 export default {

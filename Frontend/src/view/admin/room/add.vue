@@ -1,29 +1,21 @@
 <script>
-import {
-  reactive,
-  onMounted,
-  ref,
-  watch,
-  watchEffect,
-  onBeforeMount,
-} from "vue";
+import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
-import boardinghouseService from "../../service/boardinghouse.service";
-import roomService from "../../service/room.service";
+import boardinghouseService from "../../../service/boardinghouse.service";
+import roomService from "../../../service/room.service";
 //component
-import Select from "../select/select.vue";
+import Select from "../../../components/select/select.vue";
 //js
 import {
   checkStringAndNumber,
   checkAddress,
   checkNumber,
-} from "../../assets/js/checkInput.common";
-import { successAd, warning } from "../../assets/js/common.alert";
+} from "../../../assets/js/checkInput.common";
+import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
-  props: { isUpdate: "", id: "" },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -116,7 +108,7 @@ export default {
           colImage.appendChild(span);
 
           rowImages.appendChild(colImage);
-          previewImages.appendChild(rowImages);
+          previewImage.appendChild(rowImages);
         }
       }
       data.files = [
@@ -207,28 +199,16 @@ export default {
         console.log(error);
       }
     };
-    watch(
-      (props.isUpdate,
-      (newValue, oldValue) => {
-        console.log("isUp:", newValue);
-      })
-    );
+
     onBeforeMount(async () => {
       console.log("1");
       const documentBoarding = await boardinghouseService.getAll();
       data.boarding = documentBoarding.message;
-      if (props.isUpdate) {
-        const documentRoom = await roomService.get(props.id);
-        data.item = documentRoom.message;
-      }
-      console.log("data.itemt room:", data.item, props.id, props.isUpdate);
+
       filesRef.value = document.getElementById("inputImage"); //Get input
 
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
-
-      $("#roomUpdateModal").on("show.bs.modal", openModal); //lắng nghe mở modal
-      $("#roomUpdateModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
 
     return {
@@ -245,7 +225,7 @@ export default {
 <template>
   <div
     class="modal fade"
-    :id="'isUpdate' ? 'roomModal' : 'roomUpdateModal'"
+    id="roomModal"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"
@@ -255,7 +235,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title title" id="exampleModalLabel">
-            Thêm phòng trọ {{ isUpdate }}
+            Thêm phòng trọ
           </h5>
           <button
             type="button"
@@ -401,14 +381,6 @@ export default {
             </div>
             <div class="form-group row justify-content-around mb-0">
               <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
-            </div>
-            <div
-              class="form-group row justify-content-around mb-0"
-              v-if="isUpdate"
-            >
-              <button type="submit" class="btn btn- col-warning sm-3">
-                Cập nhật
-              </button>
             </div>
           </form>
         </div>

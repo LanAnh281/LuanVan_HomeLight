@@ -21,7 +21,13 @@ class roomService {
     return (await this.api.get(`/${id}`)).data;
   }
   async update(id, data) {
-    return (await this.api.put(`/${id}`, data)).data;
+    return (
+      await this.api.put(`/${id}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Đảm bảo định dạng dữ liệu là multipart/form-data
+        },
+      })
+    ).data;
   }
   async delete(id) {
     return (await this.api.delete(`/${id}`)).data;
