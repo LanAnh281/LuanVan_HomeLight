@@ -3,6 +3,6 @@
 </template>
 <style scoped>
 .body {
-  min-height: calc(100vh - var(--footer));
+  min-height: 100vh;
 }
 </style>

@@ -17,7 +17,7 @@ import {
 import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
-  props: { _id: "" },
+  props: { _id: "", dataProps: {}, medias: [], boarding: [] },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -39,6 +39,8 @@ export default {
       files: [],
       flag: true,
       boarding: {},
+      removeMedia: [],
+      mediasCopy: [],
     });
     const isModalOpen = ref(false);
     const filesRef = ref(null);
@@ -49,25 +51,29 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal edit room");
+      refresh();
       emit("closeModal");
     };
 
-    const refresh = () => {
-      data.item = {
-        name: "",
-        price: "",
-        area: "",
-        boardingId: "",
-        cycleId: null,
-        countFiles: 0,
-      };
-      data.error = {
-        name: "",
-        price: "",
-        area: "",
-        boardingId: "",
-      };
-      data.flag = true;
+    const refresh = async () => {
+      // const previewImage = document.getElementById("previewImagesEdit");
+      // previewImage.innerHTML = "";
+      data.mediasCopy = [];
+      data.files = [];
+      filesRef.value = document.getElementById("inputImage"); //Get input
+      filesRef.value.value = "";
+      data.uploadFiles = [];
+
+      // const documentBoarding = await boardinghouseService.getAll();
+      // data.boarding = documentBoarding.message;
+      filesRef.value = document.getElementById("inputImage"); //Get input
+      // const documentRoom = await roomService.get(props._id);
+      // data.item = documentRoom.message;
+      // const documentMedia = await mediaService.get(props._id);
+      // data.item.medias = documentMedia.message;
+      // data.mediasCopy = data.item.medias;
+      data.removeMedia = [];
+      data.itemcountFiles = 0;
     };
     const handleFileUpload = (event) => {
       data.uploadFiles = [];
@@ -87,8 +93,8 @@ export default {
 
             const img = document.createElement("img");
             img.src = e.target.result;
-            img.style.width = "190px";
-            img.style.height = "70px";
+            img.style.width = "240px";
+            img.style.height = "240px";
             img.style.objectFit = "contain";
             const br = document.createElement("br");
             colImage.appendChild(img);
@@ -151,52 +157,45 @@ export default {
       }
       return "";
     };
-    const formFields = [
-      "name",
-      "price",
-      "area",
-      "boardingId",
-      "cycleId",
-      "countFiles",
-    ];
+    const formFields = ["name", "price", "area", "boardingId", "cycleId"];
     const save = async () => {
       console.log("save");
       try {
-        // for (const key in data.error) {
-        //   console.log("key", key, data.item[key]);
-        //   if (data.item[key] == "") {
-        //     data.error[key] = "Chưa nhập thông tin.";
-        //     data.flag = true;
-        //     console.log("1", key);
-        //   }
-        // }
-        // console.log("data.flag:", data.flag);
-        // if (!data.flag) {
-        data.item["countFiles"] = data.uploadFiles.length;
-
+        // data.item["countFiles"] = data.uploadFiles.length;
         const formData = new FormData();
         _.forEach(formFields, (field) => {
-          formData.append(field, data.item[field]);
+          console.log(">>P", field, ":", props.dataProps[field]);
+          formData.append(field, props.dataProps[field]);
         });
+        formData.append("countFiles", data.uploadFiles.length);
+        _.forEach(data.removeMedia, (media) => {
+          console.log("media", media);
+          if (media != "") {
+            formData.append("removeMedia", media);
+          }
+        });
+        formData.append("removeMedia", data.removeMedia);
         _.forEach(data.uploadFiles, (file) => {
           if (validate(file) === "") {
             formData.append("files", file);
           }
         });
 
-        console.log("data.otems:", formData, data.item);
-        const document = await roomService.update(props._id, formData);
+        console.log("data.otems:", formData, props.dataProps);
+        const documentRoom = await roomService.update(
+          props.dataProps._id,
+          formData
+        );
 
-        console.log("doc", document);
-        if (document["status"] == "success") {
+        console.log("doc", documentRoom);
+        if (documentRoom["status"] == "success") {
           successAd(`Đã chỉnh sửa phòng trọ `);
-          // refresh();
+          await refresh();
           emit("edit");
         } else {
           console.log("Thất bại");
           warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
         }
-        // }
       } catch (error) {
         if (error) {
           warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
@@ -204,18 +203,21 @@ export default {
         console.log(error);
       }
     };
-
+    const handleDeleteMedia = (value) => {
+      data.mediasCopy = props.medias.filter((item) => item["name"] != value);
+      data.removeMedia.push(value);
+      console.log(">>>>removeMedia:", data.removeMedia);
+    };
     onMounted(async () => {
-      console.log("2");
-      console.log("props._id", props._id);
+      console.log("1");
       const documentBoarding = await boardinghouseService.getAll();
       data.boarding = documentBoarding.message;
       filesRef.value = document.getElementById("inputImage"); //Get input
-      const documentRoom = await roomService.get(props._id);
-      data.item = documentRoom.message;
-      const documentMedia = await mediaService.get(props._id);
-      data.item.medias = documentMedia.message;
-      console.log("data:", data.item, data.item.medias);
+
+      data.mediasCopy = props.medias;
+      console.log("copy media:", data.mediasCopy, props.medias);
+      data.removeMedia = [];
+
       $("#roomUpdateModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomUpdateModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
@@ -227,6 +229,7 @@ export default {
       checkAddress,
       checkNumber,
       handleFileUpload,
+      handleDeleteMedia,
     };
   },
 };
@@ -264,14 +267,14 @@ export default {
             <!-- nhà trọ -->
             <div class="form-group row">
               <label for="inputname" class="col-sm-3 col-form-label p-0"
-                >Nhà trọ :</label
-              >
+                >Nhà trọ :
+              </label>
               <div class="col-sm-9">
                 <Select
                   :title="'Chọn nhà trọ'"
-                  :data="data.boarding"
-                  :selected="data.item.boardingId"
-                  @choose="(value) => (data.item.boardingId = value)"
+                  :data="boarding"
+                  :selected="dataProps.boardingId"
+                  @choose="(value) => (dataProps.boardingId = value)"
                 ></Select>
               </div>
             </div>
@@ -286,7 +289,7 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputroom"
-                  v-model="data.item.name"
+                  v-model="dataProps.name"
                 />
               </div>
             </div>
@@ -300,7 +303,7 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputprice"
-                  v-model="data.item.price"
+                  v-model="dataProps.price"
                 />
               </div>
             </div>
@@ -313,7 +316,7 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputarea"
-                  v-model="data.item.area"
+                  v-model="dataProps.area"
                 />
               </div>
             </div>
@@ -335,14 +338,20 @@ export default {
                 />
               </div>
               <div id="previewImagesEdit" class="container"></div>
-              <!-- {{ data.item.medias.length }} -->
-              <div v-if="data.item.medias" class="mt-1">
+              <!-- {{ data.mediasCopy }} -->
+              <div
+                v-show="data.mediasCopy"
+                class="mt-3 imagesDiv"
+                v-for="(value, index) in data.mediasCopy"
+                :key="index"
+              >
                 <img
-                  v-for="(value, index) in data.item.medias"
-                  :key="index"
-                  style="width: 190px; heigth: 190px; object-fit: contain"
+                  class="images"
                   :src="`http://localhost:3000/static/images/${value.name}`"
                 />
+                <span class="delete-icon" @click="handleDeleteMedia(value.name)"
+                  >x</span
+                >
               </div>
             </div>
             <div class="form-group row justify-content-around mb-0">
@@ -356,3 +365,31 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.modal-content {
+  width: 160%;
+  margin-left: -16%;
+}
+.images {
+  max-width: 240px;
+  max-height: 240px;
+  object-fit: contain;
+}
+.imagesDiv {
+  position: relative;
+}
+.delete-icon {
+  position: absolute;
+  top: -10px;
+  right: -4px;
+  opacity: 1;
+  color: var(--red);
+  line-height: 1;
+  text-align: center;
+}
+.delete-icon:hover {
+  color: red;
+  font-size: 1.1rem;
+  background-color: var(--gray);
+}
+</style>

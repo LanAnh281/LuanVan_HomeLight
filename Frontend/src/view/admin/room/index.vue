@@ -11,6 +11,8 @@ import { useRoute, useRouter } from "vue-router";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
+import mediaService from "../../../service/media.service";
+
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import {
@@ -40,6 +42,8 @@ export default {
         price: "",
       },
       boarding: [],
+      room: {},
+      medias: [],
       status: [
         { _id: false, name: "Chưa thuê" },
         { _id: true, name: "Đã thuê" },
@@ -99,7 +103,6 @@ export default {
         const documentRoom = await roomService.getAll(); //api getAll rooms
         data.items = documentRoom.message;
         //filter rooms of a boarding house
-        console.log(">>>id", data.isActiveBoarding);
         data.items = data.items.filter(
           (item) => item.boardingId == data.isActiveBoarding
         );
@@ -136,7 +139,15 @@ export default {
         }
       }
     };
-
+    const handleEdit = async (value) => {
+      console.log(`value:`, value);
+      data.roomId = value;
+      component.isEditRoomModal = !component.isEditRoomModal;
+      const documentRoom = await roomService.get(value);
+      data.room = documentRoom.message;
+      const documentMedia = await mediaService.get(value);
+      data.medias = documentMedia.message;
+    };
     onMounted(async () => {
       await refresh();
 
@@ -159,6 +170,7 @@ export default {
       changefee,
       // create,
       handleDeleteClick,
+      handleEdit,
       roomService,
     };
   },
@@ -317,22 +329,18 @@ export default {
       class="m-2"
       :data="data.items"
       @handleDelete="refreshRoom()"
-      @edit="
-        (value) => {
-          data.roomId = value;
-          component.isEditRoomModal = !component.isEditRoomModal;
-        }
-      "
+      @edit="(value) => handleEdit(value)"
     ></Box>
 
     <Edit
       v-if="component.isEditRoomModal"
+      :dataProps="data.room"
+      :medias="data.medias"
+      :boarding="data.boarding"
       :_id="data.roomId"
       @edit="
         async () => {
-          console.log('Edit index.vue');
-          const documentRoom = await roomService.getAll();
-          data.items = documentRoom.message;
+          await refreshRoom();
         }
       "
     ></Edit>

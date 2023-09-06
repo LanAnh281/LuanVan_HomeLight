@@ -26,7 +26,7 @@ export default {
       v-for="(value, index) in data"
       :key="index"
       :value="value._id"
-      :selected="selected !== '' ? selected : null"
+      :selected="selected === value._id ? selected : null"
     >
       {{ value.name }}
     </option>

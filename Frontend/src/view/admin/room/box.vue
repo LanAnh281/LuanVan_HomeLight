@@ -91,28 +91,10 @@ export default {
   position: relative;
   cursor: pointer;
 }
-.delete-icon {
-  position: absolute;
-  top: -10px;
-  right: -4px;
-  cursor: pointer;
-  background-color: #fff;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  text-align: center;
-  line-height: 1;
-  color: var(--red);
-  font-weight: 600;
-  font-size: 1.2rem;
-  background-color: #fbf9f9;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
+
+.delete-icon,
 .edit-icon {
   position: absolute;
-  top: 16px;
-  right: -4px;
   cursor: pointer;
   background-color: #fff;
   border-radius: 50%;
@@ -121,12 +103,30 @@ export default {
   text-align: center;
   line-height: 1;
   font-size: 1.2rem;
-  color: var(--yellow);
   background-color: #fbf9f9;
-
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
+.delete-icon {
+  top: -10px;
+  right: -4px;
+  color: var(--red);
+  font-weight: 600;
+}
+.delete-icon:hover {
+  color: red;
+  font-size: 1.3rem;
+}
+.edit-icon {
+  top: 16px;
+  right: -4px;
+  color: var(--yellow);
+}
+.edit-icon:hover {
+  color: rgb(247, 203, 6);
+  font-size: 1.3rem;
+}
+
 .view:hover {
   color: blue;
   text-shadow: 0 0 5px #e8e2e2;

@@ -17,7 +17,7 @@ export const successAd = (title) => {
     icon: "", // Loại bỏ biểu tượng mặc định
     title: "",
     showConfirmButton: false,
-    timer: 1000,
+    timer: 1500,
     customClass: {
       popup: "custom-popup-successAd",
     },

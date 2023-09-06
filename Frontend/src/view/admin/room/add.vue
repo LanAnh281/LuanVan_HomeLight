@@ -47,6 +47,7 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal room");
+      filesRef.value.value = "";
       emit("closeModal");
     };
 
@@ -66,11 +67,16 @@ export default {
         boardingId: "",
       };
       data.flag = true;
-      data.files = [];
-
-      data.uploadFiles = [];
       const previewImage = document.getElementById("previewImages");
       previewImage.innerHTML = "";
+      data.files = [];
+      filesRef.value = document.getElementById("inputImage"); //Get input
+
+      filesRef.value.value = "";
+      data.uploadFiles = [];
+      // _.forEach(formFields, (field) => {
+      //   data.item[field] = "";
+      // });
     };
     const handleFileUpload = (event) => {
       data.uploadFiles = [];
@@ -185,18 +191,12 @@ export default {
           _.forEach(formFields, (field) => {
             formData.append(field, data.item[field]);
           });
-          // _.forEach(data.uploadFiles, (file) => {
-          //   if (validate(file) === "") {
-          //     formData.append("files", file);
-          //   }
-          // });
 
-          const document = await roomService.create(formData);
-          if (document["status"] == "success") {
-            successAd(`Đã thêm phòng trọ ${document.message["name"]}`);
-            refresh();
+          const documentRoom = await roomService.create(formData);
+          if (documentRoom["status"] == "success") {
+            successAd(`Đã thêm phòng trọ ${documentRoom.message["name"]}`);
             emit("add");
-            filesRef.value.value = "";
+            refresh();
           } else {
             warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
           }
