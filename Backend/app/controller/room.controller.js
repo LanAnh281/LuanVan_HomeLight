@@ -84,11 +84,11 @@ exports.findOne = async (req, res, next) => {
 exports.updated = async (req, res, next) => {
   const { name, price, area, boardingId, cycleId, countFiles } = req.body;
   let status = req.body.status;
+  let removeMedia = req.body.removeMedia;
+  if (removeMedia.length > 0) removeMedia.pop();
   status = !req.body.status ? false : true;
-  // if (!req.body.status) status = false;
-  // else status = true;
-  // console.log(">>params.Id", req.params.id);
-  console.log(">>>>Update Rooms", countFiles);
+
+  console.log(">>>>Update Rooms", countFiles, removeMedia.length, removeMedia);
   try {
     const document = await Rooms.update(
       {
@@ -105,6 +105,24 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
+    if (document && removeMedia.length > 0) {
+      for (let media of removeMedia) {
+        let filePath = `${uploadDir}/${media}`;
+        console.log(">>>>filePath", media, filePath);
+        if (fs.existsSync(filePath)) {
+          console.log(">>>>filePath", media);
+          fs.unlinkSync(filePath); //delete file
+          let destroyMedia = await Media.destroy({
+            where: {
+              name: media,
+            },
+          });
+          console.log(">>>Destroy:", destroyMedia);
+        } else {
+          return res.json({ message: "file not found" });
+        }
+      }
+    }
     if (document && countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {
         if (error) {
