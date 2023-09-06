@@ -1,7 +1,7 @@
 <template>
-  <div class="body m-0">water</div>
+  <div class="body m-0">Curtomer</div>
 </template>
-<style>
+<style scoped>
 .body {
   min-height: 100vh;
 }

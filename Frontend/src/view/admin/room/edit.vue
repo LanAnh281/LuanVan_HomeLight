@@ -51,30 +51,10 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal edit room");
-      refresh();
+      // refresh();
       emit("closeModal");
     };
 
-    const refresh = async () => {
-      // const previewImage = document.getElementById("previewImagesEdit");
-      // previewImage.innerHTML = "";
-      data.mediasCopy = [];
-      data.files = [];
-      filesRef.value = document.getElementById("inputImage"); //Get input
-      filesRef.value.value = "";
-      data.uploadFiles = [];
-
-      // const documentBoarding = await boardinghouseService.getAll();
-      // data.boarding = documentBoarding.message;
-      filesRef.value = document.getElementById("inputImage"); //Get input
-      // const documentRoom = await roomService.get(props._id);
-      // data.item = documentRoom.message;
-      // const documentMedia = await mediaService.get(props._id);
-      // data.item.medias = documentMedia.message;
-      // data.mediasCopy = data.item.medias;
-      data.removeMedia = [];
-      data.itemcountFiles = 0;
-    };
     const handleFileUpload = (event) => {
       data.uploadFiles = [];
       const files = event.target.files;
@@ -89,26 +69,39 @@ export default {
         if (invalidMessage == "") {
           reader.onload = function (e) {
             const colImage = document.createElement("div");
+            colImage.classList.add("justify-content-between");
             colImage.classList.add("col-6");
-
+            colImage.id = file.name;
             const img = document.createElement("img");
+
             img.src = e.target.result;
-            img.style.width = "240px";
-            img.style.height = "240px";
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
             img.style.objectFit = "contain";
+            const deleteicon = document.createElement("span");
+            deleteicon.textContent = "x";
+            deleteicon.classList.add("delete-icon-add");
+            deleteicon.addEventListener("click", () => {
+              alert(`xóa ${file.name} `);
+              data.uploadFiles = data.uploadFiles.filter(
+                (item) => item != file
+              );
+              const imgRemove = document.getElementById(file.name);
+              imgRemove.remove();
+            });
             const br = document.createElement("br");
             colImage.appendChild(img);
             colImage.appendChild(br);
 
             const span = document.createElement("span");
             span.textContent = `${file.name}`;
+            colImage.appendChild(deleteicon);
             colImage.appendChild(span);
 
             rowImages.appendChild(colImage);
             previewImage.appendChild(rowImages);
           };
           reader.readAsDataURL(file);
-          console.log("upload0");
         } else {
           const colImage = document.createElement("div");
           colImage.classList.add("col-6");
@@ -161,15 +154,12 @@ export default {
     const save = async () => {
       console.log("save");
       try {
-        // data.item["countFiles"] = data.uploadFiles.length;
         const formData = new FormData();
         _.forEach(formFields, (field) => {
-          console.log(">>P", field, ":", props.dataProps[field]);
           formData.append(field, props.dataProps[field]);
         });
         formData.append("countFiles", data.uploadFiles.length);
         _.forEach(data.removeMedia, (media) => {
-          console.log("media", media);
           if (media != "") {
             formData.append("removeMedia", media);
           }
@@ -181,17 +171,23 @@ export default {
           }
         });
 
-        console.log("data.otems:", formData, props.dataProps);
         const documentRoom = await roomService.update(
           props.dataProps._id,
           formData
         );
 
-        console.log("doc", documentRoom);
         if (documentRoom["status"] == "success") {
           successAd(`Đã chỉnh sửa phòng trọ `);
-          await refresh();
           emit("edit");
+          const previewImage = document.getElementById("previewImagesEdit");
+          previewImage.innerHTML = "";
+          const documentMedia = await mediaService.get(props._id);
+          data.mediasCopy = documentMedia.message;
+          data.files = [];
+          data.uploadFiles = [];
+          filesRef.value = document.getElementById("inputImage"); //Get input
+          filesRef.value.value = "";
+          data.removeMedia = [];
         } else {
           console.log("Thất bại");
           warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
@@ -204,18 +200,15 @@ export default {
       }
     };
     const handleDeleteMedia = (value) => {
-      data.mediasCopy = props.medias.filter((item) => item["name"] != value);
+      data.mediasCopy = data.mediasCopy.filter((item) => item["name"] != value);
       data.removeMedia.push(value);
-      console.log(">>>>removeMedia:", data.removeMedia);
     };
     onMounted(async () => {
-      console.log("1");
       const documentBoarding = await boardinghouseService.getAll();
       data.boarding = documentBoarding.message;
       filesRef.value = document.getElementById("inputImage"); //Get input
 
       data.mediasCopy = props.medias;
-      console.log("copy media:", data.mediasCopy, props.medias);
       data.removeMedia = [];
 
       $("#roomUpdateModal").on("show.bs.modal", openModal); //lắng nghe mở modal
@@ -338,20 +331,23 @@ export default {
                 />
               </div>
               <div id="previewImagesEdit" class="container"></div>
-              <!-- {{ data.mediasCopy }} -->
-              <div
-                v-show="data.mediasCopy"
-                class="mt-3 imagesDiv"
-                v-for="(value, index) in data.mediasCopy"
-                :key="index"
-              >
-                <img
-                  class="images"
-                  :src="`http://localhost:3000/static/images/${value.name}`"
-                />
-                <span class="delete-icon" @click="handleDeleteMedia(value.name)"
-                  >x</span
+              <div class="row">
+                <div
+                  v-show="data.mediasCopy"
+                  class="mt-3 imagesDiv col-6"
+                  v-for="(value, index) in data.mediasCopy"
+                  :key="index"
                 >
+                  <img
+                    class="images"
+                    :src="`http://localhost:3000/static/images/${value.name}`"
+                  />
+                  <span
+                    class="delete-icon"
+                    @click="handleDeleteMedia(value.name)"
+                    >x</span
+                  >
+                </div>
               </div>
             </div>
             <div class="form-group row justify-content-around mb-0">
@@ -371,8 +367,8 @@ export default {
   margin-left: -16%;
 }
 .images {
-  max-width: 240px;
-  max-height: 240px;
+  max-width: 100%;
+  max-height: 70%px;
   object-fit: contain;
 }
 .imagesDiv {
@@ -381,7 +377,7 @@ export default {
 .delete-icon {
   position: absolute;
   top: -10px;
-  right: -4px;
+  right: -1px;
   opacity: 1;
   color: var(--red);
   line-height: 1;

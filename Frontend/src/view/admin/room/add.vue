@@ -74,9 +74,6 @@ export default {
 
       filesRef.value.value = "";
       data.uploadFiles = [];
-      // _.forEach(formFields, (field) => {
-      //   data.item[field] = "";
-      // });
     };
     const handleFileUpload = (event) => {
       data.uploadFiles = [];
@@ -86,25 +83,40 @@ export default {
       previewImage.innerHTML = "";
       const rowImages = document.createElement("div");
       rowImages.classList.add("row");
+      rowImages.style.position = "relative";
       for (const file of data.uploadFiles) {
         const reader = new FileReader();
         let invalidMessage = validate(file);
         if (invalidMessage == "") {
           reader.onload = function (e) {
             const colImage = document.createElement("div");
+            colImage.classList.add("justify-content-between");
             colImage.classList.add("col-6");
-
+            colImage.id = file.name;
             const img = document.createElement("img");
+
             img.src = e.target.result;
-            img.style.width = "190px";
-            img.style.height = "70px";
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
             img.style.objectFit = "contain";
+            const deleteicon = document.createElement("span");
+            deleteicon.textContent = "x";
+            deleteicon.classList.add("delete-icon-add");
+            deleteicon.addEventListener("click", () => {
+              alert(`xóa ${file.name} `);
+              data.uploadFiles = data.uploadFiles.filter(
+                (item) => item != file
+              );
+              const imgRemove = document.getElementById(file.name);
+              imgRemove.remove();
+            });
             const br = document.createElement("br");
             colImage.appendChild(img);
             colImage.appendChild(br);
 
             const span = document.createElement("span");
             span.textContent = `${file.name}`;
+            colImage.appendChild(deleteicon);
             colImage.appendChild(span);
 
             rowImages.appendChild(colImage);
@@ -384,7 +396,7 @@ export default {
                   {{ data.error.image }}
                 </div> -->
               </div>
-              <div id="previewImages" class="container"></div>
+              <div id="previewImages" class="container mt-2"></div>
             </div>
             <div class="form-group row justify-content-around mb-0">
               <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
@@ -395,3 +407,9 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.modal-content {
+  width: 160%;
+  margin-left: -16%;
+}
+</style>

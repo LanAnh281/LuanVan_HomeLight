@@ -156,7 +156,8 @@ export default {
     <div class="border-radius my-3 row m-0 justify-content-end">
       <div class="col-8 m-0 p-0 row justify-content-end">
         <button
-          class="col-2 my-1 mr-1 btn btn-primary"
+          class="col-2 mr-1 btn btn-primary"
+          style="max-width: 15%; height: 36px; margin-top: 6px"
           data-toggle="modal"
           data-target="#roleModal"
           @click="component.roleModal = !component.roleModal"
@@ -170,7 +171,8 @@ export default {
         </button>
 
         <button
-          class="col-2 my-1 mr-3 btn btn-primary"
+          class="col-2 mr-3 btn btn-primary"
+          style="max-width: 15%; height: 36px; margin-top: 6px"
           data-toggle="modal"
           data-target="#accountModal"
           @click="component.accountModal = !component.accountModal"
@@ -203,7 +205,8 @@ export default {
         v-if="css.isDirector == 'Vai trò'"
       >
         <button
-          class="my-1 btn btn-warning"
+          class="btn btn-warning"
+          style="max-width: 12%; height: 36px; margin-top: 8px"
           data-toggle="modal"
           data-target="#rolePositionModal"
         >
@@ -280,15 +283,15 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: calc(100vh);
+  min-height: 100vh;
 }
 .plus:hover > * {
   text-shadow: 0 0 2px #ffff;
 }
 
 .director {
+  max-width: 25%;
   height: 36px;
-  min-width: 100px;
   margin-top: 6px;
   background-color: var(--chocolate);
   color: var(--white);

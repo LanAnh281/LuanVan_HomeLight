@@ -108,8 +108,8 @@ export default {
                 >Vai trò :</label
               >
               <label
-                class=""
-                style="min-width: 110px"
+                class="col-sm"
+                style="max-width: 25%"
                 v-for="(value, index) in data.position"
                 :key="index"
               >

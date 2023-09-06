@@ -12,6 +12,7 @@ export default {
     const data = reactive({
       item: [
         { name: "Thống kê", icon: "bar_chart_4_bars", active: "dashboard" },
+        { name: "Khách trọ", icon: "person", active: "customer" },
         { name: "Phòng", icon: "holiday_village", active: "room" },
         { name: "Chỉ số điện", icon: "offline_bolt", active: "electric" },
         { name: "Chỉ số nước", icon: "water_drop", active: "water" },

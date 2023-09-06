@@ -38,14 +38,20 @@ export default {
 };
 </script>
 <template>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
-    <div class="card m-1" v-for="(value, index) in data" :key="index">
-      <div class="card-item">
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr)">
+    <div
+      class="card pt-1 px-0 pb-0 mx-1 row justify-content-between"
+      v-for="(value, index) in data"
+      style="border-radius: 5px"
+      :key="index"
+    >
+      <div class="card-item col-12">
         <img
-          class="card-img-top m-0"
-          src="../../../assets/image/background.jpg"
-          style="object-fit: contain"
+          class="card-img-top m-0 p-0"
+          src="../../../assets/image/lightHouse.png"
+          style="object-fit: contain; height: 30%; width: 100%"
         />
+        <hr />
         <p class="card-title"><b>Phòng:</b> {{ value.name }}</p>
         <p class="card-text"><b>Giá phòng:</b> {{ value.price }}</p>
         <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
@@ -96,7 +102,6 @@ export default {
 .edit-icon {
   position: absolute;
   cursor: pointer;
-  background-color: #fff;
   border-radius: 50%;
   width: 24px;
   height: 24px;

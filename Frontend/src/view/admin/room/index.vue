@@ -106,6 +106,7 @@ export default {
         data.items = data.items.filter(
           (item) => item.boardingId == data.isActiveBoarding
         );
+        // const documentMedia= await mediaService.get()
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -348,7 +349,7 @@ export default {
 </template>
 <style scope>
 .body {
-  min-height: calc(100vh);
+  min-height: 100vh;
 }
 .border-radius {
   border: 1px solid #eae6e6;
@@ -400,5 +401,25 @@ export default {
   opacity: 1;
   color: var(--red);
   font-weight: 500;
+}
+.delete-icon-add {
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  color: var(--red);
+  font-size: 1.1rem;
+  cursor: pointer;
+  background-color: #dfd4d4;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 1;
+  opacity: 1;
+}
+.delete-icon-add:hover {
+  color: red;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 </style>
