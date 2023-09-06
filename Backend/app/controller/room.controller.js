@@ -118,9 +118,10 @@ exports.updated = async (req, res, next) => {
             },
           });
           console.log(">>>Destroy:", destroyMedia);
-        } else {
-          return res.json({ message: "file not found" });
         }
+        // else {
+        //   return res.json({ message: "file not found" });
+        // }
       }
     }
     if (document && countFiles > 0) {
