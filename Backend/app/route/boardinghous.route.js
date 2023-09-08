@@ -23,4 +23,11 @@ router
     authorization.authorization("xóa nhà trọ"),
     BorardingHouse.delete,
   ]);
+router
+  .route("/getAll/user")
+  .get([
+    authorization.authentication,
+    authorization.authorization("xem danh sách nhà trọ"),
+    BorardingHouse.findAllUser,
+  ]);
 module.exports = router;
