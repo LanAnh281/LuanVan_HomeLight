@@ -17,7 +17,7 @@ import {
 import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
-  props: { _id: "", dataProps: {}, medias: [], boarding: [] },
+  props: { dataProps: {}, medias: [], boarding: [] },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -181,7 +181,7 @@ export default {
           emit("edit");
           const previewImage = document.getElementById("previewImagesEdit");
           previewImage.innerHTML = "";
-          const documentMedia = await mediaService.get(props._id);
+          const documentMedia = await mediaService.get(props.dataProps._id);
           data.mediasCopy = documentMedia.message;
           data.files = [];
           data.uploadFiles = [];

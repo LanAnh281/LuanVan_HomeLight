@@ -103,12 +103,12 @@ export default {
           :class="data.active == value.active ? 'isActive' : ''"
           @click="
             () => {
-              if (value.active === 'logout') {
+              if (value.active == 'logout') {
                 logout();
                 return;
               }
               data.active = value.active;
-              router.push({ name: value.active });
+              router.push({ name: data.active });
             }
           "
         >

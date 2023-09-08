@@ -1,5 +1,5 @@
 <script>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 //service
 import roomService from "../../../service/room.service";
 //asset  js
@@ -13,7 +13,7 @@ import {
 import Edit from "./edit.vue";
 export default {
   comments: { Edit },
-  props: { data: [] },
+  props: { data: { type: Array, default: [] } },
   setup(props, { emit }) {
     const isUpdateForm = ref(false);
     const handleDelete = async (value) => {
@@ -33,6 +33,9 @@ export default {
         console.error("Error:", error);
       }
     };
+    onMounted(() => {
+      console.log("22");
+    });
     return { handleDelete, isUpdateForm };
   },
 };

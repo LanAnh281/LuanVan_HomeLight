@@ -225,7 +225,7 @@ export default {
     };
 
     onBeforeMount(async () => {
-      console.log("1");
+      console.log("11");
       filesRef.value = document.getElementById("inputImage"); //Get input
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
