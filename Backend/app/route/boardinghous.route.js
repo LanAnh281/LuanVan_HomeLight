@@ -13,7 +13,11 @@ router
 router
   .route("/:id")
   .get(BorardingHouse.findOne)
-  .put(BorardingHouse.updated)
+  .put([
+    authorization.authentication,
+    authorization.authorization("chỉnh sửa nhà trọ"),
+    BorardingHouse.updated,
+  ])
   .delete([
     authorization.authentication,
     authorization.authorization("xóa nhà trọ"),

@@ -2,6 +2,7 @@ const { BorardingHouse } = require("../models/index.model.js");
 
 exports.create = async (req, res, next) => {
   const { name, address } = req.body;
+  console.log(">>>>>req.user.userId", req.user.userId);
   try {
     const document = await BorardingHouse.create({
       name: name,
@@ -31,22 +32,21 @@ exports.findOne = async (req, res, next) => {
         _id: req.params.id,
       },
     });
-    res.json({ message: document, status: "success" });
+    return res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
-    res.json({ message: error, status: "faild" });
+    return res.json({ message: error, status: "faild" });
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, address, rules, userId } = req.body;
+  const { name, address } = req.body;
   console.log("Update BorardingHouse", req.body);
   try {
     const document = await BorardingHouse.update(
       {
         name: name,
         address: address,
-        rules: rules,
-        userId: userId,
+        userId: req.user.userId,
       },
       {
         where: {
