@@ -63,11 +63,9 @@ export default {
           <span
             class="material-symbols-outlined m-2 view"
             title="chi tiết"
-            @click="
-              () => {
-                console.log('view', value._id);
-              }
-            "
+            data-toggle="modal"
+            data-target="#viewRoomModal"
+            @click="$emit('view', value._id)"
           >
             visibility
           </span>

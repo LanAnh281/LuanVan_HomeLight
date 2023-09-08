@@ -17,7 +17,7 @@ import {
 import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
-  props: { dataProps: {}, medias: [], boarding: [] },
+  props: { dataProps: { type: Object, default: {} } },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -35,6 +35,7 @@ export default {
         area: "",
         boardingId: "",
       },
+      medias: [],
       uploadFiles: [],
       files: [],
       flag: true,
@@ -204,12 +205,16 @@ export default {
       data.removeMedia.push(value);
     };
     onMounted(async () => {
-      const documentBoarding = await boardinghouseService.getAll();
+      //get all boarding house
+      const documentBoarding = await boardinghouseService.getAllUser();
       data.boarding = documentBoarding.message;
-      filesRef.value = document.getElementById("inputImage"); //Get input
 
-      data.mediasCopy = props.medias;
-      data.removeMedia = [];
+      const documentMedia = await mediaService.get(props.dataProps._id);
+      data.medias = documentMedia.message;
+      data.mediasCopy = data.medias;
+      data.removeMedia = []; // init remove medias list
+
+      filesRef.value = document.getElementById("inputImage"); //Get input
 
       $("#roomUpdateModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomUpdateModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
@@ -265,7 +270,7 @@ export default {
               <div class="col-sm-9">
                 <Select
                   :title="'Chọn nhà trọ'"
-                  :data="boarding"
+                  :data="data.boarding"
                   :selected="dataProps.boardingId"
                   @choose="(value) => (dataProps.boardingId = value)"
                 ></Select>

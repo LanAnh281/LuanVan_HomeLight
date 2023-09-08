@@ -19,13 +19,15 @@ import { city, district, ward } from "../../../assets/js/dependent.common";
 
 //components
 import Select from "../../../components/select/select.vue";
-import AddBoardingForm from "./addboarding.form.vue";
 import EditBoardingForm from "./editBoarding.form.vue";
+import AddBoardingForm from "./addBoarding.vue";
+
 import Rule from "./addRules.form.vue";
 import Box from "./box.vue";
 //
 import roomForm from "./add.vue";
 import Edit from "./edit.vue";
+import View from "./view/view.vue";
 export default {
   components: {
     Select,
@@ -35,6 +37,7 @@ export default {
     Rule,
     Edit,
     EditBoardingForm,
+    View,
   },
   setup() {
     const router = useRouter();
@@ -55,6 +58,7 @@ export default {
       },
       medias: [], //list images and videos room
       isActiveBoarding: "", // a boarding item actived
+      isActiveRoom: "",
       status: [
         { _id: false, name: "Chưa thuê" },
         { _id: true, name: "Đã thuê" },
@@ -76,6 +80,8 @@ export default {
     let intervalId = null;
     const isBoardingModal = ref(false);
     const isEditBoardingModal = ref(false);
+    const isRoomModal = ref(false);
+    const isViewModal = ref(false);
     const handleStatus = (value) => {
       console.log("Status:", value);
     };
@@ -84,7 +90,7 @@ export default {
     };
 
     const refreshBoarding = async () => {
-      const document = await boardinghouseService.getAll();
+      const document = await boardinghouseService.getAllUser();
       data.boarding = document.message;
     };
     const refreshRoom = async () => {
@@ -131,9 +137,6 @@ export default {
     //Function edit boarding
     const handleEditBoardingClick = async (value) => {
       try {
-        console.log("edit boarding", value);
-        // const documentBoarding = await boardinghouseService.get(value);
-        // data.boradingItem = documentBoarding.message;
         isEditBoardingModal.value = !isEditBoardingModal.value;
       } catch (error) {
         if (error.response) {
@@ -149,12 +152,10 @@ export default {
       component.isEditRoomModal = !component.isEditRoomModal;
       const documentRoom = await roomService.get(value);
       data.room = documentRoom.message;
-      const documentMedia = await mediaService.get(value);
-      data.medias = documentMedia.message;
     };
     const refresh = async () => {
       try {
-        const document = await boardinghouseService.getAll(); // api getAll borading houses
+        const document = await boardinghouseService.getAllUser(); // api getAll borading houses
         data.boarding = document.message;
         data.isActiveBoarding = data.boarding[0]._id;
         const documentRoom = await roomService.getAll(); //api getAll rooms
@@ -197,8 +198,11 @@ export default {
       handleEditBoardingClick,
       handleEdit,
       roomService,
+      //modal
       isBoardingModal,
       isEditBoardingModal,
+      isRoomModal,
+      isViewModal,
     };
   },
 };
@@ -253,7 +257,10 @@ export default {
           @closeModal="isBoardingModal = !isBoardingModal"
         ></AddBoardingForm>
         <!--btn rules -->
-        <div class="" @click="component.isRuleModal = !component.isRuleModal">
+        <div
+          class="mr-1"
+          @click="component.isRuleModal = !component.isRuleModal"
+        >
           <button
             class="btn btn-primary p-0 mr-0"
             style="width: 103px; height: 36px; margin-top: 6px"
@@ -272,10 +279,10 @@ export default {
           </button>
         </div>
         <!--  btn edit room -->
-        <div class="mr-1">
+        <div class="">
           <button
-            class="btn btn-warning p-0 mr-0"
-            style="width: 103px; height: 36px; margin-top: 6px"
+            class="btn btn-warning"
+            style="width: 118px; height: 36px; margin-top: 6px"
             data-toggle="modal"
             data-target="#editBoardingModal"
             @click="
@@ -284,14 +291,14 @@ export default {
               }
             "
           >
-            <div class="row justify-content-center">
+            <div class="row justify-content-center plus">
               <span
-                class="material-symbols-outlined"
+                class="material-symbols-outlined mr-1"
                 style="color: var(--white)"
               >
                 edit
               </span>
-              <span style="color: var(--white)">Sửa phòng</span>
+              <span style="color: var(--white)">Sửa nhà trọ</span>
             </div>
           </button>
           <!-- :dataProps="data.boradingItem" -->
@@ -344,6 +351,7 @@ export default {
           style="width: 34%; height: 36px; margin-top: 6px"
           data-toggle="modal"
           data-target="#roomModal"
+          @click="isRoomModal = !isRoomModal"
         >
           <div class="row justify-content-center plus">
             <span class="material-symbols-outlined" style="color: var(--white)">
@@ -354,7 +362,7 @@ export default {
         </button>
         <!-- compomnent add room -->
         <roomForm
-          v-if="component.isBoardingModal"
+          v-if="isRoomModal"
           :boarding="data.boarding"
           @add="
             async () => {
@@ -362,6 +370,7 @@ export default {
               await refreshRoom();
             }
           "
+          @closeModal="isRoomModal = !isRoomModal"
         ></roomForm>
 
         <!-- btn edit room -->
@@ -385,12 +394,17 @@ export default {
       :data="data.items"
       @handleDelete="refreshRoom()"
       @edit="(value) => handleEdit(value)"
+      @view="
+        (value) => {
+          isViewModal = !isViewModal;
+          data.isActiveRoom = value;
+        }
+      "
     ></Box>
 
     <Edit
       v-if="component.isEditRoomModal"
       :dataProps="data.room"
-      :medias="data.medias"
       :boarding="data.boarding"
       @edit="
         async () => {
@@ -398,6 +412,7 @@ export default {
         }
       "
     ></Edit>
+    <View v-if="isViewModal" :_id="data.isActiveRoom"></View>
   </div>
 </template>
 <style scope>

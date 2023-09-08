@@ -16,7 +16,7 @@ import {
 import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
-  props: { boarding: [] },
+  props: { boarding: { type: Array, default: [] } },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -225,7 +225,7 @@ export default {
     };
 
     onBeforeMount(async () => {
-      console.log("11");
+      console.log("Add room");
       filesRef.value = document.getElementById("inputImage"); //Get input
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
