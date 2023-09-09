@@ -17,8 +17,17 @@ const setPassword = () => {
   return password;
 };
 exports.createUserAndAccount = async (req, res) => {
-  let { userName, identification, phone, address, email, start, end, file } =
-    req.body;
+  let {
+    userName,
+    identification,
+    phone,
+    address,
+    email,
+    start,
+    end,
+    number_plate,
+    file,
+  } = req.body;
   const password = setPassword();
   end = end === "" ? null : end;
   start = start === "" ? null : start;
@@ -53,6 +62,7 @@ exports.createUserAndAccount = async (req, res) => {
         email: email,
         start: start,
         end: end,
+        number_plate: number_plate,
         password: password,
       };
       const result = await createUserAndAccount(userData);
@@ -149,6 +159,7 @@ exports.update = async (req, res, next) => {
     email,
     start,
     end,
+    number_plate,
     file,
     imagePrevious,
     imageAfter,
@@ -189,6 +200,7 @@ exports.update = async (req, res, next) => {
             email: email,
             start: start,
             end: end,
+            number_plate: number_plate,
           },
           { where: { _id: req.params.id } }
         );

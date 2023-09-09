@@ -77,6 +77,8 @@ const Users = sequelize.define("Users", {
       },
     },
   },
+  birthday: { type: DataTypes.DATE },
+  sex: { type: DataTypes.BOOLEAN },
   identification: {
     type: DataTypes.STRING,
   },
@@ -101,6 +103,8 @@ const Users = sequelize.define("Users", {
   imageAfter: {
     type: DataTypes.TEXT,
   },
+  numberPlate: { type: DataTypes.TEXT },
+  securityDeposit: { type: DataTypes.STRING },
   isUser: { type: DataTypes.BOOLEAN }, // host or not host
 });
 const Cycle = sequelize.define("Cycle", {
@@ -323,6 +327,7 @@ Rooms.belongsToMany(Equipment, {
 const Service_Room = sequelize.define("Service_Room", {
   start: { type: DataTypes.DATE },
   end: { type: DataTypes.DATE },
+  count: { type: DataTypes.INTEGER },
 });
 Services.belongsToMany(Rooms, {
   through: Service_Room,
