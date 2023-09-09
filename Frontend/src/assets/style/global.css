@@ -7,6 +7,7 @@
     --blue:#0000FF;
     --blue-light: #647eff;
     --gray:#ccc;
+    --purple:#7367f0;
     --pink: #e83e8c;
     --red: #ea5455;
     --ruby:#900603;
@@ -68,6 +69,7 @@
     left: 0;
     bottom: 0;
     z-index: 1;
+    text-transform: uppercase;
 }
 .footer{
     display: grid;
@@ -132,7 +134,8 @@
 }
 
 .title{
-    color:var(--chocolate)
+    color:var(--chocolate);
+    text-transform: uppercase;
 }
 .radius{
     border-radius: 50%;

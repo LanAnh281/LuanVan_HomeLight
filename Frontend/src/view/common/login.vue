@@ -164,4 +164,7 @@ export default {
   color: var(--chocolate);
   text-shadow: 0 0 2px rgba(245, 234, 111, 0.8);
 }
+.title {
+  text-transform: none;
+}
 </style>

@@ -28,6 +28,7 @@ import Box from "./box.vue";
 import roomForm from "./add.vue";
 import Edit from "./edit.vue";
 import View from "./view/view.vue";
+import addCustomer from "./addCustomer/index.form.vue";
 export default {
   components: {
     Select,
@@ -38,6 +39,7 @@ export default {
     Edit,
     EditBoardingForm,
     View,
+    addCustomer,
   },
   setup() {
     const router = useRouter();
@@ -82,6 +84,7 @@ export default {
     const isEditBoardingModal = ref(false);
     const isRoomModal = ref(false);
     const isViewModal = ref(false);
+    const isAddCustomerModal = ref(false);
     const handleStatus = (value) => {
       console.log("Status:", value);
     };
@@ -203,6 +206,7 @@ export default {
       isEditBoardingModal,
       isRoomModal,
       isViewModal,
+      isAddCustomerModal,
     };
   },
 };
@@ -389,14 +393,22 @@ export default {
     </div>
     <!-- componment -->
     <!-- Box rooms have icon click delete and edit -->
+    <!-- :data="data.items" -->
     <Box
-      class="m-2"
-      :data="data.items"
+      v-if="data.isActiveBoarding"
+      class="ml-3"
+      :_idBoarding="data.isActiveBoarding"
       @handleDelete="refreshRoom()"
       @edit="(value) => handleEdit(value)"
       @view="
         (value) => {
           isViewModal = !isViewModal;
+          data.isActiveRoom = value;
+        }
+      "
+      @addCutomer="
+        (value) => {
+          isAddCustomerModal = !isAddCustomerModal;
           data.isActiveRoom = value;
         }
       "
@@ -413,6 +425,10 @@ export default {
       "
     ></Edit>
     <View v-if="isViewModal" :_id="data.isActiveRoom"></View>
+    <addCustomer
+      v-if="isAddCustomerModal"
+      :_id="data.isActiveRoom"
+    ></addCustomer>
   </div>
 </template>
 <style scope>

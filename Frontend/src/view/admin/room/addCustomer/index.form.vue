@@ -6,16 +6,18 @@ import _ from "lodash";
 import boardinghouseService from "../../../../service/boardinghouse.service";
 import roomService from "../../../../service/room.service";
 import mediaService from "../../../../service/media.service";
-// view
-import room from "./room.view.vue";
+//Form
+import addCustomerForm from "./addCustomer.form.vue";
+import addMemberForm from "./addMember.form.vue";
+import Service from "./service.vue";
 export default {
-  components: { room },
+  components: { addCustomerForm, addMemberForm, Service },
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
       item: [
-        { name: "Phòng trọ", icon: "house", active: "room" },
-        { name: "Khách trọ", icon: "person", active: "customer" },
+        { name: "Khách thuê", icon: "person", active: "customer" },
+        { name: "Thành viên", icon: "group_add", active: "member" },
         {
           name: "Dịch vụ ",
           icon: "energy_program_time_used",
@@ -37,13 +39,10 @@ export default {
       emit("closeModal");
     };
     onMounted(async () => {
-      //get all boarding house
-      console.log("PropsId:", props._id);
-      const documentRoom = await roomService.get(props._id);
-      data.room = documentRoom.message;
-
-      $("#viewRoomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
-      $("#viewRoomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+      console.log("PropsId room:", props._id);
+      data.active = "customer";
+      $("#addCustomerModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#addCustomerModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
     return { data };
   },
@@ -52,7 +51,7 @@ export default {
 <template>
   <div
     class="modal fade"
-    id="viewRoomModal"
+    id="addCustomerModal"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"
@@ -62,7 +61,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title title" id="exampleModalLabel">
-            Thông tin phòng trọ
+            Thêm khách trọ
           </h5>
           <button
             type="button"
@@ -75,8 +74,8 @@ export default {
         </div>
         <div class="modal-body">
           <!-- nhà trọ -->
-          <div class="form-group row">
-            <ul class="col-sm-3 m-0 p-0">
+          <div class="form-group row" style="margin-right: -82px">
+            <ul class="col-sm-2 m-0 p-0">
               <li
                 v-for="(value, index) in data.item"
                 :key="index"
@@ -92,14 +91,39 @@ export default {
                   >
                     {{ value.name }}</span
                   >
-                  <!-- <div class="vertical-divider"></div> -->
                 </div>
               </li>
             </ul>
-
-            <div class="col-sm-9">
-              <room v-if="data.active == 'room'" :_id="_id"></room>
+            <!-- component Customer -->
+            <div class="col-sm-9 px-4 pt-1 mt-2">
+              <addCustomerForm
+                v-if="data.active == 'customer'"
+              ></addCustomerForm>
+              <div>
+                <span
+                  class="material-symbols-outlined rounded-circle float-right mb-1"
+                  style="
+                    color: var(--white);
+                    background-color: green;
+                    margin-top: -14px;
+                  "
+                  title="Thêm thành viên"
+                  v-if="data.active == 'member'"
+                  @click="data.active = 'customer'"
+                >
+                  add
+                </span>
+                <addMemberForm
+                  class="m-0 p-0"
+                  v-if="data.active == 'member'"
+                ></addMemberForm>
+              </div>
+              <Service
+                class="m-0 p-0"
+                v-if="data.active == 'service'"
+              ></Service>
             </div>
+            <!-- Component Member -->
           </div>
         </div>
       </div>

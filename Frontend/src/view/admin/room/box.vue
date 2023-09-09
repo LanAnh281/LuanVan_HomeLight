@@ -1,5 +1,5 @@
 <script>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 //service
 import roomService from "../../../service/room.service";
 //asset  js
@@ -11,10 +11,15 @@ import {
 } from "../../../assets/js/common.alert";
 //component
 import Edit from "./edit.vue";
+// import addCustomer from "./addCustomer/addCutomer.form.vue";
 export default {
   comments: { Edit },
-  props: { data: { type: Array, default: [] } },
+  props: {
+    data: { type: Array, default: [] },
+    _idBoarding: { type: String, default: "" },
+  },
   setup(props, { emit }) {
+    const data = reactive({ item: [] });
     const isUpdateForm = ref(false);
     const handleDelete = async (value) => {
       try {
@@ -33,33 +38,73 @@ export default {
         console.error("Error:", error);
       }
     };
-    onMounted(() => {
-      console.log("22");
+    watch(
+      () => props._idBoarding,
+      async (newValue, oldValue) => {
+        await refresh();
+      }
+    );
+    const refresh = async () => {
+      data.item = await roomService.getAll();
+      data.item = data.item.message;
+      data.item = data.item.filter(
+        (item) => item.boardingId == props._idBoarding
+      );
+      data.item = data.item.map((item) => {
+        return {
+          ...item,
+          price: Number(item.price).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }),
+        };
+      });
+    };
+    onMounted(async () => {
+      await refresh();
     });
-    return { handleDelete, isUpdateForm };
+    return { data, handleDelete, isUpdateForm };
   },
 };
 </script>
 <template>
-  <div style="display: grid; grid-template-columns: repeat(5, 1fr)">
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr)" class="">
     <div
-      class="card pt-1 px-0 pb-0 mx-1 row justify-content-between"
-      v-for="(value, index) in data"
+      class="card pt-1 px-0 pb-0 mr-4 row justify-content-between"
+      v-for="(value, index) in data.item"
       style="border-radius: 5px"
       :key="index"
     >
-      <div class="card-item col-12">
+      <div class="card-item col-12 p-0 m-0">
+        <!-- image -->
         <img
-          class="card-img-top m-0 p-0"
+          class="card-img-top"
           src="../../../assets/image/lightHouse.png"
           style="object-fit: contain; height: 30%; width: 100%"
         />
-        <hr />
-        <p class="card-title"><b>Phòng:</b> {{ value.name }}</p>
-        <p class="card-text"><b>Giá phòng:</b> {{ value.price }}</p>
-        <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
-        <div><button class="btn btn-primary">Thêm khách</button></div>
-        <div>
+        <hr style="display: block" />
+        <!--  -->
+        <div class="px-2 mx-1">
+          <p class="card-title text-center"><b>Phòng:</b> {{ value.name }}</p>
+          <p class="card-text">
+            <b>Giá phòng:</b>
+            {{ value.price }}
+          </p>
+          <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
+        </div>
+        <!-- Add customer -->
+        <div class="px-2 mx-1 my-1 text-center">
+          <button
+            class="btn btn-primary btn-menu p-1"
+            data-toggle="modal"
+            data-target="#addCustomerModal"
+            @click="$emit('addCutomer', value._id)"
+          >
+            Thêm khách
+          </button>
+        </div>
+        <!-- icon -->
+        <div class="px-2 mx-1">
           <span
             class="material-symbols-outlined m-2 view"
             title="chi tiết"
@@ -82,6 +127,7 @@ export default {
           </span>
         </div>
       </div>
+      <!--delete icon  -->
       <span class="delete-icon" @click.stop="handleDelete(value._id)"> x </span>
       <p
         data-toggle="modal"
@@ -149,5 +195,8 @@ button:hover {
 }
 .delete-icon:hover {
   text-shadow: 0 0 5px #e6d4cd;
+}
+.btn-menu {
+  width: 114px;
 }
 </style>
