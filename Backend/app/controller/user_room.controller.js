@@ -1,4 +1,4 @@
-const { User_Room } = require("../models/index.model.js");
+const { User_Room, Rooms, Users } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
   let { start, end, userId, roomId } = req.body;
@@ -20,7 +20,12 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await User_Room.findAll({});
+    const documents = await Rooms.findAll({
+      include: {
+        model: Users,
+        through: { attributes: [] },
+      },
+    });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -29,12 +34,36 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await User_Room.findAll({
+    console.log(">>>id:", req.params.id);
+    const documents = await Rooms.findAll({
       where: {
-        RoomId: req.params.id,
+        _id: req.params.id,
       },
+      include: [
+        {
+          model: Users,
+          through: {
+            attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
+          },
+        },
+      ],
     });
-    res.json({ message: document, status: "success" });
+    // console.log(">>>doc:", documents.dataValue["Users"]);
+    // // Làm phẳng dữ liệu
+    // const flattenedData = documents["Users"].map((user) => {
+    //   const flatUser = { ...user };
+    //   for (const key in documents) {
+    //     if (key !== "Users") {
+    //       flatUser[key] = data[key];
+    //     }
+    //   }
+    //   return flatUser;
+    // });
+
+    // Kết quả là một mảng chứa các người dùng đã được mở rộng với thông tin từ cấp bằng
+    // console.log(flattenedData);
+
+    res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });

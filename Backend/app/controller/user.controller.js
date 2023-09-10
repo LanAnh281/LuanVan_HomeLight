@@ -202,7 +202,11 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
         };
         const info = await transporter.sendMail(mailOptions);
       }
-      return res.json({ message: result, status: "success" });
+      if (result.status == "success")
+        return res.json({ message: result, status: "success" });
+      else {
+        return res.json({ message: result, status: "fail" });
+      }
     });
   } catch (error) {
     res

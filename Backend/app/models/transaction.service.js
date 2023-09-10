@@ -68,10 +68,12 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
       positionId: position._id,
     };
     const newAccount = await Accounts.create(accountData, { transaction });
+    const cycleId = userData.cycleId ? userData.cycleId : null;
+    console.log(">>>>cycle", userData.cycleId, ":", cycleId);
     const updateRoom = await Rooms.update(
       {
         status: userData.status,
-        cycleId: userData.cycleId,
+        cycleId: cycleId,
       },
       {
         where: {
@@ -98,7 +100,9 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
         console.log(">>>Error");
         await transaction.rollback();
       }
+      return { message: error, status: "fail1" };
     }
-    throw error;
+    // throw error;
+    return { message: error, status: "fail2" };
   }
 };
