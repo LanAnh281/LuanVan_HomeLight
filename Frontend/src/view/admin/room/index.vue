@@ -1,5 +1,12 @@
 <script>
-import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
+import {
+  ref,
+  reactive,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+  watch,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 //service
@@ -83,6 +90,8 @@ export default {
     const isBoardingModal = ref(false);
     const isEditBoardingModal = ref(false);
     const isRoomModal = ref(false);
+    const isEditRoomModal = ref(false);
+
     const isViewModal = ref(false);
     const isAddCustomerModal = ref(false);
     const handleStatus = (value) => {
@@ -151,10 +160,13 @@ export default {
         }
       }
     };
+
     const handleEdit = async (value) => {
-      component.isEditRoomModal = !component.isEditRoomModal;
-      const documentRoom = await roomService.get(value);
-      data.room = documentRoom.message;
+      const boardingId = data.isActiveBoarding;
+      data.isActiveBoarding = "";
+      setTimeout(() => {
+        data.isActiveBoarding = boardingId;
+      }, 1);
     };
     const refresh = async () => {
       try {
@@ -205,6 +217,7 @@ export default {
       isBoardingModal,
       isEditBoardingModal,
       isRoomModal,
+      isEditRoomModal,
       isViewModal,
       isAddCustomerModal,
     };
@@ -399,7 +412,12 @@ export default {
       class="ml-3"
       :_idBoarding="data.isActiveBoarding"
       @handleDelete="refreshRoom()"
-      @edit="(value) => handleEdit(value)"
+      @edit="
+        (value) => {
+          isEditRoomModal = !isEditRoomModal;
+          data.isActiveRoom = value;
+        }
+      "
       @view="
         (value) => {
           isViewModal = !isViewModal;
@@ -415,14 +433,9 @@ export default {
     ></Box>
 
     <Edit
-      v-if="component.isEditRoomModal"
-      :dataProps="data.room"
-      :boarding="data.boarding"
-      @edit="
-        async () => {
-          await refreshRoom();
-        }
-      "
+      v-if="isEditRoomModal"
+      :_id="data.isActiveRoom"
+      @edit="handleEdit"
     ></Edit>
     <View v-if="isViewModal" :_id="data.isActiveRoom"></View>
     <addCustomer

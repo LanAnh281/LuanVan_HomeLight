@@ -17,7 +17,7 @@ import {
 import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
-  props: { dataProps: { type: Object, default: {} } },
+  props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -157,7 +157,7 @@ export default {
       try {
         const formData = new FormData();
         _.forEach(formFields, (field) => {
-          formData.append(field, props.dataProps[field]);
+          formData.append(field, data.item[field]);
         });
         formData.append("countFiles", data.uploadFiles.length);
         _.forEach(data.removeMedia, (media) => {
@@ -172,17 +172,14 @@ export default {
           }
         });
 
-        const documentRoom = await roomService.update(
-          props.dataProps._id,
-          formData
-        );
+        const documentRoom = await roomService.update(props._id, formData);
 
         if (documentRoom["status"] == "success") {
           successAd(`Đã chỉnh sửa phòng trọ `);
           emit("edit");
           const previewImage = document.getElementById("previewImagesEdit");
           previewImage.innerHTML = "";
-          const documentMedia = await mediaService.get(props.dataProps._id);
+          const documentMedia = await mediaService.get(props._id);
           data.mediasCopy = documentMedia.message;
           data.files = [];
           data.uploadFiles = [];
@@ -206,10 +203,13 @@ export default {
     };
     onMounted(async () => {
       //get all boarding house
+      const documentRoom = await roomService.get(props._id);
+      data.item = documentRoom.message;
+
       const documentBoarding = await boardinghouseService.getAllUser();
       data.boarding = documentBoarding.message;
 
-      const documentMedia = await mediaService.get(props.dataProps._id);
+      const documentMedia = await mediaService.get(props._id);
       data.medias = documentMedia.message;
       data.mediasCopy = data.medias;
       data.removeMedia = []; // init remove medias list
@@ -271,8 +271,8 @@ export default {
                 <Select
                   :title="'Chọn nhà trọ'"
                   :data="data.boarding"
-                  :selected="dataProps.boardingId"
-                  @choose="(value) => (dataProps.boardingId = value)"
+                  :selected="data.item.boardingId"
+                  @choose="(value) => (data.item.boardingId = value)"
                 ></Select>
               </div>
             </div>
@@ -287,7 +287,7 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputroom"
-                  v-model="dataProps.name"
+                  v-model="data.item.name"
                 />
               </div>
             </div>
@@ -301,7 +301,7 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputprice"
-                  v-model="dataProps.price"
+                  v-model="data.item.price"
                 />
               </div>
             </div>
@@ -314,7 +314,7 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputarea"
-                  v-model="dataProps.area"
+                  v-model="data.item.area"
                 />
               </div>
             </div>

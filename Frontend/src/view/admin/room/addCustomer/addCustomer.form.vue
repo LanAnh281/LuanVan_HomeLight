@@ -12,7 +12,16 @@ import cycleService from "../../../../service/cycle.service";
 //js
 import { city, district, ward } from "../../../../assets/js/dependent.common";
 import { load, successAd, warning } from "../../../../assets/js/common.alert";
-
+import {
+  checkAddress,
+  checkIdentification,
+  checkMail,
+  checkNumber,
+  checkPhone,
+  checkStringAndNumber,
+  sanitizeInput,
+  checkString,
+} from "../../../../assets/js/checkInput.common";
 // view
 export default {
   components: { Select, SelectNormal },
@@ -35,7 +44,6 @@ export default {
         sex: false,
         birthday: "",
         securityDeposit: 0,
-        status: true,
         isUser: false,
         files: [],
         //room
@@ -46,9 +54,15 @@ export default {
         userName: "",
         identification: "",
         phone: "",
+        city: "",
+        district: "",
+        ward: "",
         number: "",
         email: "",
-        image: "",
+        start: "",
+        birthday: "",
+        sex: "",
+        start: "",
       },
       files: [],
       uploadFiles: [],
@@ -286,29 +300,46 @@ export default {
 
     const save = async () => {
       data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-      data.item.start = moment();
       console.log("save", data.item);
       try {
-        const formData = new FormData();
-        for (let key in data.item) {
-          formData.append(key, data.item[key]);
+        // data.error.image=data.uploadFiles.length;
+        console.log("images", data.uploadFiles.length);
+        if (data.uploadFiles.length != 2) {
+          data.error["image"] = "Chưa tải ảnh cccd.";
+          data.flag = true;
+          console.log("key:image");
         }
-        _.forEach(data.uploadFiles, (file) => {
-          if (validate(file) === "") {
-            formData.append("files", file);
+        for (let key in data.error) {
+          if (key == "sex") continue;
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập thông tin";
+            data.flag = true;
+            console.log("key:", key, data.item[key]);
           }
-        });
-        setTimeout(() => {
-          load();
-        }, 600);
-        const documentCreateAndUpdateRoom =
-          await userService.createAndUpdateRoom(props._id, data.item);
-        console.log(documentCreateAndUpdateRoom);
-        if (documentCreateAndUpdateRoom["status"]) {
-          successAd("Thành công");
-          refresh();
-        } else {
-          warning("Thất bại");
+        }
+        console.log(">>>flag:", data.flag);
+        if (!data.flag) {
+          const formData = new FormData();
+          for (let key in data.item) {
+            formData.append(key, data.item[key]);
+          }
+          _.forEach(data.uploadFiles, (file) => {
+            if (validate(file) === "") {
+              formData.append("files", file);
+            }
+          });
+          setTimeout(() => {
+            load();
+          }, 0);
+          const documentCreateAndUpdateRoom =
+            await userService.createAndUpdateRoom(props._id, data.item);
+          console.log(documentCreateAndUpdateRoom);
+          if (documentCreateAndUpdateRoom["status"] == "success") {
+            successAd("Thành công");
+            refresh();
+          } else {
+            warning("Thất bại");
+          }
         }
       } catch (error) {
         if (error.response) {
@@ -320,10 +351,15 @@ export default {
         }
       }
     };
-    const refresh = () => {
+    const refresh = async () => {
       for (let key in data.item) {
         data.item[key] = "";
       }
+      data.item["sex"] = false;
+      data.item["securityDeposit"] = 0;
+      data.item["status"] = true;
+      data.item["isUser"] = false;
+      data.city = await axios.get(`https://provinces.open-api.vn/api/?depth=1`);
       data.error = {
         userName: "",
         identification: "",
@@ -375,6 +411,15 @@ export default {
       changeCycle,
       save,
       handleFileUpload,
+      // check input
+      checkAddress,
+      checkIdentification,
+      checkMail,
+      checkNumber,
+      checkPhone,
+      checkStringAndNumber,
+      sanitizeInput,
+      checkString,
     };
   },
 };
@@ -397,8 +442,25 @@ export default {
             type="email"
             class="form-control"
             id="inputUserName"
+            @blur="
+              () => {
+                if (checkString(data.item.userName)) {
+                  data.flag = true;
+                  data.error.userName = 'Tên không gồm các ký tự đặc biệt';
+                }
+              }
+            "
+            @input="
+              () => {
+                data.flag = false;
+                data.error.userName = '';
+              }
+            "
             v-model="data.item.userName"
           />
+          <div v-if="data.error.userName" class="invalid-error">
+            {{ data.error.userName }}
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -411,10 +473,19 @@ export default {
             class="form-control"
             id="inputBirthday"
             v-model="data.item.birthday"
+            @input="
+              () => {
+                data.flag = false;
+                data.error.birthday = '';
+              }
+            "
           />
+          <div v-if="data.error.birthday" class="invalid-error">
+            {{ data.error.birthday }}
+          </div>
         </div>
       </div>
-      <fieldset class="form-group row">
+      <fieldset class="form-group row mt-4 mb-4">
         <legend class="col-form-label col-sm-3 p-0 m-0 float-sm-left pt-0">
           Giới tính:
         </legend>
@@ -450,8 +521,25 @@ export default {
             type="tel"
             class="form-control"
             id="inputPhone"
+            @blur="
+              () => {
+                if (checkPhone(data.item.phone)) {
+                  data.flag = true;
+                  data.error.phone = 'SĐT gồm có 10 số.';
+                }
+              }
+            "
+            @input="
+              () => {
+                data.flag = false;
+                data.error.phone = '';
+              }
+            "
             v-model="data.item.phone"
           />
+          <div v-if="data.error.phone" class="invalid-error">
+            {{ data.error.phone }}
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -463,8 +551,25 @@ export default {
             type="text"
             class="form-control"
             id="inputEmail"
+            @blur="
+              () => {
+                if (checkMail(data.item.email)) {
+                  data.flag = true;
+                  data.error.email = 'Email sai định dạng.';
+                }
+              }
+            "
+            @input="
+              () => {
+                data.flag = false;
+                data.error.email = '';
+              }
+            "
             v-model="data.item.email"
           />
+          <div v-if="data.error.email" class="invalid-error">
+            {{ data.error.email }}
+          </div>
         </div>
       </div>
       <!-- kỳ thanh toán -->
@@ -489,7 +594,7 @@ export default {
         <div class="col-sm-8 p-0 m-0 row">
           <input
             type="text"
-            class="form-control col-sm-9 p-0"
+            class="form-control col-sm-9"
             aria-label="Amount (to the nearest dollar)"
             style="
               border-top-right-radius: 0px;
@@ -497,9 +602,9 @@ export default {
             "
             v-model="data.item.securityDeposit"
           />
-          <div class="input-group-append col-sm-3 m-0 p-0">
+          <div class="input-group-append col-sm-3 p-0">
             <span
-              class="input-group-text m-0 p-1"
+              class="input-group-text m-0"
               style="
                 border-top-left-radius: 0px;
                 border-bottom-left-radius: 0px;
@@ -523,8 +628,25 @@ export default {
             type="text"
             class="form-control"
             id="inputidentificationCard"
+            @blur="
+              () => {
+                if (checkIdentification(data.item.identification)) {
+                  data.flag = true;
+                  data.error.identification = 'CCCD sai định dạng.';
+                }
+              }
+            "
+            @input="
+              () => {
+                data.flag = false;
+                data.error.identification = '';
+              }
+            "
             v-model="data.item.identification"
           />
+          <div v-if="data.error.identification" class="invalid-error">
+            {{ data.error.identification }}
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -537,7 +659,16 @@ export default {
             :title="`Chọn thành phố`"
             :data="data.city.data"
             @choose="(value) => change(value)"
+            @input="
+              () => {
+                data.flag = false;
+                data.error.city = '';
+              }
+            "
           ></Select>
+          <div v-if="data.error.city" class="invalid-error">
+            {{ data.error.city }}
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -552,7 +683,16 @@ export default {
             :title="`Chọn quận huyện`"
             :data="data.district.data.districts"
             @choose="(value) => changeDistrict(value)"
+            @input="
+              () => {
+                data.flag = false;
+                data.error.district = '';
+              }
+            "
           ></Select>
+          <div v-if="data.error.district" class="invalid-error">
+            {{ data.error.district }}
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -564,21 +704,47 @@ export default {
             :title="`Chọn phường xã`"
             :data="data.ward.data.wards"
             @choose="(value) => changeWard(value)"
+            @input="
+              () => {
+                data.flag = false;
+                data.error.ward = '';
+              }
+            "
           ></Select>
+          <div v-if="data.error.ward" class="invalid-error">
+            {{ data.error.ward }}
+          </div>
         </div>
       </div>
 
       <div class="form-group row">
-        <label for="inputidentificationCard" class="col-sm-4 col-form-label p-0"
+        <label for="inputAddress" class="col-sm-4 col-form-label p-0"
           >Địa chỉ:</label
         >
         <div class="col-sm-8 p-0 m-0">
           <input
             type="text"
             class="form-control"
-            id="inputidentificationCard"
+            id="inputAddress"
+            @blur="
+              () => {
+                if (checkAddress(data.item.number)) {
+                  data.flag = true;
+                  data.error.number = 'không chứa ký tự đặc biệt.';
+                }
+              }
+            "
+            @input="
+              () => {
+                data.flag = false;
+                data.error.number = '';
+              }
+            "
             v-model="data.item.number"
           />
+          <div v-if="data.error.number" class="invalid-error">
+            {{ data.error.number }}
+          </div>
         </div>
       </div>
 
@@ -596,10 +762,32 @@ export default {
           />
         </div>
       </div>
+      <div class="form-group row">
+        <label for="inputStart" class="col-sm-4 m-0 px-0 col-form-label"
+          >Ngày bắt đầu:</label
+        >
+        <div class="col-sm-8 p-0 m-0">
+          <input
+            type="date"
+            class="form-control"
+            id="inputStart"
+            @input="
+              () => {
+                data.flag = false;
+                data.error.start = '';
+              }
+            "
+            v-model="data.item.start"
+          />
+          <div v-if="data.error.start" class="invalid-error">
+            {{ data.error.start }}
+          </div>
+        </div>
+      </div>
       <!-- Thanh toán -->
     </form>
     <div class="form-group row col-12 p-0 m-0">
-      <label for="" class="col-sm-2 col-form-label p-0">Hình ảnh:</label>
+      <label for="" class="col-sm-2 col-form-label p-0">Ảnh CCCD:</label>
       <div class="col-sm-10 p-0 m-0 mb-2 border rounded">
         <input
           type="file"
@@ -608,8 +796,17 @@ export default {
           class="form-control"
           id="inputImage"
           @change="handleFileUpload($event)"
+          @input="
+            () => {
+              data.flag = false;
+              data.error.image = '';
+            }
+          "
           style="border: none"
         />
+        <div v-if="data.error.image" class="invalid-error">
+          {{ data.error.image }}
+        </div>
         <div id="previewImages"></div>
       </div>
     </div>
