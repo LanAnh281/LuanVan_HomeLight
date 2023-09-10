@@ -148,3 +148,10 @@
     font-weight: 500;
     cursor: pointer;;
 }
+.btn-primary{
+    background-color: var(--purple);
+}
+.btn-primary:hover{
+    background-color: #6053ed;
+    text-shadow: 0 0 5px #fff;
+}

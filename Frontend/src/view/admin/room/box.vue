@@ -92,21 +92,11 @@ export default {
           </p>
           <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
         </div>
-        <!-- Add customer -->
-        <div class="px-2 mx-1 my-1 text-center">
-          <button
-            class="btn btn-primary btn-menu p-1"
-            data-toggle="modal"
-            data-target="#addCustomerModal"
-            @click="$emit('addCutomer', value._id)"
-          >
-            Thêm khách
-          </button>
-        </div>
+
         <!-- icon -->
         <div class="px-2 mx-1">
           <span
-            class="material-symbols-outlined m-2 view"
+            class="material-symbols-outlined m-2 view border rounded p-1"
             title="chi tiết"
             data-toggle="modal"
             data-target="#viewRoomModal"
@@ -115,7 +105,7 @@ export default {
             visibility
           </span>
           <span
-            class="material-symbols-outlined out"
+            class="material-symbols-outlined out border rounded p-1"
             title="trả phòng"
             @click="
               () => {
@@ -125,6 +115,17 @@ export default {
           >
             logout
           </span>
+        </div>
+        <!-- Add customer -->
+        <div class="px-2 mt-1 my-1 text-center">
+          <button
+            class="btn btn-primary btn-menu p-1"
+            data-toggle="modal"
+            data-target="#addCustomerModal"
+            @click="$emit('addCutomer', value._id)"
+          >
+            Thêm khách
+          </button>
         </div>
       </div>
       <!--delete icon  -->
@@ -180,13 +181,18 @@ export default {
 }
 
 .view:hover {
-  color: blue;
-  text-shadow: 0 0 5px #e8e2e2;
+  color: #00f0ff;
+  text-shadow: 0 0 2px #00f0ff;
+  box-shadow: 0 0 4px #00f0ff;
+  transition: 0.5s;
 }
 .out:hover {
-  color: green;
-  text-shadow: 0 0 5px #ccc;
+  color: #03f803;
+  text-shadow: 0 0 2px #00ff00;
+  box-shadow: 0 0 4px #00ff00;
+  transition: 0.5s;
 }
+
 button:hover {
   text-shadow: 0 0 5px #fff;
 }

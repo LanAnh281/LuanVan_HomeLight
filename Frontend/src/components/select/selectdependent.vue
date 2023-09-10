@@ -9,16 +9,14 @@ export default {
   },
   setup(props, { emit }) {
     const change = (e) => {
-      console.log("choose", e.target.value);
+      // console.log("choose", e.target.value);
       emit("choose", e.target.value);
     };
-    // const code = ref(props.codeProps.code);
     onMounted(() => {
-      console.log("***code:", props.codeProps);
+      // console.log("***code:", props.codeProps);
     });
     return {
       change,
-      // code,
     };
   },
 };

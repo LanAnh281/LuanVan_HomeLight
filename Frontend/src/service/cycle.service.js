@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
-class userService {
-  constructor(baseUrl = "/api/users") {
+class cycleService {
+  constructor(baseUrl = "/api/cycle") {
     this.api = createApiClient(baseUrl);
   }
 
@@ -10,13 +10,6 @@ class userService {
   }
   async create(data) {
     return (await this.api.post("/", data)).data;
-  }
-  async createAndUpdateRoom(id, data) {
-    return (
-      await this.api.post(`/${id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-    ).data;
   }
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
@@ -29,4 +22,4 @@ class userService {
   }
 }
 
-export default new userService();
+export default new cycleService();

@@ -76,7 +76,7 @@ export default {
       data.uploadFiles = [];
     };
     const handleFileUpload = (event) => {
-      data.uploadFiles = [];
+      // data.uploadFiles = [];
       const files = event.target.files;
       data.uploadFiles = [...data.uploadFiles, ...files];
       const previewImage = document.getElementById("previewImages");
@@ -103,7 +103,6 @@ export default {
             deleteicon.textContent = "x";
             deleteicon.classList.add("delete-icon-add");
             deleteicon.addEventListener("click", () => {
-              alert(`xóa ${file.name} `);
               data.uploadFiles = data.uploadFiles.filter(
                 (item) => item != file
               );
@@ -166,7 +165,7 @@ export default {
         ? MAX_SIZE
         : MAX_SIZE_VIDEO;
       if (file.size > maxSize) {
-        return `Max size: ${MAX_SIZE / 1000}kb `;
+        return `Max size: ${maxSize / 1000}kb `;
       }
       return "";
     };

@@ -152,7 +152,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body">
+  <div class="body mb-5 pb-5">
     <div class="border-radius my-3 row m-0 justify-content-end">
       <div class="col-8 m-0 p-0 row justify-content-end">
         <button

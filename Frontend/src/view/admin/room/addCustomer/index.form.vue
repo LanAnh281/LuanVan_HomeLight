@@ -98,6 +98,7 @@ export default {
             <div class="col-sm-9 px-4 pt-1 mt-2">
               <addCustomerForm
                 v-if="data.active == 'customer'"
+                :_id="_id"
               ></addCustomerForm>
               <div>
                 <span
