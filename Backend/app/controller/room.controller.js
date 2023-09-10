@@ -119,9 +119,6 @@ exports.updated = async (req, res, next) => {
           });
           console.log(">>>Destroy:", destroyMedia);
         }
-        // else {
-        //   return res.json({ message: "file not found" });
-        // }
       }
     }
     if (document && countFiles > 0) {
@@ -161,6 +158,34 @@ exports.updated = async (req, res, next) => {
     } else {
       return res.json({ message: "fail", status: "faild" });
     }
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error, status: "faild" });
+  }
+};
+
+exports.updatedStatusRoom = async (req, res, next) => {
+  const { name, price, area, boardingId, status, cycleId } = req.body;
+
+  try {
+    const document = await Rooms.update(
+      {
+        name: name,
+        price: price,
+        area: area,
+        status: status,
+        boardingId: boardingId,
+        cycleId: cycleId,
+      },
+      {
+        where: {
+          _id: req.params.id,
+        },
+      }
+    );
+    document
+      ? res.json({ message: document, status: "success" })
+      : res.json({ message: document, status: "fail" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });

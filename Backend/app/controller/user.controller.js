@@ -1,9 +1,14 @@
 const { Users } = require("../models/index.model");
+const { dateTime } = require("../middeware/datetime.middeware");
+
 const fs = require("fs");
 const uploadDir = "./uploads/images";
 const path = require("path");
 
-const { createUserAndAccount } = require("../models/transaction.service");
+const {
+  createUserAndAccount,
+  createUserAccountAndUpdateRoom,
+} = require("../models/transaction.service");
 const nodemailer = require("nodemailer");
 const setPassword = () => {
   const charset =
@@ -25,7 +30,10 @@ exports.createUserAndAccount = async (req, res) => {
     email,
     start,
     end,
-    number_plate,
+    numberPlate,
+    sex,
+    birthday,
+    securityDeposit,
     file,
   } = req.body;
   const password = setPassword();
@@ -62,7 +70,10 @@ exports.createUserAndAccount = async (req, res) => {
         email: email,
         start: start,
         end: end,
-        number_plate: number_plate,
+        numberPlate: numberPlate,
+        sex: sex,
+        birthday: birthday,
+        securityDeposit: securityDeposit,
         password: password,
       };
       const result = await createUserAndAccount(userData);
@@ -99,6 +110,106 @@ exports.createUserAndAccount = async (req, res) => {
   }
 };
 
+//
+
+exports.createUserAccountAndUpdateRoom = async (req, res) => {
+  const {
+    userName,
+    identification,
+    phone,
+    address,
+    email,
+
+    numberPlate,
+    sex,
+    birthday,
+    securityDeposit,
+    status,
+    cycleId,
+    isUser,
+    file,
+  } = req.body;
+  let start = req.body.start;
+  let end = req.body.end;
+  // start = start == null ? null : dateTime(start);
+  // end = end == null ? null : dateTime(end);
+  const password = setPassword();
+  end = end === "" ? null : end;
+  start = start === "" ? null : start;
+  try {
+    fs.readdir(uploadDir, async (err, files) => {
+      if (err) {
+        console.error("Error reading upload directory:", err);
+        return;
+      }
+      let newestFiles = [];
+      if (files[0] != "") {
+        //sort the file list by time (using mtime)
+        // sort in descending order-
+        files.sort((file1, file2) => {
+          const stat1 = fs.statSync(path.join(uploadDir, file1));
+          const stat2 = fs.statSync(path.join(uploadDir, file2));
+          return stat2.mtime - stat1.mtime;
+        });
+
+        // Retrieve the two most recent files.
+        newestFiles = files.slice(0, 2);
+      } else {
+        newestFiles = [...file];
+      }
+      const userData = {
+        userName: userName,
+        identification: identification,
+        imagePrevious: newestFiles[0],
+        imageAfter: newestFiles[1],
+        phone: phone,
+        address: address,
+        email: email,
+        start: start,
+        end: end,
+        numberPlate: numberPlate,
+        sex: sex,
+        birthday: birthday,
+        securityDeposit: securityDeposit,
+        status: status,
+        cycleId: cycleId,
+        isUser: isUser,
+        roomId: req.params.id,
+        password: password,
+      };
+      const result = await createUserAccountAndUpdateRoom(userData);
+      if (result.status == "success") {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "nguyenanh160201@gmail.com",
+            pass: "lsvqdizarolouqrn",
+          },
+        });
+        const mailOptions = {
+          from: "nguyenanh160201@gmail.com",
+          to: userData.email,
+          subject: `Quản lý nhà trọ HomeLight`,
+          html: `<h3>Quản lý nhà trọ HomeLight kính chào Anh/Chị: ${userData.userName}</h3>
+                  <p>Anh/Chị vừa kích hoạt tài khoản thành công trên HomeLight. 
+                  Để sử dụng quý khách vui lòng truy cập đường dẫn sau: <a href="http://localhost:3001/login">Click vào đây</a></p>
+                  <p>Tên đăng nhập: ${userData.email} </p>
+                  <p>Mật khẩu: ${userData.password}</p>
+                  <p>Mọi thắc mắc và góp ý, xin Anh/Chị vui lòng liên hệ với chúng tôi qua:</p>
+                  <p> Email hỗ trợ: info@maple.com.vn </p>
+                  <p> Điện thoại: 0915 85 0918</p>
+                  <p>HomeLight trân trọng cảm ơn và rất hân hạnh được phục vụ Anh/Chị.</p>`,
+        };
+        const info = await transporter.sendMail(mailOptions);
+      }
+      return res.json({ message: result, status: "success" });
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error creating user and order.", status: "fail" });
+  }
+};
 exports.findAll = async (req, res, next) => {
   try {
     const documents = await Users.findAll({});
@@ -159,7 +270,10 @@ exports.update = async (req, res, next) => {
     email,
     start,
     end,
-    number_plate,
+    numberPlate,
+    sex,
+    birthday,
+    securityDeposit,
     file,
     imagePrevious,
     imageAfter,
@@ -200,7 +314,10 @@ exports.update = async (req, res, next) => {
             email: email,
             start: start,
             end: end,
-            number_plate: number_plate,
+            numberPlate: numberPlate,
+            sex: sex,
+            birthday: birthday,
+            securityDeposit: securityDeposit,
           },
           { where: { _id: req.params.id } }
         );
@@ -218,6 +335,10 @@ exports.update = async (req, res, next) => {
           email: email,
           start: start,
           end: end,
+          numberPlate: numberPlate,
+          sex: sex,
+          birthday: birthday,
+          securityDeposit: securityDeposit,
         },
         { where: { _id: req.params.id } }
       );

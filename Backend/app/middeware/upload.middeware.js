@@ -6,6 +6,7 @@ const fileFilter = (req, file, cb) => {
     "image/jpeg",
     "image/png",
     "image/gif",
+    "image/webp",
     "video/mp4",
     "video/avi",
     "video/webm",
@@ -35,7 +36,7 @@ const storageStatic = multer.diskStorage({
     cb(null, file.fieldname + "-" + uniqueSuffix + fileExtension);
   },
 });
-const MAX_SIZE = 200000000;
+const MAX_SIZE = 100000000; //100mb
 exports.upload = multer({
   storage: storage,
   fileFilter: fileFilter,

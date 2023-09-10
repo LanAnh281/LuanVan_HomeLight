@@ -10,6 +10,7 @@ router.route("/").get(user.findAll).delete(user.delete);
 router
   .route("/:id")
   .get([authorization.authentication, user.findOne])
+  .post([upload.upload.array("files"), user.createUserAccountAndUpdateRoom])
   .delete(user.deleteOne)
   .put([upload.upload.array("files"), user.update]);
 router.route("/getImg/:id").get(user.getImg);

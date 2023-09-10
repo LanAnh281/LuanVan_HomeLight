@@ -4,6 +4,8 @@ const {
   Accounts,
   Positions,
   Roles_Positions,
+  Rooms,
+  User_Room,
 } = require("../models/index.model");
 
 const crypto = require("crypto");
@@ -39,6 +41,55 @@ exports.createUserAndAccount = async (userData) => {
     };
     const newAccount = await Accounts.create(accountData, { transaction });
 
+    await transaction.commit();
+    return { message: "success", status: "success" };
+  } catch (error) {
+    if (transaction) {
+      if (!transaction.finished) {
+        console.log(">>>Error");
+        await transaction.rollback();
+      }
+    }
+    throw error;
+  }
+};
+exports.createUserAccountAndUpdateRoom = async (userData) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const newUser = await Users.create(userData, { transaction });
+
+    const position = await Positions.findOne({ where: { name: "user" } });
+    let password = setEncrypt(userData.password);
+    let accountData = {
+      userName: newUser.email,
+      password: password,
+      isActive: 1,
+      userId: newUser._id,
+      positionId: position._id,
+    };
+    const newAccount = await Accounts.create(accountData, { transaction });
+    const updateRoom = await Rooms.update(
+      {
+        status: userData.status,
+        cycleId: userData.cycleId,
+      },
+      {
+        where: {
+          _id: userData.roomId,
+        },
+      },
+      { transaction }
+    );
+
+    const newUserRoom = await User_Room.create(
+      {
+        RoomId: userData.roomId,
+        UserId: newUser._id,
+        start: userData.start,
+        end: userData.end,
+      },
+      { transaction }
+    );
     await transaction.commit();
     return { message: "success", status: "success" };
   } catch (error) {
