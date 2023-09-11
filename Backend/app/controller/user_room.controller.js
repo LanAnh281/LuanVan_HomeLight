@@ -34,34 +34,20 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    console.log(">>>id:", req.params.id);
-    const documents = await Rooms.findAll({
+    // console.log(">>>id:", req.params.id);
+    const documents = await Rooms.findOne({
       where: {
         _id: req.params.id,
       },
       include: [
         {
           model: Users,
-          through: {
-            attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
-          },
+          // through: {
+          //   attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
+          // },
         },
       ],
     });
-    // console.log(">>>doc:", documents.dataValue["Users"]);
-    // // Làm phẳng dữ liệu
-    // const flattenedData = documents["Users"].map((user) => {
-    //   const flatUser = { ...user };
-    //   for (const key in documents) {
-    //     if (key !== "Users") {
-    //       flatUser[key] = data[key];
-    //     }
-    //   }
-    //   return flatUser;
-    // });
-
-    // Kết quả là một mảng chứa các người dùng đã được mở rộng với thông tin từ cấp bằng
-    // console.log(flattenedData);
 
     res.json({ message: documents, status: "success" });
   } catch (error) {
