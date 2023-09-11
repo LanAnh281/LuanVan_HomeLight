@@ -101,22 +101,39 @@ export default {
                 :_id="_id"
               ></addCustomerForm>
               <div>
-                <span
-                  class="material-symbols-outlined rounded-circle float-right mb-1"
+                <button
+                  class="float-right border"
                   style="
                     color: var(--white);
-                    background-color: green;
+                    background-color: var(--purple);
                     margin-top: -14px;
+                    font-size: 0.8rem;
                   "
                   title="Thêm thành viên"
                   v-if="data.active == 'member'"
                   @click="data.active = 'customer'"
                 >
-                  add
-                </span>
+                  <span class="m-0 p-0" style="color: var(--white)">+</span>
+                  Thành viên cũ
+                </button>
+                <button
+                  class="float-right"
+                  style="
+                    color: var(--white);
+                    background-color: green;
+                    margin-top: -14px;
+                    font-size: 0.8rem;
+                  "
+                  title="Thêm thành viên"
+                  v-if="data.active == 'member'"
+                  @click="data.active = 'customer'"
+                >
+                  + Thành viên mới
+                </button>
                 <addMemberForm
                   class="m-0 p-0"
                   v-if="data.active == 'member'"
+                  :_id="_id"
                 ></addMemberForm>
               </div>
               <Service

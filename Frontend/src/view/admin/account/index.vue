@@ -240,6 +240,7 @@ export default {
       :action="true"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
+      :account="true"
       @togge_off="(value) => togge_off(value, false)"
       @togge_on="(value) => togge_off(value, true)"
     ></Table>

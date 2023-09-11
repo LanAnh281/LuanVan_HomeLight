@@ -8,6 +8,7 @@ export default {
     titles: { type: Array, default: [] },
     action: { type: Boolean, default: false },
     actionList: { type: Array, default: [] },
+    account: false,
     currentPage: "",
     sizePage: "",
   },
@@ -40,19 +41,30 @@ export default {
             {{ value[title] }}
           </td>
           <td v-if="action" class="ml-2">
+            <div v-if="account == true">
+              <span
+                class="material-symbols-outlined"
+                v-if="value.isActive"
+                @click="$emit('togge_off', value._id)"
+              >
+                toggle_on
+              </span>
+              <span
+                class="material-symbols-outlined"
+                v-else
+                @click="$emit('togge_on', value._id)"
+              >
+                toggle_off
+              </span>
+            </div>
             <span
-              class="material-symbols-outlined"
-              v-if="value.isActive"
-              @click="$emit('togge_off', value._id)"
+              v-for="(value2, index2) in actionList"
+              :key="index2"
+              class="material-symbols-outlined rounded-circle"
+              :class="`${value2}-icon`"
+              @click="$emit(value2, value._id)"
             >
-              toggle_on
-            </span>
-            <span
-              class="material-symbols-outlined"
-              v-else
-              @click="$emit('togge_on', value._id)"
-            >
-              toggle_off
+              {{ value2 }}
             </span>
           </td>
         </tr>
