@@ -8,10 +8,12 @@ import roomService from "../../../../service/room.service";
 import mediaService from "../../../../service/media.service";
 //Form
 import addCustomerForm from "./addCustomer.form.vue";
+import addOldMemberForm from "./addOldMember.form.vue";
 import addMemberForm from "./addMember.form.vue";
+
 import Service from "./service.vue";
 export default {
-  components: { addCustomerForm, addMemberForm, Service },
+  components: { addCustomerForm, addOldMemberForm, addMemberForm, Service },
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
@@ -24,7 +26,8 @@ export default {
           active: "service",
         },
       ],
-      active: "room",
+      active: "customer",
+      form: "addNewMember",
       room: { name: "", price: "", area: "" },
     });
     const isModalOpen = ref(false);
@@ -75,7 +78,7 @@ export default {
         <div class="modal-body">
           <!-- nhà trọ -->
           <div class="form-group row" style="margin-right: -82px">
-            <ul class="col-sm-2 m-0 p-0">
+            <ul class="col-sm-2 m-0 mt-2 p-0">
               <li
                 v-for="(value, index) in data.item"
                 :key="index"
@@ -95,14 +98,10 @@ export default {
               </li>
             </ul>
             <!-- component Customer -->
-            <div class="col-sm-9 px-4 pt-1 mt-2">
-              <addCustomerForm
-                v-if="data.active == 'customer'"
-                :_id="_id"
-              ></addCustomerForm>
-              <div>
+            <div class="col-sm-9 row px-4 pt-1 mt-0">
+              <div class="col-12 row justify-content-end mb-2">
                 <button
-                  class="float-right border"
+                  class="border"
                   style="
                     color: var(--white);
                     background-color: var(--purple);
@@ -110,14 +109,16 @@ export default {
                     font-size: 0.8rem;
                   "
                   title="Thêm thành viên"
-                  v-if="data.active == 'member'"
-                  @click="data.active = 'customer'"
+                  v-if="data.active == 'member' || 'customer'"
+                  @click="
+                    data.active = 'customer';
+                    data.form = 'addOldMember';
+                  "
                 >
-                  <span class="m-0 p-0" style="color: var(--white)">+</span>
-                  Thành viên cũ
+                  +Thành viên cũ
                 </button>
                 <button
-                  class="float-right"
+                  class="border"
                   style="
                     color: var(--white);
                     background-color: green;
@@ -125,11 +126,28 @@ export default {
                     font-size: 0.8rem;
                   "
                   title="Thêm thành viên"
-                  v-if="data.active == 'member'"
-                  @click="data.active = 'customer'"
+                  v-if="data.active == 'member' || 'customer'"
+                  @click="
+                    data.active = 'customer';
+                    data.form = 'addNewMember';
+                  "
                 >
                   + Thành viên mới
                 </button>
+              </div>
+              <addCustomerForm
+                class="col-12"
+                v-if="data.active == 'customer' && data.form == 'addNewMember'"
+                :_id="_id"
+              ></addCustomerForm>
+              <addOldMemberForm
+                class="col-12"
+                v-if="data.active == 'customer' && data.form == 'addOldMember'"
+                :_id="_id"
+              >
+              </addOldMemberForm>
+              <!-- Member -->
+              <div class="col-12">
                 <addMemberForm
                   class="m-0 p-0"
                   v-if="data.active == 'member'"

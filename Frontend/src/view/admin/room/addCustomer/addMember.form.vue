@@ -33,8 +33,8 @@ export default {
     );
     onMounted(async () => {
       const document = await userRoomService.get(props._id);
-      data.item = document.message;
 
+      data.item = document.message;
       data.item.Users = data.item.Users.map((item) => {
         return {
           ...item,
