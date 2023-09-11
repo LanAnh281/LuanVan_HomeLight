@@ -1,7 +1,7 @@
 const { User_Room, Rooms, Users } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
-  let { start, end, userId, roomId } = req.body;
+  let { start, end, UserId, RoomId } = req.body;
   console.log("User_Room Body:", req.body);
   start = dateTime(start);
   end = end == null ? null : dateTime(end);
@@ -9,8 +9,8 @@ exports.create = async (req, res, next) => {
     const document = await User_Room.create({
       start: start,
       end: end,
-      UserId: userId,
-      RoomId: roomId,
+      RoomId: RoomId,
+      UserId: UserId,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -20,10 +20,18 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Rooms.findAll({
-      include: {
-        model: Users,
-        through: { attributes: [] },
+    const documents = await User_Room.findAll({});
+    res.json({ message: documents, status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error, status: "faild" });
+  }
+};
+exports.findAllRoom = async (req, res, next) => {
+  try {
+    const documents = await User_Room.findAll({
+      where: {
+        RoomId: req.params.id,
       },
     });
     res.json({ message: documents, status: "success" });
@@ -34,7 +42,6 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    // console.log(">>>id:", req.params.id);
     const documents = await Rooms.findOne({
       where: {
         _id: req.params.id,
@@ -83,13 +90,13 @@ exports.updated = async (req, res, next) => {
   }
 };
 exports.delete = async (req, res, next) => {
-  const { userId, roomId } = req.body;
+  const { UserId, RoomId } = req.body;
 
   try {
     const document = await User_Room.destroy({
       where: {
-        UserId: userId,
-        RoomId: roomId,
+        UserId: UserId,
+        RoomId: RoomId,
       },
     });
     res.json({ message: document, status: "success" });
