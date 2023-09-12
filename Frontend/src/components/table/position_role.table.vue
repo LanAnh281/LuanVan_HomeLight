@@ -38,7 +38,7 @@ export default {
 
       <tbody>
         <tr v-for="(value, index) in data" :key="index">
-          <th scope="row">
+          <td scope="row">
             <input
               type="checkbox"
               v-model="value.checked"
@@ -62,7 +62,7 @@ export default {
               "
               :disabled="value.disable"
             />
-          </th>
+          </td>
           <td>{{ value.name }}</td>
           <td style="max-width: 10px">
             <span
@@ -94,5 +94,8 @@ export default {
 .readMore {
   display: block;
   color: var(--chocolate);
+}
+table {
+  width: 100%;
 }
 </style>

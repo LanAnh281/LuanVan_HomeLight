@@ -22,11 +22,21 @@ export default {
     <table class="table">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">#</th>
-          <th scope="col" v-for="(filed, index) in fields" :key="index">
+          <th
+            scope="col"
+            style="padding: 0px; text-align: center; line-height: 3"
+          >
+            #
+          </th>
+          <th
+            scope="col"
+            v-for="(filed, index) in fields"
+            :key="index"
+            style="padding: 0px; text-align: center; line-height: 3"
+          >
             {{ filed }}
           </th>
-          <th scope="col" v-if="action">Hành động</th>
+          <th scope="col" v-if="action"></th>
         </tr>
       </thead>
       <tbody>

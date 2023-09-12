@@ -22,11 +22,11 @@ export default {
       checkedNewList: [],
       removeList: [],
       currentPage: 1,
-      sizePage: 2,
+      sizePage: 3,
       totalPage: 0,
     });
     data.totalPage = computed(() =>
-      data.item ? Math.round(Math.ceil(data.item.length) / data.sizePage) : 0
+      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
     );
     data.setPage = computed(() =>
       data.item
@@ -71,51 +71,16 @@ export default {
         }
       }
     };
-    // Hàm kiểm tra sự tương đồng giữa hai đối tượng
-    const isEqual = (objA, objB) => {
-      // Kiểm tra các thuộc tính của hai đối tượng
-      const keysA = Object.keys(objA);
-      const keysB = Object.keys(objB);
 
-      if (keysA.length !== keysB.length) {
-        return false;
-      }
-
-      for (let key of keysA) {
-        if (objA[key] !== objB[key]) {
-          return false;
-        }
-      }
-
-      return true;
-    };
     const refresh = async () => {
       const document = await userService.getAll();
       data.item = document.message;
 
       let getAll = await userRoomService.getAll();
       getAll = getAll.message;
-      //   getAll = getAll.map((item) => {
-      //     return {
-      //       _id: item._id,
-      //     };
-      //   });
-      //   console.log(">>>", getAll);
-      //   let array = [];
-      //   for (let index in getAll) {
-      //     console.log(index);
-      //     array.push(getAll[index].UserId);
-      //   }
-      //   console.log(">>>", array);
-
-      //   getAll = getAll.message;
-      //   data.item = data.item.filter(
-      //     (item) => !getAll.filter((obj) => obj.UserId == item._id)
-      //   );
       data.item = data.item.filter(
         (item) => !getAll.some((obj) => obj.UserId === item._id)
       );
-      console.log(data.item);
 
       data.userRoom = await userRoomService.getAllRoom(props._id);
       data.userRoom = data.userRoom.message;
@@ -193,25 +158,27 @@ table {
 
 th,
 td {
-  padding: 10px;
   border: 1px solid #ccc;
   word-wrap: break-word;
 }
-
+td:nth-child(1) {
+  width: 2%;
+}
 td:nth-child(2) {
-  width: 25%;
+  max-width: 20%;
 }
 td:nth-child(3) {
-  width: 30%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
+  max-width: 6%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
+}
+td:nth-child(4) {
+  width: 40%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
   white-space: normal;
   text-overflow: ellipsis;
 }
-td:nth-child(4) {
-  width: 22%;
-}
 td:nth-child(5) {
-  width: 22%;
+  max-width: 10%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
 }
+
 .close-icon {
   background-color: red;
   color: rgb(242, 244, 245);

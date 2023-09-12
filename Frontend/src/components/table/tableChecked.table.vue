@@ -22,8 +22,18 @@ export default {
     <table class="table">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">#</th>
-          <th scope="col" v-for="(filed, index) in fields" :key="index">
+          <th
+            scope="col"
+            style="padding: 0px; text-align: center; line-height: 3"
+          >
+            #
+          </th>
+          <th
+            scope="col"
+            v-for="(filed, index) in fields"
+            :key="index"
+            style="padding: 0px; text-align: center; line-height: 3"
+          >
             {{ filed }}
           </th>
           <th scope="col" v-if="action">Hành động</th>
@@ -31,13 +41,11 @@ export default {
       </thead>
       <tbody>
         <tr v-for="(value, index) in data" :key="index">
-          <th><input type="checkbox" v-model="value.checked" /></th>
+          <td scope="col" class="text-center">
+            <input type="checkbox" v-model="value.checked" />
+          </td>
 
-          <td
-            v-for="(title, index1) in titles"
-            :key="index1"
-            style="max-width: 10px"
-          >
+          <td v-for="(title, index1) in titles" :key="index1">
             {{ value[title] }}
           </td>
           <!-- action -->
@@ -45,7 +53,7 @@ export default {
             <span
               v-for="(value2, index2) in actionList"
               :key="index2"
-              class="material-symbols-outlined rounded-circle"
+              class="material-symbols-outlined mr-1"
               :class="`${value2}-icon`"
               @click="$emit(value2, value._id)"
             >

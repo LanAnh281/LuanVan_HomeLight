@@ -7,6 +7,7 @@ import { formatDateTime } from "../../../../assets/js/format.common";
 //component
 import paginationVue from "../../../../components/pagination/pagination.vue";
 import Table from "../../../../components/table/table.vue";
+import { successAd } from "../../../../assets/js/common.alert";
 export default {
   components: { paginationVue, Table },
   props: { _id: { type: String, default: "" } },
@@ -15,13 +16,11 @@ export default {
       item: [{ Users: [] }],
       setPage: [],
       currentPage: 1,
-      sizePage: 2,
+      sizePage: 3,
       totalPage: 0,
     });
     data.totalPage = computed(() =>
-      data.item.Users
-        ? Math.round(Math.ceil(data.item.Users.length) / data.sizePage)
-        : 0
+      data.item.Users ? Math.ceil(data.item.Users.length / data.sizePage) : 0
     );
     data.setPage = computed(() =>
       data.item.Users
@@ -31,9 +30,30 @@ export default {
           )
         : []
     );
-    onMounted(async () => {
-      const document = await userRoomService.get(props._id);
 
+    const handleDelete = async (value) => {
+      console.log(`delete room user`, value, props._id);
+      try {
+        const documentDelete = await userRoomService.delete(props._id, {
+          UserId: value,
+          RoomId: props._id,
+        });
+        if (documentDelete["status"] == "success") {
+          successAd("Thành công ");
+          await refresh();
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const refresh = async () => {
+      const document = await userRoomService.get(props._id);
       data.item = document.message;
       data.item.Users = data.item.Users.map((item) => {
         return {
@@ -42,8 +62,11 @@ export default {
           userRoomEnd: formatDateTime(item.User_Room.end),
         };
       });
+    };
+    onMounted(async () => {
+      await refresh();
     });
-    return { data, formatDateTime };
+    return { data, handleDelete };
   },
 };
 </script>
@@ -59,7 +82,7 @@ export default {
       :sizePage="data.sizePage"
       @close="
         (value) => {
-          console.log(`${value}`); // trả phòng
+          handleDelete(value); //trả phòng
         }
       "
     ></Table>
@@ -89,7 +112,11 @@ export default {
 table {
   width: 100%;
 }
-
+th {
+  padding: 0px;
+  text-align: center;
+  line-height: 3;
+}
 th,
 td {
   padding: 10px;
@@ -101,16 +128,22 @@ td:nth-child(2) {
   width: 25%;
 }
 td:nth-child(3) {
-  width: 30%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
+  width: 28%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
   white-space: normal;
   text-overflow: ellipsis;
 }
 td:nth-child(4) {
-  width: 22%;
+  width: 24%;
+  padding: auto 0;
 }
 td:nth-child(5) {
   width: 22%;
+  padding: auto 0;
 }
+td:nth-child(6) {
+  width: 5%;
+}
+
 .close-icon {
   background-color: red;
   color: rgb(242, 244, 245);
