@@ -172,6 +172,7 @@ const Services = sequelize.define("Service", {
   _id: setPrimary,
   name: { type: DataTypes.TEXT },
   price: { type: DataTypes.STRING },
+  unit: { type: DataTypes.STRING },
 });
 const Note = sequelize.define("Note", {
   _id: setPrimary,
@@ -254,13 +255,13 @@ Rooms.belongsTo(BorardingHouse, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-BorardingHouse.hasMany(Services, {
-  foreignKey: "boardingId",
+Users.hasMany(Services, {
+  foreignKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-Services.belongsTo(BorardingHouse, {
-  foreignKey: "boardingId",
+Services.belongsTo(Users, {
+  foreignKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
