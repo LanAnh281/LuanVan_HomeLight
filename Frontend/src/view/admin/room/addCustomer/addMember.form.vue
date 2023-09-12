@@ -18,6 +18,7 @@ export default {
       currentPage: 1,
       sizePage: 3,
       totalPage: 0,
+      length: 0,
     });
     data.totalPage = computed(() =>
       data.item.Users ? Math.ceil(data.item.Users.length / data.sizePage) : 0
@@ -62,6 +63,7 @@ export default {
           userRoomEnd: formatDateTime(item.User_Room.end),
         };
       });
+      data.length = data.item.Users.length;
     };
     onMounted(async () => {
       await refresh();
@@ -90,6 +92,7 @@ export default {
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
       :size="data.sizePage"
+      :length="data.length"
       @page="(value) => (data.currentPage = value)"
       @previous="
         () => {
@@ -124,7 +127,19 @@ td {
   word-wrap: break-word;
 }
 
-td:nth-child(2) {
+.close-icon {
+  background-color: red;
+  color: rgb(242, 244, 245);
+  font-size: 1.6rem !important;
+  margin-right: 3px;
+}
+.close-icon:hover {
+  color: white;
+  background-color: red;
+  box-shadow: 0 0 10px #e1ff00;
+}
+</style>
+<!-- td:nth-child(2) {
   width: 25%;
 }
 td:nth-child(3) {
@@ -143,16 +158,4 @@ td:nth-child(5) {
 td:nth-child(6) {
   width: 5%;
 }
-
-.close-icon {
-  background-color: red;
-  color: rgb(242, 244, 245);
-  font-size: 1.6rem !important;
-  margin-right: 3px;
-}
-.close-icon:hover {
-  color: white;
-  background-color: red;
-  box-shadow: 0 0 10px #e1ff00;
-}
-</style>
+ -->

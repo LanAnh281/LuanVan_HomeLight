@@ -8,7 +8,7 @@ export default {
     titles: { type: Array, default: [] },
     action: { type: Boolean, default: false },
     actionList: { type: Array, default: [] },
-    account: false,
+    isInputChecked: false,
     currentPage: "",
     sizePage: "",
   },
@@ -23,6 +23,7 @@ export default {
       <thead class="thead-dark">
         <tr>
           <th
+            v-if="isInputChecked"
             scope="col"
             style="padding: 0px; text-align: center; line-height: 3"
           >
@@ -41,7 +42,7 @@ export default {
       </thead>
       <tbody>
         <tr v-for="(value, index) in data" :key="index">
-          <td scope="col" class="text-center">
+          <td scope="col" class="text-center" v-if="isInputChecked">
             <input type="checkbox" v-model="value.checked" />
           </td>
 

@@ -24,6 +24,7 @@ export default {
       currentPage: 1,
       sizePage: 3,
       totalPage: 0,
+      length: 0,
     });
     data.totalPage = computed(() =>
       data.item ? Math.ceil(data.item.length / data.sizePage) : 0
@@ -100,6 +101,7 @@ export default {
           data.checkedList.push(value);
         }
       });
+      data.length = data.item.length;
     };
     onMounted(async () => {
       await refresh();
@@ -121,6 +123,7 @@ export default {
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
       :size="data.sizePage"
+      :length="data.length"
       @page="(value) => (data.currentPage = value)"
       @previous="
         () => {
@@ -161,7 +164,21 @@ td {
   border: 1px solid #ccc;
   word-wrap: break-word;
 }
-td:nth-child(1) {
+
+.close-icon {
+  background-color: red;
+  color: rgb(242, 244, 245);
+  font-size: 1.6rem !important;
+  margin-right: 3px;
+}
+.close-icon:hover {
+  color: white;
+  background-color: red;
+  box-shadow: 0 0 10px #e1ff00;
+}
+</style>
+<!-- 
+  td:nth-child(1) {
   width: 2%;
 }
 td:nth-child(2) {
@@ -178,16 +195,4 @@ td:nth-child(4) {
 td:nth-child(5) {
   max-width: 10%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
 }
-
-.close-icon {
-  background-color: red;
-  color: rgb(242, 244, 245);
-  font-size: 1.6rem !important;
-  margin-right: 3px;
-}
-.close-icon:hover {
-  color: white;
-  background-color: red;
-  box-shadow: 0 0 10px #e1ff00;
-}
-</style>
+ -->

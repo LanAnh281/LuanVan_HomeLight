@@ -94,7 +94,7 @@ export default {
         </div>
 
         <!-- icon -->
-        <div class="px-2 mx-1">
+        <div class="px-2 mx-4">
           <span
             class="material-symbols-outlined m-2 view border rounded p-1"
             title="chi tiết"
@@ -104,6 +104,25 @@ export default {
           >
             visibility
           </span>
+          <!-- Edit -->
+          <span
+            class="material-symbols-outlined mr-1 edit border rounded p-1"
+            title="chỉnh sửa"
+            data-toggle="modal"
+            data-target="#roomUpdateModal"
+            @click="$emit('edit', value._id)"
+          >
+            edit
+          </span>
+          <!-- delete room -->
+          <span
+            class="material-symbols-outlined mr-1 delete border rounded p-1"
+            title="xóa phòng"
+            @click="handleDelete(value._id)"
+          >
+            close
+          </span>
+          <!-- trả phòng -->
           <span
             class="material-symbols-outlined out border rounded p-1"
             title="trả phòng"
@@ -128,15 +147,6 @@ export default {
           </button>
         </div>
       </div>
-      <!--delete icon  -->
-      <span class="delete-icon" @click.stop="handleDelete(value._id)"> x </span>
-      <p
-        data-toggle="modal"
-        data-target="#roomUpdateModal"
-        @click="$emit('edit', value._id)"
-      >
-        <span class="material-symbols-outlined edit-icon"> edit </span>
-      </p>
     </div>
   </div>
 </template>
@@ -192,7 +202,18 @@ export default {
   box-shadow: 0 0 4px #00ff00;
   transition: 0.5s;
 }
-
+.delete:hover {
+  color: #f80303;
+  text-shadow: 0 0 2px #ff6200;
+  box-shadow: 0 0 4px #ff0000;
+  transition: 0.5s;
+}
+.edit:hover {
+  color: #f8cb03;
+  text-shadow: 0 0 2px #ffbb00;
+  box-shadow: 0 0 4px #ffae00;
+  transition: 0.5s;
+}
 button:hover {
   text-shadow: 0 0 5px #fff;
 }

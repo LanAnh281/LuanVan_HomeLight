@@ -6,6 +6,7 @@ export default {
     currentPage: "",
     totalPage: "",
     size: "",
+    length: "",
   },
   setup() {
     return {};
@@ -14,11 +15,23 @@ export default {
 </script>
 <template>
   <div class="row justify-content-between mx-2">
-    <div>
-      Hiển thị từ {{ (currentPage - 1) * size + 1 }} đến
-      {{ currentPage * size }}
+    <div v-if="totalPage > 0" class="mt-1">
+      Hiển thị bản ghi
+      {{ (currentPage - 1) * size + 1 }} đến
+      <span v-if="currentPage == totalPage">
+        <span v-if="currentPage * size == length">
+          {{ currentPage * size }}
+        </span>
+        <span v-else> {{ length }} </span>
+      </span>
+      <span v-else>
+        {{ currentPage * size }}
+      </span>
     </div>
-    <nav aria-label="Page navigation example">
+    <div v-if="totalPage == 0" class="text-center mx-auto">
+      Không tồn tại bản ghi
+    </div>
+    <nav aria-label="Page navigation example " v-if="totalPage > 0">
       <ul class="pagination">
         <li class="page-item" :class="currentPage == 1 ? 'disabled' : ''">
           <a class="page-link" @click="$emit('previous')"
@@ -27,6 +40,7 @@ export default {
             </span></a
           >
         </li>
+
         <li
           class="page-item"
           v-for="(value, index) in totalPage"

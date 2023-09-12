@@ -8,25 +8,29 @@ import { checkAccessToken } from "../../../assets/js/common.login";
 import { formatCurrency } from "../../../assets/js/format.common";
 //component
 import TableChecked from "../../../components/table/tablechecked.table.vue";
-import Add from "../../admin/service/add.vue";
+import Add from "./add.vue";
+import Edit from "./edit.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
 export default {
-  components: { TableChecked, Add, paginationVue },
+  components: { TableChecked, Add, Edit, paginationVue },
 
   setup() {
     const router = useRouter();
     const data = reactive({
       item: [],
       setPage: [],
-      sizePage: 2,
+      sizePage: 10,
       currentPage: 1,
       totalPage: 0,
+      lenght: 0,
     });
     const isAddServiceModal = ref(false);
+    const isEditServiceModal = ref(false);
     let intervalId = null;
     data.totalPage = computed(() =>
-      data.item ? Math.ceil(data.item.length / data.setPage) : 0
+      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
     );
+
     data.setPage = computed(() =>
       data.item
         ? data.item.slice(
@@ -35,11 +39,26 @@ export default {
           )
         : []
     );
-    const handleDeleteMany = () => {
-      console.log("removeLisst", data.item);
+    const handleDeleteMany = async () => {
+      try {
+        const removeList = data.item.filter((item) => item.checked == true);
+        removeList.forEach(async (value) => {
+          console.log(value);
+          //API xóa
+        });
+        await refresh();
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
-    const handleCreate = () => {};
-    onBeforeMount(async () => {
+
+    const refresh = async () => {
       try {
         data.item = await serviceService.getAll();
         data.item = data.item.message;
@@ -50,6 +69,7 @@ export default {
             checked: false,
           };
         });
+        data.lenght = data.item.length;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -59,6 +79,9 @@ export default {
           console.log("Errors:", error.message);
         }
       }
+    };
+    onBeforeMount(async () => {
+      await refresh();
 
       await checkAccessToken(router);
       intervalId = setInterval(async () => {
@@ -67,10 +90,12 @@ export default {
     });
     return {
       data,
+      refresh,
       handleDeleteMany,
-      handleCreate,
+
       // modal
       isAddServiceModal,
+      isEditServiceModal,
     };
   },
 };
@@ -80,7 +105,7 @@ export default {
     <div class="border-radius my-3 row m-0 justify-content-end">
       <div class="col-8 m-0 p-0 row justify-content-end">
         <button
-          class="col-3 mr-3 btn btn-primary"
+          class="col-3 mr-1 btn btn-primary"
           style="max-width: 20%; height: 36px; margin-top: 6px"
           data-toggle="modal"
           data-target="#addServiceModal"
@@ -96,9 +121,30 @@ export default {
         <Add
           v-if="isAddServiceModal"
           @clodeModal="isAddServiceModal = !isAddServiceModal"
+          @add="refresh"
         ></Add>
-        <!-- delete many services -->
+        <!-- Edit services-->
         <button
+          class="col-3 mr-3 btn btn-warning"
+          style="max-width: 18%; height: 36px; margin-top: 6px"
+          data-toggle="modal"
+          data-target="#editServiceModal"
+          @click="isEditServiceModal = !isEditServiceModal"
+        >
+          <div class="row justify-content-center plus">
+            <span class="material-symbols-outlined" style="color: var(--white)">
+              edit
+            </span>
+            <span style="color: var(--white)">Sửa dịch vụ</span>
+          </div>
+        </button>
+        <Edit
+          v-if="isEditServiceModal"
+          @clodeModal="isEditServiceModal = !isEditServiceModal"
+          @edit="refresh"
+        ></Edit>
+        <!-- delete many services -->
+        <!-- <button
           class="col-3 mr-3 btn btn-danger"
           style="max-width: 20%; height: 36px; margin-top: 6px"
           @click="handleDeleteMany"
@@ -109,19 +155,22 @@ export default {
             </span>
             <span style="color: var(--white)">xóa dịch vụ</span>
           </div>
-        </button>
+        </button> -->
       </div>
     </div>
     <!-- component Table -->
     <TableChecked
+      class="text-center"
       :data="data.setPage"
-      :fields="['Tên dịch vụ', 'Đơn giá']"
-      :titles="['name', 'price']"
+      :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
+      :titles="['name', 'price', 'unit']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
-      :action="true"
+      :action="false"
+      :isInputChecked="false"
       :actionList="['edit', 'delete_forever']"
-      @edit="
+    ></TableChecked>
+    <!--  @edit="
         (value) => {
           console.log('edit', value);
         }
@@ -130,12 +179,12 @@ export default {
         (value) => {
           console.log('remove', value);
         }
-      "
-    ></TableChecked>
+      " -->
     <paginationVue
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
       :size="data.sizePage"
+      :length="data.lenght"
       @page="(value) => (data.currentPage = value)"
       @previous="
         () => {
@@ -157,9 +206,6 @@ export default {
 <style scope>
 .body {
   min-height: 100vh;
-}
-table {
-  width: 100%;
 }
 
 th,

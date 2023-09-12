@@ -14,6 +14,7 @@ import {
   checkNumber,
 } from "../../../assets/js/checkInput.common";
 import { successAd, warning } from "../../../assets/js/common.alert";
+import serviceService from "../../../service/service.service";
 export default {
   components: { Select },
   setup(props, { emit }) {
@@ -22,11 +23,11 @@ export default {
         {
           name: "",
           price: "",
+          unit: "",
         },
       ],
     });
     const isModalOpen = ref(false);
-    const filesRef = ref(null);
 
     const openModal = () => {
       isModalOpen.value = true;
@@ -34,12 +35,12 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal room");
-      filesRef.value.value = "";
+
       emit("closeModal");
     };
     const add = () => {
       console.log("add");
-      data.item.push({ name: "", price: "" });
+      data.item.push({ name: "", price: "", unit: "" });
       //   data.error.push({ name: "", price: "" });
     };
     const remove = () => {
@@ -50,13 +51,27 @@ export default {
     const handleDelete = (value) => {
       data.item = data.item.filter((item, index) => index != value);
     };
-    const handleCreate = () => {
+    const handleCreate = async () => {
       console.log("Thêm service:", data.item);
+      try {
+        data.item.forEach(async (value) => {
+          const document = await serviceService.create(value);
+          emit("add");
+        });
+        successAd("Thêm dịch vụ thành công");
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
     onBeforeMount(async () => {
-      console.log("Add service");
-      $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
-      $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+      $("#addServiceModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#addServiceModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
 
     return {
@@ -103,10 +118,11 @@ export default {
                 <tr>
                   <th>Tên dịch vụ</th>
                   <th>Đơn giá</th>
+                  <th>Đơn vị tính</th>
                   <th>Hành động</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="text-center">
                 <tr
                   v-for="(value, index) in data.item"
                   :key="index"
@@ -115,17 +131,25 @@ export default {
                   <th>
                     <input
                       type="text"
+                      class="p-1 w-100"
                       v-model="value.name"
-                      class="p-1"
-                      style="border-color: #ccc"
+                      style="border: none"
                     />
                   </th>
                   <th>
                     <input
                       type="text"
                       v-model="value.price"
-                      class="p-1"
-                      style="border-color: #ccc"
+                      class="p-1 w-100"
+                      style="border: none"
+                    />
+                  </th>
+                  <th>
+                    <input
+                      type="text"
+                      class="p-1 w-100"
+                      v-model="value.unit"
+                      style="border: none"
                     />
                   </th>
                   <th class="text-center">

@@ -381,12 +381,7 @@ export default {
         <roomForm
           v-if="isRoomModal"
           :boarding="data.boarding"
-          @add="
-            async () => {
-              console.log(`đã thêm phòng trọ mới`);
-              await refreshRoom();
-            }
-          "
+          @add="handleEdit"
           @closeModal="isRoomModal = !isRoomModal"
         ></roomForm>
 
@@ -411,7 +406,7 @@ export default {
       v-if="data.isActiveBoarding"
       class="ml-3"
       :_idBoarding="data.isActiveBoarding"
-      @handleDelete="refreshRoom()"
+      @handleDelete="handleEdit"
       @edit="
         (value) => {
           isEditRoomModal = !isEditRoomModal;

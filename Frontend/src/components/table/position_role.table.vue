@@ -64,7 +64,7 @@ export default {
             />
           </td>
           <td>{{ value.name }}</td>
-          <td style="max-width: 10px">
+          <td>
             <span
               v-for="(value1, index1) in value.Roles"
               :key="index1"
@@ -94,8 +94,5 @@ export default {
 .readMore {
   display: block;
   color: var(--chocolate);
-}
-table {
-  width: 100%;
 }
 </style>

@@ -90,6 +90,7 @@ export default {
       //accounts : display table 'Tài khoản'
       const documentAccount = await accountService.getAll();
       data.accounts = documentAccount.message;
+      data.length = data.accounts.length;
       //box director 'Tài khoản' and 'Vai trò'
       component.isDirector = "Tài khoản";
       // display form checked roles.
@@ -249,6 +250,7 @@ export default {
       :totalPage="data.totalPage"
       :currentPage="data.currentPage"
       :size="data.sizePage"
+      :length="data.length"
       @page="(value) => (data.currentPage = value)"
       @previous="
         () => {

@@ -22,18 +22,8 @@ export default {
     <table class="table">
       <thead class="thead-dark">
         <tr>
-          <th
-            scope="col"
-            style="padding: 0px; text-align: center; line-height: 3"
-          >
-            #
-          </th>
-          <th
-            scope="col"
-            v-for="(filed, index) in fields"
-            :key="index"
-            style="padding: 0px; text-align: center; line-height: 3"
-          >
+          <!-- <th scope="col">#</th> -->
+          <th scope="col" v-for="(filed, index) in fields" :key="index">
             {{ filed }}
           </th>
           <th scope="col" v-if="action"></th>
@@ -41,17 +31,17 @@ export default {
       </thead>
       <tbody>
         <tr v-for="(value, index) in data" :key="index">
-          <th scope="row">{{ (currentPage - 1) * sizePage + index + 1 }}</th>
+          <!-- <th scope="row">{{ (currentPage - 1) * sizePage + index + 1 }}</th> -->
 
           <td
             v-for="(title, index1) in titles"
             :key="index1"
-            style="max-width: 10px"
+            style="width: 30%"
           >
             {{ value[title] }}
           </td>
           <td v-if="action" class="ml-2">
-            <div v-if="account == true">
+            <div v-if="account == true" class="text-center">
               <span
                 class="material-symbols-outlined"
                 v-if="value.isActive"
