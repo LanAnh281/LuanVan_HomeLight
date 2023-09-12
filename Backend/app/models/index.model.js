@@ -254,6 +254,16 @@ Rooms.belongsTo(BorardingHouse, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+BorardingHouse.hasMany(Services, {
+  foreignKey: "boardingId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Services.belongsTo(BorardingHouse, {
+  foreignKey: "boardingId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 BorardingHouse.hasMany(Spending, {
   foreignKey: "boardingId",
   onDelete: "CASCADE",
