@@ -75,79 +75,141 @@ export default {
       filesRef.value.value = "";
       data.uploadFiles = [];
     };
-    const handleFileUpload = (event) => {
-      // data.uploadFiles = [];
+    const handleFileUpload = async (event) => {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      const MAX_SIZE_VIDEO = 100000000; //100mb
+      const allowedTypesVideo = [
+        "video/mp4",
+        "video/avi",
+        "video/webm",
+        "video/mov",
+      ];
       const files = event.target.files;
+
       data.uploadFiles = [...data.uploadFiles, ...files];
-      const previewImage = document.getElementById("previewImages");
-      previewImage.innerHTML = "";
-      const rowImages = document.createElement("div");
-      rowImages.classList.add("row");
-      rowImages.style.position = "relative";
-      for (const file of data.uploadFiles) {
-        const reader = new FileReader();
-        let invalidMessage = validate(file);
-        if (invalidMessage == "") {
-          reader.onload = function (e) {
-            const colImage = document.createElement("div");
-            colImage.classList.add("justify-content-between");
-            colImage.classList.add("col-6");
-            colImage.id = file.name;
-            const img = document.createElement("img");
-
-            img.src = e.target.result;
-            img.style.maxWidth = "100%";
-            img.style.maxHeight = "100%";
-            img.style.objectFit = "contain";
-            const deleteicon = document.createElement("span");
-            deleteicon.textContent = "x";
-            deleteicon.classList.add("delete-icon-add");
-            deleteicon.addEventListener("click", () => {
-              data.uploadFiles = data.uploadFiles.filter(
-                (item) => item != file
-              );
-              const imgRemove = document.getElementById(file.name);
-              imgRemove.remove();
-            });
-            const br = document.createElement("br");
-            colImage.appendChild(img);
-            colImage.appendChild(br);
-
-            const span = document.createElement("span");
-            span.textContent = `${file.name}`;
-            colImage.appendChild(deleteicon);
-            colImage.appendChild(span);
-
-            rowImages.appendChild(colImage);
-            previewImage.appendChild(rowImages);
-          };
-          reader.readAsDataURL(file);
-        } else {
-          const colImage = document.createElement("div");
-          colImage.classList.add("col-6");
-          const span = document.createElement("span");
-          span.textContent = `${file.name}`;
-          span.style.color = "red";
-          colImage.appendChild(span);
-
-          rowImages.appendChild(colImage);
-          previewImage.appendChild(rowImages);
-        }
-      }
       data.files = [
         ...data.files,
-        ..._.map(files, (file) => ({
+        ..._.map(data.uploadFiles, (file) => ({
           name: file.name,
           size: file.size,
           type: file.type,
-          url: null,
           invalidMessage: validate(file),
         })),
       ];
+      const previewImages = document.getElementById("previewImages");
+      previewImages.innerHTML = "";
+      const rowImages = document.createElement("div");
+      rowImages.classList.add("row");
+
+      for (const file of data.uploadFiles) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const colImage = document.createElement("div");
+          colImage.classList.add("col-6", "mt-2");
+          colImage.style.position = "relative";
+          colImage.id = file.name;
+          if (allowedTypes.includes(file.type)) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
+            img.style.objectFit = "containt";
+            colImage.append(img);
+          } else if (allowedTypesVideo.includes(file.type)) {
+            const video = document.createElement("video");
+            video.src = e.target.result;
+            video.style.maxWidth = "100%";
+            video.style.maxHeight = "100%";
+            colImage.append(video);
+          }
+
+          const deleteIcon = document.createElement("span");
+          deleteIcon.textContent = "x";
+          deleteIcon.style.cssText = `
+                  position:absolute;
+                  top:-16px;
+                  right:10px;
+                  width:24px;
+                  height:24px;
+                  font-weight:400;
+                  font-size:1.2rem;
+                  color:red;
+                  background-color:rgba(240, 227, 227,0.5);
+                  text-align:center;
+                  line-height:1;                 
+          `;
+          deleteIcon.classList.add("rounded-circle");
+          deleteIcon.addEventListener("mouseenter", () => {
+            deleteIcon.style.cssText = `
+                  position:absolute;
+                  top:-16px;
+                  right:10px;
+                  width:24px;
+                  height:24px;
+                  font-weight:600;
+                  font-size:1.2rem;
+                  color:red;
+                  background-color:rgb(240, 227, 227);
+                  text-align:center;
+                  line-height:1;                 
+          `;
+          });
+          deleteIcon.addEventListener("mouseleave", function () {
+            deleteIcon.style.cssText = `
+                  position:absolute;
+                  top:-16px;
+                  right:10px;
+                  width:24px;
+                  height:24px;
+                  font-weight:400;
+                  font-size:1.2rem;
+                  color:red;
+                  background-color:rgba(240, 227, 227,0.5);
+                  text-align:center;
+                  line-height:1;                 
+          `;
+          });
+          deleteIcon.addEventListener("click", () => {
+            data.uploadFiles = data.uploadFiles.filter((item) => item != file);
+            const colRemove = document.getElementById(file.name);
+            colRemove.remove();
+          });
+
+          const br = document.createElement("br");
+
+          colImage.append(deleteIcon);
+          colImage.append(br);
+          const span = document.createElement("span");
+          if (validate(file) == "") {
+            span.textContent = `${file.name}`;
+            colImage.append(span);
+          } else {
+            span.textContent = `${file.name}`;
+            span.style.color = "red";
+            span.style.fontWeight = "600";
+          }
+
+          colImage.append(span);
+          rowImages.append(colImage);
+          previewImages.append(rowImages);
+        };
+
+        reader.readAsDataURL(file);
+      }
     };
     const validate = (file) => {
-      const MAX_SIZE = 200000;
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const MAX_SIZE = 2000000; //2Mb
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
       const MAX_SIZE_VIDEO = 100000000; //100Mb
       const allowedTypesVideo = [
         "video/mp4",

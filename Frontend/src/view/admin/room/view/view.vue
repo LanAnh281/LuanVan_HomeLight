@@ -3,13 +3,14 @@ import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
-import boardinghouseService from "../../../../service/boardinghouse.service";
 import roomService from "../../../../service/room.service";
 import mediaService from "../../../../service/media.service";
 // view
 import room from "./room.view.vue";
+import customerView from "./customer.view.vue";
+import serviceView from "./service.view.vue";
 export default {
-  components: { room },
+  components: { room, customerView, serviceView },
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
@@ -92,13 +93,20 @@ export default {
                   >
                     {{ value.name }}</span
                   >
-                  <!-- <div class="vertical-divider"></div> -->
                 </div>
               </li>
             </ul>
 
             <div class="col-sm-9">
               <room v-if="data.active == 'room'" :_id="_id"></room>
+              <customerView
+                v-if="data.active == 'customer'"
+                :_id="_id"
+              ></customerView>
+              <serviceView
+                v-if="data.active == 'service'"
+                :_id="_id"
+              ></serviceView>
             </div>
           </div>
         </div>

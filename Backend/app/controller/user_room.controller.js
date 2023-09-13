@@ -63,23 +63,22 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  let { start, end, userId, roomId } = req.body;
-  console.log("User_Room Body:", req.body);
-  start = dateTime(start);
+  let { end, UserId, RoomId } = req.body;
+  console.log(">>>User_Room Body:", req.body);
+
   end = end == null ? null : dateTime(end);
 
   try {
     const document = await User_Room.update(
       {
-        start: start,
         end: end,
-        UserId: userId,
-        RoomId: roomId,
+        UserId: UserId,
+        RoomId: RoomId,
       },
       {
         where: {
-          UserId: userId,
-          RoomId: roomId,
+          UserId: UserId,
+          RoomId: RoomId,
         },
       }
     );

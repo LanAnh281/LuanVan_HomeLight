@@ -83,7 +83,7 @@ export default {
             deleteicon.textContent = "x";
             deleteicon.classList.add("delete-icon-add");
             deleteicon.addEventListener("click", () => {
-              alert(`xóa ${file.name} `);
+              // alert(`xóa ${file.name} `);
               data.uploadFiles = data.uploadFiles.filter(
                 (item) => item != file
               );

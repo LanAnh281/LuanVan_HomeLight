@@ -1,32 +1,55 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
       integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
       crossorigin="anonymous"
-    /><link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-  />
-</head>
-<body>
-    <span class="material-symbols-outlined">done</span> <span>Thành công</span>
-    <div class="container">
-        <div class="row" id="rowImages">
-            <div class="col-6">
-                <img src="../../assets/image/logo.png" alt=""> </br>
-                <span>Ảnh</span>
-            </div>
-            <div class="col-6">
-                <img src="../../assets/image/logo.png" alt=""> </br>
-                <span>Ảnh</span>
-            </div>
-        </div>
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
+  <body>
+    <h1>Cắt ảnh trong JavaScript</h1>
+    <img
+      id="sourceImage"
+      src="../../assets/image/background.jpg"
+      alt="Ảnh nguồn"
+    />
+    <canvas id="outputCanvas" width="200" height="200"></canvas>
+    <button onclick="cropImage()">Cắt ảnh</button>
 
-    </div>
-</body>
+    <script>
+      function cropImage() {
+        // Lấy tham chiếu đến ảnh nguồn và canvas đích
+        var sourceImage = document.getElementById("sourceImage");
+        var outputCanvas = document.getElementById("outputCanvas");
+        var context = outputCanvas.getContext("2d");
+
+        // Kích thước và vị trí của phần muốn cắt từ ảnh (vd: lấy từ điểm (50, 50) với kích thước 100x100)
+        var x = 100;
+        var y = 50;
+        var width = 100;
+        var height = 100;
+
+        // Vẽ phần cắt lên canvas đích
+        context.drawImage(
+          sourceImage,
+          x,
+          y,
+          width,
+          height,
+          0,
+          0,
+          outputCanvas.width,
+          outputCanvas.height
+        );
+      }
+    </script>
+  </body>
 </html>

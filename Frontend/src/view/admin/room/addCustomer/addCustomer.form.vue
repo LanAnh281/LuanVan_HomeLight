@@ -169,6 +169,7 @@ export default {
       }
       return "";
     };
+
     const handleFileUpload = async (event) => {
       const allowedTypes = [
         "image/jpeg",
@@ -186,7 +187,6 @@ export default {
       const files = event.target.files;
 
       data.uploadFiles = [...data.uploadFiles, ...files];
-      console.log(data.uploadFiles.length);
       data.files = [
         ...data.files,
         ..._.map(data.uploadFiles, (file) => ({
@@ -602,9 +602,9 @@ export default {
             "
             v-model="data.item.securityDeposit"
           />
-          <div class="input-group-append col-sm-3 p-0">
+          <div class="input-group-append col-sm-3 p-0 m-0">
             <span
-              class="input-group-text m-0"
+              class="input-group-text m-0 p-2"
               style="
                 border-top-left-radius: 0px;
                 border-bottom-left-radius: 0px;
@@ -764,7 +764,7 @@ export default {
       </div>
       <div class="form-group row">
         <label for="inputStart" class="col-sm-4 m-0 px-0 col-form-label"
-          >Ngày bắt đầu:</label
+          >Bắt đầu:</label
         >
         <div class="col-sm-8 p-0 m-0">
           <input

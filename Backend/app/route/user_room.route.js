@@ -6,7 +6,7 @@ const authorization = require("../middeware/authorization.middeware");
 router.route("/").post(userRoom.create).get(userRoom.findAll);
 router
   .route("/:id")
-  .post(userRoom.updated)
+  .put(userRoom.updated)
   .get([
     authorization.authentication,
     authorization.authorization("xem danh sách khách trọ"),
