@@ -2,27 +2,26 @@
 import { reactive, ref, onMounted, onBeforeMount, computed } from "vue";
 import moment from "moment";
 //service
-import userRoomService from "../../../../service/user_room.service";
-import userService from "../../../../service/user.service";
-
-// js
-import { formatDateTime } from "../../../../assets/js/format.common";
+import serviceService from "../../../../service/service.service";
+import service_roomService from "../../../../service/service_room.service";
 //component
 import paginationVue from "../../../../components/pagination/pagination.vue";
 import Table from "../../../../components/table/tableChecked.table.vue";
+//js
+import { formatCurrency } from "../../../../assets/js/format.common";
 export default {
   components: { paginationVue, Table },
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
       item: [],
-      userRoom: [{ Users: [] }],
+      serviceRoom: [],
       setPage: [],
       checkedList: [],
       checkedNewList: [],
       removeList: [],
       currentPage: 1,
-      sizePage: 3,
+      sizePage: 5,
       totalPage: 0,
       length: 0,
     });
@@ -46,23 +45,22 @@ export default {
       data.removeList = data.checkedList.filter(
         (item) => !data.checkedNewList.includes(item)
       );
+
       try {
         data.removeList.forEach(async (value) => {
-          const documentRemove = await userRoomService.delete(props._id, {
-            UserId: value._id,
+          const documentRemove = await service_roomService.delete(props._id, {
             RoomId: props._id,
+            ServiceId: value._id,
           });
         });
+
         const start = new moment();
-        console.log(data.checkedNewList);
         data.checkedNewList.forEach(async (value) => {
-          const documentAdd = await userRoomService.create({
-            UserId: value._id,
+          const documentRemove = await service_roomService.create({
             RoomId: props._id,
+            ServiceId: value._id,
             start: start,
           });
-          console.log(value);
-          console.log(documentAdd);
           await refresh();
         });
       } catch (error) {
@@ -77,27 +75,15 @@ export default {
     };
 
     const refresh = async () => {
-      const document = await userService.getAll();
-      data.item = document.message;
-      //Lấy danh sách khách trọ của tất cả các phòng
-      let getAll = await userRoomService.getAll();
-      getAll = getAll.message;
-      //lọc ds khách trọ của các phòng khác
-      getAll = getAll.filter((item) => item.RoomId != props._id);
-      // danh sách khách trọ chưa thuê và đang thuê phòng đang chọn
-      data.item = data.item.filter(
-        (item) => !getAll.some((obj) => obj.UserId === item._id)
-      );
-      // lấy danh sách khách trọ của 1 phòng
-      data.userRoom = await userRoomService.getAllRoom(props._id);
-      data.userRoom = data.userRoom.message;
-      //Thay đổi 1 số thuộc tính của khách trọ và xác định khách trọ nào đang thuê phòng trọ hiện tại bằng checked
+      const documentService = await serviceService.getAll();
+      data.item = documentService.message;
+      const documentServiceRoom = await service_roomService.get(props._id);
+      data.serviceRoom = documentServiceRoom.message;
       data.item = data.item.map((item) => {
         return {
           ...item,
-          birthday: formatDateTime(item.birthday),
-          sex: item.sex ? "Nữ" : "Nam",
-          checked: data.userRoom.some((obj) => obj.UserId === item._id),
+          price: formatCurrency(item.price),
+          checked: data.serviceRoom.some((obj) => obj.ServiceId == item._id),
         };
       });
 
@@ -118,12 +104,13 @@ export default {
   },
 };
 </script>
+
 <template>
-  <div>
+  <div style="">
     <Table
       :data="data.setPage"
-      :fields="['Họ tên', 'Giới tính', 'Địa chỉ', 'SĐT']"
-      :titles="['userName', 'sex', 'address', 'phone']"
+      :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
+      :titles="['name', 'price', 'unit']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
       :isInputChecked="true"
@@ -154,54 +141,4 @@ export default {
     </div>
   </div>
 </template>
-<style scope>
-.centered-button {
-  display: flex;
-  justify-content: center; /* Căn giữa theo chiều ngang */
-  align-items: center; /* Căn giữa theo chiều dọc */
-}
-.btn-login:hover {
-  text-shadow: 0 2px 20px #fff;
-  color: #fff;
-}
-table {
-  width: 100%;
-}
-
-th,
-td {
-  border: 1px solid #ccc;
-  word-wrap: break-word;
-}
-
-.close-icon {
-  background-color: red;
-  color: rgb(242, 244, 245);
-  font-size: 1.6rem !important;
-  margin-right: 3px;
-}
-.close-icon:hover {
-  color: white;
-  background-color: red;
-  box-shadow: 0 0 10px #e1ff00;
-}
-</style>
-<!-- 
-  td:nth-child(1) {
-  width: 2%;
-}
-td:nth-child(2) {
-  max-width: 20%;
-}
-td:nth-child(3) {
-  max-width: 6%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
-}
-td:nth-child(4) {
-  width: 40%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
-  white-space: normal;
-  text-overflow: ellipsis;
-}
-td:nth-child(5) {
-  max-width: 10%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
-}
- -->
+<style scope></style>

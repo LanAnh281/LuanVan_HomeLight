@@ -11,7 +11,7 @@ import addCustomerForm from "./addCustomer.form.vue";
 import addOldMemberForm from "./addOldMember.form.vue";
 import addMemberForm from "./addMember.form.vue";
 
-import Service from "./service.vue";
+import Service from "./addService.vue";
 export default {
   components: { addCustomerForm, addOldMemberForm, addMemberForm, Service },
   props: { _id: { type: String, default: "" } },
@@ -109,7 +109,10 @@ export default {
                     font-size: 0.8rem;
                   "
                   title="Thêm thành viên"
-                  v-if="data.active == 'member' || 'customer'"
+                  v-if="
+                    (data.active == 'member' || 'customer') &&
+                    data.active != 'service'
+                  "
                   @click="
                     data.active = 'customer';
                     data.form = 'addOldMember';
@@ -126,7 +129,10 @@ export default {
                     font-size: 0.8rem;
                   "
                   title="Thêm thành viên"
-                  v-if="data.active == 'member' || 'customer'"
+                  v-if="
+                    (data.active == 'member' || 'customer') &&
+                    data.active != 'service'
+                  "
                   @click="
                     data.active = 'customer';
                     data.form = 'addNewMember';
@@ -154,9 +160,11 @@ export default {
                   :_id="_id"
                 ></addMemberForm>
               </div>
+
               <Service
-                class="m-0 p-0"
+                class="m-0 p-0 col-12 mt-3"
                 v-if="data.active == 'service'"
+                :_id="_id"
               ></Service>
             </div>
             <!-- Component Member -->

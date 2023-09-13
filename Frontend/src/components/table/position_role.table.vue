@@ -38,7 +38,7 @@ export default {
 
       <tbody>
         <tr v-for="(value, index) in data" :key="index">
-          <td scope="row">
+          <td scope="row" style="width: 4%">
             <input
               type="checkbox"
               v-model="value.checked"
