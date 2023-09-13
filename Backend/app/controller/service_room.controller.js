@@ -1,7 +1,7 @@
 const { Service_Room } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
-  let { start, end, serviceId, roomId } = req.body;
+  let { start, end, ServiceId, RoomId } = req.body;
   console.log("Service_Room Body:", req.body);
   start = dateTime(start);
   end = end == null ? null : dateTime(end);
@@ -9,8 +9,8 @@ exports.create = async (req, res, next) => {
     const document = await Service_Room.create({
       start: start,
       end: end,
-      ServiceId: serviceId,
-      RoomId: roomId,
+      ServiceId: ServiceId,
+      RoomId: RoomId,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -68,13 +68,13 @@ exports.updated = async (req, res, next) => {
   }
 };
 exports.delete = async (req, res, next) => {
-  const { serviceId, roomId } = req.body;
+  const { ServiceId, RoomId } = req.body;
 
   try {
     const document = await Service_Room.destroy({
       where: {
-        ServiceId: serviceId,
-        RoomId: roomId,
+        ServiceId: ServiceId,
+        RoomId: RoomId,
       },
     });
     res.json({ message: document, status: "success" });
