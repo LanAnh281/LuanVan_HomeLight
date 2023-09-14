@@ -300,10 +300,7 @@ export default {
 
     const save = async () => {
       data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-      console.log("save", data.item);
       try {
-        // data.error.image=data.uploadFiles.length;
-        console.log("images", data.uploadFiles.length);
         if (data.uploadFiles.length != 2) {
           data.error["image"] = "Chưa tải ảnh cccd.";
           data.flag = true;
@@ -317,7 +314,6 @@ export default {
             console.log("key:", key, data.item[key]);
           }
         }
-        console.log(">>>flag:", data.flag);
         if (!data.flag) {
           const formData = new FormData();
           for (let key in data.item) {

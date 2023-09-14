@@ -15,6 +15,7 @@ export default {
   setup(props, { emit }) {
     const data = reactive({
       item: { name: "", price: "", area: "" },
+      boarding: { name: "", address: "" },
       medias: [{ name: "" }],
     });
     const checkFileType = (fileName) => {
@@ -41,6 +42,11 @@ export default {
       //lấy thông tin phòng hiện tại
       const documentRoom = await roomService.get(props._id);
       data.item = documentRoom.message;
+      // lấy thông tin về nhà trọ
+      const documentBoarding = await boardinghouseService.get(
+        data.item.boardingId
+      );
+      data.boarding = documentBoarding.message;
 
       // lấy ds tài nguyên hình ảnh và video của phòng
       const documentMedia = await mediaService.get(props._id);
@@ -62,23 +68,33 @@ export default {
     <div class="row">
       <div class="col-6">
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-5">Tên phòng:</label>
-          <p class="class-2">{{ data.item.name }}</p>
+          <label for="" class="col-6">Tên nhà trọ:</label>
+          <p class="class-2">{{ data.boarding.name }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-5">Diện tích:</label>
-          <p class="class-2">{{ data.item.area }}</p>
+          <label for="" class="col-4">Địa chỉ:</label>
+          <p class="col-8 m-0 p-0">{{ data.boarding.address }}</p>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-6 p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-5">Giá phòng:</label>
-          <p class="class-4">{{ formatCurrency(data.item.price) }}</p>
+          <label for="" class="col-6">Tên phòng:</label>
+          <p class="col-6 p-0 m-0">{{ data.item.name }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-5">Trạng thái:</label>
-          <p class="class-4">
-            {{ data.item.status ? "Chưa thuê" : "Đang thuê" }}
+          <label for="" class="col-6">Diện tích:</label>
+          <p class="col-6 p-0 m-0">{{ data.item.area }}</p>
+        </div>
+        <div class="row justify-content-start p-0 m-0">
+          <label for="" class="col-6">Đơn giá:</label>
+          <p class="col-6">
+            {{ formatCurrency(data.item.price) }}
+          </p>
+        </div>
+        <div class="row justify-content-start p-0 m-0">
+          <label for="" class="col-6">Trạng thái:</label>
+          <p class="col-6">
+            {{ !data.item.status ? "Chưa thuê" : "Đang thuê" }}
           </p>
         </div>
       </div>

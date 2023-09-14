@@ -2,6 +2,7 @@
 import { reactive, ref, onMounted, onBeforeMount, computed } from "vue";
 //service
 import userRoomService from "../../../../service/user_room.service";
+import roomService from "../../../../service/room.service";
 // js
 import { formatDateTime } from "../../../../assets/js/format.common";
 //component
@@ -42,6 +43,33 @@ export default {
         if (documentDelete["status"] == "success") {
           successAd("Thành công ");
           await refresh();
+        }
+        const documentUserRoom = await userRoomService.get(props._id);
+        const status =
+          documentUserRoom.message.Users.length == 0 ? false : true;
+        console.log(
+          "length:",
+          documentUserRoom.message.Users.length == 0,
+          status
+        );
+        if (documentUserRoom.message.Users.length == 0) {
+          const documentRoom = await roomService.update(props._id, {
+            name: documentUserRoom.message.name,
+            price: documentUserRoom.message.price,
+            area: documentUserRoom.message.area,
+            status: status,
+            boardingId: documentUserRoom.message.boardingId,
+            cycleId: "null",
+          });
+        } else {
+          const documentRoom = await roomService.update(props._id, {
+            name: documentUserRoom.message.name,
+            price: documentUserRoom.message.price,
+            area: documentUserRoom.message.area,
+            status: status,
+            boardingId: documentUserRoom.message.boardingId,
+            cycleId: documentUserRoom.message.cycleId,
+          });
         }
       } catch (error) {
         if (error.response) {

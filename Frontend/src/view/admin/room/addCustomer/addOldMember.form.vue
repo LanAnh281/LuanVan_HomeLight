@@ -10,6 +10,7 @@ import { formatDateTime } from "../../../../assets/js/format.common";
 //component
 import paginationVue from "../../../../components/pagination/pagination.vue";
 import Table from "../../../../components/table/tableChecked.table.vue";
+import roomService from "../../../../service/room.service";
 export default {
   components: { paginationVue, Table },
   props: { _id: { type: String, default: "" } },
@@ -54,17 +55,37 @@ export default {
           });
         });
         const start = new moment();
-        console.log(data.checkedNewList);
         data.checkedNewList.forEach(async (value) => {
           const documentAdd = await userRoomService.create({
             UserId: value._id,
             RoomId: props._id,
             start: start,
           });
-          console.log(value);
-          console.log(documentAdd);
           await refresh();
         });
+        const documentUserRoom = await userRoomService.get(props._id);
+        const status =
+          documentUserRoom.message.Users.length == 0 ? false : true;
+
+        if (documentUserRoom.message.Users.length == 0) {
+          const documentRoom = await roomService.update(props._id, {
+            name: documentUserRoom.message.name,
+            price: documentUserRoom.message.price,
+            area: documentUserRoom.message.area,
+            status: status,
+            boardingId: documentUserRoom.message.boardingId,
+            cycleId: "null",
+          });
+        } else {
+          const documentRoom = await roomService.update(props._id, {
+            name: documentUserRoom.message.name,
+            price: documentUserRoom.message.price,
+            area: documentUserRoom.message.area,
+            status: status,
+            boardingId: documentUserRoom.message.boardingId,
+            cycleId: documentUserRoom.message.cycleId,
+          });
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

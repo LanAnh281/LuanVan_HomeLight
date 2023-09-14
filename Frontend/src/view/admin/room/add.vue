@@ -25,6 +25,7 @@ export default {
         area: "",
         boardingId: "",
         cycleId: null,
+        status: false,
         countFiles: 0,
       },
       error: {
@@ -237,6 +238,7 @@ export default {
       "area",
       "boardingId",
       "cycleId",
+      "status",
       "countFiles",
     ];
     const save = async () => {

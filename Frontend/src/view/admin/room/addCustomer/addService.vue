@@ -61,8 +61,8 @@ export default {
             ServiceId: value._id,
             start: start,
           });
-          await refresh();
         });
+        await refresh();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -75,18 +75,18 @@ export default {
     };
 
     const refresh = async () => {
-      const documentService = await serviceService.getAll();
+      const documentService = await serviceService.getAll(); // lấy tất cả dịch vụ
       data.item = documentService.message;
-      const documentServiceRoom = await service_roomService.get(props._id);
+      const documentServiceRoom = await service_roomService.get(props._id); // lấy ds dịch vụ của 1 phòng
       data.serviceRoom = documentServiceRoom.message;
       data.item = data.item.map((item) => {
+        // format dữ liệu và các dịch vụ đang sử dụng sẽ được checked true
         return {
           ...item,
           price: formatCurrency(item.price),
           checked: data.serviceRoom.some((obj) => obj.ServiceId == item._id),
         };
       });
-
       data.checkedList = []; // khởi tạo ds các khách đang thuê phòng hiện tại
       data.checkedNewList = []; // khởi tạo ds khách trọ mới
       data.removeList = []; // khởi tạo ds khách trọ rời khỏi phòng trọ

@@ -1,7 +1,9 @@
 <script>
 import { reactive, ref, onMounted, watch } from "vue";
+import Swal from "sweetalert2";
 //service
 import roomService from "../../../service/room.service";
+import userRoomService from "../../../service/user_room.service";
 //asset  js
 import {
   successAd,
@@ -11,6 +13,7 @@ import {
 } from "../../../assets/js/common.alert";
 //component
 import Edit from "./edit.vue";
+import loginService from "../../../service/login.service";
 // import addCustomer from "./addCustomer/addCutomer.form.vue";
 export default {
   comments: { Edit },
@@ -20,8 +23,69 @@ export default {
   },
   setup(props, { emit }) {
     const data = reactive({ item: [] });
-    const isUpdateForm = ref(false);
-    const handleDelete = async (value) => {
+    const handleEdit = async (value) => {
+      try {
+        const isDeleted = false;
+        const showSweetAlert = async () => {
+          const { value: formValues } = await Swal.fire({
+            title: "Điện nước tiêu thụ",
+            html: `
+              <div  class='row  form-group ml-2 '>
+                <label class='col-3'>Điện mới:</label>
+                <input type='number' id="electric" class='col-9 form-control'></input>
+              </div>
+              <div class='row form-group   ml-2'>
+                <label class='col-3'>Nước mới:</label>
+                <input type='number' id="water" class='col-9 form-control'></input>
+              </div>
+            `,
+            showCancelButton: true,
+            focusConfirm: false,
+            preConfirm: () => {
+              const electric = document.getElementById("electric").value;
+              const water = document.getElementById("water").value;
+              if (!electric || !water) {
+                Swal.showValidationMessage("Vui lòng điền đầy đủ thông tin");
+              }
+              return {
+                electric,
+                water,
+              };
+            },
+          });
+          return formValues;
+        };
+
+        // Gọi hàm showSweetAlert khi bạn muốn hiển thị SweetAlert
+        const formValues = await showSweetAlert();
+
+        // trả phòng
+        if (formValues) {
+          // xóa tất cả khách trọ ra khỏi phòng
+          const document = await userRoomService.deleteAll(value);
+          // lấy danh sách khách trọ của 1 phòng và thực hiện so sánh để cập nhật lại trạng thái phòng
+          const documentUserRoom = await userRoomService.get(value);
+          const status =
+            documentUserRoom.message.Users.length == 0 ? false : true;
+          // so sánh
+          if (documentUserRoom.message.Users.length == 0) {
+            //cập nhật
+            const documentRoom = await roomService.update(value, {
+              name: documentUserRoom.message.name,
+              price: documentUserRoom.message.price,
+              area: documentUserRoom.message.area,
+              status: status,
+              boardingId: documentUserRoom.message.boardingId,
+              cycleId: "null",
+            });
+          }
+          // api  tính tiền
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    const handleDelete = async () => {
       try {
         const isDeleted = await deleted(
           "Xóa",
@@ -35,7 +99,13 @@ export default {
           emit("handleDelete");
         }
       } catch (error) {
-        console.error("Error:", error);
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
       }
     };
     watch(
@@ -63,7 +133,7 @@ export default {
     onMounted(async () => {
       await refresh();
     });
-    return { data, handleDelete, isUpdateForm };
+    return { data, handleDelete, handleEdit };
   },
 };
 </script>
@@ -126,11 +196,7 @@ export default {
           <span
             class="material-symbols-outlined out border rounded p-1"
             title="trả phòng"
-            @click="
-              () => {
-                console.log('out', value._id);
-              }
-            "
+            @click="handleEdit(value._id)"
           >
             logout
           </span>

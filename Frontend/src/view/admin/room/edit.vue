@@ -26,6 +26,7 @@ export default {
         area: "",
         boardingId: "",
         cycleId: null,
+        status: "",
         countFiles: 0,
         medias: [],
       },
@@ -153,7 +154,6 @@ export default {
     };
     const formFields = ["name", "price", "area", "boardingId", "cycleId"];
     const save = async () => {
-      console.log("save");
       try {
         const formData = new FormData();
         _.forEach(formFields, (field) => {
