@@ -4,10 +4,8 @@ const uploadDir = "./static/images";
 const path = require("path");
 
 exports.create = async (req, res, next) => {
-  const { name, price, area, boardingId, cycleId, countFiles } = req.body;
-  let status = req.body.status;
-  if (!req.body.status) status = false;
-  else status = true;
+  const { name, price, area, boardingId, cycleId, countFiles, status } =
+    req.body;
   try {
     const document = await Rooms.create({
       name: name,
@@ -82,13 +80,16 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, price, area, boardingId, cycleId, countFiles } = req.body;
-  let status = req.body.status;
-  let removeMedia = req.body.removeMedia;
-  if (removeMedia.length > 0) removeMedia.pop();
-  status = !req.body.status ? false : true;
+  const { name, price, area, boardingId, status, countFiles } = req.body;
+  // let status = req.body.status;
+  // status = !req.body.status ? false : true;
+  // console.log(req.body.status == true);
+  const cycleId = req.body.cycleId == "null" ? null : req.body.cycleId;
 
-  console.log(">>>>Update Rooms", countFiles, removeMedia.length, removeMedia);
+  let removeMedia = !req.body.removeMedia ? 0 : req.body.removeMedia;
+  if (removeMedia.length > 0) removeMedia.pop();
+
+  // console.log(">>>>Update Rooms", countFiles, removeMedia.length, removeMedia);
   try {
     const document = await Rooms.update(
       {
@@ -97,7 +98,7 @@ exports.updated = async (req, res, next) => {
         area: area,
         status: status,
         boardingId: boardingId,
-        cycleId: null,
+        cycleId: cycleId,
       },
       {
         where: {
