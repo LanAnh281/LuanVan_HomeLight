@@ -115,7 +115,6 @@ export default {
           rowImages.appendChild(colImage);
           previewImage.appendChild(rowImages);
         }
-        console.log("upload");
       }
       data.files = [
         ...data.files,
@@ -155,44 +154,54 @@ export default {
     const formFields = ["name", "price", "area", "boardingId", "cycleId"];
     const save = async () => {
       try {
-        const formData = new FormData();
-        _.forEach(formFields, (field) => {
-          formData.append(field, data.item[field]);
-        });
-        formData.append("countFiles", data.uploadFiles.length);
-        _.forEach(data.removeMedia, (media) => {
-          if (media != "") {
-            formData.append("removeMedia", media);
+        for (const key in data.error) {
+          console.log("key", key, data.item[key]);
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập thông tin.";
+            data.flag = true;
+            console.log("key:", key);
           }
-        });
-        formData.append("removeMedia", data.removeMedia);
-        _.forEach(data.uploadFiles, (file) => {
-          if (validate(file) === "") {
-            formData.append("files", file);
+        }
+        if (!data.flag) {
+          const formData = new FormData();
+          _.forEach(formFields, (field) => {
+            formData.append(field, data.item[field]);
+          });
+          formData.append("countFiles", data.uploadFiles.length);
+          _.forEach(data.removeMedia, (media) => {
+            if (media != "") {
+              formData.append("removeMedia", media);
+            }
+          });
+          formData.append("removeMedia", data.removeMedia);
+          _.forEach(data.uploadFiles, (file) => {
+            if (validate(file) === "") {
+              formData.append("files", file);
+            }
+          });
+
+          const documentRoom = await roomService.update(props._id, formData);
+
+          if (documentRoom["status"] == "success") {
+            successAd(`Đã chỉnh sửa phòng trọ `);
+            emit("edit");
+            const previewImage = document.getElementById("previewImagesEdit");
+            previewImage.innerHTML = "";
+            const documentMedia = await mediaService.get(props._id);
+            data.mediasCopy = documentMedia.message;
+            data.files = [];
+            data.uploadFiles = [];
+            filesRef.value = document.getElementById("inputImage"); //Get input
+            filesRef.value.value = "";
+            data.removeMedia = [];
+          } else {
+            console.log("Thất bại");
+            warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
           }
-        });
-
-        const documentRoom = await roomService.update(props._id, formData);
-
-        if (documentRoom["status"] == "success") {
-          successAd(`Đã chỉnh sửa phòng trọ `);
-          emit("edit");
-          const previewImage = document.getElementById("previewImagesEdit");
-          previewImage.innerHTML = "";
-          const documentMedia = await mediaService.get(props._id);
-          data.mediasCopy = documentMedia.message;
-          data.files = [];
-          data.uploadFiles = [];
-          filesRef.value = document.getElementById("inputImage"); //Get input
-          filesRef.value.value = "";
-          data.removeMedia = [];
-        } else {
-          console.log("Thất bại");
-          warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
         }
       } catch (error) {
         if (error) {
-          warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
+          warning("Thất bại", "Bạn không có quyền chỉnh sửa nhà trọ.");
         }
         console.log(error);
       }
@@ -287,8 +296,24 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputroom"
+                  @blur="
+                    () => {
+                      let isCheck = checkNumber(data.item.name);
+                      if (isCheck) {
+                        data.error.name = 'Tên nhà trọ là số.';
+                        data.flag = true;
+                      }
+                    }
+                  "
+                  @input="
+                    data.error.name = '';
+                    data.flag = false;
+                  "
                   v-model="data.item.name"
                 />
+                <div v-if="data.error.name" class="invalid-error">
+                  {{ data.error.name }}
+                </div>
               </div>
             </div>
 
@@ -301,8 +326,24 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputprice"
+                  @blur="
+                    () => {
+                      let isCheck = checkNumber(data.item.price);
+                      if (isCheck) {
+                        data.error.price = 'Giá phòng là số';
+                        data.flag = true;
+                      }
+                    }
+                  "
+                  @input="
+                    data.error.price = '';
+                    data.flag = false;
+                  "
                   v-model="data.item.price"
                 />
+                <div v-if="data.error.price" class="invalid-error">
+                  {{ data.error.price }}
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -314,8 +355,24 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputarea"
+                  @blur="
+                    () => {
+                      let isCheck = checkNumber(data.item.area);
+                      if (isCheck) {
+                        data.error.area = 'Diện tích phòng là số';
+                        data.flag = true;
+                      }
+                    }
+                  "
+                  @input="
+                    data.error.area = '';
+                    data.flag = false;
+                  "
                   v-model="data.item.area"
                 />
+                <div v-if="data.error.area" class="invalid-error">
+                  {{ data.error.area }}
+                </div>
               </div>
             </div>
             <!-- Image -->

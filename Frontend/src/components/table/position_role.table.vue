@@ -1,13 +1,15 @@
 <script>
-import { ref, reactive, onMounted, watch } from "vue";
+import { reactive, onMounted } from "vue";
 //service
 
 export default {
   components: {},
-  props: { data: [], fileds: [] },
+  props: {
+    data: { type: Array, default: [] },
+    fileds: { type: Array, default: [] },
+  },
   setup(props, { emit }) {
     const items = reactive({
-      // items: [{ name: "", Roles: [{ name: "" }] }],
       flag: false,
       readMore: [],
     });

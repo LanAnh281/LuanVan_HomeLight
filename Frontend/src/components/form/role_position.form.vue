@@ -14,7 +14,7 @@ import {
 import { successAd, warning } from "../../assets/js/common.alert";
 export default {
   components: { Select },
-  props: { position: "" },
+  props: { position:{type:String, default:""} },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -35,8 +35,9 @@ export default {
 
     const save = async () => {
       try {
-        const roles = data.item.filter((value) => value.checked);
+        let roles = data.item.filter((value) => value.checked);
         const remove = data.checkList.filter((item) => !roles.includes(item));
+        roles = roles.filter((item) => !data.checkList.includes(item));
         for (let index in remove) {
           const removeRolePosition = await role_positionService.delete(
             props.position,

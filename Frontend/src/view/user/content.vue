@@ -8,6 +8,10 @@
     <span v-for="(value, index) in data.pageItems" :key="index">
       {{ value.name }}
     </span>
+    <div class="border">
+      <input type="text" placeholder="tìm kiếm" v-model="data.search" />
+    </div>
+    {{ data.search }}
     <pag
       :totalPage="data.totalPage"
       :currentPage="data.currentPage"
@@ -41,25 +45,37 @@ export default {
     const data = reactive({
       items: [],
       pageItems: [],
-      sizePage: 2,
+      SearchPageItems: [],
+      sizePage: 1,
       currentPage: 1,
       previousPage: 0,
       totalPage: 0,
+      search: "",
+      string: "",
     });
     data.totalPage = computed(() =>
-      data.items.length ? Math.round(Math.ceil(data.items.length) / 2) : 0
+      data.SearchPageItems.length
+        ? Math.ceil(data.SearchPageItems.length / data.sizePage)
+        : 0
     );
-
-    onBeforeMount(async () => {
-      const document = await positionService.getAll();
-      data.items = document.message;
+    data.SearchPageItems = computed(() => {
+      try {
+        return data.items.filter((item) => item.name.includes(data.search));
+      } catch (error) {
+        console.log(error);
+      }
     });
     data.pageItems = computed(() =>
-      data.items.slice(
+      data.SearchPageItems.slice(
         (data.currentPage - 1) * data.sizePage,
         data.currentPage * data.sizePage
       )
     );
+    onBeforeMount(async () => {
+      const document = await positionService.getAll();
+      data.items = document.message;
+      // data.SearchPageItems = data.items;
+    });
 
     const handlePageChange = (value) => {
       data.currentPage = value;

@@ -4,8 +4,8 @@ import { reactive, onMounted, onBeforeMount, ref } from "vue";
 import accountService from "../../service/account.service";
 import positionService from "../../service/position.service";
 //js
-import { checkString, checkAddress } from "../../assets/js/checkInput.common";
-import { success, successAd, warning } from "../../assets/js/common.alert";
+import { checkMail } from "../../assets/js/checkInput.common";
+import { successAd, warning, load } from "../../assets/js/common.alert";
 export default {
   components: {},
   setup(props, { emit }) {
@@ -16,7 +16,7 @@ export default {
       error: { userName: "" },
       position: [],
       flag: true,
-      // selectedItem: null,
+      disablebtn: false,
     });
     const isModalOpen = ref(false);
     const openModal = () => {
@@ -29,12 +29,16 @@ export default {
     };
 
     const save = async () => {
-      console.log("save", data.selectedItem);
       try {
-        const document = await accountService.create(data.item);
-        if (document["status"] == "success") {
-          successAd("Thành công tạo tài khoản mới.");
-          emit("add");
+        data.disablebtn = !data.disablebtn;
+        if (!data.flag) {
+          const document = await accountService.create(data.item);
+          if (document["status"] == "success") {
+            successAd("Thành công tạo tài khoản mới.");
+            emit("add");
+            data.disablebtn = !data.disablebtn;
+            data.item.userName = "";
+          }
         }
       } catch (error) {
         if (error) {
@@ -50,12 +54,12 @@ export default {
     onBeforeMount(async () => {
       const document = await positionService.getAll();
       data.position = document.message;
+      data.item.positionId = data.position[0]._id;
     });
     return {
       data,
       save,
-      checkString,
-      checkAddress,
+      checkMail,
     };
   },
 };
@@ -95,6 +99,20 @@ export default {
                   type="text"
                   class="form-control"
                   id="inputrole"
+                  @blur="
+                    () => {
+                      if (checkMail(data.item.userName)) {
+                        data.flag = true;
+                        data.error.userName = 'sai định dang email';
+                      }
+                    }
+                  "
+                  @input="
+                    () => {
+                      data.flag = false;
+                      data.error.userName = '';
+                    }
+                  "
                   v-model="data.item.userName"
                 />
                 <div v-if="data.error.userName" class="invalid-error">
@@ -123,7 +141,13 @@ export default {
             </div>
 
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+              <button
+                type="submit"
+                class="btn btn-login col-sm-3"
+                :disabled="data.disablebtn"
+              >
+                Thêm
+              </button>
             </div>
           </form>
         </div>

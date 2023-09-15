@@ -3,18 +3,13 @@ import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
-import boardinghouseService from "../../../service/boardinghouse.service";
-import roomService from "../../../service/room.service";
+import serviceService from "../../../service/service.service";
+
 //component
 import Select from "../../../components/select/select.vue";
 //js
-import {
-  checkStringAndNumber,
-  checkAddress,
-  checkNumber,
-} from "../../../assets/js/checkInput.common";
-import { successAd, warning } from "../../../assets/js/common.alert";
-import serviceService from "../../../service/service.service";
+import { sanitizeInput } from "../../../assets/js/checkInput.common";
+import { successAd } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
   setup(props, { emit }) {
@@ -40,14 +35,18 @@ export default {
     };
 
     const handleEdit = async () => {
-      console.log("Thêm service:", data.item);
       try {
         data.item.forEach(async (value) => {
-          console.log(value._id, value);
+          value.name = sanitizeInput(value.name);
+          value.price = sanitizeInput(value.price);
+          value.unit = sanitizeInput(value.unit);
           const document = await serviceService.update(value._id, value);
           emit("edit");
         });
+
         successAd("Cập nhật thành công");
+        data.item = await serviceService.getAll();
+        data.item = data.item.message;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -141,7 +140,9 @@ export default {
               </tbody>
             </table>
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+              <button type="submit" class="btn btn-login col-sm-2">
+                Cập nhật
+              </button>
             </div>
           </form>
         </div>

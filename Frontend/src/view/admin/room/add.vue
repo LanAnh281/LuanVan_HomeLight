@@ -44,10 +44,10 @@ export default {
 
     const openModal = () => {
       isModalOpen.value = true;
-      console.log("open modal room");
+      console.log("open modal add room");
     };
     const closeModal = () => {
-      console.log("close modal room");
+      console.log("close modal add room");
       filesRef.value.value = "";
       emit("closeModal");
     };
@@ -244,11 +244,9 @@ export default {
     const save = async () => {
       try {
         for (const key in data.error) {
-          console.log("key", key, data.item[key]);
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
-            console.log("1", key);
           }
         }
 
@@ -288,7 +286,6 @@ export default {
     };
 
     onBeforeMount(async () => {
-      console.log("Add room");
       filesRef.value = document.getElementById("inputImage"); //Get input
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal

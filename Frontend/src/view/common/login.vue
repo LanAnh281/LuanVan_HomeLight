@@ -25,14 +25,18 @@ export default {
       flag: true,
     });
     const login = async () => {
+      console.log("login", data.item, data.flag);
       try {
         for (const key in data.item) {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
+            console.log(key);
           }
         }
+        console.log(data.flag);
         if (!data.flag) {
+          console.log("â");
           const document = await Login.login(data.item);
           if (document.status == "success") {
             setLocalStrorage(
@@ -40,6 +44,7 @@ export default {
               document["position"],
               document["expiresIn"]
             );
+            console.log(document);
             const allowedPositions = ["admin", "super-admin"];
             const routeName = allowedPositions.includes(document["position"])
               ? "dashboard"
@@ -101,12 +106,14 @@ export default {
                     if (isCheck) {
                       data.error.userName = 'Sai định dạng email';
                       data.flag = true;
+                      console.log('mailcheck', data.flag);
                     }
                   }
                 "
                 @input="
                   data.error.userName = '';
                   data.flag = false;
+                  console.log(data.flag);
                 "
                 v-model="data.item.userName"
               />
@@ -127,14 +134,17 @@ export default {
                 autocomplete="current-password"
                 @blur="
                   () => {
-                    if (data.item.password == '')
+                    if (data.item.password == '') {
                       data.error.password = 'Chưa nhập mật khẩu';
-                    data.flag = true;
+                      data.flag = true;
+                      console.log('passcheck', data.flag);
+                    }
                   }
                 "
                 @input="
                   data.error.password = '';
                   data.flag = false;
+                  console.log(data.flag);
                 "
                 v-model="data.item.password"
               />

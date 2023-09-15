@@ -12,6 +12,7 @@ import {
   checkStringAndNumber,
   checkAddress,
   checkNumber,
+  sanitizeInput,
 } from "../../../assets/js/checkInput.common";
 import { successAd, warning } from "../../../assets/js/common.alert";
 import serviceService from "../../../service/service.service";
@@ -52,12 +53,21 @@ export default {
       data.item = data.item.filter((item, index) => index != value);
     };
     const handleCreate = async () => {
-      console.log("Thêm service:", data.item);
       try {
         data.item.forEach(async (value) => {
+          value.name = sanitizeInput(value.name);
+          value.price = sanitizeInput(value.price);
+          value.unit = sanitizeInput(value.unit);
           const document = await serviceService.create(value);
           emit("add");
         });
+        data.item = [
+          {
+            name: "",
+            price: "",
+            unit: "",
+          },
+        ];
         successAd("Thêm dịch vụ thành công");
       } catch (error) {
         if (error.response) {
@@ -107,10 +117,20 @@ export default {
           </button>
         </div>
         <div class="modal-body">
-          <span class="material-symbols-outlined" @click="add"> add </span>
-          <span class="material-symbols-outlined" @click="remove">
-            remove
-          </span>
+          <div class="row justify-content-end mr-3">
+            <span
+              class="material-symbols-outlined add-icon mr-2 p-1"
+              @click="add"
+            >
+              add
+            </span>
+            <span
+              class="material-symbols-outlined remove-icon p-1"
+              @click="remove"
+            >
+              remove
+            </span>
+          </div>
           <form @submit.prevent="handleCreate" class="container mt-3">
             <!--Table  -->
             <table class="table">
@@ -176,5 +196,23 @@ export default {
 .modal-content {
   width: 160%;
   margin-left: -16%;
+}
+.add-icon {
+  color: rgb(124, 205, 3);
+  border-radius: 50%;
+  background-color: #fff;
+}
+.add-icon:hover {
+  font-weight: 600;
+  background-color: #f9f7f7;
+}
+.remove-icon {
+  color: red;
+  border-radius: 50%;
+  background-color: #fff;
+}
+.remove-icon:hover {
+  font-weight: 600;
+  background-color: #f9f7f7;
 }
 </style>

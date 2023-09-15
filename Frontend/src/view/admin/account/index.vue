@@ -42,15 +42,13 @@ export default {
       flag: true,
       positionId: "",
       pageAccounts: [],
-      sizePage: 2,
+      sizePage: 5,
       currentPage: 1,
       previousPage: 0,
       totalPage: 0,
     });
     data.totalPage = computed(() =>
-      data.accounts.length
-        ? Math.round(Math.ceil(data.accounts.length) / data.sizePage)
-        : 0
+      data.accounts.length ? Math.ceil(data.accounts.length / data.sizePage) : 0
     );
     data.pageAccounts = computed(() =>
       data.accounts.slice(
@@ -110,24 +108,33 @@ export default {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
     const createRole = async () => {
-      console.log("create Role");
       const document = await roleService.getAll();
       data.items = document.message;
     };
     const createAccount = async () => {
-      console.log("create Account");
       const documentAccount = await accountService.getAll();
       data.accounts = documentAccount.message;
+      data.length = data.accounts.length;
     };
     const togge_off = async (value, isActive) => {
-      const document = await accountService.updateActive(value, {
-        isActive: isActive,
-      });
-      if (document.status == "success") {
-        success("Thành công", "");
-        const documentAccount = await accountService.getAll();
-        data.accounts = documentAccount.message;
-      } else warning("Thất bại", "");
+      try {
+        const document = await accountService.updateActive(value, {
+          isActive: isActive,
+        });
+        if (document.status == "success") {
+          success("Thành công", "");
+          const documentAccount = await accountService.getAll();
+          data.accounts = documentAccount.message;
+        } else warning("Thất bại", "");
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
     const refreshRolePosition = async () => {
       const documentRolePosition = await positionService.getAll();
