@@ -7,6 +7,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+
 //route
 const accountRouter = require("./app/route/account.route");
 const loginRouter = require("./app/route/login.route");
@@ -40,10 +41,11 @@ const requestMidderware = require("./app/middeware/request.midderware");
 const app = express();
 app.use(cors());
 app.use(morgan("dev"));
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 //socket
 const http = require("http");

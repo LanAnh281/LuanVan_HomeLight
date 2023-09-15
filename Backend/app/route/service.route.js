@@ -15,7 +15,7 @@ router
   .get(service.findOne)
   .put(
     authorization.authentication,
-    authorization.authorization("cập nhật dịch vụ"),
+    authorization.authorization("chỉnh sửa dịch vụ"),
     service.updated
   )
   .delete(service.delete);

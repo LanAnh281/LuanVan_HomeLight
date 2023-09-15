@@ -8,7 +8,13 @@ const media = require("../controller/media.controller");
 //   .route("/")
 //   .post([upload.upload.array("files"), user.createUserAndAccount]);
 // router.route("/").get(user.findAll).delete(user.delete);
-router.route("/:id").get([media.findOne]);
+router
+  .route("/:id")
+  .get([
+    authorization.authentication,
+    authorization.authorization("xem hình ảnh phòng trọ"),
+    media.findOne,
+  ]);
 //   .delete(user.deleteOne)
 //   .put([upload.upload.array("files"), user.update]);
 // router.route("/getImg/:id").get(user.getImg);

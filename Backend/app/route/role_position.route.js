@@ -11,11 +11,15 @@ router
     authorization.authentication,
     authorization.authorization("thêm quyền cho một vị trí"),
     Roles_Positions.create,
-  ])
-  .get(Roles_Positions.findAll);
+  ]);
+// .get(Roles_Positions.findAll);
 router
   .route("/:id")
-  .get(Roles_Positions.findOne)
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem danh sách quyền một vị trí"),
+    Roles_Positions.findOne
+  )
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,

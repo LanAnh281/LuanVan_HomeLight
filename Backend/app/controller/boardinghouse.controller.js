@@ -2,7 +2,6 @@ const { BorardingHouse } = require("../models/index.model.js");
 
 exports.create = async (req, res, next) => {
   const { name, address } = req.body;
-  console.log(">>>>>req.user.userId", req.user.userId);
   try {
     const document = await BorardingHouse.create({
       name: name,

@@ -7,7 +7,7 @@ const upload = require("../middeware/upload.middeware");
 const router = express.Router();
 router
   .route("/")
-  .get(room.findAll)
+  .get(room.findAll) // xem thông tin phòng trọ
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,
@@ -21,7 +21,7 @@ router
   .put([
     request.sanitizeDataMiddleware,
     authorization.authentication,
-    authorization.authorization("thay đổi phòng trọ"),
+    authorization.authorization("chỉnh sửa phòng trọ"),
     upload.uploadStatic.array("files"),
 
     room.updated,

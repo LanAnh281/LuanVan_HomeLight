@@ -6,13 +6,24 @@ const authorization = require("../middeware/authorization.middeware");
 router.route("/").post(userRoom.create).get(userRoom.findAll);
 router
   .route("/:id")
-  .put(userRoom.updated)
+
   .get([
     authorization.authentication,
     authorization.authorization("xem danh sách khách trọ"),
     userRoom.findOne,
-  ])
-  .delete(userRoom.deleteAll);
-router.route("/delete/:id").post(userRoom.delete);
-router.route("/room/:id").get(userRoom.findAllRoom);
+  ]);
+router
+  .route("/delete/:id")
+  .post(
+    authorization.authentication,
+    authorization.authorization("trả phòng"),
+    userRoom.delete
+  );
+router
+  .route("/room/:id")
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem danh sách khách trọ"),
+    userRoom.findAllRoom
+  );
 module.exports = router;

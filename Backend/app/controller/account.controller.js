@@ -1,4 +1,5 @@
 const { Accounts, Positions } = require("../models/index.model.js");
+const nodemailer = require("nodemailer");
 
 const crypto = require("crypto");
 const encryptionKey = "12345678912345678901234567890121";
@@ -32,7 +33,6 @@ const setPassword = () => {
 };
 exports.create = async (req, res, next) => {
   const { userName, userId, positionId } = req.body;
-  console.log("Account Body:", req.body);
   const password = setEncrypt(setPassword());
   try {
     const document = await Accounts.create({
@@ -42,6 +42,32 @@ exports.create = async (req, res, next) => {
       userId: userId,
       positionId: positionId,
     });
+    console.log(getDecrypt(password));
+    if (document) {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "nguyenanh160201@gmail.com",
+          pass: "lsvqdizarolouqrn",
+        },
+      });
+      const mailOptions = {
+        from: "nguyenanh160201@gmail.com",
+        to: userName,
+        subject: `Quản lý nhà trọ HomeLight`,
+        html: `<h3>Quản lý nhà trọ HomeLight kính chào:</h3>
+        
+                <p>Anh/Chị vừa kích hoạt tài khoản thành công trên HomeLight. 
+                Để sử dụng quý khách vui lòng truy cập đường dẫn sau: <a href="http://localhost:3001/login">Click vào đây</a></p>
+                <p>Tên đăng nhập: ${userName} </p>
+                <p>Mật khẩu: ${getDecrypt(password)}</p>
+                <p>Mọi thắc mắc và góp ý, xin Anh/Chị vui lòng liên hệ với chúng tôi qua:</p>
+                <p> Email hỗ trợ: info@maple.com.vn </p>
+                <p> Điện thoại: 0915 85 0918</p>
+                <p>HomeLight trân trọng cảm ơn và rất hân hạnh được phục vụ Anh/Chị.</p>`,
+      };
+      const info = await transporter.sendMail(mailOptions);
+    }
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
@@ -57,7 +83,6 @@ exports.findAll = async (req, res, next) => {
     });
     const documents = JSON.parse(JSON.stringify(accounts));
     for (let i = 0; i < documents.length; i++) {
-      console.log("name:", documents[i].Position["name"]);
       documents[i].positionName = documents[i].Position["name"];
     }
     res.json({ message: documents, status: "success" });
