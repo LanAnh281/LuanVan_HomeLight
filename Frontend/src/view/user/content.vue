@@ -1,13 +1,21 @@
 <template>
-  <div class="body" v-if="data.items">
+  <div class="body my-2" v-if="data.items">
     <input type="checkbox" v-model="selectedValues" value="apple" /> Apple
     <input type="checkbox" v-model="selectedValues" value="banana" /> Banana
     <input type="checkbox" v-model="selectedValues" value="orange" /> Orange
 
     <p>Selected fruits: {{ selectedValues }}</p>
-    <span v-for="(value, index) in data.pageItems" :key="index">
-      {{ value.name }}
-    </span>
+    <tableCheckedTable
+      :data="data.pageItems"
+      :isInputChecked="true"
+      :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
+      :titles="['name', 'price', 'unit']"
+      :currentPage="data.currentPage"
+      :sizePage="data.sizePage"
+    ></tableCheckedTable>
+    <button @click="choose" class="btn btn-primary">Lưu</button>
+    <button @click="add" class="btn btn-primary">Thêm</button>
+
     <div class="border">
       <input type="text" placeholder="tìm kiếm" v-model="data.search" />
     </div>
@@ -39,14 +47,16 @@ import { computed, reactive, ref, onBeforeMount } from "vue";
 import positionService from "../../service/position.service";
 
 import pag from "../../components/pagination/pagination.vue";
+//component
+import tableCheckedTable from "../../components/table/tableChecked.table.vue";
 export default {
-  components: { pag },
+  components: { pag, tableCheckedTable },
   setup() {
     const data = reactive({
       items: [],
       pageItems: [],
       SearchPageItems: [],
-      sizePage: 1,
+      sizePage: 2,
       currentPage: 1,
       previousPage: 0,
       totalPage: 0,
@@ -60,7 +70,10 @@ export default {
     );
     data.SearchPageItems = computed(() => {
       try {
-        return data.items.filter((item) => item.name.includes(data.search));
+        return (
+          (data.currentPage = 1),
+          data.items.filter((item) => item.name.includes(data.search))
+        );
       } catch (error) {
         console.log(error);
       }
@@ -71,19 +84,41 @@ export default {
         data.currentPage * data.sizePage
       )
     );
+    const choose = () => {
+      console.log("Items:", data.items);
+      console.log("Search:", data.SearchPageItems);
+      console.log("PageItems", data.pageItems);
+    };
+    const add = () => {
+      data.items.push({ name: "abc", checked: false });
+      console.log(data.items);
+    };
     onBeforeMount(async () => {
+      console.log("Search:", data.SearchPageItems);
+
       const document = await positionService.getAll();
       data.items = document.message;
-      // data.SearchPageItems = data.items;
+      data.items = data.items.map((item) => {
+        return {
+          ...item,
+          checked: false,
+        };
+      });
+      console.log("Items:", data.items);
+      console.log("Search:", data.SearchPageItems);
+      console.log("PageItems", data.pageItems);
+      let a = [{ name: "user" }, { name: "admin" }, { name: "super-admin" }];
+      let b = a.filter((item) => item.name.includes(""));
+      console.log(b);
     });
 
     const handlePageChange = (value) => {
       data.currentPage = value;
-      console.log(
-        `${data.currentPage} `,
-        (data.currentPage - 1) * data.sizePage,
-        data.currentPage * data.sizePage
-      );
+      // console.log(
+      //   `${data.currentPage} `,
+      //   (data.currentPage - 1) * data.sizePage,
+      //   data.currentPage * data.sizePage
+      // );
     };
 
     return {
@@ -91,7 +126,14 @@ export default {
       data,
 
       handlePageChange,
+      choose,
+      add,
     };
   },
 };
 </script>
+<style scope>
+.body {
+  min-height: 100vh;
+}
+</style>

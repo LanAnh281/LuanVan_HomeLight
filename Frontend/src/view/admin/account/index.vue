@@ -81,32 +81,7 @@ export default {
         }
       }
     );
-    onMounted(async () => {
-      //Positions : display form add role and table
-      const document = await positionService.getAll();
-      data.items = document.message;
-      //accounts : display table 'Tài khoản'
-      const documentAccount = await accountService.getAll();
-      data.accounts = documentAccount.message;
-      data.length = data.accounts.length;
-      //box director 'Tài khoản' and 'Vai trò'
-      component.isDirector = "Tài khoản";
-      // display form checked roles.
-      const documentRolePosition = await positionService.getAll();
-      data.rolePosition = documentRolePosition.message;
-      const length = data.rolePosition.length;
-      for (let i = 0; i < length; i++) {
-        data.rolePosition[i].disable = false;
-      }
-      // accesstoken
-      await checkAccessToken(router);
-      intervalId = setInterval(async () => {
-        await checkAccessToken(router);
-      }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
-    });
-    onBeforeUnmount(() => {
-      clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
-    });
+
     const createRole = async () => {
       const document = await roleService.getAll();
       data.items = document.message;
@@ -146,6 +121,32 @@ export default {
           data.rolePosition[index]._id == data.positionId ? false : true;
       }
     };
+    onMounted(async () => {
+      // accesstoken
+      await checkAccessToken(router);
+      intervalId = setInterval(async () => {
+        await checkAccessToken(router);
+      }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
+      //Positions : display form add role and table
+      const document = await positionService.getAll();
+      data.items = document.message;
+      //accounts : display table 'Tài khoản'
+      const documentAccount = await accountService.getAll();
+      data.accounts = documentAccount.message;
+      data.length = data.accounts.length;
+      //box director 'Tài khoản' and 'Vai trò'
+      component.isDirector = "Tài khoản";
+      // display form checked roles.
+      const documentRolePosition = await positionService.getAll();
+      data.rolePosition = documentRolePosition.message;
+      const length = data.rolePosition.length;
+      for (let i = 0; i < length; i++) {
+        data.rolePosition[i].disable = false;
+      }
+    });
+    onBeforeUnmount(() => {
+      clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
+    });
     return {
       data,
       css,

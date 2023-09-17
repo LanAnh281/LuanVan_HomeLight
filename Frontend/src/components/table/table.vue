@@ -33,11 +33,7 @@ export default {
         <tr v-for="(value, index) in data" :key="index">
           <!-- <th scope="row">{{ (currentPage - 1) * sizePage + index + 1 }}</th> -->
 
-          <td
-            v-for="(title, index1) in titles"
-            :key="index1"
-            style="width: 30%"
-          >
+          <td v-for="(title, index1) in titles" :key="index1" style="">
             {{ value[title] }}
           </td>
           <td v-if="action" class="ml-2">
@@ -62,6 +58,7 @@ export default {
               :key="index2"
               class="material-symbols-outlined rounded-circle"
               :class="`${value2}-icon`"
+              style="display: inline"
               @click="$emit(value2, value._id)"
             >
               {{ value2 }}
@@ -75,5 +72,20 @@ export default {
 <style scoped>
 span {
   font-size: 35px;
+}
+.info-icon:hover {
+  color: #00c1cf;
+  text-shadow: 0 0 2px #00f0ff;
+  transition: 0.5s;
+}
+.edit-icon:hover {
+  color: #f8cb03;
+  text-shadow: 0 0 2px #ffbb00;
+  transition: 0.5s;
+}
+.cancel-icon:hover {
+  color: #f80303;
+  text-shadow: 0 0 2px #ff6200;
+  transition: 0.5s;
 }
 </style>
