@@ -8,6 +8,7 @@ export default {
     titles: { type: Array, default: [] },
     action: { type: Boolean, default: false },
     actionList: { type: Array, default: [] },
+    name: { type: String, default: "" },
     account: false,
     currentPage: "",
     sizePage: "",
@@ -53,11 +54,15 @@ export default {
                 toggle_off
               </span>
             </div>
+            <!-- :data-target="`${value2}UserModal`" -->
+
             <span
               v-for="(value2, index2) in actionList"
               :key="index2"
               class="material-symbols-outlined rounded-circle"
               :class="`${value2}-icon`"
+              data-toggle="modal"
+              :data-target="`#${value2}${name}Modal`"
               style="display: inline"
               @click="$emit(value2, value._id)"
             >
@@ -71,7 +76,7 @@ export default {
 </template>
 <style scoped>
 span {
-  font-size: 35px;
+  font-size: 24px;
 }
 .info-icon:hover {
   color: #00c1cf;

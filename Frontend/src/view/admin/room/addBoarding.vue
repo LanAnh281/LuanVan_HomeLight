@@ -249,7 +249,7 @@ export default {
             </div>
             <div class="form-group row">
               <label for="inputrules" class="col-sm-3 col-form-label p-0"
-                >Quận huyện :</label
+                >Phường xã :</label
               >
               <div class="col-sm-9">
                 <Select

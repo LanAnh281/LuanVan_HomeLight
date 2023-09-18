@@ -332,7 +332,7 @@ export default {
           console.log(documentCreateAndUpdateRoom);
           if (documentCreateAndUpdateRoom["status"] == "success") {
             successAd("Thành công");
-            refresh();
+            await refresh();
           } else {
             warning("Thất bại");
           }
@@ -368,9 +368,10 @@ export default {
       data.uploadFiles = [];
       data.message = "";
       //3 cấp
-      data.city = {};
+      // data.city = {};
       data.district = { data: { districts: [] } };
       data.ward = { data: { wards: [] } };
+
       data.selected = "";
       data.flag = true;
       const previewImages = document.getElementById("previewImages");

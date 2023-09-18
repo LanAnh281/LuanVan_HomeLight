@@ -36,6 +36,8 @@ import roomForm from "./add.vue";
 import Edit from "./edit.vue";
 import View from "./view/view.vue";
 import addCustomer from "./addCustomer/index.form.vue";
+import paginationVue from "../../../components/pagination/pagination.vue";
+
 export default {
   components: {
     Select,
@@ -47,6 +49,7 @@ export default {
     EditBoardingForm,
     View,
     addCustomer,
+    paginationVue,
   },
   setup() {
     const router = useRouter();
@@ -72,6 +75,7 @@ export default {
         { _id: false, name: "Chưa thuê" },
         { _id: true, name: "Đã thuê" },
       ],
+      isStatus: { _id: false, name: "Chưa thuê" },
       fee: [
         {
           _id: false,
@@ -79,6 +83,10 @@ export default {
         },
         { _id: true, name: "Đã thanh toán" },
       ],
+      currentPage: 1,
+      totalPage: 0,
+      length: 0,
+      sizePage: 1,
     });
     const component = reactive({
       isBoardingModal: false,
@@ -95,7 +103,11 @@ export default {
     const isViewModal = ref(false);
     const isAddCustomerModal = ref(false);
     const handleStatus = (value) => {
-      console.log("Status:", value);
+      data.isStatus = {};
+      data.isStatus = data.status.filter(
+        (item) => item._id == JSON.parse(value)
+      );
+      data.isStatus = data.isStatus[0];
     };
     const handlefee = (value) => {
       console.log("Status:", value);
@@ -404,8 +416,10 @@ export default {
     <!-- :data="data.items" -->
     <Box
       v-if="data.isActiveBoarding"
-      class="ml-3"
+      class="ml-3 mb-3"
       :_idBoarding="data.isActiveBoarding"
+      :currentPage="data.currentPage"
+      :status="data.isStatus"
       @handleDelete="handleEdit"
       @edit="
         (value) => {
@@ -425,8 +439,34 @@ export default {
           data.isActiveRoom = value;
         }
       "
+      @totalPage="
+        (value) => {
+          data.totalPage = value.totalPage;
+          data.length = value.length;
+        }
+      "
     ></Box>
-
+    <paginationVue
+      :currentPage="data.currentPage"
+      :totalPage="data.totalPage"
+      :size="data.sizePage"
+      :length="data.length"
+      @page="(value) => (data.currentPage = value)"
+      @previous="
+        () => {
+          if (data.currentPage > 1) {
+            data.currentPage = data.currentPage - 1;
+          }
+        }
+      "
+      @next="
+        () => {
+          if (data.currentPage < data.totalPage) {
+            data.currentPage = data.currentPage + 1;
+          }
+        }
+      "
+    ></paginationVue>
     <Edit
       v-if="isEditRoomModal"
       :_id="data.isActiveRoom"
@@ -441,7 +481,7 @@ export default {
 </template>
 <style scope>
 .body {
-  min-height: 100vh;
+  min-height: 240vh;
 }
 .border-radius {
   border: 1px solid #eae6e6;

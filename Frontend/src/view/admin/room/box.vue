@@ -1,5 +1,5 @@
 <script>
-import { reactive, ref, onMounted, watch } from "vue";
+import { reactive, ref, onMounted, watch, computed } from "vue";
 import Swal from "sweetalert2";
 //service
 import roomService from "../../../service/room.service";
@@ -13,6 +13,7 @@ import {
 } from "../../../assets/js/common.alert";
 //component
 import Edit from "./edit.vue";
+
 import loginService from "../../../service/login.service";
 // import addCustomer from "./addCustomer/addCutomer.form.vue";
 export default {
@@ -20,9 +21,29 @@ export default {
   props: {
     data: { type: Array, default: [] },
     _idBoarding: { type: String, default: "" },
+    currentPage: { type: Number, default: 1 },
+    status: { type: Object, default: { _id: "" } },
   },
   setup(props, { emit }) {
-    const data = reactive({ item: [] });
+    const data = reactive({
+      item: [],
+      totalPage: 0,
+      length: 0,
+      sizePage: 1,
+      setPage: [],
+    });
+    data.totalPage = computed(() =>
+      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
+    );
+
+    data.setPage = computed(() =>
+      data.item
+        ? data.item.slice(
+            (props.currentPage - 1) * data.sizePage,
+            props.currentPage * data.sizePage
+          )
+        : []
+    );
     const handleEdit = async (value) => {
       try {
         const isDeleted = false;
@@ -114,12 +135,18 @@ export default {
         await refresh();
       }
     );
+
     const refresh = async () => {
       data.item = await roomService.getAll();
       data.item = data.item.message;
+      console.log(data.item, props.status["_id"]);
+
       data.item = data.item.filter(
-        (item) => item.boardingId == props._idBoarding
+        (item) =>
+          item.boardingId == props._idBoarding &&
+          item.status == props.status["_id"]
       );
+
       data.item = data.item.map((item) => {
         return {
           ...item,
@@ -129,7 +156,17 @@ export default {
           }),
         };
       });
+      data.length = data.item.length;
+      emit("totalPage", { totalPage: data.totalPage, length: data.length });
     };
+    watch(
+      () => props.status,
+      async (newValue, oldValue) => {
+        // console.log("watch status :", newValue);
+        await refresh();
+      }
+    );
+
     onMounted(async () => {
       await refresh();
     });
@@ -138,79 +175,81 @@ export default {
 };
 </script>
 <template>
-  <div style="display: grid; grid-template-columns: repeat(5, 1fr)" class="">
-    <div
-      class="card pt-1 px-0 pb-0 mr-4 row justify-content-between"
-      v-for="(value, index) in data.item"
-      style="border-radius: 5px"
-      :key="index"
-    >
-      <div class="card-item col-12 p-0 m-0">
-        <!-- image -->
-        <img
-          class="card-img-top"
-          src="../../../assets/image/lightHouse.png"
-          style="object-fit: contain; height: 30%; width: 100%"
-        />
-        <hr style="display: block" />
-        <!--  -->
-        <div class="px-2 mx-1">
-          <p class="card-title text-center"><b>Phòng:</b> {{ value.name }}</p>
-          <p class="card-text">
-            <b>Giá phòng:</b>
-            {{ value.price }}
-          </p>
-          <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
-        </div>
+  <div>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr)" class="">
+      <div
+        class="card pt-1 px-0 pb-0 mr-4 row justify-content-between"
+        v-for="(value, index) in data.setPage"
+        style="border-radius: 5px"
+        :key="index"
+      >
+        <div class="card-item col-12 p-0 m-0">
+          <!-- image -->
+          <img
+            class="card-img-top"
+            src="../../../assets/image/lightHouse.png"
+            style="object-fit: contain; height: 30%; width: 100%"
+          />
+          <hr style="display: block" />
+          <!--  -->
+          <div class="px-2 mx-1">
+            <p class="card-title text-center"><b>Phòng:</b> {{ value.name }}</p>
+            <p class="card-text">
+              <b>Giá phòng:</b>
+              {{ value.price }}
+            </p>
+            <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
+          </div>
 
-        <!-- icon -->
-        <div class="px-2 mx-4">
-          <span
-            class="material-symbols-outlined m-2 view border rounded p-1"
-            title="chi tiết"
-            data-toggle="modal"
-            data-target="#viewRoomModal"
-            @click="$emit('view', value._id)"
-          >
-            visibility
-          </span>
-          <!-- Edit -->
-          <span
-            class="material-symbols-outlined mr-1 edit border rounded p-1"
-            title="chỉnh sửa"
-            data-toggle="modal"
-            data-target="#roomUpdateModal"
-            @click="$emit('edit', value._id)"
-          >
-            edit
-          </span>
-          <!-- delete room -->
-          <span
-            class="material-symbols-outlined mr-1 delete border rounded p-1"
-            title="xóa phòng"
-            @click="handleDelete(value._id)"
-          >
-            close
-          </span>
-          <!-- trả phòng -->
-          <span
-            class="material-symbols-outlined out border rounded p-1"
-            title="trả phòng"
-            @click="handleEdit(value._id)"
-          >
-            logout
-          </span>
-        </div>
-        <!-- Add customer -->
-        <div class="px-2 mt-1 my-1 text-center">
-          <button
-            class="btn btn-primary btn-menu p-1"
-            data-toggle="modal"
-            data-target="#addCustomerModal"
-            @click="$emit('addCutomer', value._id)"
-          >
-            Thêm khách
-          </button>
+          <!-- icon -->
+          <div class="px-2 mx-4">
+            <span
+              class="material-symbols-outlined m-2 view border rounded p-1"
+              title="chi tiết"
+              data-toggle="modal"
+              data-target="#viewRoomModal"
+              @click="$emit('view', value._id)"
+            >
+              visibility
+            </span>
+            <!-- Edit -->
+            <span
+              class="material-symbols-outlined mr-1 edit border rounded p-1"
+              title="chỉnh sửa"
+              data-toggle="modal"
+              data-target="#roomUpdateModal"
+              @click="$emit('edit', value._id)"
+            >
+              edit
+            </span>
+            <!-- delete room -->
+            <span
+              class="material-symbols-outlined mr-1 delete border rounded p-1"
+              title="xóa phòng"
+              @click="handleDelete(value._id)"
+            >
+              close
+            </span>
+            <!-- trả phòng -->
+            <span
+              class="material-symbols-outlined out border rounded p-1"
+              title="trả phòng"
+              @click="handleEdit(value._id)"
+            >
+              logout
+            </span>
+          </div>
+          <!-- Add customer -->
+          <div class="px-2 mt-1 my-1 text-center">
+            <button
+              class="btn btn-primary btn-menu p-1"
+              data-toggle="modal"
+              data-target="#addCustomerModal"
+              @click="$emit('addCutomer', value._id)"
+            >
+              Thêm khách
+            </button>
+          </div>
         </div>
       </div>
     </div>

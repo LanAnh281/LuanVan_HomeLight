@@ -1,5 +1,7 @@
 <script>
 import { reactive, ref, onMounted, onBeforeMount, computed } from "vue";
+import Swal from "sweetalert2";
+
 //service
 import userRoomService from "../../../../service/user_room.service";
 import roomService from "../../../../service/room.service";
@@ -8,7 +10,11 @@ import { formatDateTime } from "../../../../assets/js/format.common";
 //component
 import paginationVue from "../../../../components/pagination/pagination.vue";
 import Table from "../../../../components/table/table.vue";
-import { successAd } from "../../../../assets/js/common.alert";
+import {
+  successAd,
+  deleted,
+  warning,
+} from "../../../../assets/js/common.alert";
 export default {
   components: { paginationVue, Table },
   props: { _id: { type: String, default: "" } },
@@ -34,43 +40,112 @@ export default {
     );
 
     const handleDelete = async (value) => {
-      console.log(`delete room user`, value, props._id);
+      console.log(`delete room user`, value, props._id, data.item.Users.length);
       try {
-        const documentDelete = await userRoomService.delete(props._id, {
-          UserId: value,
-          RoomId: props._id,
-        });
-        if (documentDelete["status"] == "success") {
-          successAd("Thành công ");
-          await refresh();
-        }
-        const documentUserRoom = await userRoomService.get(props._id);
-        const status =
-          documentUserRoom.message.Users.length == 0 ? false : true;
-        console.log(
-          "length:",
-          documentUserRoom.message.Users.length == 0,
-          status
-        );
-        if (documentUserRoom.message.Users.length == 0) {
+        if (data.item.Users.length == 1) {
+          const showSweetAlert = async () => {
+            const { value: formValues } = await Swal.fire({
+              title: "Điện nước tiêu thụ",
+              html: `
+              <div  class='row  form-group ml-2 '>
+                <label class='col-3'>Điện mới:</label>
+                <input type='number' id="electric" class='col-9 form-control'></input>
+              </div>
+              <div class='row form-group   ml-2'>
+                <label class='col-3'>Nước mới:</label>
+                <input type='number' id="water" class='col-9 form-control'></input>
+              </div>
+            `,
+              showCancelButton: true,
+              focusConfirm: false,
+              preConfirm: () => {
+                const electric = document.getElementById("electric").value;
+                const water = document.getElementById("water").value;
+                if (!electric || !water) {
+                  Swal.showValidationMessage("Vui lòng điền đầy đủ thông tin");
+                }
+                return {
+                  electric,
+                  water,
+                };
+              },
+            });
+            return formValues;
+          };
+          const formValues = await showSweetAlert();
+          //api tính tiền tạo bill mới
+
+          // xóa khách trọ khỏi user_room
+          const documentDelete = await userRoomService.delete(props._id, {
+            UserId: value,
+            RoomId: props._id,
+          });
+          if (documentDelete["status"] == "success") {
+            successAd("Thành công ");
+            await refresh();
+          }
+
+          // cập nhật lại status room và cycle room
+          const documentUserRoom = await userRoomService.get(props._id);
           const documentRoom = await roomService.update(props._id, {
             name: documentUserRoom.message.name,
             price: documentUserRoom.message.price,
             area: documentUserRoom.message.area,
-            status: status,
+            status: false,
             boardingId: documentUserRoom.message.boardingId,
             cycleId: "null",
           });
         } else {
-          const documentRoom = await roomService.update(props._id, {
-            name: documentUserRoom.message.name,
-            price: documentUserRoom.message.price,
-            area: documentUserRoom.message.area,
-            status: status,
-            boardingId: documentUserRoom.message.boardingId,
-            cycleId: documentUserRoom.message.cycleId,
-          });
+          const isDeleted = await deleted(
+            "Bạn có chắc chắn xóa khách trọ này",
+            ""
+          );
+          console.log(isDeleted);
+          if (isDeleted == true) {
+            try {
+              const documentDelete = await userRoomService.delete(props._id, {
+                UserId: value,
+                RoomId: props._id,
+              });
+              console.log(documentDelete);
+              if (documentDelete["status"] == "success") {
+                successAd("Thành công ");
+                await refresh();
+              }
+            } catch (error) {
+              if (error.response) {
+                console.log("Server-side errors", error.response.data);
+              } else if (error.request) {
+                console.log("Client-side errors", error.request);
+              } else {
+                console.log("Errors:", error.message);
+              }
+            }
+          }
         }
+        // const documentUserRoom = await userRoomService.get(props._id);
+        // const status =
+        //   documentUserRoom.message.Users.length == 0 ? false : true;
+
+        // if (documentUserRoom.message.Users.length == 0) {
+        //   const documentRoom = await roomService.update(props._id, {
+        //     name: documentUserRoom.message.name,
+        //     price: documentUserRoom.message.price,
+        //     area: documentUserRoom.message.area,
+        //     status: status,
+        //     boardingId: documentUserRoom.message.boardingId,
+        //     cycleId: "null",
+        //   });
+        // } else {
+        //   const documentRoom = await roomService.update(props._id, {
+        //     name: documentUserRoom.message.name,
+        //     price: documentUserRoom.message.price,
+        //     area: documentUserRoom.message.area,
+        //     status: status,
+        //     boardingId: documentUserRoom.message.boardingId,
+        //     cycleId: documentUserRoom.message.cycleId,
+        //   });
+        // }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

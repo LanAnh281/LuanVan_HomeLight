@@ -19,7 +19,7 @@ export default {
 </script>
 <template>
   <select class="custom-select" id="inputGroupSelect01" @change="change">
-    <option value="''" :selected="selected == '' ? selected : null">
+    <option value="''" :selected="selected === '' ? selected : null">
       {{ title }}
     </option>
     <option
