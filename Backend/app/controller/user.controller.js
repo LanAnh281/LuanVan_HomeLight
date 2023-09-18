@@ -1,4 +1,4 @@
-const { Users } = require("../models/index.model");
+const { Users, Accounts } = require("../models/index.model");
 const { dateTime } = require("../middeware/datetime.middeware");
 
 const fs = require("fs");
@@ -216,7 +216,18 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Users.findAll({});
+    const users = await Users.findAll({
+      include: [
+        {
+          model: Accounts,
+        },
+      ],
+    });
+    const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */
+    for (let i in documents) {
+      documents[i].isActive = documents[i].Account.isActive;
+    }
+
     res.json({ message: documents, status: "success" });
   } catch (error) {
     res.json({ message: error, status: "fail" });
