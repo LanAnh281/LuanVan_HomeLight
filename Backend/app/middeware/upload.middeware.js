@@ -37,16 +37,17 @@ const storageStatic = multer.diskStorage({
   },
 });
 const MAX_SIZE = 100000000; //100mb
-exports.upload = multer({
-  storage: storage,
+
+exports.uploadStatic = multer({
+  storage: storageStatic,
   fileFilter: fileFilter,
   limits: {
     fileSize: MAX_SIZE,
   },
 });
 
-exports.uploadStatic = multer({
-  storage: storageStatic,
+exports.upload = multer({
+  storage: storage,
   fileFilter: fileFilter,
   limits: {
     fileSize: MAX_SIZE,

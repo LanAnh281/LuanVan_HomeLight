@@ -233,15 +233,27 @@ exports.findAll = async (req, res, next) => {
     res.json({ message: error, status: "fail" });
   }
 };
+// exports.findOne = async (req, res, next) => {
+//   try {
+//     console.log("userId:", req.user["userId"]);
+//     const document =
+//       req.user["userId"] != null && req.user["userId"] != undefined
+//         ? await Users.findOne({
+//             where: { _id: req.user["userId"] },
+//           })
+//         : { userName: "Quản trị viên" };
+//     console.log(document);
+//     res.json({ message: document, status: "success" });
+//   } catch (error) {
+//     res.json({ message: error, status: "fail" });
+//   }
+// };
 exports.findOne = async (req, res, next) => {
   try {
-    console.log("userId:", req.user["userId"]);
-    const document =
-      req.user["userId"] != null && req.user["userId"] != undefined
-        ? await Users.findOne({
-            where: { _id: req.user["userId"] },
-          })
-        : { userName: "Quản trị viên" };
+    const document = await Users.findOne({
+      where: { _id: req.params.id },
+    });
+
     console.log(document);
     res.json({ message: document, status: "success" });
   } catch (error) {
