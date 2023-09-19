@@ -295,27 +295,60 @@ exports.update = async (req, res, next) => {
     phone,
     address,
     email,
-    start,
-    end,
     numberPlate,
     sex,
     birthday,
     securityDeposit,
-    file,
-    imagePrevious,
-    imageAfter,
+    removeImages,
+    countFile,
   } = req.body;
-  end = end === "" ? null : end;
-  start = start === "" ? null : start;
   try {
+    console.log("removeImages", removeImages.length);
+    if (removeImages.length > 0) removeImages.pop();
+
     const user = await Users.findOne({ where: { _id: req.params.id } });
-    if (user.imagePrevious != imagePrevious) {
-      fs.readdir(uploadDir, async (err, files) => {
-        if (err) {
-          console.error("Error reading upload directory:", err);
+
+    if (removeImages.length > 0) {
+      for (let image of removeImages) {
+        let img = JSON.parse(image);
+        console.log(">>>image", JSON.parse(image));
+        let filePath = `${uploadDir}/${img.id}`;
+        console.log(">>>>filePath", img.id, filePath);
+        if (fs.existsSync(filePath)) {
+          console.log(">>>>filePath", img.id);
+          fs.unlinkSync(filePath); //delete file
+        }
+      }
+    }
+    console.log("removeImages2", removeImages.length);
+    const document = await Users.update(
+      {
+        userName: userName,
+        identification: identification,
+        // imagePrevious: newestFiles[0],
+        // imageAfter: newestFiles[1],
+        phone: phone,
+        address: address,
+        email: email,
+        numberPlate: numberPlate,
+        sex: sex,
+        birthday: birthday,
+      },
+      {
+        where: {
+          _id: req.params.id,
+        },
+      }
+    );
+    console.log("Hoàn thành chỉnh sửa chung", countFile);
+    if (countFile > 0) {
+      fs.readdir(uploadDir, async (error, files) => {
+        if (error) {
+          console.error("Error reading upload directory:", error);
           return;
         }
         let newestFiles = [];
+
         //sort the file list by time (using mtime)
         // sort in descending order-
         files.sort((file1, file2) => {
@@ -325,52 +358,44 @@ exports.update = async (req, res, next) => {
         });
 
         // Retrieve the two most recent files.
-        newestFiles = files.slice(0, 2);
-        imagePrevious = newestFiles[0];
-        imageAfter = newestFiles[1];
-        console.log("2", imageAfter, imagePrevious);
+        console.log("hoàn thành tìm file mới");
+        if (countFile == 2) {
+          console.log("chỉnh sửa cả 2");
+          newestFiles = files.slice(0, 2);
 
-        const documents = await Users.update(
-          {
-            userName: userName,
-            identification: identification,
-            imagePrevious: imagePrevious,
-            imageAfter: imageAfter,
-            phone: phone,
-            address: address,
-            email: email,
-            start: start,
-            end: end,
-            numberPlate: numberPlate,
-            sex: sex,
-            birthday: birthday,
-            securityDeposit: securityDeposit,
-          },
-          { where: { _id: req.params.id } }
-        );
-        res.json({ message: documents, status: "success" });
+          const document = await Users.update(
+            {
+              imagePrevious: newestFiles[0],
+              imageAfter: newestFiles[1],
+            },
+            {
+              where: {
+                _id: req.params.id,
+              },
+            }
+          );
+        } else if (countFile == 1) {
+          let img = JSON.parse(removeImages[0]);
+          console.log("chỉnh sửa 1:", img, img.name);
+          newestFiles = files.slice(0, 1);
+          let data = {};
+          data[img.name] = newestFiles[0];
+          console.log(newestFiles[0], data);
+          const document = await Users.update(
+            data,
+
+            {
+              where: {
+                _id: req.params.id,
+              },
+            }
+          );
+        }
+        console.log(document);
       });
-    } else {
-      const documents = await Users.update(
-        {
-          userName: userName,
-          identification: identification,
-          imagePrevious: imagePrevious,
-          imageAfter: imageAfter,
-          phone: phone,
-          address: address,
-          email: email,
-          start: start,
-          end: end,
-          numberPlate: numberPlate,
-          sex: sex,
-          birthday: birthday,
-          securityDeposit: securityDeposit,
-        },
-        { where: { _id: req.params.id } }
-      );
-      res.json({ message: documents, status: "success" });
     }
+
+    res.json({ message: document, status: "success" });
   } catch (error) {
     res.json({ message: error, status: "fail" });
   }
