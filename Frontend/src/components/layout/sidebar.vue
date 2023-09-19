@@ -22,6 +22,11 @@ export default {
           active: "service",
         },
         {
+          name: "Hóa đơn",
+          icon: "payments",
+          active: "bill",
+        },
+        {
           name: "Báo cáo",
           icon: "text_snippet",
           active: "report",

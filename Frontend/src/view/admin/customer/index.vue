@@ -296,6 +296,7 @@ export default {
     });
     return {
       data,
+      refresh,
       //select-option
       changeCity,
       changeDistrict,
@@ -467,6 +468,7 @@ export default {
     <Edit
       v-if="data.isEditUserModal"
       :_id="data.user"
+      @edit="refresh"
       @closeModal="data.isEditUserModal = !data.isEditUserModal"
     ></Edit>
   </div>

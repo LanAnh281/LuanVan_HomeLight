@@ -42,10 +42,9 @@ export default {
         sex: false,
         birthday: "",
         securityDeposit: 0,
-        isUser: false,
         files: [],
+        countFile: 0,
         //room
-        status: true,
       },
       error: {
         userName: "",
@@ -69,6 +68,7 @@ export default {
       flag: true,
       levels: { city: {}, district: {}, ward: {} },
       btnSubmit: "Lưu",
+      removeList: [],
     });
     const filesRef = ref(null);
 
@@ -290,48 +290,66 @@ export default {
     };
 
     const save = async () => {
-      data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+      data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+      console.log(data.item.address);
       try {
-        if (data.uploadFiles.length != 2) {
-          data.error["image"] = "Chưa tải ảnh cccd.";
-          data.flag = true;
-          console.log("key:image");
-        }
-        for (let key in data.error) {
-          if (key == "sex") continue;
-          if (data.item[key] == "") {
-            data.error[key] = "Chưa nhập thông tin";
+        if (data.removeList.length == 2) {
+          if (data.uploadFiles.length != 2) {
+            data.error["image"] = "Chưa tải đủ ảnh cccd.";
             data.flag = true;
-            console.log("key:", key, data.item[key]);
+            console.log("key:image");
+          }
+        } else if (data.removeList.length == 1) {
+          if (data.uploadFiles.length != 1) {
+            data.error["image"] = "Thiếu 1 ảnh cccd.";
+            data.flag = true;
+            console.log("key:image");
           }
         }
-        if (!data.flag) {
-          data.btnSubmit = "Đang lưu";
-          const formData = new FormData();
-          for (let key in data.item) {
-            formData.append(key, data.item[key]);
-          }
-          _.forEach(data.uploadFiles, (file) => {
-            if (validate(file) === "") {
-              formData.append("files", file);
-            }
-          });
-          console.log(data.uploadFiles);
-          setTimeout(() => {
-            load();
-          }, 0);
-          const documentCreateAndUpdateRoom = await userService.create(
-            formData
-          );
-          console.log(documentCreateAndUpdateRoom);
-          if (documentCreateAndUpdateRoom["status"] == "success") {
-            successAd("Thành công");
-            await refresh();
-            data.btnSubmit = "Lưu";
-          } else {
-            warning("Thất bại");
-          }
+
+        // for (let key in data.error) {
+        //   if (key == "sex") continue;
+        //   if (data.item[key] == "") {
+        //     data.error[key] = "Chưa nhập thông tin";
+        //     data.flag = true;
+        //     console.log("key:", key, data.item[key]);
+        //   }
+        // }
+        console.log(data.flag);
+        // if (!data.flag) {
+        data.btnSubmit = "Đang lưu";
+        const formData = new FormData();
+        for (let key in data.item) {
+          formData.append(key, data.item[key]);
         }
+        _.forEach(data.uploadFiles, (file) => {
+          if (validate(file) === "") {
+            formData.append("files", file);
+          }
+        });
+        formData.append("countFile", data.uploadFiles.length);
+        _.forEach(data.removeList, (image) => {
+          formData.append("removeImages", JSON.stringify(image));
+        });
+        formData.append("removeImages", "");
+        console.log("data.removeList", data.removeList);
+        setTimeout(() => {
+          load();
+        }, 0);
+        const documentUpdateUser = await userService.update(
+          props._id,
+          formData
+        );
+        console.log(documentUpdateUser);
+        if (documentUpdateUser["status"] == "success") {
+          successAd("Thành công");
+          await refresh();
+          data.btnSubmit = "Lưu";
+          emit("edit");
+        } else {
+          warning("Thất bại");
+        }
+        // }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -343,22 +361,47 @@ export default {
       }
     };
     const refresh = async () => {
-      data.city = await axios.get(`https://provinces.open-api.vn/api/?depth=1`);
-      data.error = {
-        userName: "",
-        identification: "",
-        phone: "",
-        number: "",
-        email: "",
-        image: "",
-      };
-      data.files = [];
-      data.uploadFiles = [];
-      data.message = "";
-      //3 cấp
-      // data.city = {};
-      data.district = { data: { districts: [] } };
-      data.ward = { data: { wards: [] } };
+      const documentUser = await userService.get(props._id);
+      data.item = documentUser.message;
+      const address = data.item.address.split(" - ");
+      data.item.number = address[0];
+
+      const response = await axios.get(
+        `https://provinces.open-api.vn/api/?depth=1`
+      );
+      data.city = response;
+      data.levels.city = response;
+      data.levels.city = data.levels.city.data.filter(
+        (item) => item.name == address[3]
+      );
+      data.levels.city = data.levels.city[0];
+      data.item.city = data.levels.city;
+      console.log(">>>city:", data.levels.city);
+      // //district
+      const documentDistrict = await city(data.levels.city.code);
+      data.levels.district = documentDistrict.district;
+      data.district = documentDistrict.district;
+      data.levels.district = data.levels.district.data.districts.filter(
+        (item) => item.name == address[2]
+      );
+      data.levels.district = data.levels.district[0];
+      data.item.district = data.levels.district;
+      console.log(">>>district:", data.levels.district);
+
+      //ward
+      const ward = await axios.get(
+        `https://provinces.open-api.vn/api/d/${data.levels.district.code}?depth=2`,
+        {}
+      );
+      data.levels.ward = ward;
+      console.log(">>>ward:", ward.data.wards.length, address[1]);
+      data.ward = ward;
+      data.levels.ward = ward.data.wards.filter(
+        (item) => item.name == address[1]
+      );
+      data.levels.ward = data.levels.ward[0];
+      data.item.ward = data.levels.ward;
+      console.log("ward:", data.levels.ward);
 
       data.flag = true;
       const previewImages = document.getElementById("previewImages");
@@ -366,57 +409,31 @@ export default {
       filesRef.value = document.getElementById("inputImage");
       filesRef.value.value = "";
     };
-    const handleDeleteImage = async () => {
-      console.log("xóa ảnh");
+    const handleDeleteImagePrevious = async () => {
+      const previousImage = document.getElementById("imagePrevious");
+      previousImage.remove();
+      data.removeList.push({
+        id: data.item.imagePrevious,
+        name: "imagePrevious",
+      });
+      data.item.imagePrevious = "";
+    };
+    const handleDeleteImageAfter = () => {
+      const afterImage = document.getElementById("imageAfter");
+      afterImage.remove();
+      data.removeList.push({ id: data.item.imageAfter, name: "imageAfter" });
+      data.item.imageAfter = "";
     };
     onMounted(async () => {
       try {
-        const documentUser = await userService.get(props._id);
-        data.item = documentUser.message;
-        const address = data.item.address.split(" - ");
-        data.item.number = address[0];
-
-        const response = await axios.get(
-          `https://provinces.open-api.vn/api/?depth=1`
-        );
-        data.city = response;
-        data.levels.city = response;
-        data.levels.city = data.levels.city.data.filter(
-          (item) => item.name == address[3]
-        );
-        data.levels.city = data.levels.city[0];
-        console.log(">>>city:", data.levels.city);
-        // //district
-        const documentDistrict = await city(data.levels.city.code);
-        data.levels.district = documentDistrict.district;
-        data.district = documentDistrict.district;
-        data.levels.district = data.levels.district.data.districts.filter(
-          (item) => item.name == address[2]
-        );
-        data.levels.district = data.levels.district[0];
-        console.log(">>>district:", data.levels.district);
-
-        //ward
-        const ward = await axios.get(
-          `https://provinces.open-api.vn/api/d/${data.levels.district.code}?depth=2`,
-          {}
-        );
-        data.levels.ward = ward;
-        console.log(">>>ward:", ward.data.wards.length, address[1]);
-        data.ward = ward;
-        data.levels.ward = ward.data.wards.filter(
-          (item) => item.name == address[1]
-        );
-        data.levels.ward = data.levels.ward[0];
-        console.log("ward:", data.levels.ward);
-
+        await refresh();
         filesRef.value = document.getElementById("inputImage");
         $("#editUserModal").on("show.bs.modal", openModal); //lắng nghe mở modal
         $("#editUserModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
 
-        data.city = await axios.get(
-          `https://provinces.open-api.vn/api/?depth=1`
-        );
+        // data.city = await axios.get(
+        //   `https://provinces.open-api.vn/api/?depth=1`
+        // );
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -443,7 +460,9 @@ export default {
       checkStringAndNumber,
       sanitizeInput,
       checkString,
-      handleDeleteImage,
+      //remove image
+      handleDeleteImagePrevious,
+      handleDeleteImageAfter,
     };
   },
 };
@@ -472,7 +491,7 @@ export default {
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body mx-3">
           <form
             class="row justify-content-around"
             @submit.prevent="save"
@@ -684,6 +703,7 @@ export default {
                   </div>
                 </div>
               </div>
+              <!-- 3 cấp -->
               <div class="form-group row">
                 <label for="inputrules" class="col-sm-4 col-form-label p-0"
                   >Thành phố:</label
@@ -754,7 +774,7 @@ export default {
                   </div>
                 </div>
               </div>
-
+              <!-- địa chỉ -->
               <div class="form-group row">
                 <label for="inputAddress" class="col-sm-4 col-form-label p-0"
                   >Địa chỉ:</label
@@ -786,6 +806,7 @@ export default {
                 </div>
               </div>
             </form>
+            <!-- Ảnh cccd -->
             <div class="form-group row col-12 p-0 m-0">
               <label for="" class="col-sm-2 col-form-label p-0"
                 >Ảnh CCCD:</label
@@ -811,33 +832,29 @@ export default {
                 </div>
                 <div id="previewImages"></div>
               </div>
-              <div class="row ml-5">
-                <div class="col-6 imagesDiv">
-                  <img
-                    class="images ml-5"
-                    style="width: 200px; heigth: 200px"
-                    :src="`http://localhost:3000/api/users/getImg/${data.item.imagePrevious}`"
-                  />
-                  <span
-                    class="delete-icon"
-                    @click="handleDeleteImage(data.item.imagePrevious)"
-                    >x</span
-                  >
-                </div>
-                <div class="col-6 imagesDiv">
-                  <img
-                    class="images ml-5"
-                    style="width: 200px; heigth: 200px"
-                    :src="`http://localhost:3000/api/users/getImg/${data.item.imageAfter}`"
-                  />
-                  <span
-                    class="delete-icon"
-                    @click="handleDeleteImage(data.item.imagePrevious)"
-                    >x</span
-                  >
-                </div>
+              <!-- <div class="row ml-5"> -->
+              <div class="imagesDiv ml-5 pl-5" id="imagePrevious">
+                <img
+                  class="images ml-5"
+                  style="width: 200px; heigth: 200px"
+                  :src="`http://localhost:3000/api/users/getImg/${data.item.imagePrevious}`"
+                />
+                <span class="delete-icon" @click="handleDeleteImagePrevious"
+                  >x</span
+                >
+              </div>
+              <div class="imagesDiv pl-5" id="imageAfter">
+                <img
+                  class="images ml-5 pl-5"
+                  style="width: 200px; heigth: 200px"
+                  :src="`http://localhost:3000/api/users/getImg/${data.item.imageAfter}`"
+                />
+                <span class="delete-icon" @click="handleDeleteImageAfter"
+                  >x</span
+                >
               </div>
             </div>
+            <!-- </div> -->
 
             <div class="form-group mt-2 col-2 text-center">
               <button
@@ -860,17 +877,22 @@ export default {
   margin-left: -16%;
 }
 
-.imagesDiv {
+.imagesDiv,
+.imageAfter {
   position: relative;
+  display: inline;
 }
+
 .delete-icon {
   position: absolute;
   top: -10px;
-  right: -1px;
+  right: -10px;
   width: 20px;
   height: 20px;
   opacity: 1;
   color: var(--red);
+  background-color: #f6f1f1;
+
   border-radius: 50%;
   line-height: 1;
   text-align: center;

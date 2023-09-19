@@ -12,7 +12,7 @@ export default {
       emit("choose", e.target.value);
     };
     onMounted(() => {
-      console.log("***code:", props.codeProps);
+      // console.log("***code:", props.codeProps);
     });
     return {
       change,
