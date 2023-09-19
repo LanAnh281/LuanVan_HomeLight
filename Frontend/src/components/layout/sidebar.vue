@@ -53,8 +53,8 @@ export default {
     );
 
     onMounted(async () => {
-      const document = await userService.get("user");
-      data.user = document.message;
+      // const document = await userService.get("user");
+      // data.user = document.message;
     });
     return { data, router, logout };
   },
@@ -75,7 +75,7 @@ export default {
         class="col-3 ml-4 mr-0 p-0"
       />
       <div class="col row mt-0">
-        <div class="col-12 my-3">
+        <div class="col-12 my-3 text-center">
           <span
             style="
               display: block;
@@ -86,9 +86,9 @@ export default {
           >
             Xin chào</span
           >
-          <span style="color: var(--beige); text-shadow: 0 0 5px #ffff">
+          <!-- <span style="color: var(--beige); text-shadow: 0 0 5px #ffff">
             {{ data.user.userName }}
-          </span>
+          </span> -->
         </div>
       </div>
     </div>

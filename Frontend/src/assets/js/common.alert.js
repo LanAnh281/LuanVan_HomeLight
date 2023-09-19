@@ -34,6 +34,7 @@ export const warning = (title, text) => {
     title: title,
     text: text,
     background: "#fff",
+    confirmButtonText: "Đồng ý",
     didOpen: () => {
       const popup = Swal.getPopup();
       popup.style.border = "2px solid #ccc";

@@ -9,7 +9,11 @@ class userService {
     return (await this.api.get("/")).data;
   }
   async create(data) {
-    return (await this.api.post("/", data)).data;
+    return (
+      await this.api.post("/", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+    ).data;
   }
   async createAndUpdateRoom(id, data) {
     return (

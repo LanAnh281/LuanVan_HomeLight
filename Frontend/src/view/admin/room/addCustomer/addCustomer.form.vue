@@ -299,7 +299,7 @@ export default {
     };
 
     const save = async () => {
-      data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+      data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
       try {
         if (data.uploadFiles.length != 2) {
           data.error["image"] = "Chưa tải ảnh cccd.";
@@ -324,11 +324,13 @@ export default {
               formData.append("files", file);
             }
           });
+          console.log(data.uploadFiles);
           setTimeout(() => {
             load();
           }, 0);
-          const documentCreateAndUpdateRoom =
-            await userService.createAndUpdateRoom(props._id, data.item);
+          const documentCreateAndUpdateRoom = await userService.create(
+            formData
+          );
           console.log(documentCreateAndUpdateRoom);
           if (documentCreateAndUpdateRoom["status"] == "success") {
             successAd("Thành công");

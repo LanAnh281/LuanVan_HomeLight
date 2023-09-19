@@ -26,12 +26,13 @@ import {
 } from "../../../assets/js/common.alert";
 //component
 import paginationVue from "../../../components/pagination/pagination.vue";
-import Table from "../../../components/table/table.vue";
+import Table from "../../../components/table/tableChecked.table.vue";
 import Select from "../../../components/select/selectdependent.vue";
 import View from "./view.vue";
 import Edit from "./edit.vue";
+import Mail from "./mail.vue";
 export default {
-  components: { paginationVue, Table, Select, View, Edit },
+  components: { paginationVue, Table, Select, View, Edit, Mail },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -56,7 +57,9 @@ export default {
       //modal
       isInfoUserModal: false,
       isEditUserModal: false,
+      isMail: false,
       user: "",
+      checkedList: [],
     });
     let intervalId = null;
     data.totalPage = computed(() =>
@@ -90,6 +93,7 @@ export default {
           return {
             ...item,
             sex: item.sex ? "Nữ" : "Nam",
+            checked: false,
           };
         });
         data.length = data.item.length;
@@ -257,6 +261,20 @@ export default {
       data.user = value;
       console.log(data.user);
     };
+    const sendMail = async () => {
+      try {
+        data.checkedList = data.item.filter((item) => item.checked == true);
+        data.isMail = data.checkedList.length > 0 ? !data.isMail : false;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     onMounted(async () => {
       await checkAccessToken(router); //access token
       intervalId = setInterval(async () => {
@@ -265,11 +283,10 @@ export default {
 
       await refresh();
       try {
-        await axios
-          .get(`https://provinces.open-api.vn/api/?depth=1`, {})
-          .then((response) => {
-            data.city = response;
-          });
+        data.city = await axios.get(
+          `https://provinces.open-api.vn/api/?depth=1`,
+          {}
+        );
       } catch (error) {
         console.log(error);
       }
@@ -287,6 +304,7 @@ export default {
       handleDelete,
       handleEdit,
       handleInfo,
+      sendMail,
     };
   },
 };
@@ -334,47 +352,12 @@ export default {
           </button>
         </div>
         <!-- component  -->
-
-        <div class="mr-1">
-          <button
-            class="btn btn-primary p-0 mr-0"
-            style="width: 103px; height: 36px; margin-top: 6px"
-          >
-            <div class="row justify-content-center">
-              <span
-                class="material-symbols-outlined"
-                style="color: var(--white)"
-              >
-                post_add
-              </span>
-              <span style="color: var(--white)">Quy định</span>
-            </div>
-          </button>
-        </div>
-        <!--  btn edit room -->
-        <div class="">
-          <button
-            class="btn btn-warning"
-            style="width: 118px; height: 36px; margin-top: 6px"
-          >
-            <div class="row justify-content-center plus">
-              <span
-                class="material-symbols-outlined mr-1"
-                style="color: var(--white)"
-              >
-                edit
-              </span>
-              <span style="color: var(--white)">Sửa nhà trọ</span>
-            </div>
-          </button>
-          <!-- component" -->
-        </div>
-        <!-- component  -->
       </div>
     </div>
     <!-- Search -->
     <div class="border-radius my-3">
-      <div class="my-2 mx-3">
+      <!-- Search -->
+      <div class="my-2 mx-3 row justify-content-between">
         <input
           type="search"
           placeholder="tìm kiếm theo tên"
@@ -382,8 +365,48 @@ export default {
           style="background-color: var(--background); width: 30%"
           v-model="data.searchText"
         />
+        <div class="row justify-content-end mr-1">
+          <button
+            class="btn btn-primary p-0 mt-0 mr-1"
+            style="width: 80px; height: 40px"
+          >
+            <div class="row justify-content-center plus">
+              <span
+                class="material-symbols-outlined"
+                style="color: var(--white)"
+              >
+                email
+              </span>
+              <span style="color: var(--white)">xxx</span>
+            </div>
+          </button>
+          <button
+            class="btn btn-warning p-0 mt-0"
+            style="width: 100px; height: 40px"
+            data-toggle="modal"
+            data-target="#mailModal"
+            @click="sendMail"
+          >
+            <div class="row justify-content-center plus">
+              <span
+                class="material-symbols-outlined"
+                style="color: var(--white)"
+              >
+                email
+              </span>
+              <span style="color: var(--white)">Soạn thư</span>
+            </div>
+          </button>
+          <!-- component -->
+          <Mail
+            v-if="data.isMail"
+            :checkedList="data.checkedList"
+            @closeModal="data.isMail = !data.isMail"
+          ></Mail>
+        </div>
       </div>
     </div>
+
     <!-- Table -->
     <Table
       :data="data.setPage"
@@ -392,6 +415,7 @@ export default {
       :titles="['userName', 'sex', 'phone', 'email', 'address']"
       :action="true"
       :actionList="['info', 'edit', 'cancel']"
+      :isInputChecked="true"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
       @info="

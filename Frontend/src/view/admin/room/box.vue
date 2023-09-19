@@ -139,7 +139,6 @@ export default {
     const refresh = async () => {
       data.item = await roomService.getAll();
       data.item = data.item.message;
-      console.log(data.item, props.status["_id"]);
 
       data.item = data.item.filter(
         (item) =>

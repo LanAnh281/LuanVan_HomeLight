@@ -212,7 +212,8 @@ th,
 td {
   border: 1px solid #ccc;
 }
-.delete_forever-icon,
+</style>
+<!-- .delete_forever-icon,
 .edit-icon {
   color: rgb(222, 226, 229);
   width: 10%;
@@ -241,5 +242,4 @@ td {
   text-shadow: 0 0 2px #ffea00;
   box-shadow: 0 0 4px #ffea00;
   transition: 0.5s;
-}
-</style>
+} -->

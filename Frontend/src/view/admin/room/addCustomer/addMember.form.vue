@@ -182,7 +182,7 @@ export default {
       :fields="['Họ tên', 'Địa chỉ', 'SĐT', 'Bắt đầu']"
       :titles="['userName', 'address', 'phone', 'userRoomStart']"
       :action="true"
-      :actionList="['close']"
+      :actionList="['cancel']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
       @close="
@@ -228,18 +228,6 @@ td {
   padding: 10px;
   border: 1px solid #ccc;
   word-wrap: break-word;
-}
-
-.close-icon {
-  background-color: red;
-  color: rgb(242, 244, 245);
-  font-size: 1.6rem !important;
-  margin-right: 3px;
-}
-.close-icon:hover {
-  color: white;
-  background-color: red;
-  box-shadow: 0 0 10px #e1ff00;
 }
 </style>
 <!-- td:nth-child(2) {

@@ -4,16 +4,15 @@ export default {
   components: {},
   props: {
     title: "",
-    data: "",
+    data: { type: Array, default: [] },
     codeProps: { type: Object, default: {} },
   },
   setup(props, { emit }) {
     const change = (e) => {
-      // console.log("choose", e.target.value);
       emit("choose", e.target.value);
     };
     onMounted(() => {
-      // console.log("***code:", props.codeProps);
+      console.log("***code:", props.codeProps);
     });
     return {
       change,
