@@ -75,7 +75,7 @@ export default {
         { _id: false, name: "Chưa thuê" },
         { _id: true, name: "Đã thuê" },
       ],
-      isStatus: { _id: false, name: "Chưa thuê" },
+      isStatus: { _id: true, name: "Đã thuê" },
       fee: [
         {
           _id: false,
@@ -103,6 +103,7 @@ export default {
     const isViewModal = ref(false);
     const isAddCustomerModal = ref(false);
     const handleStatus = (value) => {
+      //value: Object, but component need a boolean
       data.isStatus = {};
       data.isStatus = data.status.filter(
         (item) => item._id == JSON.parse(value)
@@ -244,6 +245,7 @@ export default {
         <Select
           :title="`Trạng thái phòng`"
           :data="data.status"
+          :selected="true"
           @choose="(value) => handleStatus(value)"
         ></Select>
       </div>

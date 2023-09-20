@@ -40,6 +40,7 @@ export default {
     );
 
     const handleDelete = async (value) => {
+      console.log("de");
       console.log(`delete room user`, value, props._id, data.item.Users.length);
       try {
         if (data.item.Users.length == 1) {
@@ -56,7 +57,8 @@ export default {
                 <input type='number' id="water" class='col-9 form-control'></input>
               </div>
             `,
-              showCancelButton: true,
+              // showCancelButton: true,
+
               focusConfirm: false,
               preConfirm: () => {
                 const electric = document.getElementById("electric").value;
@@ -73,16 +75,18 @@ export default {
             return formValues;
           };
           const formValues = await showSweetAlert();
-          //api tính tiền tạo bill mới
 
-          // xóa khách trọ khỏi user_room
-          const documentDelete = await userRoomService.delete(props._id, {
-            UserId: value,
-            RoomId: props._id,
-          });
-          if (documentDelete["status"] == "success") {
-            successAd("Thành công ");
-            await refresh();
+          //api tính tiền tạo bill mới
+          if (formValues) {
+            // xóa khách trọ khỏi user_room
+            const documentDelete = await userRoomService.delete(props._id, {
+              UserId: value,
+              RoomId: props._id,
+            });
+            if (documentDelete["status"] == "success") {
+              successAd("Thành công ");
+              await refresh();
+            }
           }
 
           // cập nhật lại status room và cycle room
@@ -185,8 +189,9 @@ export default {
       :actionList="['cancel']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
-      @close="
+      @cancel="
         (value) => {
+          console.log(value);
           handleDelete(value); //trả phòng
         }
       "

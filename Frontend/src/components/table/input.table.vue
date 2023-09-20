@@ -1,5 +1,7 @@
 <script>
 import { onMounted } from "vue";
+//js
+import { checkNumber } from "../../assets/js/checkInput.common";
 export default {
   components: {},
   props: {
@@ -18,7 +20,7 @@ export default {
     onMounted(() => {
       //   console.log(props.data);
     });
-    return {};
+    return { checkNumber };
   },
 };
 </script>
@@ -45,14 +47,25 @@ export default {
             v-show="title != 'name'"
           >
             <input
-              type="text"
-              class="p-2 w-100"
+              type="number"
+              class="px-1 w-100"
               v-model="value[title]"
               style="
                 background-color: rgb(240, 242, 243);
                 border-color: aliceblue;
               "
             />
+          </th>
+          <th>
+            <span
+              v-for="(value2, index2) in actionList"
+              :key="index2"
+              class="material-symbols-outlined"
+              :class="`${value2}-icon`"
+              @click="$emit(value2, value)"
+            >
+              save
+            </span>
           </th>
         </tr>
       </tbody>
@@ -77,5 +90,8 @@ span {
   color: #f80303;
   text-shadow: 0 0 2px #ff6200;
   transition: 0.5s;
+}
+.save-icon {
+  color: #05c25a;
 }
 </style>

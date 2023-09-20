@@ -39,7 +39,7 @@ export default {
       medias: [],
       uploadFiles: [],
       files: [],
-      flag: true,
+      flag: false,
       boarding: {},
       removeMedia: [],
       mediasCopy: [],
@@ -151,7 +151,7 @@ export default {
       }
       return "";
     };
-    const formFields = ["name", "price", "area", "boardingId", "cycleId"];
+    const formFields = ["boardingId", "name", "price", "area", "cycleId"];
     const save = async () => {
       try {
         for (const key in data.error) {
@@ -162,9 +162,13 @@ export default {
             console.log("key:", key);
           }
         }
+        console.log(data.flag);
         if (!data.flag) {
           const formData = new FormData();
+          console.log("borading Id", data.item["boardingId"]);
+
           _.forEach(formFields, (field) => {
+            console.log("1", data.item[field]);
             formData.append(field, data.item[field]);
           });
           formData.append("countFiles", data.uploadFiles.length);

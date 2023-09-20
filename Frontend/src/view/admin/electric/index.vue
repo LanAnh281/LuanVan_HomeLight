@@ -12,11 +12,11 @@ import { useRoute, useRouter } from "vue-router";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
-import mediaService from "../../../service/media.service";
 import cycleService from "../../../service/cycle.service";
-
+import utilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
+import { warning, deleted } from "../../../assets/js/common.alert";
 //component
 import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/input.table.vue";
@@ -27,7 +27,7 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const data = reactive({
-      item: [{ name: "" }], //list
+      item: [{ name: "", uti: { currentElectric: 0, currentWater: 0 } }], //list
       months: [
         { _id: 1, name: "Tháng 1" },
         { _id: 2, name: "Tháng 2" },
@@ -66,6 +66,21 @@ export default {
           )
         : []
     );
+    const handleMonth = (value) => {
+      console.log(value);
+      if (value == "''") {
+        console.log("chọn tất cả");
+      }
+    };
+    const handleCycle = (value) => {
+      if (value == "''") {
+        console.log("chọn tất cả");
+      }
+    };
+    const getUti = async (id) => {
+      const documentElectric = await utilityReadingsService.get(id);
+      return documentElectric.message;
+    };
     const refresh = async () => {
       try {
         //monthCurrent
@@ -79,17 +94,30 @@ export default {
         const documentBoarding = await boardinghouseService.getAll();
         data.boarding = documentBoarding.message;
         data.boardingActice = data.boarding[0]._id;
-        console.log(data.boardingActice);
+        //utilityreadings
+
         // room
         const documentRoom = await roomService.getAll();
         data.item = documentRoom.message;
+        data.item = data.item.filter((value) => value.status == true);
+        data.item = await Promise.all(
+          data.item.map(async (item) => {
+            return {
+              ...item,
+              currentElectric: 0,
+              currentWater: 0,
+              uti: await getUti(item._id),
+            };
+          })
+        );
         data.item = data.item.map((item) => {
           return {
             ...item,
-            currentElectric: 0,
-            currentWater: 0,
+            previousElectric: item.uti ? item.uti["currentElectric"] : 0,
+            previousWater: item.uti ? item.uti["currentWater"] : 0,
           };
         });
+
         data.item = data.item.filter(
           (item) => item.boardingId == data.boardingActice
         );
@@ -104,17 +132,7 @@ export default {
         }
       }
     };
-    const handleMonth = (value) => {
-      console.log(value);
-      if (value == "''") {
-        console.log("chọn tất cả");
-      }
-    };
-    const handleCycle = (value) => {
-      if (value == "''") {
-        console.log("chọn tất cả");
-      }
-    };
+
     watch(
       () => data.boardingActice,
       async (newValue, oldValue) => {
@@ -135,18 +153,51 @@ export default {
         data.length = data.item.length;
       }
     );
-    const handleCreate = async () => {
-      console.log("create", data.item);
+    const isNumber = (value) => {
+      console.log(typeof value);
+      return typeof value === "number";
+    };
+    const handleCreate = async (value) => {
+      // data.item[0].date = new Date();
+      // data.item[0].roomId = data.item[0]._id;
+      // console.log("create", data.item[0]._id);
+      console.log("create", value);
       try {
-        // start;
-        // end;
-        // previousElectric;
-        // currentElectric;
-        // previousWater;
-        // currentWater;
-        // debt;
-        // total;
-        // roomId;
+        value.date = new Date();
+        value.roomId = value._id;
+        const documentUti = await utilityReadingsService.create(value);
+        console.log(documentUti);
+        // for (let value of data.item) {
+        //   if (value.currentElectric != 0 && value.currentWater != 0) {
+        //     console.log(
+        //       value,
+        //       // isNumber(value.previousElectric),
+        //       isNumber(value.currentElectric)
+        //       // isNumber(value.previousWater),
+        //       // isNumber(value.currentWater)
+        //     );
+        //     if (
+        //       isNumber(value.previousElectric) &&
+        //       isNumber(value.currentElectric) &&
+        //       isNumber(value.previousWater) &&
+        //       isNumber(value.currentWater)
+        //     ) {
+        //       console.log("Tất cả đều là số");
+        //       value.date = new Date();
+        //       value.roomId = value._id;
+        //       const documentUti = await utilityReadingsService.create(value);
+        //     }
+        //   }
+        //   // else {
+        //   //   const isDelete = await deleted(
+        //   //     "Cảnh báo",
+        //   //     "Còn phòng chưa nhập chỉ số điện nước."
+        //   //   );
+        //   //   if (isDelete == true) {
+        //   //     break;
+        //   //   }
+        //   // }
+        // }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -252,8 +303,8 @@ export default {
         <!-- component  -->
       </div>
     </div>
-    <div class="border-radius mb-2 mx-3 row justify-content-between">
-      <div class="boarding">
+    <div class="border-radius my-3 mx-0 row justify-content-start">
+      <div class="col-8 boarding">
         <button
           class="btn px-2 mr-2 board-item"
           v-for="(value, index) in data.boarding"
@@ -268,13 +319,6 @@ export default {
           {{ value.name }}
         </button>
       </div>
-
-      <button
-        class="btn btn-primary my-1 float-right mx-3"
-        @click="handleCreate"
-      >
-        Lưu
-      </button>
     </div>
     <span>
       <span class="text-primary">(*)</span> Trước khi thực hiện lọc cần lưu giá
@@ -299,6 +343,9 @@ export default {
       ]"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
+      :action="true"
+      :actionList="['save']"
+      @save="handleCreate"
     ></Table>
     <Pagination
       :currentPage="data.currentPage"
