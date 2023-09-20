@@ -6,6 +6,7 @@ exports.create = async (req, res, next) => {
     previousWater,
     currentWater,
     date,
+    roomId,
   } = req.body;
   console.log("UtilityReadings Body:", req.body);
   try {
@@ -15,6 +16,7 @@ exports.create = async (req, res, next) => {
       previousWater: previousWater,
       currentWater: currentWater,
       date: date,
+      roomId: roomId,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -33,15 +35,24 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await UtilityReadings.findAll({
+    console.log("??roomId", req.params.id);
+
+    const documents = await UtilityReadings.findAll({
       where: {
-        _id: req.params.id,
+        roomId: req.params.id,
       },
     });
-    res.json({ message: document, status: "success" });
+    let document = JSON.parse(JSON.stringify(documents));
+    document = document.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    console.log(">>>sắp xếp từ lớm đến bé", document);
+    // console.log("!!", document);
+    res.json({ message: document[0], status: "success" });
   } catch (error) {
     console.log(error);
-    res.json({ message: error, status: "faild" });
+    res.json({ message: error, status: "fail" });
   }
 };
 exports.updated = async (req, res, next) => {
