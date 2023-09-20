@@ -147,10 +147,6 @@ const Bill = sequelize.define("Bill", {
   _id: setPrimary,
   start: { type: DataTypes.DATE },
   end: { type: DataTypes.DATE },
-  previousElectric: { type: DataTypes.INTEGER },
-  currentElectric: { type: DataTypes.INTEGER },
-  previousWater: { type: DataTypes.INTEGER },
-  currentWater: { type: DataTypes.INTEGER },
   debt: { type: DataTypes.STRING },
   total: { type: DataTypes.STRING },
 });
@@ -159,7 +155,14 @@ const Receipt = sequelize.define("Receipt", {
   receive: { type: DataTypes.STRING },
   debt: { type: DataTypes.STRING },
 });
-
+const UtilityReadings = sequelize.define("UtilityReadings", {
+  _id: setPrimary,
+  previousElectric: { type: DataTypes.INTEGER },
+  currentElectric: { type: DataTypes.INTEGER },
+  previousWater: { type: DataTypes.INTEGER },
+  currentWater: { type: DataTypes.INTEGER },
+  date: { type: DataTypes.DATE },
+});
 const Media = sequelize.define("Media", {
   _id: setPrimary,
   name: { type: DataTypes.STRING },
@@ -311,7 +314,16 @@ Receipt.belongsTo(Bill, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-
+Rooms.hasMany(UtilityReadings, {
+  foreignKey: "roomId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+UtilityReadings.belongsTo(Rooms, {
+  foreignKey: "roomId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 Rooms.hasMany(Media, {
   foreignKey: "roomId",
   onDelete: "CASCADE",
@@ -398,6 +410,7 @@ Account_Notification.sync();
 ResetPassword.sync();
 
 Rule.sync();
+UtilityReadings.sync();
 module.exports = {
   Roles,
   Positions,
@@ -421,4 +434,5 @@ module.exports = {
   Account_Notification,
   ResetPassword,
   Rule,
+  UtilityReadings,
 };

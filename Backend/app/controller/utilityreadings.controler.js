@@ -1,21 +1,20 @@
-const { Bill } = require("../models/index.model.js");
+const { Bill, UtilityReadings } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const {
-    start,
-    end,
-
-    debt,
-    total,
-    roomId,
+    previousElectric,
+    currentElectric,
+    previousWater,
+    currentWater,
+    date,
   } = req.body;
-  console.log("Bill Body:", req.body);
+  console.log("UtilityReadings Body:", req.body);
   try {
-    const document = await Bill.create({
-      start: start,
-      end: end,
-      debt: debt,
-      total: total,
-      roomId: roomId,
+    const document = await UtilityReadings.create({
+      previousElectric: previousElectric,
+      currentElectric: currentElectric,
+      previousWater: previousWater,
+      currentWater: currentWater,
+      date: date,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -25,7 +24,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Bill.findAll({});
+    const documents = await UtilityReadings.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -34,7 +33,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Bill.findAll({
+    const document = await UtilityReadings.findAll({
       where: {
         _id: req.params.id,
       },
@@ -47,23 +46,21 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const {
-    start,
-    end,
-
-    debt,
-    total,
-    roomId,
+    previousElectric,
+    currentElectric,
+    previousWater,
+    currentWater,
+    date,
   } = req.body;
-  console.log("Bill Body:", req.body);
+  console.log("UtilityReadings Body:", req.body);
   try {
-    const document = await Bill.update(
+    const document = await UtilityReadings.update(
       {
-        start: start,
-        end: end,
-
-        debt: debt,
-        total: total,
-        roomId: roomId,
+        previousElectric: previousElectric,
+        currentElectric: currentElectric,
+        previousWater: previousWater,
+        currentWater: currentWater,
+        date: date,
       },
       {
         where: {
@@ -79,7 +76,7 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await Bill.destroy({
+    const document = await UtilityReadings.destroy({
       where: {
         _id: req.params.id,
       },
@@ -92,7 +89,7 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await Bill.destroy({});
+    const documents = await UtilityReadings.destroy({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

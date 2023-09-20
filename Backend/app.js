@@ -34,7 +34,7 @@ const resetPasswordRouter = require("./app/route/resetPassword.route");
 const uploadRouter = require("./app/route/upload.route");
 const ruleRouter = require("./app/route/rule.route");
 const mediaRouter = require("./app/route/media.route");
-
+const UtilityReadingsRouter = require("./app/route/utilityreadings.route");
 //midderware
 const requestMidderware = require("./app/middeware/request.midderware");
 // initialize
@@ -90,6 +90,7 @@ app.use("/api/resetPassword", resetPasswordRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/rule", ruleRouter);
 app.use("/api/media", mediaRouter);
+app.use("/api/UtilityReadings", UtilityReadingsRouter);
 
 // check errors
 app.use((req, res, next) => {
