@@ -4,8 +4,7 @@ const uploadDir = "./static/images";
 const path = require("path");
 
 exports.create = async (req, res, next) => {
-  const { name, price, area, boardingId, cycleId, countFiles, status } =
-    req.body;
+  const { name, price, area, boardingId, countFiles, status } = req.body;
   try {
     const document = await Rooms.create({
       name: name,
@@ -13,7 +12,6 @@ exports.create = async (req, res, next) => {
       area: area,
       status: status,
       boardingId: boardingId,
-      cycleId: null,
     });
     if (document && countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {
@@ -59,7 +57,9 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Rooms.findAll({});
+    const rooms = await Rooms.findAll({});
+    let documents = JSON.parse(JSON.stringify(rooms));
+    documents = documents.sort((a, b) => a.name - b.name);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -81,15 +81,9 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { name, price, area, boardingId, status, countFiles } = req.body;
-  // let status = req.body.status;
-  // status = !req.body.status ? false : true;
-  // console.log(req.body.status == true);
-  const cycleId = req.body.cycleId == "null" ? null : req.body.cycleId;
 
   let removeMedia = !req.body.removeMedia ? 0 : req.body.removeMedia;
   if (removeMedia.length > 0) removeMedia.pop();
-
-  // console.log(">>>>Update Rooms", countFiles, removeMedia.length, removeMedia);
   try {
     const document = await Rooms.update(
       {
@@ -98,7 +92,6 @@ exports.updated = async (req, res, next) => {
         area: area,
         status: status,
         boardingId: boardingId,
-        cycleId: cycleId,
       },
       {
         where: {
@@ -109,9 +102,7 @@ exports.updated = async (req, res, next) => {
     if (document && removeMedia.length > 0) {
       for (let media of removeMedia) {
         let filePath = `${uploadDir}/${media}`;
-        console.log(">>>>filePath", media, filePath);
         if (fs.existsSync(filePath)) {
-          console.log(">>>>filePath", media);
           fs.unlinkSync(filePath); //delete file
           let destroyMedia = await Media.destroy({
             where: {
@@ -143,7 +134,6 @@ exports.updated = async (req, res, next) => {
         newestFiles = files.slice(0, countFiles);
         try {
           for (let index = 0; index < countFiles; index++) {
-            console.log(">>>index:", index);
             let media = await Media.create({
               name: newestFiles[index],
               roomId: req.params.id,
@@ -166,7 +156,7 @@ exports.updated = async (req, res, next) => {
 };
 
 exports.updatedStatusRoom = async (req, res, next) => {
-  const { name, price, area, boardingId, status, cycleId } = req.body;
+  const { name, price, area, boardingId, status } = req.body;
 
   try {
     const document = await Rooms.update(
@@ -176,7 +166,6 @@ exports.updatedStatusRoom = async (req, res, next) => {
         area: area,
         status: status,
         boardingId: boardingId,
-        cycleId: cycleId,
       },
       {
         where: {

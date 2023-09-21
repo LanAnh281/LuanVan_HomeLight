@@ -26,9 +26,14 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findAllUser = async (req, res, next) => {
   try {
-    const documents = await BorardingHouse.findAll({
+    const boardings = await BorardingHouse.findAll({
       where: { userId: req.user.userId },
     });
+    let documents = JSON.parse(JSON.stringify(boardings));
+    documents = documents.sort(
+      (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
+    );
+    console.log(documents);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -64,6 +69,7 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
+    console.log(">>>doc:", document);
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);

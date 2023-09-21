@@ -23,7 +23,6 @@ router
     authorization.authentication,
     authorization.authorization("chỉnh sửa phòng trọ"),
     upload.uploadStatic.array("files"),
-
     room.updated,
   ])
   .delete([

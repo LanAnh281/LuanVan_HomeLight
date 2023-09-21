@@ -125,7 +125,6 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
     birthday,
     securityDeposit,
     status,
-    cycleId,
     isUser,
     file,
   } = req.body;
@@ -172,7 +171,6 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
         birthday: birthday,
         securityDeposit: securityDeposit,
         status: status,
-        cycleId: cycleId,
         isUser: isUser,
         roomId: req.params.id,
         password: password,

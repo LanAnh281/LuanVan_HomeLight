@@ -4,6 +4,7 @@ const secret = "asdfghjkl!@#";
 
 // Middleware xác thực
 exports.authentication = (req, res, next) => {
+  console.log("authe");
   const token = req.headers.authorization;
   console.log("token:", token);
   try {

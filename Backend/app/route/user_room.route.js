@@ -6,12 +6,12 @@ const authorization = require("../middeware/authorization.middeware");
 router.route("/").post(userRoom.create).get(userRoom.findAll);
 router
   .route("/:id")
-
   .get([
     authorization.authentication,
     authorization.authorization("xem danh sách khách trọ"),
     userRoom.findOne,
   ]);
+
 router
   .route("/delete/:id")
   .post(
@@ -25,5 +25,10 @@ router
     authorization.authentication,
     authorization.authorization("xem danh sách khách trọ"),
     userRoom.findAllRoom
-  );
+  )
+  .delete([
+    authorization.authentication,
+    authorization.authorization("xem danh sách khách trọ"),
+    userRoom.deleteAll,
+  ]);
 module.exports = router;

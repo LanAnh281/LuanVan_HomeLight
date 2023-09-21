@@ -107,11 +107,7 @@ const Users = sequelize.define("Users", {
   securityDeposit: { type: DataTypes.STRING },
   isUser: { type: DataTypes.BOOLEAN }, // host or not host
 });
-const Cycle = sequelize.define("Cycle", {
-  _id: setPrimary,
-  name: { type: DataTypes.STRING },
-  content: { type: DataTypes.TEXT },
-});
+
 const BorardingHouse = sequelize.define("BoardingHouse", {
   _id: setPrimary,
   name: {
@@ -233,16 +229,7 @@ Users.hasMany(BorardingHouse, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-Cycle.hasMany(Rooms, {
-  foreignKey: "cycleId",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Rooms.belongsTo(Cycle, {
-  foreignKey: "cycleId",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
+
 BorardingHouse.belongsTo(Users, {
   foreignKey: "userId",
   onDelete: "CASCADE",
@@ -391,7 +378,7 @@ Positions.sync();
 Roles_Positions.sync();
 Accounts.sync();
 Users.sync();
-Cycle.sync();
+
 BorardingHouse.sync();
 Rooms.sync();
 Spending.sync();
@@ -423,7 +410,7 @@ module.exports = {
   Bill,
   User_Room,
   Receipt,
-  Cycle,
+
   Media,
   Equipment,
   Count,
