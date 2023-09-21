@@ -74,7 +74,6 @@ export default {
             area: documentUserRoom.message.area,
             status: status,
             boardingId: documentUserRoom.message.boardingId,
-            cycleId: "null",
           });
         } else {
           const documentRoom = await roomService.update(props._id, {
@@ -83,7 +82,6 @@ export default {
             area: documentUserRoom.message.area,
             status: status,
             boardingId: documentUserRoom.message.boardingId,
-            cycleId: documentUserRoom.message.cycleId,
           });
         }
       } catch (error) {

@@ -24,7 +24,7 @@ class userRoomService {
     return (await this.api.post(`/delete/${id}`, data)).data;
   }
   async deleteAll(id) {
-    return (await this.api.delete(`/${id}`)).data;
+    return (await this.api.delete(`/room/${id}`)).data;
   }
 }
 

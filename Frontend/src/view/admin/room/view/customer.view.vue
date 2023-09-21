@@ -6,7 +6,7 @@ import userRoomService from "../../../../service/user_room.service";
 import { formatDateTime } from "../../../../assets/js/format.common";
 //component
 import paginationVue from "../../../../components/pagination/pagination.vue";
-import Table from "../../../../components/table/table.vue";
+import Table from "../../../../components/table/tableChecked.table.vue";
 export default {
   components: { paginationVue, Table },
   props: { _id: { type: String, default: "" } },
@@ -53,12 +53,14 @@ export default {
 <template>
   <div>
     <Table
+      class="table"
       :data="data.setPage"
       :fields="['Họ tên', 'Địa chỉ', 'SĐT', 'Bắt đầu']"
       :titles="['userName', 'address', 'phone', 'userRoomStart']"
       :action="false"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
+      :isInputChecked="false"
     ></Table>
     <paginationVue
       :currentPage="data.currentPage"

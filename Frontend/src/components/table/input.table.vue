@@ -1,5 +1,5 @@
 <script>
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 //js
 import { checkNumber } from "../../assets/js/checkInput.common";
 export default {
@@ -17,8 +17,14 @@ export default {
   },
 
   setup(props, emit) {
+    watch(
+      () => props.data,
+      (newValue, oldValue) => {
+        console.log("new props data:", newValue);
+      }
+    );
     onMounted(() => {
-      //   console.log(props.data);
+      console.log("props:", props.data);
     });
     return { checkNumber };
   },
@@ -26,6 +32,7 @@ export default {
 </script>
 <template>
   <div>
+    {{ data.length != 0 }} {{ data.length }}
     <table class="table">
       <thead class="thead-dark">
         <tr>

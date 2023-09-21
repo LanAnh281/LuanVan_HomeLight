@@ -175,13 +175,18 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white)">Thêm quyền</span>
+            <span style="color: var(--white)">Quyền</span>
           </div>
         </button>
 
         <button
-          class="col-2 mr-3 btn btn-primary"
-          style="max-width: 15%; height: 36px; margin-top: 6px"
+          class="col-2 mr-3 btn"
+          style="
+            max-width: 15%;
+            height: 36px;
+            margin-top: 6px;
+            background-color: var(--green);
+          "
           data-toggle="modal"
           data-target="#accountModal"
           @click="component.accountModal = !component.accountModal"

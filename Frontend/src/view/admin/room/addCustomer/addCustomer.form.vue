@@ -8,7 +8,7 @@ import Select from "../../../../components/select/selectdependent.vue";
 import SelectNormal from "../../../../components/select/select.vue";
 //service
 import userService from "../../../../service/user.service";
-import cycleService from "../../../../service/cycle.service";
+import roomService from "../../../../service/room.service";
 //js
 import { city, district, ward } from "../../../../assets/js/dependent.common";
 import { load, successAd, warning } from "../../../../assets/js/common.alert";
@@ -48,7 +48,6 @@ export default {
         files: [],
         //room
         status: true,
-        cycleId: "",
       },
       error: {
         userName: "",
@@ -71,7 +70,6 @@ export default {
       city: {},
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
-      cycle: [],
       selected: "",
       flag: true,
     });
@@ -135,10 +133,6 @@ export default {
           console.log("Errors:", error.message);
         }
       }
-    };
-    const changeCycle = async (value) => {
-      data.item.cycleId = value;
-      data.selected = value;
     };
 
     const validate = (file) => {
@@ -300,6 +294,7 @@ export default {
 
     const save = async () => {
       data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+      console.log(">>>>save dataItem:", data.item);
       try {
         if (data.uploadFiles.length != 2) {
           data.error["image"] = "Chưa tải ảnh cccd.";
@@ -307,16 +302,17 @@ export default {
           console.log("key:image");
         }
         for (let key in data.error) {
-          if (key == "sex") continue;
-          if (data.item[key] == "") {
-            data.error[key] = "Chưa nhập thông tin";
-            data.flag = true;
-            console.log("key:", key, data.item[key]);
-          }
+          // if (key == "sex") continue;
+          // if (data.item[key] == "") {
+          //   data.error[key] = "Chưa nhập thông tin";
+          //   data.flag = true;
+          //   console.log("key:", key, data.item[key]);
+          // }
         }
         if (!data.flag) {
           const formData = new FormData();
           for (let key in data.item) {
+            console.log(">>>>key:", key, data.item[key]);
             formData.append(key, data.item[key]);
           }
           _.forEach(data.uploadFiles, (file) => {
@@ -328,9 +324,8 @@ export default {
           setTimeout(() => {
             load();
           }, 0);
-          const documentCreateAndUpdateRoom = await userService.create(
-            formData
-          );
+          const documentCreateAndUpdateRoom =
+            await userService.createAndUpdateRoom(props._id, formData);
           console.log(documentCreateAndUpdateRoom);
           if (documentCreateAndUpdateRoom["status"] == "success") {
             successAd("Thành công");
@@ -387,8 +382,6 @@ export default {
         $("#addCustomerModal").on("show.bs.modal", openModal); //lắng nghe mở modal
         $("#addCustomerModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
 
-        const documentCycle = await cycleService.getAll();
-        data.cycle = documentCycle.message;
         data.city = await axios.get(
           `https://provinces.open-api.vn/api/?depth=1`
         );
@@ -407,7 +400,6 @@ export default {
       change,
       changeDistrict,
       changeWard,
-      changeCycle,
       save,
       handleFileUpload,
       // check input
@@ -571,20 +563,7 @@ export default {
           </div>
         </div>
       </div>
-      <!-- kỳ thanh toán -->
-      <div class="form-group row">
-        <label for="inputrules" class="col-sm-4 col-form-label p-0"
-          >Thanh toán:</label
-        >
-        <div class="col-sm-8 p-0">
-          <SelectNormal
-            :title="`Chọn kỳ thanh toán`"
-            :data="data.cycle"
-            :selected="data.selected"
-            @choose="(value) => changeCycle(value)"
-          ></SelectNormal>
-        </div>
-      </div>
+
       <!-- tiền cọc -->
       <div class="form-group row">
         <label for="inputrules" class="col-sm-4 col-form-label p-0"
@@ -603,13 +582,35 @@ export default {
           />
           <div class="input-group-append col-sm-3 p-0 m-0">
             <span
-              class="input-group-text m-0 p-2"
+              class="input-group-text m-0 px-2 pt-1"
               style="
                 border-top-left-radius: 0px;
                 border-bottom-left-radius: 0px;
               "
               >VND</span
             >
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="inputStart" class="col-sm-4 m-0 px-0 col-form-label"
+          >Bắt đầu:</label
+        >
+        <div class="col-sm-8 p-0 m-0">
+          <input
+            type="date"
+            class="form-control"
+            id="inputStart"
+            @input="
+              () => {
+                data.flag = false;
+                data.error.start = '';
+              }
+            "
+            v-model="data.item.start"
+          />
+          <div v-if="data.error.start" class="invalid-error">
+            {{ data.error.start }}
           </div>
         </div>
       </div>
@@ -761,28 +762,7 @@ export default {
           />
         </div>
       </div>
-      <div class="form-group row">
-        <label for="inputStart" class="col-sm-4 m-0 px-0 col-form-label"
-          >Bắt đầu:</label
-        >
-        <div class="col-sm-8 p-0 m-0">
-          <input
-            type="date"
-            class="form-control"
-            id="inputStart"
-            @input="
-              () => {
-                data.flag = false;
-                data.error.start = '';
-              }
-            "
-            v-model="data.item.start"
-          />
-          <div v-if="data.error.start" class="invalid-error">
-            {{ data.error.start }}
-          </div>
-        </div>
-      </div>
+
       <!-- Thanh toán -->
     </form>
     <div class="form-group row col-12 p-0 m-0">

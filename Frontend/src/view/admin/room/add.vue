@@ -24,7 +24,6 @@ export default {
         price: "",
         area: "",
         boardingId: "",
-        cycleId: null,
         status: false,
         countFiles: 0,
       },
@@ -58,7 +57,6 @@ export default {
         price: "",
         area: "",
         boardingId: "",
-        // cycleId: null,
         countFiles: 0,
       };
       data.error = {
@@ -237,7 +235,6 @@ export default {
       "price",
       "area",
       "boardingId",
-      "cycleId",
       "status",
       "countFiles",
     ];

@@ -29,7 +29,7 @@ export default {
       item: [],
       totalPage: 0,
       length: 0,
-      sizePage: 1,
+      sizePage: 2,
       setPage: [],
     });
     data.totalPage = computed(() =>
@@ -60,7 +60,7 @@ export default {
                 <input type='number' id="water" class='col-9 form-control'></input>
               </div>
             `,
-            showCancelButton: true,
+
             focusConfirm: false,
             preConfirm: () => {
               const electric = document.getElementById("electric").value;
@@ -81,6 +81,7 @@ export default {
         const formValues = await showSweetAlert();
 
         // trả phòng
+        console.log(value);
         if (formValues) {
           // xóa tất cả khách trọ ra khỏi phòng
           const document = await userRoomService.deleteAll(value);
@@ -97,16 +98,21 @@ export default {
               area: documentUserRoom.message.area,
               status: status,
               boardingId: documentUserRoom.message.boardingId,
-              cycleId: "null",
             });
           }
           // api  tính tiền
         }
       } catch (error) {
-        console.error("Error:", error);
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
       }
     };
-    const handleDelete = async () => {
+    const handleDelete = async (value) => {
       try {
         const isDeleted = await deleted(
           "Xóa",

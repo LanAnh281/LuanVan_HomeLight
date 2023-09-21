@@ -100,64 +100,7 @@ export default {
         }
       }
     };
-    const refresh = () => {
-      data.item = {
-        name: "",
-        city: "",
-        district: "",
-        ward: "",
-        number: "",
-        address: "",
-        rules: "",
-      };
-      data.error = { name: "", number: "" };
-      data.flag = true;
-    };
-    const save = async () => {
-      console.log("save");
-      // const keys = ["name", "number"];
-      try {
-        // for (const key of keys) {
-        //   console.log("key", data.item[key]);
-        //   if (data.item[key] == "") {
-        //     data.error[key] = "Chưa nhập thông tin.";
-        //     data.flag = true;
-        //     console.log("1");
-        //   }
-        // }
-        // console.log("data.flag:", data.flag);
-        // if (!data.flag) {
-        data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-        console.log(">>>data.item:", data.item);
-        const document = await boardinghouseService.update(
-          props.boardingId,
-          data.item
-        );
-        console.log("doc", document);
-        if (document["status"] == "success") {
-          successAd(`Đã cập nhật nhà trọ `);
-          refresh();
-          emit("add");
-        } else {
-          console.log("Thất bại");
-          warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
-        }
-        // }
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
-
-    onBeforeMount(async () => {
-      $("#editBoardingModal").on("show.bs.modal", openModal); //lắng nghe mở modal
-      $("#editBoardingModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
-
+    const refresh = async () => {
       try {
         const documentBoarding = await boardinghouseService.get(
           props.boardingId
@@ -177,8 +120,7 @@ export default {
           (item) => item.name == address[3]
         );
         data.levels.city = data.levels.city[0];
-        console.log(">>>city:", data.levels.city);
-        // //district
+        //district
         const document = await city(data.levels.city.code);
         data.levels.district = document.district;
         data.district = document.district;
@@ -186,7 +128,6 @@ export default {
           (item) => item.name == address[2]
         );
         data.levels.district = data.levels.district[0];
-        console.log(">>>district:", data.levels.district);
 
         //ward
         const ward = await axios.get(
@@ -194,13 +135,11 @@ export default {
           {}
         );
         data.levels.ward = ward;
-        console.log(">>>ward:", ward.data.wards.length, address[1]);
         data.ward = ward;
         data.levels.ward = ward.data.wards.filter(
           (item) => item.name == address[1]
         );
         data.levels.ward = data.levels.ward[0];
-        console.log("ward:", data.levels.ward);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -210,6 +149,38 @@ export default {
           console.log("Errors:", error.message);
         }
       }
+    };
+    const save = async () => {
+      try {
+        data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+        const document = await boardinghouseService.update(props.boardingId, {
+          boardingId: data.item.boardingId,
+          address: data.item.address,
+          name: data.item.name,
+        });
+        if (document["status"] == "success") {
+          successAd(`Đã cập nhật nhà trọ `);
+          await refresh();
+          emit("add");
+        } else {
+          console.log("Thất bại");
+          warning("Thất bại", "Bạn không có quyền chỉnh sửa nhà trọ.");
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+
+    onBeforeMount(async () => {
+      await refresh();
+      $("#editBoardingModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#editBoardingModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
 
     return {

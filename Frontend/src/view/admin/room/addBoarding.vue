@@ -116,11 +116,12 @@ export default {
             console.log("1");
           }
         }
-        console.log("data.flag:", data.flag);
         if (!data.flag) {
           data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-          const document = await boardinghouseService.create(data.item);
-          console.log("doc", document);
+          const document = await boardinghouseService.create({
+            address: data.item.address,
+            name: data.item.name,
+          });
           if (document["status"] == "success") {
             successAd(`Đã thêm nhà trọ ${document.message["name"]}`);
             refresh();

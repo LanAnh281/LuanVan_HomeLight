@@ -86,7 +86,7 @@ export default {
       currentPage: 1,
       totalPage: 0,
       length: 0,
-      sizePage: 1,
+      sizePage: 2,
     });
     const component = reactive({
       isBoardingModal: false,
@@ -117,6 +117,7 @@ export default {
     const refreshBoarding = async () => {
       const document = await boardinghouseService.getAllUser();
       data.boarding = document.message;
+      data.isActiveBoarding = data.boarding[0]._id;
     };
     const refreshRoom = async () => {
       try {
@@ -241,7 +242,7 @@ export default {
   <div class="body m-0">
     <!-- Status  and fee-->
     <div class="border-radius my-3 row m-0 justify-content-start">
-      <div class="input-group col-2 align-items-center">
+      <div class="input-group col-2 align-items-center pt-0 pr-0 mr-1">
         <Select
           :title="`Trạng thái phòng`"
           :data="data.status"
@@ -249,15 +250,44 @@ export default {
           @choose="(value) => handleStatus(value)"
         ></Select>
       </div>
-      <div class="input-group col-2 align-items-center">
+      <div class="input-group col-2 align-items-center p-0">
         <Select
           :title="`Tiền phòng`"
           :data="data.fee"
           @choose="(value) => handlefee(value)"
         ></Select>
       </div>
-      <!-- btn add boarding house -->
-      <div class="col-8 mr-1 p-0 row justify-content-end">
+    </div>
+    <!-- Boarding house items -->
+    <div class="border-radius my-3 mx-0 row justify-content-start">
+      <div class="col-6 boarding">
+        <button
+          class="btn px-2 mr-2 board-item"
+          v-for="(value, index) in data.boarding"
+          :key="index"
+          :class="value._id == data.isActiveBoarding ? 'isActiveBoarding' : ''"
+          @click="
+            async () => {
+              data.isActiveBoarding = value._id;
+              const documentRoom = await roomService.getAll();
+              data.items = documentRoom.message;
+              data.items = data.items.filter(
+                (item) => item.boardingId == data.isActiveBoarding
+              );
+            }
+          "
+        >
+          {{ value.name }}
+          <span
+            class="delete-icon mr-1"
+            @click.stop="handleDeleteClick(value._id, value.name)"
+          >
+            x
+            <!--click.stop not parent element -->
+          </span>
+        </button>
+      </div>
+      <div class="col-6 mr-1 p-0 row justify-content-end">
         <div class="mr-1">
           <button
             class="btn btn-primary p-0"
@@ -287,30 +317,9 @@ export default {
           "
           @closeModal="isBoardingModal = !isBoardingModal"
         ></AddBoardingForm>
-        <!--btn rules -->
-        <div
-          class="mr-1"
-          @click="component.isRuleModal = !component.isRuleModal"
-        >
-          <button
-            class="btn btn-primary p-0 mr-0"
-            style="width: 103px; height: 36px; margin-top: 6px"
-            data-toggle="modal"
-            data-target="#ruleModal"
-          >
-            <div class="row justify-content-center">
-              <span
-                class="material-symbols-outlined"
-                style="color: var(--white)"
-              >
-                post_add
-              </span>
-              <span style="color: var(--white)">Quy định</span>
-            </div>
-          </button>
-        </div>
-        <!--  btn edit room -->
-        <div class="">
+
+        <!--  btn edit boarding -->
+        <div class="mr-1">
           <button
             class="btn btn-warning"
             style="width: 118px; height: 36px; margin-top: 6px"
@@ -339,83 +348,40 @@ export default {
             @closeModal="isEditBoardingModal = !isEditBoardingModal"
           ></EditBoardingForm>
         </div>
-        <!-- component add rules -->
-        <Rule
-          v-if="component.isRuleModal"
-          @closeModal="component.isRuleModal = !component.isRuleModal"
-        ></Rule>
-      </div>
-    </div>
-    <!-- Boarding house items -->
-    <div class="border-radius my-3 mx-0 row justify-content-end">
-      <div class="col-8 boarding">
-        <button
-          class="btn px-2 mr-2 board-item"
-          v-for="(value, index) in data.boarding"
-          :key="index"
-          :class="value._id == data.isActiveBoarding ? 'isActiveBoarding' : ''"
-          @click="
-            async () => {
-              data.isActiveBoarding = value._id;
-              const documentRoom = await roomService.getAll();
-              data.items = documentRoom.message;
-              data.items = data.items.filter(
-                (item) => item.boardingId == data.isActiveBoarding
-              );
-            }
-          "
-        >
-          {{ value.name }}
-          <span
-            class="delete-icon mr-1"
-            @click.stop="handleDeleteClick(value._id, value.name)"
+        <div>
+          <button
+            class="btn p-0"
+            style="
+              width: 120px;
+              height: 36px;
+              margin-top: 6px;
+              background-color: var(--green);
+            "
+            data-toggle="modal"
+            data-target="#roomModal"
+            @click="isRoomModal = !isRoomModal"
           >
-            x
-            <!--click.stop not parent element -->
-          </span>
-        </button>
-      </div>
-      <!-- btn add room -->
-      <div class="col-4">
-        <button
-          class="btn btn-primary p-0 mr-1"
-          style="width: 34%; height: 36px; margin-top: 6px"
-          data-toggle="modal"
-          data-target="#roomModal"
-          @click="isRoomModal = !isRoomModal"
-        >
-          <div class="row justify-content-center plus">
-            <span class="material-symbols-outlined" style="color: var(--white)">
-              holiday_village
-            </span>
-            <span style="color: var(--white)">Thêm phòng</span>
-          </div>
-        </button>
-        <!-- compomnent add room -->
-        <roomForm
-          v-if="isRoomModal"
-          :boarding="data.boarding"
-          @add="handleEdit"
-          @closeModal="isRoomModal = !isRoomModal"
-        ></roomForm>
-
-        <!-- btn edit room -->
-        <button
-          class="btn btn-warning p-0 mr-1"
-          style="width: 34%; height: 36px; margin-top: 6px"
-        >
-          <div class="row justify-content-center plus">
-            <span class="material-symbols-outlined" style="color: var(--white)">
-              construction
-            </span>
-            <span style="color: var(--white)">Sửa phòng</span>
-          </div>
-        </button>
+            <div class="row justify-content-center plus">
+              <span
+                class="material-symbols-outlined"
+                style="color: var(--white)"
+              >
+                holiday_village
+              </span>
+              <span style="color: var(--white)">Thêm phòng</span>
+            </div>
+            <!-- compomnent add room -->
+            <roomForm
+              v-if="isRoomModal"
+              :boarding="data.boarding"
+              @add="handleEdit"
+              @closeModal="isRoomModal = !isRoomModal"
+            ></roomForm>
+          </button>
+        </div>
       </div>
     </div>
-    <!-- componment -->
-    <!-- Box rooms have icon click delete and edit -->
-    <!-- :data="data.items" -->
+    <!-- componment box -->
     <Box
       v-if="data.isActiveBoarding"
       class="ml-3 mb-3"

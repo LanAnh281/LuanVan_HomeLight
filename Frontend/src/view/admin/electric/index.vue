@@ -3,6 +3,7 @@ import {
   ref,
   reactive,
   onMounted,
+  onBeforeMount,
   onBeforeUnmount,
   computed,
   watch,
@@ -12,7 +13,6 @@ import { useRoute, useRouter } from "vue-router";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
-import cycleService from "../../../service/cycle.service";
 import utilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
@@ -27,69 +27,99 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const data = reactive({
-      item: [{ name: "", uti: { currentElectric: 0, currentWater: 0 } }], //list
-      months: [
-        { _id: 1, name: "Tháng 1" },
-        { _id: 2, name: "Tháng 2" },
-        { _id: 3, name: "Tháng 3" },
-        { _id: 4, name: "Tháng 4" },
-        { _id: 5, name: "Tháng 5" },
-        { _id: 6, name: "Tháng 6" },
-        { _id: 7, name: "Tháng 7" },
-        { _id: 8, name: "Tháng 8" },
-        { _id: 9, name: "Tháng 9" },
-        { _id: 10, name: "Tháng 10" },
-        { _id: 11, name: "Tháng 11" },
-        { _id: 12, name: "Tháng 12" },
-      ],
-      monthCurrent: "",
-      cycles: [{ name: "" }],
-      boarding: [{}],
-      boardingActice: "",
-      cycle: "",
-      totalPage: 1,
+      item: [], //list
+      totalPage: 0,
       currentPage: 1,
       sizePage: 2,
       setPage: [],
       length: 0,
+      date: "",
+      current: { month: "", year: "" },
+      boarding: [{}],
+      boardingActice: "",
+      tableInput: false,
     });
     let intervalId = null;
     data.totalPage = computed(() =>
-      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
+      data.item.length > 0 ? Math.ceil(data.item.length / data.sizePage) : 0
     );
 
-    data.setPage = computed(() =>
-      data.item
+    data.setPage = computed(() => {
+      console.log("1", data.item.length, data.item.length > 0);
+      return data.item.length > 0
         ? data.item.slice(
             (data.currentPage - 1) * data.sizePage,
             data.currentPage * data.sizePage
           )
-        : []
-    );
-    const handleMonth = (value) => {
-      console.log(value);
-      if (value == "''") {
-        console.log("chọn tất cả");
-      }
+        : [];
+    });
+
+    const handleDate = async (value) => {
+      data.date = value.target.value;
+      data.date = new Date(value.target.value);
+      data.current = {
+        month: data.date.getMonth() + 1,
+        year: data.date.getFullYear(),
+      };
+      //1. chọn tháng hiện tại, thì các căn trạng thái đang thuê chưa ghi chỉ số
+      // => table input
+      // if(current.month== month && current.year=year)=> table input
+      // 2. chọn tháng và năm quá khứ thì table thường
+      // if(current.month!=month && current.year!=year)=> table
+      //1.8.2023
+      // table input : phòng, 4 cs, save => dựa vào room xác định phòng đang thuê=> ghi chỉ số
+      // table: phòng, 4 cs => dựa vào ulti => xác định phòng=> hiện chỉ số
+      // const current = new Date();
+      // // thời gian hiện tại== thời gian đã chọn
+      // if (
+      //   current.getMonth() + 1 == data.current.month &&
+      //   current.getFullYear() == data.current.year
+      // ) {
+      //   const documentRoom = await roomService.getAll();
+      //   data.item = documentRoom.message;
+      //   data.item = data.item.filter((value) => value.status == true);
+      //   data.item = await Promise.all(
+      //     data.item.map(async (item) => {
+      //       return {
+      //         ...item,
+
+      //         uti: await getUti(item._id),
+      //       };
+      //     })
+      //   );
+      //   data.item = data.item.map((item) => {
+      //     return {
+      //       ...item,
+      //       currentElectric: item.uti ? item.uti["currentElectric"] : 0,
+      //       currentWater: item.uti ? item.uti["currentWater"] : 0,
+      //       previousElectric: item.uti ? item.uti["currentElectric"] : 0,
+      //       previousWater: item.uti ? item.uti["currentWater"] : 0,
+      //     };
+      //   });
+
+      //   data.item = data.item.filter(
+      //     (item) => item.boardingId == data.boardingActice
+      //   );
+      //   data.length = data.item.length;
+      // }
+      // const documentUti = await utilityReadingsService.getAll();
+      // data.item = documentUti.message;
+      // data.item = data.item.filter((item) => {
+      //   let date = new Date(item.date);
+      //   return (
+      //     date.getMonth() + 1 == data.current.month &&
+      //     date.getFullYear() == data.current.year
+      //   );
+      // });
+      // console.log("item:", data.item);
     };
-    const handleCycle = (value) => {
-      if (value == "''") {
-        console.log("chọn tất cả");
-      }
-    };
+
     const getUti = async (id) => {
       const documentElectric = await utilityReadingsService.get(id);
       return documentElectric.message;
     };
     const refresh = async () => {
       try {
-        //monthCurrent
-        data.monthCurrent = new Date();
-        data.monthCurrent = data.monthCurrent.getMonth() + 1;
-        const documentCycle = await cycleService.getAll();
-        //cycles
-        data.cycles = documentCycle.message;
-        data.cycle = data.cycles[0]._id;
         //boarding
         const documentBoarding = await boardinghouseService.getAll();
         data.boarding = documentBoarding.message;
@@ -98,29 +128,57 @@ export default {
 
         // room
         const documentRoom = await roomService.getAll();
-        data.item = documentRoom.message;
-        data.item = data.item.filter((value) => value.status == true);
-        data.item = await Promise.all(
-          data.item.map(async (item) => {
-            return {
-              ...item,
-              currentElectric: 0,
-              currentWater: 0,
-              uti: await getUti(item._id),
-            };
-          })
-        );
-        data.item = data.item.map((item) => {
-          return {
-            ...item,
-            previousElectric: item.uti ? item.uti["currentElectric"] : 0,
-            previousWater: item.uti ? item.uti["currentWater"] : 0,
-          };
-        });
+        // data.item = documentRoom.message;
+        // console.log("refresh", data.item.length);
+        console.log("refresh", documentRoom.length);
 
-        data.item = data.item.filter(
-          (item) => item.boardingId == data.boardingActice
-        );
+        data.item = documentRoom.message.filter((item) => {
+          console.log(
+            ">>>>",
+            item.boardingId === data.boardingActice && item.status === true
+          );
+          return (
+            item.boardingId === data.boardingActice && item.status === true
+          );
+        });
+        console.log(data.item.length);
+        // if (data.item.length > 0) {
+        //   console.log(">0");
+        //   data.item = await Promise.all(
+        //     data.item.map(async (item) => {
+        //       return {
+        //         ...item,
+        //         currentElectric: 0,
+        //         currentWater: 0,
+        //         uti: await getUti(item._id),
+        //       };
+        //     })
+        //   );
+        //   data.item = data.item.map((item) => {
+        //     return {
+        //       ...item,
+        //       previousElectric: item.uti ? item.uti["currentElectric"] : 0,
+        //       previousWater: item.uti ? item.uti["currentWater"] : 0,
+        //     };
+        //   });
+        //   data.length = data.item.length;
+        // } else {
+        //   console.log(
+        //     "<0",
+        //     (data.currentPage - 1) * data.sizePage,
+        //     data.currentPage * data.sizePage
+        //   );
+        //   const a = data.item.slice(
+        //     (data.currentPage - 1) * data.sizePage,
+        //     data.currentPage * data.sizePage
+        //   );
+        //   console.log(a);
+        //   // data.item = [];
+        //   // console.log(data.setPage);
+        //   // data.totalPage=0;
+        //   // data.length = data.item.length;
+        // }
+        // data.tableInput = true;
         data.length = data.item.length;
       } catch (error) {
         if (error.response) {
@@ -157,10 +215,15 @@ export default {
       console.log(typeof value);
       return typeof value === "number";
     };
+    const isCurrentDate = (date) => {
+      //date: item.date
+      date = new Date(date);
+      return (
+        date.getMonth() + 1 == data.current.month &&
+        data.getFullYear() == data.current.year
+      );
+    };
     const handleCreate = async (value) => {
-      // data.item[0].date = new Date();
-      // data.item[0].roomId = data.item[0]._id;
-      // console.log("create", data.item[0]._id);
       console.log("create", value);
       try {
         value.date = new Date();
@@ -220,8 +283,7 @@ export default {
     });
     return {
       data,
-      handleMonth,
-      handleCycle,
+      handleDate,
       handleCreate,
     };
   },
@@ -229,23 +291,18 @@ export default {
 </script>
 <template>
   <div class="body m-0">
+    {{ data.setPage }}
+
     <div class="border-radius my-3 row m-0 p-0 justify-content-start">
-      <div class="input-group col-2 align-items-center m-0 mr-1 pr-0">
-        <Select
-          :title="`Tất cả`"
-          :data="data.months"
-          :selected="data.monthCurrent"
-          @choose="(value) => handleMonth(value)"
-        ></Select>
+      <div class="mt-1 mb-1 ml-3 mr-1">
+        <input
+          type="date"
+          @input="handleDate"
+          class="border rounded py-1 text-center"
+          style="height: 39px"
+        />
       </div>
-      <div class="input-group col-1 m-0 align-items-center p-0">
-        <Select
-          :title="`Tất cả`"
-          :data="data.cycles"
-          :selected="data.cycle"
-          @choose="(value) => handleCycle(value)"
-        ></Select>
-      </div>
+      <div class="input-group col-1 m-0 align-items-center p-0"></div>
       <!-- btn add boarding house -->
       <div class="col-9 mr-1 p-0 row justify-content-end">
         <div class="mr-1">
@@ -324,15 +381,17 @@ export default {
       <span class="text-primary">(*)</span> Trước khi thực hiện lọc cần lưu giá
       trị điện nước trước.</span
     >
+    <!-- v-if="data.tableInput" -->
+
     <Table
       class="text-center mt-2"
       :data="data.setPage"
       :fields="[
         'Phòng',
-        'CS điện cũ',
-        'CS điện mới',
-        'CS nước cũ',
-        'CS nước mới',
+        'CS điện cũ (Kwh)',
+        'CS điện mới (Kwh)',
+        'CS nước cũ (m³)',
+        'CS nước mới (m³)',
       ]"
       :titles="[
         'name',

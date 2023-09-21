@@ -25,7 +25,6 @@ export default {
         price: "",
         area: "",
         boardingId: "",
-        cycleId: null,
         status: "",
         countFiles: 0,
         medias: [],
@@ -58,7 +57,7 @@ export default {
     };
 
     const handleFileUpload = (event) => {
-      data.uploadFiles = [];
+      // data.uploadFiles = [];
       const files = event.target.files;
       data.uploadFiles = [...data.uploadFiles, ...files];
       const previewImage = document.getElementById("previewImagesEdit");
@@ -129,7 +128,12 @@ export default {
     };
     const validate = (file) => {
       const MAX_SIZE = 200000;
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
       const MAX_SIZE_VIDEO = 100000000; //100Mb
       const allowedTypesVideo = [
         "video/mp4",
@@ -151,11 +155,10 @@ export default {
       }
       return "";
     };
-    const formFields = ["boardingId", "name", "price", "area", "cycleId"];
+    const formFields = ["boardingId", "name", "price", "area"];
     const save = async () => {
       try {
         for (const key in data.error) {
-          console.log("key", key, data.item[key]);
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
@@ -165,10 +168,8 @@ export default {
         console.log(data.flag);
         if (!data.flag) {
           const formData = new FormData();
-          console.log("borading Id", data.item["boardingId"]);
 
           _.forEach(formFields, (field) => {
-            console.log("1", data.item[field]);
             formData.append(field, data.item[field]);
           });
           formData.append("countFiles", data.uploadFiles.length);

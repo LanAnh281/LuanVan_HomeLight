@@ -78,22 +78,22 @@ export default {
       </div>
       <div class="col-6 p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Tên phòng:</label>
+          <label for="" class="col-6">Tên phòng :</label>
           <p class="col-6 p-0 m-0">{{ data.item.name }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Diện tích:</label>
+          <label for="" class="col-6">Diện tích :</label>
           <p class="col-6 p-0 m-0">{{ data.item.area }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Đơn giá:</label>
-          <p class="col-6">
+          <label for="" class="col-6">Đơn giá :</label>
+          <p class="col-6 p-0 m-0">
             {{ formatCurrency(data.item.price) }}
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Trạng thái:</label>
-          <p class="col-6">
+          <label for="" class="col-6">Trạng thái :</label>
+          <p class="col-6 p-0 m-0">
             {{ !data.item.status ? "Chưa thuê" : "Đang thuê" }}
           </p>
         </div>

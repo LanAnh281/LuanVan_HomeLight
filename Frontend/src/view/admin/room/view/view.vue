@@ -77,7 +77,7 @@ export default {
         <div class="modal-body">
           <!-- nhà trọ -->
           <div class="form-group row">
-            <ul class="col-sm-3 m-0 p-0">
+            <ul class="col-sm-3 p-0" style="margin-top: -3%">
               <li
                 v-for="(value, index) in data.item"
                 :key="index"

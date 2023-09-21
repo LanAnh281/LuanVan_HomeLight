@@ -40,8 +40,6 @@ export default {
     );
 
     const handleDelete = async (value) => {
-      console.log("de");
-      console.log(`delete room user`, value, props._id, data.item.Users.length);
       try {
         if (data.item.Users.length == 1) {
           const showSweetAlert = async () => {
@@ -89,7 +87,6 @@ export default {
             }
           }
 
-          // cập nhật lại status room và cycle room
           const documentUserRoom = await userRoomService.get(props._id);
           const documentRoom = await roomService.update(props._id, {
             name: documentUserRoom.message.name,
@@ -97,7 +94,6 @@ export default {
             area: documentUserRoom.message.area,
             status: false,
             boardingId: documentUserRoom.message.boardingId,
-            cycleId: "null",
           });
         } else {
           const isDeleted = await deleted(
@@ -127,29 +123,6 @@ export default {
             }
           }
         }
-        // const documentUserRoom = await userRoomService.get(props._id);
-        // const status =
-        //   documentUserRoom.message.Users.length == 0 ? false : true;
-
-        // if (documentUserRoom.message.Users.length == 0) {
-        //   const documentRoom = await roomService.update(props._id, {
-        //     name: documentUserRoom.message.name,
-        //     price: documentUserRoom.message.price,
-        //     area: documentUserRoom.message.area,
-        //     status: status,
-        //     boardingId: documentUserRoom.message.boardingId,
-        //     cycleId: "null",
-        //   });
-        // } else {
-        //   const documentRoom = await roomService.update(props._id, {
-        //     name: documentUserRoom.message.name,
-        //     price: documentUserRoom.message.price,
-        //     area: documentUserRoom.message.area,
-        //     status: status,
-        //     boardingId: documentUserRoom.message.boardingId,
-        //     cycleId: documentUserRoom.message.cycleId,
-        //   });
-        // }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
