@@ -72,8 +72,8 @@ export default {
       isActiveBoarding: "", // a boarding item actived
       isActiveRoom: "",
       status: [
-        { _id: false, name: "Chưa thuê" },
-        { _id: true, name: "Đã thuê" },
+        { _id: true, name: "Chưa thuê" },
+        { _id: false, name: "Đã thuê" },
       ],
       isStatus: { _id: true, name: "Đã thuê" },
       fee: [
@@ -86,7 +86,7 @@ export default {
       currentPage: 1,
       totalPage: 0,
       length: 0,
-      sizePage: 2,
+      sizePage: 4,
     });
     const component = reactive({
       isBoardingModal: false,
@@ -252,7 +252,7 @@ export default {
       </div>
       <div class="input-group col-2 align-items-center p-0">
         <Select
-          :title="`Tiền phòng`"
+          :title="`Thanh toán`"
           :data="data.fee"
           @choose="(value) => handlefee(value)"
         ></Select>
@@ -407,6 +407,7 @@ export default {
           data.isActiveRoom = value;
         }
       "
+      @out="handleEdit"
       @totalPage="
         (value) => {
           data.totalPage = value.totalPage;
@@ -414,6 +415,7 @@ export default {
         }
       "
     ></Box>
+
     <paginationVue
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
@@ -444,6 +446,11 @@ export default {
     <addCustomer
       v-if="isAddCustomerModal"
       :_id="data.isActiveRoom"
+      @changeStatus="
+        (value) => {
+          handleEdit();
+        }
+      "
     ></addCustomer>
   </div>
 </template>

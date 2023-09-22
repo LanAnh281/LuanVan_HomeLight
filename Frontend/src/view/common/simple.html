@@ -1,55 +1,109 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Modal Chồng Lên</title>
   </head>
   <body>
-    <h1>Cắt ảnh trong JavaScript</h1>
-    <img
-      id="sourceImage"
-      src="../../assets/image/background.jpg"
-      alt="Ảnh nguồn"
-    />
-    <canvas id="outputCanvas" width="200" height="200"></canvas>
-    <button onclick="cropImage()">Cắt ảnh</button>
+    <button id="openModalButton">Mở Modal</button>
 
+    <!-- Modal Gốc -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModalButton">×</span>
+        <h2>Modal Gốc</h2>
+        <p>Nội dung modal gốc.</p>
+        <span id="openNestedModal">Mở Modal Khác</span>
+      </div>
+    </div>
+
+    <!-- Modal Chồng Lên -->
+    <div id="nestedModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeNestedModalButton">×</span>
+        <h2>Modal Khác</h2>
+        <p>Nội dung modal chồng lên.</p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
     <script>
-      function cropImage() {
-        // Lấy tham chiếu đến ảnh nguồn và canvas đích
-        var sourceImage = document.getElementById("sourceImage");
-        var outputCanvas = document.getElementById("outputCanvas");
-        var context = outputCanvas.getContext("2d");
+      // Lấy các phần tử modal và nút mở modal gốc
+      const modal = document.getElementById("modal");
+      const nestedModal = document.getElementById("nestedModal");
+      const openModalButton = document.getElementById("openModalButton");
+      const closeButtons = document.querySelectorAll(".close");
+      const openNestedModalButton = document.getElementById("openNestedModal");
 
-        // Kích thước và vị trí của phần muốn cắt từ ảnh (vd: lấy từ điểm (50, 50) với kích thước 100x100)
-        var x = 100;
-        var y = 50;
-        var width = 100;
-        var height = 100;
+      // Hiển thị modal gốc khi bấm vào nút mở modal
+      openModalButton.addEventListener("click", () => {
+        modal.style.display = "block";
+      });
 
-        // Vẽ phần cắt lên canvas đích
-        context.drawImage(
-          sourceImage,
-          x,
-          y,
-          width,
-          height,
-          0,
-          0,
-          outputCanvas.width,
-          outputCanvas.height
-        );
-      }
+      // Ẩn modal gốc khi bấm vào nút đóng modal hoặc nền ngoài modal
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          modal.style.display = "none";
+        });
+      });
+
+      // Hiển thị modal chồng lên khi bấm vào biểu tượng "Mở Modal Khác"
+      openNestedModalButton.addEventListener("click", () => {
+        nestedModal.style.display = "block";
+      });
+
+      // Ẩn modal chồng lên khi bấm vào nút đóng modal hoặc nền ngoài modal chồng lên
+      document
+        .getElementById("closeNestedModalButton")
+        .addEventListener("click", () => {
+          nestedModal.style.display = "none";
+        });
     </script>
   </body>
 </html>
+<style>
+  /* CSS cho modal gốc */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 20% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    position: relative;
+  }
+
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  /* CSS cho modal chồng lên */
+  #nestedModal {
+    display: none;
+    z-index: 2;
+  }
+
+  /* CSS cho button mở modal chồng lên */
+  #openNestedModal {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+  }
+</style>

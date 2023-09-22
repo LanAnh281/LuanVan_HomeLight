@@ -41,86 +41,30 @@ export default {
 
     const handleDelete = async (value) => {
       try {
-        if (data.item.Users.length == 1) {
-          const showSweetAlert = async () => {
-            const { value: formValues } = await Swal.fire({
-              title: "Điện nước tiêu thụ",
-              html: `
-              <div  class='row  form-group ml-2 '>
-                <label class='col-3'>Điện mới:</label>
-                <input type='number' id="electric" class='col-9 form-control'></input>
-              </div>
-              <div class='row form-group   ml-2'>
-                <label class='col-3'>Nước mới:</label>
-                <input type='number' id="water" class='col-9 form-control'></input>
-              </div>
-            `,
-              // showCancelButton: true,
-
-              focusConfirm: false,
-              preConfirm: () => {
-                const electric = document.getElementById("electric").value;
-                const water = document.getElementById("water").value;
-                if (!electric || !water) {
-                  Swal.showValidationMessage("Vui lòng điền đầy đủ thông tin");
-                }
-                return {
-                  electric,
-                  water,
-                };
-              },
-            });
-            return formValues;
-          };
-          const formValues = await showSweetAlert();
-
-          //api tính tiền tạo bill mới
-          if (formValues) {
-            // xóa khách trọ khỏi user_room
-            const documentDelete = await userRoomService.delete(props._id, {
-              UserId: value,
-              RoomId: props._id,
-            });
-            if (documentDelete["status"] == "success") {
-              successAd("Thành công ");
-              await refresh();
-            }
-          }
-
-          const documentUserRoom = await userRoomService.get(props._id);
-          const documentRoom = await roomService.update(props._id, {
-            name: documentUserRoom.message.name,
-            price: documentUserRoom.message.price,
-            area: documentUserRoom.message.area,
-            status: false,
-            boardingId: documentUserRoom.message.boardingId,
+        const isDeleted = await deleted(
+          "Xóa khách trọ",
+          "Bạn có chắc chắn xóa khách trọ này không?"
+        );
+        if (isDeleted == true) {
+          // xóa khách trọ khỏi user_room
+          const documentDelete = await userRoomService.delete(props._id, {
+            UserId: value,
+            RoomId: props._id,
           });
-        } else {
-          const isDeleted = await deleted(
-            "Bạn có chắc chắn xóa khách trọ này",
-            ""
-          );
-          console.log(isDeleted);
-          if (isDeleted == true) {
-            try {
-              const documentDelete = await userRoomService.delete(props._id, {
-                UserId: value,
-                RoomId: props._id,
+          if (documentDelete["status"] == "success") {
+            successAd("Thành công ");
+            await refresh();
+            if (data.item.Users.length == 0) {
+              const documentUserRoom = await userRoomService.get(props._id);
+              const documentRoom = await roomService.update(props._id, {
+                name: documentUserRoom.message.name,
+                price: documentUserRoom.message.price,
+                area: documentUserRoom.message.area,
+                status: false,
+                boardingId: documentUserRoom.message.boardingId,
               });
-              console.log(documentDelete);
-              if (documentDelete["status"] == "success") {
-                successAd("Thành công ");
-                await refresh();
-              }
-            } catch (error) {
-              if (error.response) {
-                console.log("Server-side errors", error.response.data);
-              } else if (error.request) {
-                console.log("Client-side errors", error.request);
-              } else {
-                console.log("Errors:", error.message);
-              }
             }
+            emit("changeStatus");
           }
         }
       } catch (error) {
@@ -162,12 +106,7 @@ export default {
       :actionList="['cancel']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
-      @cancel="
-        (value) => {
-          console.log(value);
-          handleDelete(value); //trả phòng
-        }
-      "
+      @cancel="handleDelete"
     ></Table>
     <paginationVue
       :currentPage="data.currentPage"

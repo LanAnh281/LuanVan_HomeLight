@@ -12,27 +12,19 @@ export default {
     actionList: { type: Array, default: [] },
     name: { type: String, default: "" },
     account: false,
+    isInput: true,
     currentPage: "",
     sizePage: "",
   },
 
   setup(props, emit) {
-    watch(
-      () => props.data,
-      (newValue, oldValue) => {
-        console.log("new props data:", newValue);
-      }
-    );
-    onMounted(() => {
-      console.log("props:", props.data);
-    });
+    onMounted(() => {});
     return { checkNumber };
   },
 };
 </script>
 <template>
   <div>
-    {{ data.length != 0 }} {{ data.length }}
     <table class="table">
       <thead class="thead-dark">
         <tr>
@@ -57,6 +49,7 @@ export default {
               type="number"
               class="px-1 w-100"
               v-model="value[title]"
+              :disabled="!isInput"
               style="
                 background-color: rgb(240, 242, 243);
                 border-color: aliceblue;

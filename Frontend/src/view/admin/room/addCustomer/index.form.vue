@@ -38,8 +38,8 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal view room");
-      // refresh();
       emit("closeModal");
+      // location.reload();
     };
     onMounted(async () => {
       console.log("PropsId room:", props._id);
@@ -101,16 +101,11 @@ export default {
             <div class="col-sm-9 row px-4 pt-1 mt-0">
               <div class="col-12 row justify-content-end mb-2">
                 <button
-                  class="border"
-                  style="
-                    color: var(--white);
-                    background-color: var(--purple);
-                    margin-top: -14px;
-                    font-size: 0.8rem;
-                  "
+                  class="border btn-modal"
+                  :class="data.form == 'addOldMember' ? 'isAddCustomer' : null"
                   title="Thêm thành viên"
                   v-if="
-                    (data.active == 'member' || 'customer') &&
+                    (data.active == 'member' || data.active == 'customer') &&
                     data.active != 'service'
                   "
                   @click="
@@ -118,16 +113,12 @@ export default {
                     data.form = 'addOldMember';
                   "
                 >
-                  +Thành viên cũ
+                  <span class="material-symbols-outlined mr-2 py-1"> add </span>
+                  <span class="mr-2 py-1"> Thành viên cũ </span>
                 </button>
                 <button
-                  class="border"
-                  style="
-                    color: var(--white);
-                    background-color: green;
-                    margin-top: -14px;
-                    font-size: 0.8rem;
-                  "
+                  class="border btn-modal"
+                  :class="data.form == 'addNewMember' ? 'isAddCustomer' : null"
                   title="Thêm thành viên"
                   v-if="
                     (data.active == 'member' || 'customer') &&
@@ -138,18 +129,31 @@ export default {
                     data.form = 'addNewMember';
                   "
                 >
-                  + Thành viên mới
+                  <span class="material-symbols-outlined"> add </span>
+                  <span class="py-1 m-0"> Thành viên mới </span>
                 </button>
               </div>
               <addCustomerForm
                 class="col-12"
                 v-if="data.active == 'customer' && data.form == 'addNewMember'"
                 :_id="_id"
+                @changeStatus="
+                  (value) => {
+                    console.log('>>Trang index.form', value);
+                    $emit('changeStatus');
+                  }
+                "
               ></addCustomerForm>
               <addOldMemberForm
                 class="col-12"
                 v-if="data.active == 'customer' && data.form == 'addOldMember'"
                 :_id="_id"
+                @changeStatus="
+                  (value) => {
+                    console.log('>>Trang index.form', value);
+                    $emit('changeStatus');
+                  }
+                "
               >
               </addOldMemberForm>
               <!-- Member -->
@@ -158,6 +162,12 @@ export default {
                   class="m-0 p-0"
                   v-if="data.active == 'member'"
                   :_id="_id"
+                  @changeStatus="
+                    (value) => {
+                      console.log('>>Trang index.form', value);
+                      $emit('changeStatus');
+                    }
+                  "
                 ></addMemberForm>
               </div>
 
@@ -209,5 +219,24 @@ li {
 .isActive {
   color: #5243f6;
   font-weight: 500;
+}
+.btn-modal {
+  color: var(--white);
+  background-color: var(--chocolate);
+  margin-top: -14px;
+  font-size: 1rem;
+  padding: 4px;
+  text-align: center;
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+.btn-modal > * {
+  color: var(--white);
+}
+.btn-modal :hover {
+  text-shadow: 0 0 3px #fff;
+}
+.isAddCustomer {
+  background-color: var(--ruby);
 }
 </style>

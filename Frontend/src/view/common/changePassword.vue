@@ -57,7 +57,7 @@ export default {
       class="row justify-content-around align-items-center"
       style="height: calc(100vh - var(--footer))"
     >
-      <div class="card shadow col-5">
+      <div class="card shadow col-6 w-100">
         <div class="row justify-content-center">
           <!-- <router-link :to="{ name: 'user' }" class="col-3">
             <img
@@ -65,14 +65,16 @@ export default {
               style="width: 100%; height: 100%"
             />
           </router-link> -->
-          <h4 class="text-center mt-3 ml-3 col-12">Đổi mật khẩu</h4>
+          <h4 class="text-center mt-3 ml-3 col-12 title">Đổi mật khẩu</h4>
         </div>
         <form @submit.prevent="changePassword" class="container mt-3">
           <div class="form-group row">
-            <label for="inputPasswordOld" class="col-sm-3 col-form-label p-0"
+            <label
+              for="inputPasswordOld"
+              class="col-sm-4 col-form-label p-0 m-0"
               >Mật khẩu cũ :</label
             >
-            <div class="col-sm-9">
+            <div class="col-sm-8 p-0 m-0">
               <input
                 type="password"
                 class="form-control"
@@ -97,10 +99,10 @@ export default {
             </div>
           </div>
           <div class="form-group row">
-            <label for="inputPassword" class="col-sm-3 col-form-label p-0"
+            <label for="inputPassword" class="col-sm-4 col-form-label p-0"
               >Mật khẩu mới :</label
             >
-            <div class="col-sm-9">
+            <div class="col-sm-8 p-0 m-0">
               <input
                 type="password"
                 class="form-control"
@@ -127,10 +129,10 @@ export default {
           <div class="form-group row">
             <label
               for="inputConfirmPassword"
-              class="col-sm-3 col-form-label p-0"
+              class="col-sm-4 col-form-label p-0"
               >Nhập lại mật khẩu:</label
             >
-            <div class="col-sm-9">
+            <div class="col-sm-8 p-0 m-0">
               <input
                 type="password"
                 class="form-control"

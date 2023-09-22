@@ -334,26 +334,6 @@ export default {
           @choose="(value) => changeWard(value)"
         ></Select>
       </div>
-      <!-- btn add boarding house -->
-      <div class="col-6 mr-1 p-0 row justify-content-end">
-        <div class="mr-1">
-          <button
-            class="btn btn-primary p-0"
-            style="width: 103px; height: 36px; margin-top: 6px"
-          >
-            <div class="row justify-content-center plus">
-              <span
-                class="material-symbols-outlined"
-                style="color: var(--white)"
-              >
-                domain_add
-              </span>
-              <span style="color: var(--white)">Thêm nhà</span>
-            </div>
-          </button>
-        </div>
-        <!-- component  -->
-      </div>
     </div>
     <!-- Search -->
     <div class="border-radius my-3">
@@ -367,20 +347,6 @@ export default {
           v-model="data.searchText"
         />
         <div class="row justify-content-end mr-1">
-          <button
-            class="btn btn-primary p-0 mt-0 mr-1"
-            style="width: 80px; height: 40px"
-          >
-            <div class="row justify-content-center plus">
-              <span
-                class="material-symbols-outlined"
-                style="color: var(--white)"
-              >
-                email
-              </span>
-              <span style="color: var(--white)">xxx</span>
-            </div>
-          </button>
           <button
             class="btn btn-warning p-0 mt-0"
             style="width: 100px; height: 40px"

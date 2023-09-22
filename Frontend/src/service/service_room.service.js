@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
 class serviceRoomService {
-  constructor(baseUrl = "/api/serviceroom") {
+  constructor(baseUrl = "/api/serviceroom/") {
     this.api = createApiClient(baseUrl);
   }
 
@@ -22,6 +22,9 @@ class serviceRoomService {
   }
   async delete(id, data) {
     return (await this.api.post(`/delete/${id}`, data)).data;
+  }
+  async deleteAll(id) {
+    return (await this.api.delete(`${id}`)).data;
   }
 }
 

@@ -19,6 +19,8 @@ export default {
       item: [],
       userRoom: [{ Users: [] }],
       setPage: [],
+      searchText: "",
+      searchPage: [],
       checkedList: [],
       checkedNewList: [],
       removeList: [],
@@ -28,11 +30,23 @@ export default {
       length: 0,
     });
     data.totalPage = computed(() =>
-      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
+      data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
+    );
+    data.searchPage = computed(
+      () => (
+        (data.currentPage = 1),
+        data.item
+          ? data.item.filter((item) =>
+              item.userName
+                .toLowerCase()
+                .includes(data.searchText.toLocaleLowerCase())
+            )
+          : []
+      )
     );
     data.setPage = computed(() =>
-      data.item
-        ? data.item.slice(
+      data.searchPage
+        ? data.searchPage.slice(
             (data.currentPage - 1) * data.sizePage,
             data.currentPage * data.sizePage
           )
@@ -64,15 +78,12 @@ export default {
           await refresh();
         });
         const documentUserRoom = await userRoomService.get(props._id);
-        const status =
-          documentUserRoom.message.Users.length == 0 ? false : true;
-
         if (documentUserRoom.message.Users.length == 0) {
           const documentRoom = await roomService.update(props._id, {
             name: documentUserRoom.message.name,
             price: documentUserRoom.message.price,
             area: documentUserRoom.message.area,
-            status: status,
+            status: false,
             boardingId: documentUserRoom.message.boardingId,
           });
         } else {
@@ -80,10 +91,11 @@ export default {
             name: documentUserRoom.message.name,
             price: documentUserRoom.message.price,
             area: documentUserRoom.message.area,
-            status: status,
+            status: true,
             boardingId: documentUserRoom.message.boardingId,
           });
         }
+        emit("changeStatus");
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -139,9 +151,17 @@ export default {
 </script>
 <template>
   <div>
+    <input
+      type="search"
+      placeholder="tìm kiếm theo tên"
+      class="p-1 border rounded mb-2 w-100"
+      style="background-color: var(--background); width: 30%"
+      v-model="data.searchText"
+    />
+
     <Table
       :data="data.setPage"
-      :fields="['Họ tên', 'Giới tính', 'Địa chỉ', 'SĐT']"
+      :fields="['Họ tên', 'GT', 'Địa chỉ', 'SĐT']"
       :titles="['userName', 'sex', 'address', 'phone']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"

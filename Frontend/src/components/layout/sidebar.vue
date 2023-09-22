@@ -14,8 +14,7 @@ export default {
         { name: "Thống kê", icon: "bar_chart_4_bars", active: "dashboard" },
         { name: "Khách trọ", icon: "person", active: "customer" },
         { name: "Phòng", icon: "holiday_village", active: "room" },
-        { name: "Chỉ số điện", icon: "offline_bolt", active: "electric" },
-        { name: "Chỉ số nước", icon: "water_drop", active: "water" },
+        { name: "Điện-nước", icon: "offline_bolt", active: "electric" },
         {
           name: "Dịch vụ",
           icon: "energy_program_time_used",

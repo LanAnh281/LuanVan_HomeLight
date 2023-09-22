@@ -294,7 +294,6 @@ export default {
 
     const save = async () => {
       data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-      console.log(">>>>save dataItem:", data.item);
       try {
         if (data.uploadFiles.length != 2) {
           data.error["image"] = "Chưa tải ảnh cccd.";
@@ -330,6 +329,7 @@ export default {
           if (documentCreateAndUpdateRoom["status"] == "success") {
             successAd("Thành công");
             await refresh();
+            emit("changeStatus");
           } else {
             warning("Thất bại");
           }

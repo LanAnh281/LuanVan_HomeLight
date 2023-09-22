@@ -1,9 +1,14 @@
 <script>
 import { reactive, ref, onMounted, watch, computed } from "vue";
 import Swal from "sweetalert2";
+import axios from "axios";
+
 //service
 import roomService from "../../../service/room.service";
+import service_roomService from "../../../service/service_room.service";
+
 import userRoomService from "../../../service/user_room.service";
+import UtilityReadingsService from "../../../service/UtilityReadings.service";
 //asset  js
 import {
   successAd,
@@ -14,8 +19,6 @@ import {
 //component
 import Edit from "./edit.vue";
 
-import loginService from "../../../service/login.service";
-// import addCustomer from "./addCustomer/addCutomer.form.vue";
 export default {
   comments: { Edit },
   props: {
@@ -27,9 +30,17 @@ export default {
   setup(props, { emit }) {
     const data = reactive({
       item: [],
+      uti: {
+        previousElectric: "",
+        currentElectric: "",
+        previousWater: "",
+        currentWater: "",
+        date: new Date(),
+        roomId: "",
+      },
       totalPage: 0,
       length: 0,
-      sizePage: 2,
+      sizePage: 4,
       setPage: [],
     });
     data.totalPage = computed(() =>
@@ -46,7 +57,6 @@ export default {
     );
     const handleEdit = async (value) => {
       try {
-        const isDeleted = false;
         const showSweetAlert = async () => {
           const { value: formValues } = await Swal.fire({
             title: "Điện nước tiêu thụ",
@@ -63,14 +73,14 @@ export default {
 
             focusConfirm: false,
             preConfirm: () => {
-              const electric = document.getElementById("electric").value;
-              const water = document.getElementById("water").value;
+              const currentElectric = document.getElementById("electric").value;
+              const currentWater = document.getElementById("water").value;
               if (!electric || !water) {
                 Swal.showValidationMessage("Vui lòng điền đầy đủ thông tin");
               }
               return {
-                electric,
-                water,
+                currentElectric,
+                currentWater,
               };
             },
           });
@@ -81,26 +91,42 @@ export default {
         const formValues = await showSweetAlert();
 
         // trả phòng
-        console.log(value);
         if (formValues) {
           // xóa tất cả khách trọ ra khỏi phòng
           const document = await userRoomService.deleteAll(value);
-          // lấy danh sách khách trọ của 1 phòng và thực hiện so sánh để cập nhật lại trạng thái phòng
+          // lấy thông tin phòng và thông tin khách qua api
           const documentUserRoom = await userRoomService.get(value);
-          const status =
-            documentUserRoom.message.Users.length == 0 ? false : true;
-          // so sánh
-          if (documentUserRoom.message.Users.length == 0) {
-            //cập nhật
-            const documentRoom = await roomService.update(value, {
-              name: documentUserRoom.message.name,
-              price: documentUserRoom.message.price,
-              area: documentUserRoom.message.area,
-              status: status,
-              boardingId: documentUserRoom.message.boardingId,
-            });
-          }
+
+          //cập nhật trạng thái phòng
+          const documentRoom = await roomService.update(value, {
+            name: documentUserRoom.message.name,
+            price: documentUserRoom.message.price,
+            area: documentUserRoom.message.area,
+            status: false,
+            boardingId: documentUserRoom.message.boardingId,
+          });
+          // xóa các dịch vụ của phòng
+          console.log("id room:", value);
+          const documentService = await service_roomService.deleteAll(value);
+
+          // create chỉ số điện nước
+          const documentUti = await UtilityReadingsService.get(value);
+          data.uti = {
+            previousElectric: documentUti.message.currentElectric
+              ? documentUti.message.currentElectric
+              : 0,
+            currentElectric: formValues.currentElectric,
+            previousWater: documentUti.message.currentWater
+              ? documentUti.message.currentWater
+              : 0,
+            currentWater: formValues.currentWater,
+            date: new Date(),
+            roomId: value,
+          };
+          const creatUti = await UtilityReadingsService.create(data.uti);
           // api  tính tiền
+          // await refresh();
+          emit("out");
         }
       } catch (error) {
         if (error.response) {
@@ -149,7 +175,7 @@ export default {
       data.item = data.item.filter(
         (item) =>
           item.boardingId == props._idBoarding &&
-          item.status == props.status["_id"]
+          item.status == !props.status["_id"]
       );
 
       data.item = data.item.map((item) => {
@@ -181,7 +207,13 @@ export default {
 </script>
 <template>
   <div>
-    <div style="display: grid; grid-template-columns: repeat(5, 1fr)" class="">
+    <div
+      style="
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        height: 340px;
+      "
+    >
       <div
         class="card pt-1 px-0 pb-0 mr-4 row justify-content-between"
         v-for="(value, index) in data.setPage"
@@ -207,7 +239,7 @@ export default {
           </div>
 
           <!-- icon -->
-          <div class="px-2 mx-4">
+          <div class="text-center">
             <span
               class="material-symbols-outlined m-2 view border rounded p-1"
               title="chi tiết"
