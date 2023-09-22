@@ -80,16 +80,18 @@ exports.delete = async (req, res, next) => {
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
-    res.json({ message: error, status: "faild" });
+    res.json({ message: error, status: "fail" });
   }
 };
 exports.deleteAll = async (req, res, next) => {
   try {
+    console.log(">>>p:", req.params.id);
     const documents = await Service_Room.destroy({
       where: {
         RoomId: req.params.id,
       },
     });
+    console.log(">>>d:", documents);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

@@ -1,4 +1,4 @@
-const { Bill, UtilityReadings } = require("../models/index.model.js");
+const { Rooms, UtilityReadings } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const {
     previousElectric,
@@ -26,7 +26,17 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await UtilityReadings.findAll({});
+    const utis = await UtilityReadings.findAll({
+      include: {
+        model: Rooms,
+      },
+    });
+
+    let documents = JSON.parse(JSON.stringify(utis));
+    for (let i in documents) {
+      documents[i].name = documents[i].Room.name;
+      documents[i].roomId = documents[i].Room._id;
+    }
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -35,8 +45,6 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    console.log("??roomId", req.params.id);
-
     const documents = await UtilityReadings.findAll({
       where: {
         roomId: req.params.id,
@@ -46,9 +54,6 @@ exports.findOne = async (req, res, next) => {
     document = document.sort(
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
-
-    console.log(">>>sắp xếp từ lớm đến bé", document);
-    // console.log("!!", document);
     res.json({ message: document[0], status: "success" });
   } catch (error) {
     console.log(error);
