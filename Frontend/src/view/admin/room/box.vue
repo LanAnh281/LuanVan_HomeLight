@@ -18,6 +18,7 @@ import {
 } from "../../../assets/js/common.alert";
 //component
 import Edit from "./edit.vue";
+import userService from "../../../service/user.service";
 
 export default {
   comments: { Edit },
@@ -92,42 +93,55 @@ export default {
 
         // trả phòng
         if (formValues) {
-          // xóa tất cả khách trọ ra khỏi phòng
-          const document = await userRoomService.deleteAll(value);
           // lấy thông tin phòng và thông tin khách qua api
           const documentUserRoom = await userRoomService.get(value);
-
           //cập nhật trạng thái phòng
           const documentRoom = await roomService.update(value, {
             name: documentUserRoom.message.name,
             price: documentUserRoom.message.price,
             wide: documentUserRoom.message.wide,
             long: documentUserRoom.message.long,
-
             status: false,
             boardingId: documentUserRoom.message.boardingId,
           });
           // xóa các dịch vụ của phòng
-          console.log("id room:", value);
           const documentService = await service_roomService.deleteAll(value);
-
           // create chỉ số điện nước
           const documentUti = await UtilityReadingsService.get(value);
           data.uti = {
-            previousElectric: documentUti.message.currentElectric
-              ? documentUti.message.currentElectric
-              : 0,
+            previousElectric: 0,
             currentElectric: formValues.currentElectric,
-            previousWater: documentUti.message.currentWater
-              ? documentUti.message.currentWater
-              : 0,
+            previousWater: 0,
             currentWater: formValues.currentWater,
             date: new Date(),
             roomId: value,
           };
+          if (documentUti.message != undefined) {
+            data.uti = {
+              previousElectric: documentUti.message.currentElectric
+                ? documentUti.message.currentElectric
+                : 0,
+              currentElectric: formValues.currentElectric,
+              previousWater: documentUti.message.currentWater
+                ? documentUti.message.currentWater
+                : 0,
+              currentWater: formValues.currentWater,
+              date: new Date(),
+              roomId: value,
+            };
+          }
+
           const creatUti = await UtilityReadingsService.create(data.uti);
           // api  tính tiền
+
+          //xóa tất cả tài khoản và user khách trọ
+          for (let value of documentUserRoom.message.Users) {
+            const deleteUser = await userService.delete(value._id);
+          }
+          // xóa tất cả khách trọ ra khỏi phòng
+          const document = await userRoomService.deleteAll(value);
           // await refresh();
+
           emit("out");
         }
       } catch (error) {
@@ -195,7 +209,6 @@ export default {
     watch(
       () => props.status,
       async (newValue, oldValue) => {
-        // console.log("watch status :", newValue);
         await refresh();
       }
     );
@@ -288,7 +301,7 @@ export default {
               data-toggle="modal"
               data-target="#addCustomerModal"
               @click="$emit('addCutomer', value._id)"
-              style="font-size: 0.8rem"
+              style="font-size: 0.8rem; width: 50%"
             >
               Thêm khách
             </button>

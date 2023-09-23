@@ -87,12 +87,16 @@ export default {
     );
     const refresh = async () => {
       try {
-        const documentUser = await userService.getAll();
+        const documentUser = await userService.getAllTenant("Landloard");
         data.item = documentUser.message;
         data.item = data.item.map((item) => {
           return {
             ...item,
-            sex: item.sex ? "Nữ" : "Nam",
+            sex: item.user.sex ? "Nữ" : "Nam",
+            userName: item.user.userName,
+            phone: item.user.phone,
+            email: item.user.email,
+            address: item.user.address,
             checked: false,
           };
         });

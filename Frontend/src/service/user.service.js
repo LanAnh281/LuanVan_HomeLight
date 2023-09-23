@@ -8,6 +8,10 @@ class userService {
   async getAll() {
     return (await this.api.get("/")).data;
   }
+
+  async getAllTenant(id) {
+    return (await this.api.get(`/findAllTenant/${id}`)).data;
+  }
   async create(data) {
     return (
       await this.api.post("/", data, {

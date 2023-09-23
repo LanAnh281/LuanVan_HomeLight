@@ -99,63 +99,17 @@ export default {
             </ul>
             <!-- component Customer -->
             <div class="col-sm-9 row px-4 pt-1 mt-0">
-              <div class="col-12 row justify-content-end mb-2">
-                <button
-                  class="border btn-modal"
-                  :class="data.form == 'addOldMember' ? 'isAddCustomer' : null"
-                  title="Thêm thành viên"
-                  v-if="
-                    (data.active == 'member' || data.active == 'customer') &&
-                    data.active != 'service'
-                  "
-                  @click="
-                    data.active = 'customer';
-                    data.form = 'addOldMember';
-                  "
-                >
-                  <span class="material-symbols-outlined mr-2 py-1"> add </span>
-                  <span class="mr-2 py-1"> Thành viên cũ </span>
-                </button>
-                <button
-                  class="border btn-modal"
-                  :class="data.form == 'addNewMember' ? 'isAddCustomer' : null"
-                  title="Thêm thành viên"
-                  v-if="
-                    (data.active == 'member' || 'customer') &&
-                    data.active != 'service'
-                  "
-                  @click="
-                    data.active = 'customer';
-                    data.form = 'addNewMember';
-                  "
-                >
-                  <span class="material-symbols-outlined"> add </span>
-                  <span class="py-1 m-0"> Thành viên mới </span>
-                </button>
-              </div>
               <addCustomerForm
                 class="col-12"
                 v-if="data.active == 'customer' && data.form == 'addNewMember'"
                 :_id="_id"
                 @changeStatus="
                   (value) => {
-                    console.log('>>Trang index.form', value);
                     $emit('changeStatus');
                   }
                 "
               ></addCustomerForm>
-              <addOldMemberForm
-                class="col-12"
-                v-if="data.active == 'customer' && data.form == 'addOldMember'"
-                :_id="_id"
-                @changeStatus="
-                  (value) => {
-                    console.log('>>Trang index.form', value);
-                    $emit('changeStatus');
-                  }
-                "
-              >
-              </addOldMemberForm>
+
               <!-- Member -->
               <div class="col-12">
                 <addMemberForm

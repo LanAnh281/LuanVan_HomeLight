@@ -100,29 +100,76 @@ export default {
       try {
         // room
         const documentRoom = await roomService.getAll();
-        data.item = documentRoom.message.filter((item) => {
-          return (
-            item.boardingId === data.boardingActice && item.status === true
-          );
-        });
+        data.item = documentRoom.message;
+
         data.item = await Promise.all(
           data.item.map(async (item) => {
             return {
               ...item,
-              currentElectric: 0,
-              currentWater: 0,
+              // currentElectric: 0,
+              // currentWater: 0,
               uti: await getUti(item._id),
             };
           })
         );
+
         data.item = data.item.map((item) => {
           return {
             ...item,
-            previousElectric: item.uti ? item.uti["currentElectric"] : 0,
-            previousWater: item.uti ? item.uti["currentWater"] : 0,
+            // previousElectric: item.uti ? item.uti["currentElectric"] : 0,
+            // previousWater: item.uti ? item.uti["currentWater"] : 0,
+            date: item.uti ? item.uti["date"] : "1900-1-1",
           };
         });
+        data.item = data.item.filter((item) => {
+          const current = new Date();
+          const date = new Date(item.date);
 
+          return (
+            item.boardingId === data.boardingActice &&
+            (item.status === true ||
+              (item.status === false &&
+                current.getMonth() + 1 === date.getMonth() + 1 &&
+                current.getFullYear() === date.getFullYear()))
+          );
+        });
+        data.item = data.item.map((item) => {
+          const current = new Date();
+
+          const date = new Date(item.date);
+          let previousWater = 0;
+          let previousElectric = 0;
+          if (
+            item.uti &&
+            current.getMonth() + 1 == new Date(item.date).getMonth() + 1 &&
+            current.getFullYear() == new Date(item.date).getFullYear()
+          ) {
+            previousWater = item.uti["previousWater"];
+            previousElectric = item.uti["previousElectric"];
+          } else if (
+            item.uti &&
+            item.uti["currentWater"] != undefined &&
+            item.uti["currentElectric"] != undefined
+          ) {
+            previousWater = item.uti["currentWater"];
+            previousElectric = item.uti["currentElectric"];
+          }
+          return {
+            ...item,
+            previousElectric: previousElectric,
+            previousWater: previousWater,
+            currentElectric:
+              current.getMonth() + 1 == new Date(item.date).getMonth() + 1 &&
+              current.getFullYear() == new Date(item.date).getFullYear()
+                ? item.uti["currentElectric"]
+                : 0,
+            currentWater:
+              current.getMonth() + 1 == new Date(item.date).getMonth() + 1 &&
+              current.getFullYear() == new Date(item.date).getFullYear()
+                ? item.uti["currentWater"]
+                : 0,
+          };
+        });
         data.length = data.item.length;
 
         data.isInput = true;
@@ -141,6 +188,7 @@ export default {
       () => data.boardingActice,
       async (newValue, oldValue) => {
         if (oldValue == "") return;
+        console.log(newValue);
         // const documentRoom = await roomService.getAll();
         const current = new Date();
         // thời gian hiện tại== thời gian đã chọn
@@ -149,6 +197,7 @@ export default {
           current.getMonth() + 1 == data.selectDate.month &&
           current.getFullYear() == data.selectDate.year
         ) {
+          console.log("hiện tại");
           // đùng thời gian hiện tại
           await refresh();
         } else {
