@@ -14,7 +14,7 @@ export default {
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
-      item: { name: "", price: "", area: "" },
+      item: { name: "", price: "", wide: "", long: "" },
       boarding: { name: "", address: "" },
       medias: [{ name: "" }],
     });
@@ -83,7 +83,9 @@ export default {
         </div>
         <div class="row justify-content-start p-0 m-0">
           <label for="" class="col-6">Diện tích :</label>
-          <p class="col-6 p-0 m-0">{{ data.item.area }}</p>
+          <p class="col-6 p-0 m-0">
+            {{ data.item.long }}x {{ data.item.wide }}
+          </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
           <label for="" class="col-6">Đơn giá :</label>

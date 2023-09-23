@@ -22,38 +22,36 @@ export default {
 </script>
 <template>
   <div>
-    <table class="table">
+    <table class="table m-0 p-0">
       <thead class="thead-dark">
         <tr>
-          <th
-            v-if="isInputChecked"
-            scope="col"
-            style="padding: 0px; text-align: center; line-height: 3"
-          >
-            #
-          </th>
-          <th
-            scope="col"
-            v-for="(filed, index) in fields"
-            :key="index"
-            style="padding: 0px; text-align: center; line-height: 3"
-          >
+          <th v-if="isInputChecked" scope="col">#</th>
+          <th scope="col" v-for="(filed, index) in fields" :key="index">
             {{ filed }}
           </th>
-          <th scope="col" v-if="action">Hành động</th>
+          <th
+            scope="col p-0"
+            v-if="action"
+            style="text-align: center; line-height: 3"
+          ></th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(value, index) in data" :key="index">
+
+      <tbody class="m-0 p-0">
+        <tr v-for="(value, index) in data" :key="index" class="m-0 p-0">
           <td scope="col" class="text-center" v-if="isInputChecked">
             <input type="checkbox" v-model="value.checked" />
           </td>
 
-          <td v-for="(title, index1) in titles" :key="index1">
+          <td
+            v-for="(title, index1) in titles"
+            :key="index1"
+            class="m-0 px-1 py-0"
+          >
             {{ value[title] }}
           </td>
           <!-- action -->
-          <td v-if="action" class="ml-2">
+          <td v-if="action" class="ml-2 text-center">
             <span
               v-for="(value2, index2) in actionList"
               :key="index2"
@@ -73,7 +71,16 @@ export default {
 </template>
 <style scoped>
 span {
-  font-size: 24px;
+  font-size: 20px;
+}
+th {
+  padding: 0px;
+  text-align: center;
+  line-height: 3;
+  font-size: 0.9rem;
+}
+td {
+  font-size: 0.9rem;
 }
 .info-icon:hover {
   color: #00c1cf;

@@ -101,7 +101,9 @@ export default {
           const documentRoom = await roomService.update(value, {
             name: documentUserRoom.message.name,
             price: documentUserRoom.message.price,
-            area: documentUserRoom.message.area,
+            wide: documentUserRoom.message.wide,
+            long: documentUserRoom.message.long,
+
             status: false,
             boardingId: documentUserRoom.message.boardingId,
           });
@@ -207,41 +209,40 @@ export default {
 </script>
 <template>
   <div>
-    <div
-      style="
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        height: 340px;
-      "
-    >
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr)">
       <div
-        class="card pt-1 px-0 pb-0 mr-4 row justify-content-between"
+        class="card p-0 row justify-content-between mr-4"
         v-for="(value, index) in data.setPage"
         style="border-radius: 5px"
         :key="index"
       >
-        <div class="card-item col-12 p-0 m-0">
+        <div class="card-item col-12 p-0">
           <!-- image -->
-          <img
+          <!-- <img
             class="card-img-top"
             src="../../../assets/image/lightHouse.png"
             style="object-fit: contain; height: 30%; width: 100%"
           />
-          <hr style="display: block" />
+          <hr style="display: block" /> -->
           <!--  -->
-          <div class="px-2 mx-1">
-            <p class="card-title text-center"><b>Phòng:</b> {{ value.name }}</p>
+          <div class="mb-1 mx-1 mt-2">
+            <p class="card-title text-center">
+              <strong>Phòng : {{ value.name }} </strong>
+            </p>
             <p class="card-text">
               <b>Giá phòng:</b>
               {{ value.price }}
             </p>
-            <p class="card-text"><b>Diện tích:</b> {{ value.area }}</p>
+            <p class="card-text">
+              <b>Diện tích:</b> {{ value.long }} x {{ value.wide }}
+            </p>
           </div>
 
           <!-- icon -->
           <div class="text-center">
             <span
               class="material-symbols-outlined m-2 view border rounded p-1"
+              style="font-size: 1.4rem"
               title="chi tiết"
               data-toggle="modal"
               data-target="#viewRoomModal"
@@ -252,6 +253,7 @@ export default {
             <!-- Edit -->
             <span
               class="material-symbols-outlined mr-1 edit border rounded p-1"
+              style="font-size: 1.4rem"
               title="chỉnh sửa"
               data-toggle="modal"
               data-target="#roomUpdateModal"
@@ -262,6 +264,7 @@ export default {
             <!-- delete room -->
             <span
               class="material-symbols-outlined mr-1 delete border rounded p-1"
+              style="font-size: 1.4rem"
               title="xóa phòng"
               @click="handleDelete(value._id)"
             >
@@ -269,7 +272,9 @@ export default {
             </span>
             <!-- trả phòng -->
             <span
+              v-if="!status['_id']"
               class="material-symbols-outlined out border rounded p-1"
+              style="font-size: 1.4rem"
               title="trả phòng"
               @click="handleEdit(value._id)"
             >
@@ -277,12 +282,13 @@ export default {
             </span>
           </div>
           <!-- Add customer -->
-          <div class="px-2 mt-1 my-1 text-center">
+          <div class="px-2 mt-1 my-1 mb-2 text-center">
             <button
               class="btn btn-primary btn-menu p-1"
               data-toggle="modal"
               data-target="#addCustomerModal"
               @click="$emit('addCutomer', value._id)"
+              style="font-size: 0.8rem"
             >
               Thêm khách
             </button>

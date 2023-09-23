@@ -39,7 +39,7 @@ export default {
         { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
       ],
       active: "dashboard",
-      user: { userName: "" },
+      userName: "",
     });
     const logout = async () => {
       localStorage.removeItem("accessToken");
@@ -59,6 +59,7 @@ export default {
     onMounted(async () => {
       // const document = await userService.get("user");
       // data.user = document.message;
+      data.userName = localStorage.getItem("userName");
     });
     return { data, router, logout };
   },
@@ -79,20 +80,26 @@ export default {
         class="col-3 ml-4 mr-0 p-0"
       />
       <div class="col row mt-0">
-        <div class="col-12 my-3 text-center">
+        <div class="col-12 my-3">
           <span
             style="
               display: block;
               color: var(--beige);
               text-shadow: 0 0 5px #ffff;
-              margin-bottom: 12px;
+              font-size: 0.9rem;
             "
           >
             Xin chào</span
           >
-          <!-- <span style="color: var(--beige); text-shadow: 0 0 5px #ffff">
-            {{ data.user.userName }}
-          </span> -->
+          <span
+            style="
+              color: var(--beige);
+              text-shadow: 0 0 5px #ffff;
+              font-size: 0.9rem;
+            "
+          >
+            {{ data.userName }}
+          </span>
         </div>
       </div>
     </div>
@@ -117,10 +124,13 @@ export default {
           "
         >
           <div>
-            <span class="material-symbols-outlined mr-2">
+            <span
+              class="material-symbols-outlined mr-2"
+              style="font-size: 16px"
+            >
               {{ value.icon }}
             </span>
-            <p class="mb-0">{{ value.name }}</p>
+            <p class="mb-0" style="font-size: 16px">{{ value.name }}</p>
           </div>
         </li>
       </ul>
@@ -148,10 +158,9 @@ li div > * {
 
 li:hover > div > * {
   color: var(--yellow-light);
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 1);
 }
-.isActive {
-  color: var(--yellow-light);
-  text-shadow: 0 0 8px rgba(255, 255, 255, 1);
+.isActive > div > * {
+  text-shadow: 0 0 6px rgba(255, 255, 255, 1);
 }
 </style>

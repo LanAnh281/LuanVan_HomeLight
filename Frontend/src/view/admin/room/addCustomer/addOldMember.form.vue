@@ -90,7 +90,7 @@ export default {
           const documentRoom = await roomService.update(props._id, {
             name: documentUserRoom.message.name,
             price: documentUserRoom.message.price,
-            area: documentUserRoom.message.area,
+            wide: documentUserRoom.message.wide,
             status: true,
             boardingId: documentUserRoom.message.boardingId,
           });

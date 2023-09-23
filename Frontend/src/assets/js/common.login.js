@@ -4,14 +4,16 @@ import moment from "moment-timezone";
 //service
 import loginService from "../../service/login.service";
 
-export const setLocalStrorage = (token, position, expiresIn) => {
+export const setLocalStrorage = (token, position, userName, expiresIn) => {
   localStorage.setItem("accessToken", token);
   localStorage.setItem("position", position);
+  localStorage.setItem("userName", userName);
   localStorage.setItem("expiresIn", expiresIn);
 };
 export const cleanLocalStorage = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("position");
+  localStorage.removeItem("userName");
   localStorage.removeItem("expiresIn");
 };
 export const checkAccessToken = async (router) => {

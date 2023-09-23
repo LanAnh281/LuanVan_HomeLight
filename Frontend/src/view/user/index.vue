@@ -10,20 +10,7 @@ export default {
   setup() {
     const router = useRouter();
     const data = reactive({
-      items: [
-        { area: "10" },
-        { area: "20" },
-        { area: "20" },
-        // { area: "20" },
-        // { area: "10" },
-        // { area: "20" },
-        // { area: "20" },
-        // { area: "20" },
-        // { area: "10" },
-        // { area: "20" },
-        // { area: "20" },
-        // { area: "20" },
-      ],
+      items: [{ area: "10" }, { area: "20" }, { area: "20" }],
     });
     let intervalId = null;
     const position = ref("");

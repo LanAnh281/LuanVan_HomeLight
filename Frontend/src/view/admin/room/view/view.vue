@@ -24,7 +24,7 @@ export default {
         },
       ],
       active: "room",
-      room: { name: "", price: "", area: "" },
+      room: { name: "", price: "", long: "", wide: "" },
     });
     const isModalOpen = ref(false);
 

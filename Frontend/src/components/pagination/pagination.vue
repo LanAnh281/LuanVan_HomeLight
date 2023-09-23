@@ -35,7 +35,7 @@ export default {
       <ul class="pagination">
         <li class="page-item" :class="currentPage == 1 ? 'disabled' : ''">
           <a class="page-link" @click="$emit('previous')"
-            ><span class="material-symbols-outlined">
+            ><span class="material-symbols-outlined" style="font-size: 0.9rem">
               arrow_back_ios_new
             </span></a
           >
@@ -58,7 +58,7 @@ export default {
           :class="currentPage == totalPage ? 'disabled' : ''"
         >
           <a class="page-link" @click="$emit('next')"
-            ><span class="material-symbols-outlined">
+            ><span class="material-symbols-outlined" style="font-size: 0.9rem">
               arrow_forward_ios
             </span></a
           >

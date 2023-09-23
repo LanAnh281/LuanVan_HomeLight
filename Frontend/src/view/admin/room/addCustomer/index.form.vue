@@ -28,7 +28,7 @@ export default {
       ],
       active: "customer",
       form: "addNewMember",
-      room: { name: "", price: "", area: "" },
+      room: { name: "", price: "", wide: "", long: "" },
     });
     const isModalOpen = ref(false);
 

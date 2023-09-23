@@ -55,7 +55,7 @@ export default {
     const router = useRouter();
     // const route = useRoute();
     const data = reactive({
-      items: [{ name: "", area: "", price: "" }], //list rooms
+      items: [{ name: "", wide: "", long: "", price: "" }], //list rooms
 
       room: {}, // one room
       boarding: [{ _id: "", name: "" }], // list boarding
@@ -303,7 +303,7 @@ export default {
               >
                 domain_add
               </span>
-              <span style="color: var(--white)">Thêm nhà</span>
+              <span style="color: var(--white); font-size: 16px">Thêm nhà</span>
             </div>
           </button>
         </div>
@@ -338,7 +338,9 @@ export default {
               >
                 edit
               </span>
-              <span style="color: var(--white)">Sửa nhà trọ</span>
+              <span style="color: var(--white); font-size: 16px"
+                >Sửa nhà trọ</span
+              >
             </div>
           </button>
           <!-- :dataProps="data.boradingItem" -->
@@ -357,18 +359,22 @@ export default {
               margin-top: 6px;
               background-color: var(--green);
             "
-            data-toggle="modal"
-            data-target="#roomModal"
-            @click="isRoomModal = !isRoomModal"
           >
-            <div class="row justify-content-center plus">
+            <div
+              class="row justify-content-center plus"
+              data-toggle="modal"
+              data-target="#roomModal"
+              @click="isRoomModal = !isRoomModal"
+            >
               <span
                 class="material-symbols-outlined"
                 style="color: var(--white)"
               >
                 holiday_village
               </span>
-              <span style="color: var(--white)">Thêm phòng</span>
+              <span style="color: var(--white); font-size: 16px"
+                >Thêm phòng</span
+              >
             </div>
             <!-- compomnent add room -->
             <roomForm

@@ -18,7 +18,12 @@ export default {
 };
 </script>
 <template>
-  <select class="custom-select" id="inputGroupSelect01" @change="change">
+  <select
+    class="custom-select"
+    id="inputGroupSelect01"
+    @change="change"
+    style="font-size: 0.9rem"
+  >
     <option value="''" :selected="selected === '' ? selected : null">
       {{ title }}
     </option>

@@ -115,7 +115,9 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white)">Thêm dịch vụ</span>
+            <span style="color: var(--white); font-size: 16px"
+              >Thêm dịch vụ</span
+            >
           </div>
         </button>
         <Add
@@ -135,7 +137,9 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               edit
             </span>
-            <span style="color: var(--white)">Sửa dịch vụ</span>
+            <span style="color: var(--white); font-size: 16px"
+              >Sửa dịch vụ</span
+            >
           </div>
         </button>
         <Edit

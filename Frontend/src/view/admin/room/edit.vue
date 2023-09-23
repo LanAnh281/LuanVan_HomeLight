@@ -23,7 +23,8 @@ export default {
       item: {
         name: "",
         price: "",
-        area: "",
+        long: "",
+        wide: "",
         boardingId: "",
         status: "",
         countFiles: 0,
@@ -32,7 +33,8 @@ export default {
       error: {
         name: "",
         price: "",
-        area: "",
+        long: "",
+        wide: "",
         boardingId: "",
       },
       medias: [],
@@ -155,7 +157,7 @@ export default {
       }
       return "";
     };
-    const formFields = ["boardingId", "name", "price", "area"];
+    const formFields = ["boardingId", "name", "price", "long", "wide"];
     const save = async () => {
       try {
         for (const key in data.error) {
@@ -352,31 +354,60 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputarea" class="col-sm-3 col-form-label p-0"
-                >Diện tích :</label
+              <label for="inputlong" class="col-sm-3 col-form-label p-0"
+                >Chiều dài :</label
               >
               <div class="col-sm-9">
                 <input
                   type="text"
                   class="form-control"
-                  id="inputarea"
+                  id="inputlong"
                   @blur="
                     () => {
-                      let isCheck = checkNumber(data.item.area);
+                      let isCheck = checkNumber(data.item.long);
                       if (isCheck) {
-                        data.error.area = 'Diện tích phòng là số';
+                        data.error.long = 'Chiều dài phòng là số';
                         data.flag = true;
                       }
                     }
                   "
                   @input="
-                    data.error.area = '';
+                    data.error.long = '';
                     data.flag = false;
                   "
-                  v-model="data.item.area"
+                  v-model="data.item.long"
                 />
-                <div v-if="data.error.area" class="invalid-error">
-                  {{ data.error.area }}
+                <div v-if="data.error.long" class="invalid-error">
+                  {{ data.error.long }}
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputwide" class="col-sm-3 col-form-label p-0"
+                >Chiều dài :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputwide"
+                  @blur="
+                    () => {
+                      let isCheck = checkNumber(data.item.wide);
+                      if (isCheck) {
+                        data.error.wide = 'Chiều rộng phòng là số';
+                        data.flag = true;
+                      }
+                    }
+                  "
+                  @input="
+                    data.error.wide = '';
+                    data.flag = false;
+                  "
+                  v-model="data.item.wide"
+                />
+                <div v-if="data.error.wide" class="invalid-error">
+                  {{ data.error.wide }}
                 </div>
               </div>
             </div>

@@ -42,7 +42,7 @@ export default {
       searchPage: [],
       currentPage: 1,
       totalPage: 1,
-      sizePage: 10,
+      sizePage: 20,
       length: 0,
       searchText: "",
       //select-option
@@ -343,7 +343,11 @@ export default {
           type="search"
           placeholder="tìm kiếm theo tên"
           class="p-2 border rounded"
-          style="background-color: var(--background); width: 30%"
+          style="
+            background-color: var(--background);
+            width: 30%;
+            font-size: 0.9rem;
+          "
           v-model="data.searchText"
         />
         <div class="row justify-content-end mr-1">
@@ -361,7 +365,7 @@ export default {
               >
                 email
               </span>
-              <span style="color: var(--white)">Soạn thư</span>
+              <span style="color: var(--white); font-size: 16px">Soạn thư</span>
             </div>
           </button>
           <!-- component -->
@@ -404,6 +408,7 @@ export default {
     ></Table>
     <!-- pagination -->
     <paginationVue
+      class="m-0 p-0 mt-1"
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
       :size="data.sizePage"
@@ -441,6 +446,6 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 124vh;
+  min-height: 200vh;
 }
 </style>

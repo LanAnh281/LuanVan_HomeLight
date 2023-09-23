@@ -22,7 +22,8 @@ export default {
       item: {
         name: "",
         price: "",
-        area: "",
+        wide: "",
+        long: "",
         boardingId: "",
         status: false,
         countFiles: 0,
@@ -30,7 +31,8 @@ export default {
       error: {
         name: "",
         price: "",
-        area: "",
+        wide: "",
+        long: "",
         boardingId: "",
       },
       uploadFiles: [],
@@ -55,14 +57,16 @@ export default {
       data.item = {
         name: "",
         price: "",
-        area: "",
+        wide: "",
+        long: "",
         boardingId: "",
         countFiles: 0,
       };
       data.error = {
         name: "",
         price: "",
-        area: "",
+        wide: "",
+        long: "",
         boardingId: "",
       };
       data.flag = true;
@@ -233,7 +237,8 @@ export default {
     const formFields = [
       "name",
       "price",
-      "area",
+      "wide",
+      "long",
       "boardingId",
       "status",
       "countFiles",
@@ -265,7 +270,7 @@ export default {
           const documentRoom = await roomService.create(formData);
           if (documentRoom["status"] == "success") {
             successAd(`Đã thêm phòng trọ ${documentRoom.message["name"]}`);
-            emit("add");
+            emit("add", "xxxx");
             refresh();
           } else {
             warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
@@ -286,6 +291,7 @@ export default {
       filesRef.value = document.getElementById("inputImage"); //Get input
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+      console.log("Thêm nhà trọ", props.boarding);
     });
 
     return {
@@ -328,11 +334,12 @@ export default {
             @submit.prevent="save"
             enctype="multipart/form-data"
             class="container mt-3"
+            style="text-align: start"
           >
             <!-- nhà trọ -->
             <div class="form-group row">
-              <label for="inputname" class="col-sm-3 col-form-label p-0"
-                >Nhà trọ :</label
+              <label for="inputname" class="col-sm-3 col-form-label p-0 m-0">
+                Nhà trọ :</label
               >
               <div class="col-sm-9">
                 <Select
@@ -405,31 +412,60 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputarea" class="col-sm-3 col-form-label p-0"
-                >Diện tích :</label
+              <label for="inputlong" class="col-sm-3 col-form-label p-0"
+                >Chiều dài :</label
               >
               <div class="col-sm-9">
                 <input
                   type="text"
                   class="form-control"
-                  id="inputarea"
+                  id="inputlong"
                   @blur="
                     () => {
-                      let isCheck = checkNumber(data.item.area);
+                      let isCheck = checkNumber(data.item.long);
                       if (isCheck) {
-                        data.error.area = 'Diện tích phòng là số';
+                        data.error.long = 'Chiều dài phòng là số';
                         data.flag = true;
                       }
                     }
                   "
                   @input="
-                    data.error.area = '';
+                    data.error.long = '';
                     data.flag = false;
                   "
-                  v-model="data.item.area"
+                  v-model="data.item.long"
                 />
-                <div v-if="data.error.area" class="invalid-error">
-                  {{ data.error.area }}
+                <div v-if="data.error.long" class="invalid-error">
+                  {{ data.error.long }}
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputwide" class="col-sm-3 col-form-label p-0"
+                >Chiều rộng :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputwide"
+                  @blur="
+                    () => {
+                      let isCheck = checkNumber(data.item.wide);
+                      if (isCheck) {
+                        data.error.wide = 'chiều rộng phòng là số';
+                        data.flag = true;
+                      }
+                    }
+                  "
+                  @input="
+                    data.error.wide = '';
+                    data.flag = false;
+                  "
+                  v-model="data.item.wide"
+                />
+                <div v-if="data.error.wide" class="invalid-error">
+                  {{ data.error.wide }}
                 </div>
               </div>
             </div>
@@ -466,7 +502,7 @@ export default {
 </template>
 <style scoped>
 .modal-content {
-  width: 160%;
-  margin-left: -16%;
+  width: 120%;
+  margin-left: -12%;
 }
 </style>

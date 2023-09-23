@@ -175,7 +175,7 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white)">Quyền</span>
+            <span style="color: var(--white); font-size: 16px">Quyền</span>
           </div>
         </button>
 
@@ -195,7 +195,7 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               person_add
             </span>
-            <span style="color: var(--white)">Tài khoản</span>
+            <span style="color: var(--white); font-size: 16px">Tài khoản</span>
           </div>
         </button>
       </div>

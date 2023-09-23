@@ -198,7 +198,7 @@ export default {
         month: date.getMonth() + 1,
         year: date.getFullYear(),
       };
-      const documentBoarding = await boardinghouseService.getAll();
+      const documentBoarding = await boardinghouseService.getAllUser();
       data.boarding = documentBoarding.message;
       data.boardingActice = data.boarding[0]._id;
       await refresh();

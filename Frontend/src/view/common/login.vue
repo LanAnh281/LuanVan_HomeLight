@@ -42,6 +42,7 @@ export default {
             setLocalStrorage(
               document["token"],
               document["position"],
+              document["userName"],
               document["expiresIn"]
             );
             console.log(document);
