@@ -1,4 +1,4 @@
-const { Accounts, Positions } = require("../models/index.model.js");
+const { Accounts, Positions, Users } = require("../models/index.model.js");
 const jwt = require("jsonwebtoken");
 const secret = "asdfghjkl!@#";
 const uuid = require("uuid");
@@ -46,7 +46,17 @@ exports.login = async (req, res, next) => {
       const position = await Positions.findOne({
         where: { _id: document["positionId"] },
       });
-      const refreshToken = uuid.v4(); // string unique
+
+      console.log("userId:", document["userId"]);
+      const documentUser =
+        document["userId"] != null && document["userId"] != undefined
+          ? await Users.findOne({
+              where: { _id: document["userId"] },
+            })
+          : { userName: "Quản trị viên" };
+      console.log("*****USER:", documentUser);
+
+      const refreshToken = uuid.v4(); // string  refresh token unique
       let refreshTokenExprityTime = moment();
 
       refreshTokenExprityTime = refreshTokenExprityTime.add(24, "hours"); // add 2 hours
@@ -81,6 +91,7 @@ exports.login = async (req, res, next) => {
             status: "success",
             token: data,
             position: position["name"],
+            userName: documentUser["userName"],
             expiresIn: expiryTime,
           });
         }

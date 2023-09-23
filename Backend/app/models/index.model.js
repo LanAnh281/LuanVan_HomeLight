@@ -129,7 +129,8 @@ const Rooms = sequelize.define("Rooms", {
     type: DataTypes.STRING,
   },
   price: { type: DataTypes.STRING },
-  area: { type: DataTypes.STRING },
+  wide: { type: DataTypes.INTEGER },
+  long: { type: DataTypes.INTEGER },
   status: { type: DataTypes.BOOLEAN },
 });
 const Spending = sequelize.define("Spending", {

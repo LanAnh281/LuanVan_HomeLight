@@ -4,12 +4,13 @@ const uploadDir = "./static/images";
 const path = require("path");
 
 exports.create = async (req, res, next) => {
-  const { name, price, area, boardingId, countFiles, status } = req.body;
+  const { name, price, wide, long, boardingId, countFiles, status } = req.body;
   try {
     const document = await Rooms.create({
       name: name,
       price: price,
-      area: area,
+      wide: wide,
+      long: long,
       status: status,
       boardingId: boardingId,
     });
@@ -80,7 +81,7 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, price, area, boardingId, status, countFiles } = req.body;
+  const { name, price, wide, long, boardingId, status, countFiles } = req.body;
 
   let removeMedia = !req.body.removeMedia ? 0 : req.body.removeMedia;
   if (removeMedia.length > 0) removeMedia.pop();
@@ -89,7 +90,8 @@ exports.updated = async (req, res, next) => {
       {
         name: name,
         price: price,
-        area: area,
+        wide: wide,
+        long: long,
         status: status,
         boardingId: boardingId,
       },
@@ -156,14 +158,15 @@ exports.updated = async (req, res, next) => {
 };
 
 exports.updatedStatusRoom = async (req, res, next) => {
-  const { name, price, area, boardingId, status } = req.body;
+  const { name, price, wide, long, boardingId, status } = req.body;
 
   try {
     const document = await Rooms.update(
       {
         name: name,
         price: price,
-        area: area,
+        wide: wide,
+        long: long,
         status: status,
         boardingId: boardingId,
       },
