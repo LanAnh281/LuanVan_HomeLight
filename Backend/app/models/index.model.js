@@ -373,7 +373,24 @@ Notification.belongsToMany(Accounts, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+
+const LandlordTenant = sequelize.define("LandlordTenant", {});
+// Định nghĩa mối quan hệ tự thân
+Users.belongsToMany(Users, {
+  as: "Landlord",
+  through: "LandlordTenant",
+  foreignKey: "landlordId",
+  otherKey: "tenantId",
+});
+
+Users.belongsToMany(Users, {
+  through: LandlordTenant,
+  as: "Tenants", // Đặt biệt danh (alias) cho mối quan hệ
+  foreignKey: "landlordId", // Trường trong bảng LandlordTenant tham chiếu đến Users
+  otherKey: "tenantId", // Trường trong bảng LandlordTenant tham chiếu đến Users khác
+});
 // Sync the model with the database
+
 Roles.sync();
 Positions.sync();
 Roles_Positions.sync();
@@ -399,6 +416,7 @@ ResetPassword.sync();
 
 Rule.sync();
 UtilityReadings.sync();
+LandlordTenant.sync();
 module.exports = {
   Roles,
   Positions,
@@ -423,4 +441,5 @@ module.exports = {
   ResetPassword,
   Rule,
   UtilityReadings,
+  LandlordTenant,
 };

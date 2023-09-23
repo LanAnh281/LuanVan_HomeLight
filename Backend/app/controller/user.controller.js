@@ -1,4 +1,4 @@
-const { Users, Accounts } = require("../models/index.model");
+const { Users, Accounts, LandlordTenant } = require("../models/index.model");
 const { dateTime } = require("../middeware/datetime.middeware");
 
 const fs = require("fs");
@@ -174,6 +174,7 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
         isUser: isUser,
         roomId: req.params.id,
         password: password,
+        landlordId: req.user.userId,
       };
       const result = await createUserAccountAndUpdateRoom(userData);
       if (result.status == "success") {
@@ -231,28 +232,34 @@ exports.findAll = async (req, res, next) => {
     res.json({ message: error, status: "fail" });
   }
 };
-// exports.findOne = async (req, res, next) => {
-//   try {
-//     console.log("userId:", req.user["userId"]);
-//     const document =
-//       req.user["userId"] != null && req.user["userId"] != undefined
-//         ? await Users.findOne({
-//             where: { _id: req.user["userId"] },
-//           })
-//         : { userName: "Quản trị viên" };
-//     console.log(document);
-//     res.json({ message: document, status: "success" });
-//   } catch (error) {
-//     res.json({ message: error, status: "fail" });
-//   }
-// };
+exports.findAllTenant = async (req, res, next) => {
+  try {
+    const users = await LandlordTenant.findAll({
+      where: {
+        landlordId: req.user.userId,
+      },
+    });
+    const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */
+    for (let i in documents) {
+      let user = await Users.findOne({
+        where: { _id: documents[i].tenantId },
+      });
+      documents[i].user = user;
+      console.log(";;;;", user);
+    }
+
+    res.json({ message: documents, status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error, status: "fail" });
+  }
+};
 exports.findOne = async (req, res, next) => {
   try {
     const document = await Users.findOne({
       where: { _id: req.params.id },
     });
 
-    console.log(document);
     res.json({ message: document, status: "success" });
   } catch (error) {
     res.json({ message: error, status: "fail" });
@@ -301,7 +308,6 @@ exports.update = async (req, res, next) => {
     countFile,
   } = req.body;
   try {
-    console.log("removeImages", removeImages.length);
     if (removeImages.length > 0) removeImages.pop();
 
     const user = await Users.findOne({ where: { _id: req.params.id } });
@@ -309,16 +315,12 @@ exports.update = async (req, res, next) => {
     if (removeImages.length > 0) {
       for (let image of removeImages) {
         let img = JSON.parse(image);
-        console.log(">>>image", JSON.parse(image));
         let filePath = `${uploadDir}/${img.id}`;
-        console.log(">>>>filePath", img.id, filePath);
         if (fs.existsSync(filePath)) {
-          console.log(">>>>filePath", img.id);
           fs.unlinkSync(filePath); //delete file
         }
       }
     }
-    console.log("removeImages2", removeImages.length);
     const document = await Users.update(
       {
         userName: userName,
@@ -338,7 +340,6 @@ exports.update = async (req, res, next) => {
         },
       }
     );
-    console.log("Hoàn thành chỉnh sửa chung", countFile);
     if (countFile > 0) {
       fs.readdir(uploadDir, async (error, files) => {
         if (error) {
@@ -356,9 +357,7 @@ exports.update = async (req, res, next) => {
         });
 
         // Retrieve the two most recent files.
-        console.log("hoàn thành tìm file mới");
         if (countFile == 2) {
-          console.log("chỉnh sửa cả 2");
           newestFiles = files.slice(0, 2);
 
           const document = await Users.update(
@@ -374,11 +373,9 @@ exports.update = async (req, res, next) => {
           );
         } else if (countFile == 1) {
           let img = JSON.parse(removeImages[0]);
-          console.log("chỉnh sửa 1:", img, img.name);
           newestFiles = files.slice(0, 1);
           let data = {};
           data[img.name] = newestFiles[0];
-          console.log(newestFiles[0], data);
           const document = await Users.update(
             data,
 
@@ -389,7 +386,6 @@ exports.update = async (req, res, next) => {
             }
           );
         }
-        console.log(document);
       });
     }
 

@@ -6,6 +6,7 @@ const {
   Roles_Positions,
   Rooms,
   User_Room,
+  LandlordTenant,
 } = require("../models/index.model");
 
 const crypto = require("crypto");
@@ -59,7 +60,13 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
 
     const newUser = await Users.create(userData, { transaction });
     console.log(">>>newUser:", newUser);
-
+    if (userData.landlordId && newUser._id) {
+      const documentLandlordTenant = await LandlordTenant.create(
+        { landlordId: userData.landlordId, tenantId: newUser._id },
+        { transaction }
+      );
+      console.log(">>> LandlordTenant:", documentLandlordTenant);
+    }
     const position = await Positions.findOne({ where: { name: "user" } });
     console.log("???pos:", position);
     let password = setEncrypt(userData.password);
@@ -103,7 +110,7 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
   } catch (error) {
     if (transaction) {
       if (!transaction.finished) {
-        console.log(">>>Error");
+        console.log(">>>Error", error);
         await transaction.rollback();
       }
       return { message: error, status: "fail1" };

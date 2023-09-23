@@ -47,14 +47,12 @@ exports.login = async (req, res, next) => {
         where: { _id: document["positionId"] },
       });
 
-      console.log("userId:", document["userId"]);
       const documentUser =
         document["userId"] != null && document["userId"] != undefined
           ? await Users.findOne({
               where: { _id: document["userId"] },
             })
           : { userName: "Quản trị viên" };
-      console.log("*****USER:", documentUser);
 
       const refreshToken = uuid.v4(); // string  refresh token unique
       let refreshTokenExprityTime = moment();
@@ -112,7 +110,6 @@ exports.refreshAccessToken = async (req, res, next) => {
         refreshToken: refreshToken,
       },
     });
-    console.log(">>>>doc:", document);
     let currentTime = moment();
     if (!document) {
       return res.json({ message: "fail", status: "fail" });
@@ -125,6 +122,12 @@ exports.refreshAccessToken = async (req, res, next) => {
       const position = await Positions.findOne({
         where: { _id: document["positionId"] },
       });
+      const documentUser =
+        document["userId"] != null && document["userId"] != undefined
+          ? await Users.findOne({
+              where: { _id: document["userId"] },
+            })
+          : { userName: "Quản trị viên" };
       const expiresInMinutes = 30; // Thời gian tồn tại của JWT (vd: 1 phút)
       const expiryTime = moment().add(expiresInMinutes, "hours");
       jwt.sign(
@@ -141,6 +144,7 @@ exports.refreshAccessToken = async (req, res, next) => {
             status: "success",
             token: data,
             position: position["name"],
+            userName: documentUser["userName"],
             expiresIn: expiryTime,
           });
         }
