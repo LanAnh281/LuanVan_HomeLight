@@ -9,6 +9,7 @@ import service_roomService from "../../../service/service_room.service";
 
 import userRoomService from "../../../service/user_room.service";
 import UtilityReadingsService from "../../../service/UtilityReadings.service";
+import billService from "../../../service/bill.service";
 //asset  js
 import {
   successAd,
@@ -39,6 +40,7 @@ export default {
         date: new Date(),
         roomId: "",
       },
+      bill: { end: "", roomId: "" },
       totalPage: 0,
       length: 0,
       sizePage: 18,
@@ -104,8 +106,6 @@ export default {
             status: false,
             boardingId: documentUserRoom.message.boardingId,
           });
-          // xóa các dịch vụ của phòng
-          const documentService = await service_roomService.deleteAll(value);
           // create chỉ số điện nước
           const documentUti = await UtilityReadingsService.get(value);
           data.uti = {
@@ -133,6 +133,15 @@ export default {
 
           const creatUti = await UtilityReadingsService.create(data.uti);
           // api  tính tiền
+          const end = new Date();
+          data.bill = {
+            end: new Date(),
+            roomId: value,
+          };
+          const documentBill = await billService.create(data.bill);
+          console.log(">>>bill:", documentBill);
+          // xóa các dịch vụ của phòng
+          const documentService = await service_roomService.deleteAll(value);
 
           //xóa tất cả tài khoản và user khách trọ
           for (let value of documentUserRoom.message.Users) {

@@ -98,7 +98,7 @@ export default {
         <div class="modal-body">
           <form @submit.prevent="handleEdit" class="container mt-3">
             <!--Table  -->
-            <table class="table">
+            <table class="table m-0 p-0">
               <thead class="thead-dark">
                 <tr>
                   <th>Tên dịch vụ</th>
@@ -106,7 +106,7 @@ export default {
                   <th>Đơn vị tính</th>
                 </tr>
               </thead>
-              <tbody class="text-center">
+              <tbody>
                 <tr
                   v-for="(value, index) in data.item"
                   :key="index"
@@ -115,7 +115,7 @@ export default {
                   <th>
                     <input
                       type="text"
-                      class="p-1 w-100"
+                      class="w-100 m-0 p-0"
                       v-model="value.name"
                       style="border: none"
                     />
@@ -139,7 +139,7 @@ export default {
                 </tr>
               </tbody>
             </table>
-            <div class="form-group row justify-content-around mb-0">
+            <div class="form-group row justify-content-around mb-0 mt-2">
               <button type="submit" class="btn btn-login col-sm-2">
                 Cập nhật
               </button>
@@ -154,5 +154,9 @@ export default {
 .modal-content {
   width: 160%;
   margin-left: -16%;
+}
+th {
+  padding: 0px 2px;
+  margin: 0px;
 }
 </style>

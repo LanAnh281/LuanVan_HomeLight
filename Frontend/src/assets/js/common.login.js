@@ -30,6 +30,7 @@ export const checkAccessToken = async (router) => {
     setLocalStrorage(
       document["token"],
       document["position"],
+      document["userName"],
       document["expiresIn"]
     );
   }
