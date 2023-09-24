@@ -25,6 +25,7 @@ export default {
         price: "",
         long: "",
         wide: "",
+        content: "",
         boardingId: "",
         status: "",
         countFiles: 0,
@@ -157,7 +158,14 @@ export default {
       }
       return "";
     };
-    const formFields = ["boardingId", "name", "price", "long", "wide"];
+    const formFields = [
+      "boardingId",
+      "name",
+      "price",
+      "long",
+      "wide",
+      "content",
+    ];
     const save = async () => {
       try {
         for (const key in data.error) {
@@ -409,6 +417,19 @@ export default {
                 <div v-if="data.error.wide" class="invalid-error">
                   {{ data.error.wide }}
                 </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputContent" class="col-sm-3 col-form-label p-0"
+                >Mô tả thêm :</label
+              >
+              <div class="col-sm-9">
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="inputContent"
+                  v-model="data.item.content"
+                ></textarea>
               </div>
             </div>
             <!-- Image -->

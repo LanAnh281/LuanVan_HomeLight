@@ -29,7 +29,6 @@ export default {
         countFiles: 0,
       },
       error: {
-        name: "",
         price: "",
         wide: "",
         long: "",
@@ -60,6 +59,8 @@ export default {
         wide: "",
         long: "",
         content: "",
+        to: "",
+        from: "",
         boardingId: "",
         countFiles: 0,
       };
@@ -145,7 +146,7 @@ export default {
                   color:red;
                   background-color:rgba(240, 227, 227,0.5);
                   text-align:center;
-                  line-height:1;                 
+                  line-height:1;
           `;
           deleteIcon.classList.add("rounded-circle");
           deleteIcon.addEventListener("mouseenter", () => {
@@ -160,7 +161,7 @@ export default {
                   color:red;
                   background-color:rgb(240, 227, 227);
                   text-align:center;
-                  line-height:1;                 
+                  line-height:1;
           `;
           });
           deleteIcon.addEventListener("mouseleave", function () {
@@ -175,7 +176,7 @@ export default {
                   color:red;
                   background-color:rgba(240, 227, 227,0.5);
                   text-align:center;
-                  line-height:1;                 
+                  line-height:1;
           `;
           });
           deleteIcon.addEventListener("click", () => {
@@ -241,6 +242,8 @@ export default {
       "wide",
       "long",
       "content",
+      "from",
+      "to",
       "boardingId",
       "status",
       "countFiles",
@@ -248,35 +251,39 @@ export default {
     const save = async () => {
       try {
         for (const key in data.error) {
-          if (data.item[key] == "") {
+          if (data.item[key] == "" && key != "name") {
+            console.log(key);
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
           }
         }
 
         if (!data.flag) {
-          data.item["countFiles"] = data.uploadFiles.length;
+          for (let index = data.item.from; index <= data.item.to; index++) {
+            console.log(index);
+            data.item["countFiles"] = data.uploadFiles.length;
 
-          const formData = new FormData();
-          if (data.item.countFiles > 0) {
-            _.forEach(data.uploadFiles, (file) => {
-              if (validate(file) === "") {
-                formData.append("files", file);
-              }
+            const formData = new FormData();
+            if (data.item.countFiles > 0) {
+              _.forEach(data.uploadFiles, (file) => {
+                if (validate(file) === "") {
+                  formData.append("files", file);
+                }
+              });
+            }
+            data.item.name = index;
+            _.forEach(formFields, (field) => {
+              formData.append(field, data.item[field]);
             });
-          }
-          _.forEach(formFields, (field) => {
-            formData.append(field, data.item[field]);
-          });
-
-          const documentRoom = await roomService.create(formData);
-          if (documentRoom["status"] == "success") {
-            successAd(`Đã thêm phòng trọ ${documentRoom.message["name"]}`);
+            console.log(data.item);
+            const documentRoom = await roomService.create(formData);
+            console.log(documentRoom);
             emit("add");
-            refresh();
-          } else {
-            warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
           }
+
+          await refresh();
+        } else {
+          warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
         }
       } catch (error) {
         if (error.response) {
@@ -291,8 +298,8 @@ export default {
 
     onBeforeMount(async () => {
       filesRef.value = document.getElementById("inputImage"); //Get input
-      $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
-      $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+      $("#roomFastModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#roomFastModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
       console.log("Thêm nhà trọ", props.boarding);
     });
 
@@ -310,7 +317,7 @@ export default {
 <template>
   <div
     class="modal fade"
-    id="roomModal"
+    id="roomFastModal"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"
@@ -355,42 +362,70 @@ export default {
 
             <!--  -->
             <div class="form-group row">
-              <label for="inputroom" class="col-sm-3 col-form-label p-0"
-                >Tên phòng trọ :</label
+              <label for="inputfromroom" class="col-sm-3 col-form-label p-0"
+                >Từ phòng:</label
               >
               <div class="col-sm-9">
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
-                  id="inputroom"
+                  id="inputfromroom"
                   @blur="
                     () => {
-                      let isCheck = checkNumber(data.item.name);
+                      let isCheck = checkNumber(data.item.from);
                       if (isCheck) {
-                        data.error.name = 'Tên nhà trọ là số.';
+                        data.error.from = 'Tên nhà trọ là số.';
                         data.flag = true;
                       }
                     }
                   "
                   @input="
-                    data.error.name = '';
+                    data.error.from = '';
                     data.flag = false;
                   "
-                  v-model="data.item.name"
+                  v-model="data.item.from"
                 />
-                <div v-if="data.error.name" class="invalid-error">
-                  {{ data.error.name }}
+                <div v-if="data.error.from" class="invalid-error">
+                  {{ data.error.from }}
                 </div>
               </div>
             </div>
-
+            <div class="form-group row">
+              <label for="inputtoroom" class="col-sm-3 col-form-label p-0"
+                >Đến phòng :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="inputtoroom"
+                  @blur="
+                    () => {
+                      let isCheck = checkNumber(data.item.to);
+                      if (isCheck) {
+                        data.error.to = 'Tên nhà trọ là số.';
+                        data.flag = true;
+                      }
+                    }
+                  "
+                  @input="
+                    data.error.to = '';
+                    data.flag = false;
+                  "
+                  v-model="data.item.to"
+                />
+                <div v-if="data.error.to" class="invalid-error">
+                  {{ data.error.to }}
+                </div>
+              </div>
+            </div>
             <div class="form-group row">
               <label for="inputprice" class="col-sm-3 col-form-label p-0"
                 >Giá phòng :</label
               >
               <div class="col-sm-9">
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="inputprice"
                   @blur="
@@ -419,7 +454,7 @@ export default {
               >
               <div class="col-sm-9">
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="inputlong"
                   @blur="
@@ -448,7 +483,7 @@ export default {
               >
               <div class="col-sm-9">
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="inputwide"
                   @blur="

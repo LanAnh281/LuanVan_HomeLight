@@ -41,7 +41,7 @@ export default {
       },
       totalPage: 0,
       length: 0,
-      sizePage: 4,
+      sizePage: 18,
       setPage: [],
     });
     data.totalPage = computed(() =>

@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 //service
 import userRoomService from "../../../../service/user_room.service";
 import roomService from "../../../../service/room.service";
+import userService from "../../../../service/user.service";
 // js
 import { formatDateTime } from "../../../../assets/js/format.common";
 //component
@@ -41,32 +42,38 @@ export default {
 
     const handleDelete = async (value) => {
       try {
-        const isDeleted = await deleted(
-          "Xóa khách trọ",
-          "Bạn có chắc chắn xóa khách trọ này không?"
-        );
-        if (isDeleted == true) {
-          // xóa khách trọ khỏi user_room
-          const documentDelete = await userRoomService.delete(props._id, {
-            UserId: value,
-            RoomId: props._id,
-          });
-          if (documentDelete["status"] == "success") {
-            successAd("Thành công ");
-            await refresh();
-            if (data.item.Users.length == 0) {
-              const documentUserRoom = await userRoomService.get(props._id);
-              const documentRoom = await roomService.update(props._id, {
-                name: documentUserRoom.message.name,
-                price: documentUserRoom.message.price,
-                wide: documentUserRoom.message.wide,
-                long: documentUserRoom.message.long,
+        if (data.item.Users.length == 1) {
+          warning("Cảnh báo", "Bạn cần thực hiện trả phòng để tính tiền.");
+        } else {
+          const isDeleted = await deleted(
+            "Xóa khách trọ",
+            "Bạn có chắc chắn xóa khách trọ này không?"
+          );
+          if (isDeleted == true) {
+            //xóa tài khoản và khách trọ
+            const deleteUser = await userService.delete(value);
+            // xóa khách trọ khỏi user_room
+            const documentDelete = await userRoomService.delete(props._id, {
+              UserId: value,
+              RoomId: props._id,
+            });
+            if (documentDelete["status"] == "success") {
+              successAd("Thành công ");
+              await refresh();
+              if (data.item.Users.length == 0) {
+                const documentUserRoom = await userRoomService.get(props._id);
+                const documentRoom = await roomService.update(props._id, {
+                  name: documentUserRoom.message.name,
+                  price: documentUserRoom.message.price,
+                  wide: documentUserRoom.message.wide,
+                  long: documentUserRoom.message.long,
 
-                status: false,
-                boardingId: documentUserRoom.message.boardingId,
-              });
+                  status: false,
+                  boardingId: documentUserRoom.message.boardingId,
+                });
+              }
+              emit("changeStatus");
             }
-            emit("changeStatus");
           }
         }
       } catch (error) {

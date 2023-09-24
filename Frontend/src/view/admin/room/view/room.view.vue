@@ -14,7 +14,7 @@ export default {
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
-      item: { name: "", price: "", wide: "", long: "" },
+      item: { name: "", price: "", wide: "", long: "", content: "" },
       boarding: { name: "", address: "" },
       medias: [{ name: "" }],
     });
@@ -97,6 +97,14 @@ export default {
           <label for="" class="col-6">Trạng thái :</label>
           <p class="col-6 p-0 m-0">
             {{ !data.item.status ? "Chưa thuê" : "Đang thuê" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-12 p-0 m-0">
+        <div class="row justify-content-start p-0 m-0">
+          <label for="" class="col-2">Trạng thái :</label>
+          <p class="col-10 p-0 m-0">
+            {{ data.item.content }}
           </p>
         </div>
       </div>

@@ -31,8 +31,10 @@ import AddBoardingForm from "./addBoarding.vue";
 
 import Rule from "./addRules.form.vue";
 import Box from "./box.vue";
+
 //
 import roomForm from "./add.vue";
+import roomFast from "./addRoomFast.vue";
 import Edit from "./edit.vue";
 import View from "./view/view.vue";
 import addCustomer from "./addCustomer/index.form.vue";
@@ -43,6 +45,7 @@ export default {
     Select,
     AddBoardingForm,
     roomForm,
+    roomFast,
     Box,
     Rule,
     Edit,
@@ -86,7 +89,7 @@ export default {
       currentPage: 1,
       totalPage: 0,
       length: 0,
-      sizePage: 4,
+      sizePage: 18,
     });
     const component = reactive({
       isBoardingModal: false,
@@ -98,6 +101,7 @@ export default {
     const isBoardingModal = ref(false);
     const isEditBoardingModal = ref(false);
     const isRoomModal = ref(false);
+    const isRoomFastModal = ref(false);
     const isEditRoomModal = ref(false);
 
     const isViewModal = ref(false);
@@ -182,6 +186,13 @@ export default {
         data.isActiveBoarding = boardingId;
       }, 1);
     };
+    const handleAddRoomFast = async () => {
+      const boardingId = data.isActiveBoarding;
+      data.isActiveBoarding = "";
+      setTimeout(() => {
+        data.isActiveBoarding = boardingId;
+      }, 1);
+    };
     const refresh = async () => {
       try {
         const document = await boardinghouseService.getAllUser(); // api getAll borading houses
@@ -227,10 +238,12 @@ export default {
       handleEditBoardingClick,
       handleEdit,
       roomService,
+      handleAddRoomFast,
       //modal
       isBoardingModal,
       isEditBoardingModal,
       isRoomModal,
+      isRoomFastModal,
       isEditRoomModal,
       isViewModal,
       isAddCustomerModal,
@@ -260,7 +273,7 @@ export default {
     </div>
     <!-- Boarding house items -->
     <div class="border-radius my-3 mx-0 row justify-content-start">
-      <div class="col-6 boarding">
+      <div class="col-4 boarding">
         <button
           class="btn px-2 mr-2 board-item"
           v-for="(value, index) in data.boarding"
@@ -287,7 +300,7 @@ export default {
           </span>
         </button>
       </div>
-      <div class="col-6 mr-1 p-0 row justify-content-end">
+      <div class="col-8 mr-1 p-0 row justify-content-end">
         <div class="mr-1">
           <button
             class="btn btn-primary p-0"
@@ -352,7 +365,7 @@ export default {
         </div>
         <div>
           <button
-            class="btn p-0"
+            class="btn p-0 mr-1"
             style="
               width: 120px;
               height: 36px;
@@ -383,6 +396,42 @@ export default {
               @add="handleEdit"
               @closeModal="isRoomModal = !isRoomModal"
             ></roomForm>
+          </button>
+        </div>
+
+        <div>
+          <button
+            class="btn p-0"
+            style="
+              width: 170px;
+              height: 36px;
+              margin-top: 6px;
+              background-color: var(--blue);
+            "
+          >
+            <div
+              class="row justify-content-center plus"
+              data-toggle="modal"
+              data-target="#roomFastModal"
+              @click="isRoomFastModal = !isRoomFastModal"
+            >
+              <span
+                class="material-symbols-outlined"
+                style="color: var(--white)"
+              >
+                holiday_village
+              </span>
+              <span style="color: var(--white); font-size: 16px"
+                >Thêm phòng nhanh</span
+              >
+            </div>
+            <!-- compomnent add room -->
+            <roomFast
+              v-if="isRoomFastModal"
+              :boarding="data.boarding"
+              @add="handleAddRoomFast"
+              @closeModal="isRoomFastModal = !isRoomFastModal"
+            ></roomFast>
           </button>
         </div>
       </div>
