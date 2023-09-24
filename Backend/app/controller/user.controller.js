@@ -285,6 +285,17 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteOne = async (req, res, next) => {
   try {
+    const img = await Users.findOne({
+      where: { _id: req.params.id },
+    });
+    const array = ["imagePrevious", "imageAfter"];
+    for (let value of array) {
+      let filePath = `${uploadDir}/${img.dataValues[value]}`;
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath); //delete file
+      }
+    }
+
     const document = await Users.destroy({
       where: { _id: req.params.id },
     });

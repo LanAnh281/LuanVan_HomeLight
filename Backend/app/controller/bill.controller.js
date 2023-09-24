@@ -1,19 +1,67 @@
-const { Bill } = require("../models/index.model.js");
+const {
+  Bill,
+  User_Room,
+  Service_Room,
+  Services,
+  UtilityReadings,
+  Rooms,
+} = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const {
-    start,
-    end,
-
-    debt,
-    total,
-    roomId,
-  } = req.body;
-  console.log("Bill Body:", req.body);
+  const { debt, roomId } = req.body;
+  let endDay = new Date();
+  endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
+  endDay.setDate(endDay.getDate() - 1);
+  let end = req.body.end ? req.body.end : endDay;
   try {
+    const documentUserRoom = await User_Room.findAll({
+      where: {
+        RoomId: roomId,
+      },
+    });
+    const uti = await UtilityReadings.findAll({
+      where: {
+        roomId: roomId,
+      },
+      order: [["createdAt", "DESC"]], // Sắp xếp giảm dần theo createdAt
+      limit: 1, // Giới hạn để chỉ lấy bản ghi mới nhất
+    });
+    const documentUti = JSON.parse(JSON.stringify(uti));
+
+    const documentServiceRoom = await Service_Room.findAll({
+      where: {
+        RoomId: roomId,
+      },
+    });
+    let total = 0;
+    for (let value of documentServiceRoom) {
+      const documentService = await Services.findOne({
+        where: { _id: value.ServiceId },
+      });
+      const Water = ["nước", "Nước"];
+      const Elec = ["điện", "Điện"];
+      // const price = Number(documentService.price);
+
+      if (Water.includes(documentService.name)) {
+        total =
+          total +
+          Number(documentService.price) *
+            (Number(documentUti[0].currentWater) -
+              Number(documentUti[0].previousWater));
+      } else if (Elec.includes(documentService.name)) {
+        total =
+          total +
+          Number(documentService.price) *
+            (Number(documentUti[0].currentElectric) -
+              Number(documentUti[0].previousElectric));
+      } else total = total + Number(documentService.price);
+    }
+    const documentRoom = await Rooms.findOne({
+      where: { _id: roomId },
+    });
+    total = total + Number(documentRoom.dataValues.price);
+    console.log(">>>data:", end, total, roomId);
     const document = await Bill.create({
-      start: start,
       end: end,
-      debt: debt,
       total: total,
       roomId: roomId,
     });
