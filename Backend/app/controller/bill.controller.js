@@ -5,6 +5,7 @@ const {
   Services,
   UtilityReadings,
   Rooms,
+  Receipt,
 } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { debt, roomId } = req.body;
@@ -73,7 +74,16 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Bill.findAll({});
+    const documents = await Bill.findAll({
+      include: [
+        {
+          model: Receipt,
+        },
+        {
+          model: Rooms,
+        },
+      ],
+    });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -82,7 +92,15 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Bill.findAll({
+    const document = await Bill.findOne({
+      include: [
+        {
+          model: Receipt,
+        },
+        {
+          model: Rooms,
+        },
+      ],
       where: {
         _id: req.params.id,
       },

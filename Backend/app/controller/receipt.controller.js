@@ -1,4 +1,4 @@
-const { Receipt } = require("../models/index.model.js");
+const { Receipt, Bill } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { receive, debt, billId } = req.body;
   console.log("Receipt Body:", req.body);
@@ -25,7 +25,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Receipt.findAll({
+    const document = await Receipt.findOne({
       where: {
         _id: req.params.id,
       },
