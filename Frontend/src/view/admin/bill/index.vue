@@ -3,7 +3,6 @@ import {
   ref,
   reactive,
   onMounted,
-  onBeforeMount,
   onBeforeUnmount,
   computed,
   watch,
@@ -18,12 +17,14 @@ import utilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import { warning, deleted } from "../../../assets/js/common.alert";
+import { formatCurrency } from "../../../assets/js/format.common";
 //component
 import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/table.vue";
 import Pagination from "../../../components/pagination/pagination.vue";
+import Payment from "./addReceipt.vue";
 export default {
-  components: { Select, Table, Pagination },
+  components: { Select, Table, Pagination, Payment },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -39,8 +40,10 @@ export default {
       boarding: [{}],
       boardingActice: "",
       isInput: true,
+      activeBill: "",
     });
     let intervalId = null;
+    const ispayments = ref(false);
     data.totalPage = computed(() => {
       return data.item.length > 0
         ? Math.ceil(data.item.length / data.sizePage)
@@ -69,6 +72,24 @@ export default {
       try {
         const documentBill = await billService.getAll();
         data.item = documentBill.message;
+        data.item = data.item.filter(
+          (value) => value.Room.boardingId == data.boardingActice
+        );
+        data.item = data.item.map((item) => {
+          return {
+            ...item,
+            roomId: item.Room["_id"],
+            name: item.Room["name"],
+            total: formatCurrency(item.total),
+            receive: item.Receipts[0]
+              ? formatCurrency(Number(item.Receipts[0].receive))
+              : formatCurrency(0),
+            debt: item.Receipts[0]
+              ? formatCurrency(Number(item.Receipts[0].debt))
+              : formatCurrency(0),
+          };
+        });
+        data.length = data.item.length;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -84,7 +105,14 @@ export default {
       () => data.boardingActice,
       async (newValue, oldValue) => {
         if (oldValue == "") return;
-        console.log(newValue);
+        else if (oldValue == "0") {
+          data.boardingActice = oldValue;
+          console.log("new:", newValue);
+          await refresh();
+        } else {
+          console.log("o");
+          await refresh();
+        }
       }
     );
 
@@ -110,6 +138,8 @@ export default {
     return {
       data,
       handleDate,
+      ispayments,
+      // trang view, lọc date, trang addRe
     };
   },
 };
@@ -146,33 +176,24 @@ export default {
         </button>
       </div>
     </div>
-    <!-- <span>
-      <span class="text-primary">(*)</span> Trước khi thực hiện lọc cần lưu giá
-      trị điện nước trước.</span
-    > -->
 
     <Table
       class="text-center mt-2"
       :data="data.setPage"
-      :fields="[
-        'Mã hóa đơn',
-        'Phòng',
-        'Tổng tiền(VNĐ)',
-        'Đã trả(VNĐ)',
-        'Còn lại(VNĐ)',
-      ]"
-      :titles="[
-        'name',
-        'previousElectric',
-        'currentElectric',
-        'previousWater',
-        'currentWater',
-      ]"
+      :fields="['Phòng', 'Tổng tiền(VNĐ)', 'Đã trả(VNĐ)', 'Còn lại(VNĐ)']"
+      :titles="['name', 'total', 'receive', 'debt']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
       :action="true"
-      :actionList="['visibility', 'cancel', 'payments']"
+      :actionList="['visibility', 'payments']"
       :isInput="data.isInput"
+      :name="'Bill'"
+      @payments="
+        (value) => {
+          ispayments = !ispayments;
+          data.activeBill = value;
+        }
+      "
     ></Table>
     <Pagination
       :currentPage="data.currentPage"
@@ -195,6 +216,15 @@ export default {
         }
       "
     ></Pagination>
+
+    <!-- component -->
+    <!-- payments -->
+    <Payment
+      v-if="ispayments"
+      :_id="data.activeBill"
+      @closeModal="ispayments = !ispayments"
+      @payments="data.boardingActice = '0'"
+    ></Payment>
   </div>
 </template>
 <style scoped>

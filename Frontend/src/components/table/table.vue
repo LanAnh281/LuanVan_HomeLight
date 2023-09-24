@@ -93,4 +93,14 @@ span {
   text-shadow: 0 0 2px #ff6200;
   transition: 0.5s;
 }
+.visibility-icon:hover {
+  color: var(--blue-neon);
+  text-shadow: 0 0 2px #008cff;
+  transition: 0.5s;
+}
+.payments-icon:hover {
+  color: #f77f7f;
+  text-shadow: 0 0 2px #ffa200;
+  transition: 0.5s;
+}
 </style>
