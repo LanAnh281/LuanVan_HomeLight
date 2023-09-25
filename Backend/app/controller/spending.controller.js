@@ -1,4 +1,4 @@
-const { Spending } = require("../models/index.model.js");
+const { Spending, BorardingHouse } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
   let { date, reason, price, isProfit, boardingId } = req.body;
@@ -20,7 +20,13 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Spending.findAll({});
+    const spendings = await Spending.findAll({
+      include: [{ model: BorardingHouse }],
+    });
+    let documents = JSON.parse(JSON.stringify(spendings));
+    documents = documents.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -29,7 +35,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Spending.findAll({
+    const document = await Spending.findOne({
       where: {
         _id: req.params.id,
       },

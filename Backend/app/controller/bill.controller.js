@@ -34,10 +34,13 @@ exports.create = async (req, res, next) => {
       },
     });
     let total = 0;
+    let services = "";
     for (let value of documentServiceRoom) {
       const documentService = await Services.findOne({
         where: { _id: value.ServiceId },
       });
+      services =
+        services + `${documentService["name"]} - ${documentService["price"]} ,`;
       const Water = ["nước", "Nước"];
       const Elec = ["điện", "Điện"];
       // const price = Number(documentService.price);
@@ -60,12 +63,14 @@ exports.create = async (req, res, next) => {
       where: { _id: roomId },
     });
     total = total + Number(documentRoom.dataValues.price);
-    console.log(">>>data:", end, total, roomId);
+    console.log(">>>data:", end, total, roomId, services);
     const document = await Bill.create({
       end: end,
       total: total,
+      services: services,
       roomId: roomId,
     });
+    console.log("///", document);
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
@@ -99,6 +104,13 @@ exports.findOne = async (req, res, next) => {
         },
         {
           model: Rooms,
+          include: [
+            {
+              model: UtilityReadings,
+              order: [["createdAt", "DESC"]], // Sắp xếp giảm dần theo createdAt
+              limit: 1, // Giới hạn để chỉ lấy bản ghi mới nhất
+            },
+          ],
         },
       ],
       where: {

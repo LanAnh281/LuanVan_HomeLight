@@ -32,7 +32,7 @@ exports.findAllUser = async (req, res, next) => {
     });
     let documents = JSON.parse(JSON.stringify(boardings));
     documents = documents.sort(
-      (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
     );
     console.log(documents);
     res.json({ message: documents, status: "success" });
