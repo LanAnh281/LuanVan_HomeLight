@@ -30,18 +30,44 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal add room");
-
       emit("closeModal");
     };
     const save = async () => {
       try {
         data.item.debt = data.item.total - data.item.receive;
         data.item.billId = props._id;
-        const documentReceipt = await receiptService.create(data.item);
-        if (documentReceipt["status"] == "success") {
-          successAd("Thành công thanh toán");
-          console.log(documentReceipt);
-          emit("payments");
+        // chưa trả ==0 đ
+        if (data.item["received"] == "0 ₫") {
+          const documentReceipt = await receiptService.create(data.item);
+          if (documentReceipt["status"] == "success") {
+            successAd("Thành công thanh toán");
+            console.log(documentReceipt);
+            await refresh();
+            emit("payments");
+          }
+        }
+        // đã trả
+        else if (data.item["received"] != "0 ₫") {
+          //đã có thanh toàn trc đó
+          const receipt = data.item.Receipts[0]
+            ? data.item.Receipts[0].receive
+            : 0;
+          console.log(receipt, Number(data.item.receive) + Number(receipt));
+          const dataUpdate = {
+            receive: Number(data.item.receive) + Number(receipt),
+            debt:
+              Number(data.item.total) -
+              (Number(data.item.receive) + Number(receipt)),
+          };
+          const documentReceipt = await receiptService.update(
+            data.item.Receipts[0]._id,
+            dataUpdate
+          );
+          if (documentReceipt["status"] == "success") {
+            successAd("Thành công thanh toán");
+            await refresh();
+            emit("payments");
+          }
         }
       } catch (error) {
         if (error.response) {
@@ -53,10 +79,16 @@ export default {
         }
       }
     };
-    onBeforeMount(async () => {
+    const refresh = async () => {
       const document = await billService.get(props._id);
       data.item = document.message;
-      console.log(data.item);
+      const receipt = data.item.Receipts[0] ? data.item.Receipts[0].receive : 0;
+      data.item.received = formatCurrency(receipt);
+      data.item.debt = Number(data.item.total) - receipt;
+    };
+    onBeforeMount(async () => {
+      await refresh();
+
       // nếu như tồn tại recet thì sẽ show dữ liệu receive và debt => update receipt
       //nếu không tồn tại sẽ => create receipt
       $("#paymentsBillModal").on("show.bs.modal", openModal); //lắng nghe mở modal
@@ -127,6 +159,34 @@ export default {
                   id="inputTotal"
                   disabled
                   :value="formatCurrency(data.item.total)"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputTotal" class="col-sm-3 col-form-label p-0"
+                >Đã trả :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputTotal"
+                  disabled
+                  :value="data.item.received"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputTotal" class="col-sm-3 col-form-label p-0"
+                >Còn lại :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputTotal"
+                  disabled
+                  :value="formatCurrency(data.item.debt)"
                 />
               </div>
             </div>

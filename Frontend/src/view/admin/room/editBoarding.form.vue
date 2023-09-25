@@ -24,6 +24,7 @@ export default {
     const data = reactive({
       item: {
         name: "",
+        phone: "",
         address: "",
         rules: "",
         city: { code: "", name: "" },
@@ -36,7 +37,7 @@ export default {
         district: { code: "", name: "" },
         ward: { code: "", name: "" },
       },
-      error: { name: "", number: "" },
+      error: { name: "", number: "", phone: "" },
       flag: true,
       city: {},
       district: { data: { districts: [] } },
@@ -120,6 +121,7 @@ export default {
           (item) => item.name == address[3]
         );
         data.levels.city = data.levels.city[0];
+        data.item.city = data.levels.city;
         //district
         const document = await city(data.levels.city.code);
         data.levels.district = document.district;
@@ -128,6 +130,7 @@ export default {
           (item) => item.name == address[2]
         );
         data.levels.district = data.levels.district[0];
+        data.item.district = data.levels.district;
 
         //ward
         const ward = await axios.get(
@@ -140,6 +143,7 @@ export default {
           (item) => item.name == address[1]
         );
         data.levels.ward = data.levels.ward[0];
+        data.item.ward = data.levels.ward;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -152,11 +156,13 @@ export default {
     };
     const save = async () => {
       try {
-        data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
+        console.log(data.item);
+        data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
         const document = await boardinghouseService.update(props.boardingId, {
           boardingId: data.item.boardingId,
           address: data.item.address,
           name: data.item.name,
+          phone: data.item.phone,
         });
         if (document["status"] == "success") {
           successAd(`Đã cập nhật nhà trọ `);
@@ -236,6 +242,19 @@ export default {
                   class="form-control"
                   id="inputname"
                   v-model="data.item.name"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputPhone" class="col-sm-3 col-form-label p-0"
+                >SĐT :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputPhone"
+                  v-model="data.item.phone"
                 />
               </div>
             </div>

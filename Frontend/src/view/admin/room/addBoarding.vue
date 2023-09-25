@@ -11,6 +11,7 @@ import Select from "../../../components/select/selectdependent.vue";
 import {
   checkStringAndNumber,
   checkAddress,
+  checkPhone,
 } from "../../../assets/js/checkInput.common";
 import { successAd, warning } from "../../../assets/js/common.alert";
 import { city, district, ward } from "../../../assets/js/dependent.common";
@@ -20,6 +21,7 @@ export default {
     const data = reactive({
       item: {
         name: "",
+        phone: "",
         city: "",
         district: "",
         ward: "",
@@ -27,7 +29,7 @@ export default {
         address: "",
         rules: "",
       },
-      error: { name: "", number: "" },
+      error: { name: "", number: "", phone: "" },
       flag: true,
       city: {},
       district: { data: { districts: [] } },
@@ -94,6 +96,7 @@ export default {
     const refresh = () => {
       data.item = {
         name: "",
+        phone: "",
         city: "",
         district: "",
         ward: "",
@@ -101,12 +104,12 @@ export default {
         address: "",
         rules: "",
       };
-      data.error = { name: "", number: "" };
+      data.error = { name: "", number: "", phone: "" };
       data.flag = true;
     };
     const save = async () => {
       console.log("save");
-      const keys = ["name", "number"];
+      const keys = ["name", "number", "phone"];
       try {
         for (const key of keys) {
           console.log("key", data.item[key]);
@@ -121,6 +124,7 @@ export default {
           const document = await boardinghouseService.create({
             address: data.item.address,
             name: data.item.name,
+            phone: data.item.phone,
           });
           if (document["status"] == "success") {
             successAd(`Đã thêm nhà trọ ${document.message["name"]}`);
@@ -158,6 +162,7 @@ export default {
       save,
       checkStringAndNumber,
       checkAddress,
+      checkPhone,
       // 3 cấp
       change,
       changeDistrict,
@@ -220,6 +225,36 @@ export default {
                 />
                 <div v-if="data.error.name" class="invalid-error">
                   {{ data.error.name }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="inputPhone" class="col-sm-3 col-form-label p-0"
+                >SĐT :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Phone"
+                  @blur="
+                    () => {
+                      let isCheck = checkPhone(data.item.phone);
+                      if (isCheck) {
+                        data.error.phone = 'Số điện thoại gồm 10 số.';
+                        data.flag = true;
+                      }
+                    }
+                  "
+                  @input="
+                    data.error.phone = '';
+                    data.flag = false;
+                  "
+                  v-model="data.item.phone"
+                />
+                <div v-if="data.error.phone" class="invalid-error">
+                  {{ data.error.phone }}
                 </div>
               </div>
             </div>

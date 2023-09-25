@@ -16,15 +16,15 @@ import roomService from "../../../service/room.service";
 import utilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
-import { warning, deleted } from "../../../assets/js/common.alert";
 import { formatCurrency } from "../../../assets/js/format.common";
 //component
 import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/table.vue";
 import Pagination from "../../../components/pagination/pagination.vue";
 import Payment from "./addReceipt.vue";
+import View from "./view.vue";
 export default {
-  components: { Select, Table, Pagination, Payment },
+  components: { Select, Table, Pagination, Payment, View },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -44,6 +44,7 @@ export default {
     });
     let intervalId = null;
     const ispayments = ref(false);
+    const isView = ref(false);
     data.totalPage = computed(() => {
       return data.item.length > 0
         ? Math.ceil(data.item.length / data.sizePage)
@@ -105,7 +106,7 @@ export default {
       () => data.boardingActice,
       async (newValue, oldValue) => {
         if (oldValue == "") return;
-        else if (oldValue == "0") {
+        else if (newValue == "0") {
           data.boardingActice = oldValue;
           console.log("new:", newValue);
           await refresh();
@@ -139,6 +140,7 @@ export default {
       data,
       handleDate,
       ispayments,
+      isView,
       // trang view, lọc date, trang addRe
     };
   },
@@ -176,11 +178,14 @@ export default {
         </button>
       </div>
     </div>
-
+    <span>
+      <span class="text-primary">(*)</span> Tổng tiền bao gồm tiền phòng, điện
+      nước, dịch vụ và khoản nợ những tháng trước (nếu có)</span
+    >
     <Table
       class="text-center mt-2"
       :data="data.setPage"
-      :fields="['Phòng', 'Tổng tiền(VNĐ)', 'Đã trả(VNĐ)', 'Còn lại(VNĐ)']"
+      :fields="['Phòng', 'Tổng tiền(₫)', 'Đã trả(₫)', 'Còn lại(₫)']"
       :titles="['name', 'total', 'receive', 'debt']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
@@ -191,6 +196,12 @@ export default {
       @payments="
         (value) => {
           ispayments = !ispayments;
+          data.activeBill = value;
+        }
+      "
+      @visibility="
+        (value) => {
+          isView = !isView;
           data.activeBill = value;
         }
       "
@@ -225,6 +236,12 @@ export default {
       @closeModal="ispayments = !ispayments"
       @payments="data.boardingActice = '0'"
     ></Payment>
+    <View
+      v-if="isView"
+      :_id="data.activeBill"
+      :boardingId="data.boardingActice"
+      @closeModal="isView = !isView"
+    ></View>
   </div>
 </template>
 <style scoped>

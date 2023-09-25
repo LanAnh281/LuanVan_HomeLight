@@ -3,24 +3,26 @@ import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
+import boardinghouseService from "../../../service/boardinghouse.service";
 import billService from "../../../service/bill.service";
 import receiptService from "../../../service/receipt.service";
+
 //component
 import Select from "../../../components/select/select.vue";
 //js
-import {
-  checkStringAndNumber,
-  checkAddress,
-  checkNumber,
-} from "../../../assets/js/checkInput.common";
 import { formatCurrency } from "../../../assets/js/format.common";
-import { successAd, warning } from "../../../assets/js/common.alert";
+// component
+import Table from "../../../components/table/table.vue";
 export default {
-  components: { Select },
-  props: { _id: { type: String, default: "" } },
+  components: { Select, Table },
+  props: {
+    _id: { type: String, default: "" },
+    boardingId: { type: String, default: "" },
+  },
   setup(props, { emit }) {
     const data = reactive({
       item: { receive: "", Room: { name: "" }, billId: "" },
+      boarding: {},
     });
     const isModalOpen = ref(false);
 
@@ -33,37 +35,17 @@ export default {
 
       emit("closeModal");
     };
-    const save = async () => {
-      try {
-        data.item.debt = data.item.total - data.item.receive;
-        data.item.billId = props._id;
-        const documentReceipt = await receiptService.create(data.item);
-        if (documentReceipt["status"] == "success") {
-          successAd("Thành công thanh toán");
-          console.log(documentReceipt);
-          emit("payments");
-        }
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
-    onBeforeMount(async () => {
-      const document = await billService.get(props._id);
-      data.item = document.message;
 
-      $("#paymentsBillModal").on("show.bs.modal", openModal); //lắng nghe mở modal
-      $("#paymentsBillModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+    onBeforeMount(async () => {
+      const documentBoarding = await boardinghouseService.get(props.boardingId);
+      data.boarding = documentBoarding.message;
+      console.log(data.boarding);
+      $("#visibilityBillModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#visibilityBillModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
 
     return {
       data,
-      save,
       formatCurrency,
     };
   },
@@ -72,7 +54,7 @@ export default {
 <template>
   <div
     class="modal fade"
-    id="paymentsBillModal"
+    id="visibilityBillModal"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"
@@ -81,9 +63,6 @@ export default {
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title title" id="exampleModalLabel">
-            Thêm phòng trọ
-          </h5>
           <button
             type="button"
             class="close"
@@ -94,67 +73,86 @@ export default {
           </button>
         </div>
         <div class="modal-body">
-          <form
-            @submit.prevent="save"
-            enctype="multipart/form-data"
-            class="container mt-3"
-            style="text-align: start"
-          >
-            <div class="form-group row">
-              <label for="inputRoom" class="col-sm-3 col-form-label p-0"
-                >Phòng :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="inputRoom"
-                  disabled
-                  :value="data.item.Room.name"
-                />
-              </div>
+          <div class="row justify-content-between">
+            <div class="col-9 row">
+              <div class="col-12">{{ data.boarding["name"] }}</div>
+              <div class="col-12">{{ data.boarding["phone"] }}</div>
+              <div class="col-12">{{ data.boarding["address"] }}</div>
             </div>
-            <div class="form-group row">
-              <label for="inputTotal" class="col-sm-3 col-form-label p-0"
-                >Tổng tiền :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="inputTotal"
-                  disabled
-                  :value="formatCurrency(data.item.total)"
-                />
-              </div>
+            <div class="col-3">Ngày lập:</div>
+            <div class="col-12 text-center my-2">
+              <h3>Hóa đơn</h3>
+              <p>Tháng /</p>
             </div>
-            <!--  -->
-            <div class="form-group row">
-              <label for="inputreceive" class="col-sm-3 col-form-label p-0"
-                >Thanh toán :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="inputreceive"
-                  v-model="data.item.receive"
-                />
-                <!-- <div v-if="data.error.name" class="invalid-error">
-                  {{ data.error.name }}
-                </div> -->
-              </div>
+            <div class="col-12 row">
+              <p class="col-2">Họ tên :</p>
+              <p class="col-10">ss</p>
+              <p class="col-2">Phòng :</p>
+              <p class="col-10">1</p>
             </div>
 
-            <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">
-                Xác nhận
-              </button>
-            </div>
-          </form>
+            <table class="table mt-2 mx-2">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Nội dung</th>
+                  <th scope="col">Điện cũ (Kwh)</th>
+                  <th scope="col">Điện mới (Kwh)</th>
+                  <th scope="col">Nước cũ (m³)</th>
+                  <th scope="col">Nước mới (m³)</th>
+                  <th scope="col">Đơn giá (₫)</th>
+                  <th scope="col">Thành tiền (₫)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Phòng</td>
+
+                  <td colspan="5" style="text-align: end">1</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td>Điện</td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>2</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td>Nước</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Dịch vụ v-for</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Tổng tiền</th>
+                  <td colspan="5"></td>
+                  <td>10000đ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.modal-content {
+  width: 160%;
+  margin-left: -16%;
+}
+</style>

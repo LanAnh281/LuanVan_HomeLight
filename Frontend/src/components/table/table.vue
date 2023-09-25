@@ -59,7 +59,7 @@ export default {
             <span
               v-for="(value2, index2) in actionList"
               :key="index2"
-              class="material-symbols-outlined rounded-circle"
+              class="material-symbols-outlined rounded-circle mr-1"
               :class="`${value2}-icon`"
               data-toggle="modal"
               :data-target="`#${value2}${name}Modal`"
@@ -94,8 +94,8 @@ span {
   transition: 0.5s;
 }
 .visibility-icon:hover {
-  color: var(--blue-neon);
-  text-shadow: 0 0 2px #008cff;
+  color: #00aeff;
+  text-shadow: 0 0 2px #00f0ff;
   transition: 0.5s;
 }
 .payments-icon:hover {
