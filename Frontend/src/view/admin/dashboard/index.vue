@@ -52,18 +52,25 @@ export default {
     };
   },
 };
+// 1.Thống kê tổng thu nhập:
+// Điều này bao gồm tổng số tiền thu được từ việc cho thuê nhà trọ trong
+// một khoảng thời gian cụ thể (thường là hàng tháng hoặc hàng năm).
+// 2.Thống kê Trạng thái phòng (trống, đang thuê)
+//3Thống kê khách hàng: Số lượng khách thuê,
+//  thông tin liên hệ của họ và thời gian họ đã ở trong nhà trọ.
+//Thống kê về tình hình sửa chữa và bảo trì:
+//  Các công việc sửa chữa và bảo trì cần
+// được ghi lại để đảm bảo rằng nhà trọ luôn ở trong tình trạng tốt.
+/*
+xác định quyền và kiểm tra lỗi
+*/
 </script>
+
 <template>
   <div class="body m-0">
-    Thống kê
+    <nav></nav>
     <div class="border-radius my-3 row m-0 justify-content-start">
-      <div class="input-group col-2 align-items-center">
-        <!-- <Select
-          :title="`Trạng thái phòng`"
-          :data="data.status"
-          @choose="(value) => handleStatus(value)"
-        ></Select> -->
-      </div>
+      <div class="input-group col-2 align-items-center"></div>
       <div class="input-group col-2 align-items-center"></div>
       <!-- btn add boarding house -->
       <div class="col-8 mr-1 p-0 row justify-content-end">

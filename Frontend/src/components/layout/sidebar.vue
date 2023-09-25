@@ -26,6 +26,11 @@ export default {
           active: "bill",
         },
         {
+          name: "Phát sinh",
+          icon: "monetization_on",
+          active: "spending",
+        },
+        {
           name: "Báo cáo",
           icon: "text_snippet",
           active: "report",

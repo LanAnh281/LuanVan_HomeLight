@@ -53,6 +53,7 @@ export default {
               style="
                 background-color: rgb(240, 242, 243);
                 border-color: aliceblue;
+                height: 24px;
               "
             />
           </th>

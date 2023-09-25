@@ -30,7 +30,7 @@ export default {
       item: [], //list
       totalPage: 0,
       currentPage: 1,
-      sizePage: 2,
+      sizePage: 10,
       setPage: [],
       length: 0,
 
@@ -77,19 +77,24 @@ export default {
         current.getFullYear() == data.selectDate.year
       ) {
         // đùng thời gian hiện tại
+        console.log("Hiện tại date");
         await refresh();
       } else {
         //quá khứ hoặc tương lai
+        console.log("quá khứ hoặc tương lại date");
         const documentUti = await utilityReadingsService.getAll();
         data.item = documentUti.message;
         data.item = data.item.filter((item) => {
           let date = new Date(item.date);
           return (
             date.getMonth() + 1 == data.selectDate.month &&
-            date.getFullYear() == data.selectDate.year
+            date.getFullYear() == data.selectDate.year &&
+            item.Room.boardingId == data.boardingActice
           );
         });
+        // await refresh();
         data.isInput = false;
+        console.log(data.item);
       }
     };
     const getUti = async (id) => {
@@ -106,8 +111,6 @@ export default {
           data.item.map(async (item) => {
             return {
               ...item,
-              // currentElectric: 0,
-              // currentWater: 0,
               uti: await getUti(item._id),
             };
           })
@@ -116,8 +119,6 @@ export default {
         data.item = data.item.map((item) => {
           return {
             ...item,
-            // previousElectric: item.uti ? item.uti["currentElectric"] : 0,
-            // previousWater: item.uti ? item.uti["currentWater"] : 0,
             date: item.uti ? item.uti["date"] : "1900-1-1",
           };
         });
@@ -129,8 +130,8 @@ export default {
             item.boardingId === data.boardingActice &&
             (item.status === true ||
               (item.status === false &&
-                current.getMonth() + 1 === date.getMonth() + 1 &&
-                current.getFullYear() === date.getFullYear()))
+                data.selectDate.month === date.getMonth() + 1 &&
+                data.selectDate.year === date.getFullYear()))
           );
         });
         data.item = data.item.map((item) => {
@@ -183,12 +184,11 @@ export default {
         }
       }
     };
-
     watch(
       () => data.boardingActice,
       async (newValue, oldValue) => {
         if (oldValue == "") return;
-        console.log(newValue);
+        // console.log(newValue);
         // const documentRoom = await roomService.getAll();
         const current = new Date();
         // thời gian hiện tại== thời gian đã chọn
@@ -197,22 +197,32 @@ export default {
           current.getMonth() + 1 == data.selectDate.month &&
           current.getFullYear() == data.selectDate.year
         ) {
-          console.log("hiện tại");
+          // console.log("hiện tại nhà trọ");
           // đùng thời gian hiện tại
           await refresh();
         } else {
           //quá khứ hoặc tương lai
+          // console.log("Quá khứ or tương lai nhà trọ");
           const documentUti = await utilityReadingsService.getAll();
           data.item = documentUti.message;
           data.item = data.item.filter((item) => {
             let date = new Date(item.date);
-
+            // console.log(item);
+            // console.log("Thời gian csdl:", date.getMonth() + 1);
+            // console.log("Thời gian đã chọn:", data.selectDate.month);
+            // console.log(
+            //   date.getMonth() + 1 == data.selectDate.month &&
+            //     date.getFullYear() == data.selectDate.year &&
+            //     item.Room.boardingId == data.boardingActice
+            // );
             return (
               date.getMonth() + 1 == data.selectDate.month &&
-              date.getFullYear() == data.selectDate.year
+              date.getFullYear() == data.selectDate.year &&
+              item.Room.boardingId == data.boardingActice
             );
           });
           data.isInput = false;
+          // console.log(data.item);
         }
         data.length = data.item.length;
       }
@@ -271,7 +281,7 @@ export default {
           type="date"
           @input="handleDate"
           class="border rounded py-1 text-center"
-          style="height: 39px"
+          style="height: 39px; background-color: var(--background)"
         />
       </div>
       <div class="input-group col-1 m-0 align-items-center p-0"></div>

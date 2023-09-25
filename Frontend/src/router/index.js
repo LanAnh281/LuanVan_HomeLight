@@ -70,6 +70,11 @@ const routes = [
     component: () => import("../view/admin/bill/index.vue"),
   },
   {
+    path: "/admin/spending",
+    name: "spending",
+    component: () => import("../view/admin/spending/index.vue"),
+  },
+  {
     path: "/admin/report",
     name: "report",
     component: () => import("../view/admin/report/index.vue"),

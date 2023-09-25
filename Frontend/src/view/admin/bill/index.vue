@@ -32,7 +32,7 @@ export default {
       item: [], //list
       totalPage: 0,
       currentPage: 1,
-      sizePage: 2,
+      sizePage: 10,
       setPage: [],
       length: 0,
 
@@ -67,15 +67,22 @@ export default {
         month: date.getMonth() + 1,
         year: date.getFullYear(),
       };
+      await refresh();
     };
 
     const refresh = async () => {
       try {
         const documentBill = await billService.getAll();
         data.item = documentBill.message;
-        data.item = data.item.filter(
-          (value) => value.Room.boardingId == data.boardingActice
-        );
+        data.item = data.item.filter((value) => {
+          const date = new Date(value.createdAt);
+
+          return (
+            value.Room.boardingId == data.boardingActice &&
+            data.selectDate.month == date.getMonth() + 1 &&
+            data.selectDate.year == date.getFullYear()
+          );
+        });
         data.item = data.item.map((item) => {
           return {
             ...item,
@@ -90,6 +97,7 @@ export default {
               : formatCurrency(0),
           };
         });
+
         data.length = data.item.length;
       } catch (error) {
         if (error.response) {
@@ -122,7 +130,7 @@ export default {
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
-      //
+      //khởi tạo selectDate là ngày hiện tại
       const date = new Date();
       data.selectDate = {
         month: date.getMonth() + 1,
@@ -141,7 +149,7 @@ export default {
       handleDate,
       ispayments,
       isView,
-      // trang view, lọc date, trang addRe
+      //  lọc date,
     };
   },
 };
@@ -154,7 +162,7 @@ export default {
           type="date"
           @input="handleDate"
           class="border rounded py-1 text-center"
-          style="height: 39px"
+          style="height: 39px; background-color: var(--background)"
         />
       </div>
       <div class="input-group col-1 m-0 align-items-center p-0"></div>
@@ -178,10 +186,7 @@ export default {
         </button>
       </div>
     </div>
-    <span>
-      <span class="text-primary">(*)</span> Tổng tiền bao gồm tiền phòng, điện
-      nước, dịch vụ và khoản nợ những tháng trước (nếu có)</span
-    >
+
     <Table
       class="text-center mt-2"
       :data="data.setPage"

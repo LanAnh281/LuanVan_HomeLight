@@ -52,6 +52,11 @@ export default {
     };
   },
 };
+/*
+1.Báo cáo lời lỗ, số thu và số chi
+2. ds khách nợ tiền phòng
+3. doanh thu 
+*/
 </script>
 <template>
   <div class="body m-0">

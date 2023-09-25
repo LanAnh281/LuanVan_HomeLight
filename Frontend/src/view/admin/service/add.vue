@@ -133,16 +133,16 @@ export default {
           </div>
           <form @submit.prevent="handleCreate" class="container mt-3">
             <!--Table  -->
-            <table class="table">
-              <thead class="thead-dark">
+            <table class="table text-center">
+              <thead class="thead-dark m-0 p-0">
                 <tr>
-                  <th>Tên dịch vụ</th>
-                  <th>Đơn giá</th>
-                  <th>Đơn vị tính</th>
-                  <th>Hành động</th>
+                  <th scope="col">Tên dịch vụ</th>
+                  <th scope="col">Đơn giá</th>
+                  <th scope="col">Đơn vị tính</th>
+                  <th scope="col">Hành động</th>
                 </tr>
               </thead>
-              <tbody class="text-center">
+              <tbody class="text-center m-0 p-0">
                 <tr
                   v-for="(value, index) in data.item"
                   :key="index"
@@ -151,25 +151,25 @@ export default {
                   <th>
                     <input
                       type="text"
-                      class="p-1 w-100"
+                      class="px-1 py-0 m-0 w-100"
+                      style="height: 30px"
                       v-model="value.name"
-                      style="border: none"
                     />
                   </th>
                   <th>
                     <input
-                      type="text"
+                      type="number"
                       v-model="value.price"
-                      class="p-1 w-100"
-                      style="border: none"
+                      class="px-1 py-0 m-0 w-100"
+                      style="height: 30px"
                     />
                   </th>
-                  <th>
+                  <th class="">
                     <input
                       type="text"
-                      class="p-1 w-100"
                       v-model="value.unit"
-                      style="border: none"
+                      class="px-1 py-0 m-0 w-100"
+                      style="height: 30px"
                     />
                   </th>
                   <th class="text-center">

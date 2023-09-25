@@ -80,11 +80,24 @@ export default {
       }
     };
     const refresh = async () => {
-      const document = await billService.get(props._id);
-      data.item = document.message;
-      const receipt = data.item.Receipts[0] ? data.item.Receipts[0].receive : 0;
-      data.item.received = formatCurrency(receipt);
-      data.item.debt = Number(data.item.total) - receipt;
+      try {
+        const document = await billService.get(props._id);
+        data.item = document.message;
+        const receipt = data.item.Receipts[0]
+          ? data.item.Receipts[0].receive
+          : 0;
+        data.item.received = formatCurrency(receipt);
+        data.item.debt = Number(data.item.total) - receipt;
+        console.log(data.item);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
     onBeforeMount(async () => {
       await refresh();
