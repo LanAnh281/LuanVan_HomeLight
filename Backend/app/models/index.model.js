@@ -113,6 +113,9 @@ const BorardingHouse = sequelize.define("BoardingHouse", {
   name: {
     type: DataTypes.TEXT,
   },
+  phone: {
+    type: DataTypes.TEXT,
+  },
   address: {
     type: DataTypes.TEXT,
   },

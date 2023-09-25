@@ -1,11 +1,12 @@
 const { BorardingHouse } = require("../models/index.model.js");
 
 exports.create = async (req, res, next) => {
-  const { name, address } = req.body;
+  const { name, address, phone } = req.body;
   try {
     const document = await BorardingHouse.create({
       name: name,
       address: address,
+      phone: phone,
       userId: req.user.userId,
     });
     console.log("doc", document);
@@ -54,13 +55,14 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, address } = req.body;
+  const { name, address, phone } = req.body;
   console.log("Update BorardingHouse", req.body);
   try {
     const document = await BorardingHouse.update(
       {
         name: name,
         address: address,
+        phone: phone,
         userId: req.user.userId,
       },
       {
