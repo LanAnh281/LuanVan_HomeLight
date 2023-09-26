@@ -1,4 +1,4 @@
-const { Receipt, Bill } = require("../models/index.model.js");
+const { Receipt, Bill, Rooms } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { receive, debt, billId } = req.body;
   console.log("Receipt Body:", req.body);
@@ -16,7 +16,18 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Receipt.findAll({});
+    const documents = await Receipt.findAll({
+      include: [
+        {
+          model: Bill,
+          include: [
+            {
+              model: Rooms,
+            },
+          ],
+        },
+      ],
+    });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
