@@ -44,7 +44,7 @@ export default {
       bill: { end: "", roomId: "" },
       totalPage: 0,
       length: 0,
-      sizePage: 1,
+      sizePage: 18,
       setPage: [],
       searchPage: [],
     });

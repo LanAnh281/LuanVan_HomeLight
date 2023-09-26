@@ -116,8 +116,10 @@ export default {
               ? formatCurrency(Number(item.Receipts[0].receive))
               : formatCurrency(0),
             debt: item.Receipts[0]
-              ? formatCurrency(Number(item.Receipts[0].debt))
-              : formatCurrency(0),
+              ? formatCurrency(
+                  Number(item.total) - Number(item.Receipts[0].receive)
+                )
+              : formatCurrency(item.total),
           };
         });
         if (data.selectFee == "0 ₫")

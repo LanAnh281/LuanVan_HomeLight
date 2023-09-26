@@ -22,7 +22,7 @@ export default {
   <div>
     <table class="table">
       <thead class="thead-dark">
-        <tr>
+        <tr class="m-0 p-0">
           <!-- <th scope="col">#</th> -->
           <th scope="col" v-for="(filed, index) in fields" :key="index">
             {{ filed }}
@@ -31,13 +31,22 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(value, index) in data" :key="index">
+        <tr
+          v-for="(value, index) in data"
+          :key="index"
+          class="m-0 p-0"
+          style="line-height: 2"
+        >
           <!-- <th scope="row">{{ (currentPage - 1) * sizePage + index + 1 }}</th> -->
 
-          <td v-for="(title, index1) in titles" :key="index1" style="">
+          <td
+            v-for="(title, index1) in titles"
+            :key="index1"
+            class="m-0 p-0 px-2"
+          >
             {{ value[title] }}
           </td>
-          <td v-if="action" class="ml-2">
+          <td v-if="action" class="ml-2 m-0 p-0 text-center">
             <div v-if="account == true" class="text-center">
               <span
                 class="material-symbols-outlined"
@@ -54,7 +63,6 @@ export default {
                 toggle_off
               </span>
             </div>
-            <!-- :data-target="`${value2}UserModal`" -->
 
             <span
               v-for="(value2, index2) in actionList"

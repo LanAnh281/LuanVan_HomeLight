@@ -29,17 +29,18 @@ export default {
           <th scope="col" v-for="(filed, index) in fields" :key="index">
             {{ filed }}
           </th>
-          <th
-            scope="col p-0"
-            v-if="action"
-            style="text-align: center; line-height: 3"
-          ></th>
+          <th scope="col p-0" v-if="action" style="line-height: 3"></th>
         </tr>
       </thead>
 
       <tbody class="m-0 p-0">
-        <tr v-for="(value, index) in data" :key="index" class="m-0 p-0">
-          <td scope="col" class="text-center" v-if="isInputChecked">
+        <tr
+          v-for="(value, index) in data"
+          :key="index"
+          class="m-0 p-0"
+          style="line-height: 2"
+        >
+          <td scope="col" class="text-center m-0 p-0" v-if="isInputChecked">
             <input type="checkbox" v-model="value.checked" />
           </td>
 

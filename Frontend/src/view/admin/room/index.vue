@@ -89,7 +89,7 @@ export default {
       currentPage: 1,
       totalPage: 0,
       length: 0,
-      sizePage: 1,
+      sizePage: 18,
       searchText: "",
     });
     const component = reactive({
