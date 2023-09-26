@@ -35,25 +35,48 @@ export default {
       sizePage: 10,
       setPage: [],
       length: 0,
-
+      searchText: "",
+      searchPage: [],
       selectDate: { month: "", year: "" },
       boarding: [{}],
       boardingActice: "",
       isInput: true,
       activeBill: "",
+      fee: [
+        {
+          _id: true,
+          name: "Chưa thanh toán",
+        },
+        { _id: false, name: "Đã thanh toán" },
+      ],
+      selectFee: "1 ₫",
     });
     let intervalId = null;
     const ispayments = ref(false);
     const isView = ref(false);
+
+    data.searchPage = computed(
+      () => (
+        (data.currentPage = 1),
+        data.item
+          ? data.item.filter((item) =>
+              item.name
+                .toLowerCase()
+                .includes(data.searchText.toLocaleLowerCase())
+            )
+          : []
+      )
+    );
     data.totalPage = computed(() => {
-      return data.item.length > 0
-        ? Math.ceil(data.item.length / data.sizePage)
+      return data.searchPage.length > 0
+        ? Math.ceil(data.searchPage.length / data.sizePage)
         : 0;
     });
 
     data.setPage = computed(() => {
-      return data.item.length > 0
-        ? data.item.slice(
+      // console.log(data.searchPage);
+      return data.searchPage
+        ? data.searchPage.slice(
             (data.currentPage - 1) * data.sizePage,
             data.currentPage * data.sizePage
           )
@@ -97,8 +120,17 @@ export default {
               : formatCurrency(0),
           };
         });
-
+        if (data.selectFee == "0 ₫")
+          data.item = data.item.filter((item) => {
+            console.log("đã thanh toán");
+            return item.debt == "0 ₫";
+          });
+        else
+          data.item = data.item.filter((item) => {
+            return item.debt != "0 ₫";
+          });
         data.length = data.item.length;
+        // console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -124,7 +156,12 @@ export default {
         }
       }
     );
-
+    const handlefee = async (value) => {
+      if (value == "true") {
+        data.selectFee = "2 ₫";
+      } else data.selectFee = "0 ₫";
+      await refresh();
+    };
     onMounted(async () => {
       await checkAccessToken(router); //access token
       intervalId = setInterval(async () => {
@@ -149,7 +186,7 @@ export default {
       handleDate,
       ispayments,
       isView,
-      //  lọc date,
+      handlefee,
     };
   },
 };
@@ -162,12 +199,32 @@ export default {
           type="date"
           @input="handleDate"
           class="border rounded py-1 text-center"
-          style="height: 39px; background-color: var(--background)"
+          style="height: 36px; background-color: var(--background)"
         />
       </div>
-      <div class="input-group col-1 m-0 align-items-center p-0"></div>
+      <div class="input-group col-2 m-0 align-items-center p-0 mr-1">
+        <Select
+          :title="`Thanh toán`"
+          :data="data.fee"
+          :selected="true"
+          @choose="(value) => handlefee(value)"
+          style="height: 36px; background-color: var(--background)"
+        ></Select>
+      </div>
 
-      <div class="col-9 mr-1 p-0 row justify-content-end"></div>
+      <div class="input-group col m-0 align-items-center p-0">
+        <input
+          type="search"
+          placeholder="tìm kiếm theo tên phòng trọ"
+          class="p-2 border rounded"
+          style="
+            background-color: var(--background);
+            width: 30%;
+            font-size: 0.9rem;
+          "
+          v-model="data.searchText"
+        />
+      </div>
     </div>
     <div class="border-radius my-3 mx-0 row justify-content-start">
       <div class="col-8 boarding">

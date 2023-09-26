@@ -89,7 +89,8 @@ export default {
       currentPage: 1,
       totalPage: 0,
       length: 0,
-      sizePage: 18,
+      sizePage: 1,
+      searchText: "",
     });
     const component = reactive({
       isBoardingModal: false,
@@ -261,14 +262,28 @@ export default {
           :data="data.status"
           :selected="true"
           @choose="(value) => handleStatus(value)"
+          style="background-color: var(--background)"
         ></Select>
       </div>
-      <div class="input-group col-2 align-items-center p-0">
+      <!-- <div class="input-group col-2 align-items-center p-0">
         <Select
           :title="`Thanh toán`"
           :data="data.fee"
           @choose="(value) => handlefee(value)"
         ></Select>
+      </div> -->
+      <div class="input-group col-8 align-items-center p-0">
+        <input
+          type="search"
+          placeholder="tìm kiếm theo tên phòng trọ"
+          class="p-2 border rounded"
+          style="
+            background-color: var(--background);
+            width: 30%;
+            font-size: 0.9rem;
+          "
+          v-model="data.searchText"
+        />
       </div>
     </div>
     <!-- Boarding house items -->
@@ -360,6 +375,7 @@ export default {
           <EditBoardingForm
             v-if="isEditBoardingModal"
             :boardingId="data.isActiveBoarding"
+            @edit="refreshBoarding"
             @closeModal="isEditBoardingModal = !isEditBoardingModal"
           ></EditBoardingForm>
         </div>
@@ -443,6 +459,7 @@ export default {
       :_idBoarding="data.isActiveBoarding"
       :currentPage="data.currentPage"
       :status="data.isStatus"
+      :searchText="data.searchText"
       @handleDelete="handleEdit"
       @edit="
         (value) => {

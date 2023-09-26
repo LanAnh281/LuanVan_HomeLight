@@ -167,7 +167,7 @@ export default {
         if (document["status"] == "success") {
           successAd(`Đã cập nhật nhà trọ `);
           await refresh();
-          emit("add");
+          emit("edit");
         } else {
           console.log("Thất bại");
           warning("Thất bại", "Bạn không có quyền chỉnh sửa nhà trọ.");

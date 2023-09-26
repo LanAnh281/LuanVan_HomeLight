@@ -363,6 +363,10 @@ export default {
     const refresh = async () => {
       const documentUser = await userService.get(props._id);
       data.item = documentUser.message;
+      data.item.birthday = new Date(data.item.birthday)
+        .toISOString()
+        .split("T")[0];
+
       const address = data.item.address.split(" - ");
       data.item.number = address[0];
 

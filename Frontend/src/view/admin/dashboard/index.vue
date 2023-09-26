@@ -52,16 +52,18 @@ export default {
     };
   },
 };
-// 1.Thống kê tổng thu nhập:
+// 1.Thống kê tổng thu nhập: cột
 // Điều này bao gồm tổng số tiền thu được từ việc cho thuê nhà trọ trong
 // một khoảng thời gian cụ thể (thường là hàng tháng hoặc hàng năm).
-// 2.Thống kê Trạng thái phòng (trống, đang thuê)
+// 2.Thống kê Trạng thái phòng (trống, đang thuê) tròn
 //3Thống kê khách hàng: Số lượng khách thuê,
 //  thông tin liên hệ của họ và thời gian họ đã ở trong nhà trọ.
 //Thống kê về tình hình sửa chữa và bảo trì:
 //  Các công việc sửa chữa và bảo trì cần
 // được ghi lại để đảm bảo rằng nhà trọ luôn ở trong tình trạng tốt.
+// thống kê tiêu thụ điện nước
 /*
+
 xác định quyền và kiểm tra lỗi
 */
 </script>

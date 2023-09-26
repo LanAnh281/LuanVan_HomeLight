@@ -92,6 +92,7 @@ export default {
         data.item = data.item.map((item) => {
           return {
             ...item,
+            _id: item.tenantId,
             sex: item.user.sex ? "Nữ" : "Nam",
             userName: item.user.userName,
             phone: item.user.phone,
@@ -101,6 +102,7 @@ export default {
           };
         });
         data.length = data.item.length;
+        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -395,6 +397,7 @@ export default {
       :sizePage="data.sizePage"
       @info="
         (value) => {
+          console.log(value);
           handleInfo(value);
         }
       "

@@ -21,15 +21,16 @@ export default {
           active: "service",
         },
         {
-          name: "Hóa đơn",
-          icon: "payments",
-          active: "bill",
-        },
-        {
           name: "Phát sinh",
           icon: "monetization_on",
           active: "spending",
         },
+        {
+          name: "Hóa đơn",
+          icon: "payments",
+          active: "bill",
+        },
+
         {
           name: "Báo cáo",
           icon: "text_snippet",

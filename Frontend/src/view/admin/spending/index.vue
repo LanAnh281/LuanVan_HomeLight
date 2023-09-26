@@ -162,7 +162,7 @@ export default {
       <input
         type="date"
         @input="handleDate"
-        class="border rounded ml-3 mr-2 text-center col-2"
+        class="border rounded ml-3 mr-2 text-center col-1 p-0"
       />
       <input
         type="search"
@@ -170,15 +170,10 @@ export default {
         class="p-2 border rounded col-2"
         v-model="data.searchText"
       />
-      <div class="col-7 row justify-content-end">
+      <div class="col-8 row justify-content-end p-0">
         <button
           class="btn btn-primary p-0 col-3"
-          style="
-            width: 120px;
-            height: 36px;
-            margin-top: 6px;
-            margin-right: -13%;
-          "
+          style="height: 36px; margin-top: 6px; margin-right: -9%"
         >
           <div
             class="row justify-content-center plus"

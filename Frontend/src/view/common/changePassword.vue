@@ -57,7 +57,7 @@ export default {
       class="row justify-content-around align-items-center"
       style="height: calc(100vh - var(--footer))"
     >
-      <div class="card shadow col-6 w-100">
+      <div class="card shadow col-4 w-100">
         <div class="row justify-content-center">
           <!-- <router-link :to="{ name: 'user' }" class="col-3">
             <img

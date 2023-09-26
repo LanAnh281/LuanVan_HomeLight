@@ -42,7 +42,6 @@ export default {
         const documentSpending = await spendingService.get(props._id);
         data.item = documentSpending.message;
         data.item.date = new Date(data.item.date).toISOString().split("T")[0];
-        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

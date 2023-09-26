@@ -28,10 +28,11 @@ export default {
     _idBoarding: { type: String, default: "" },
     currentPage: { type: Number, default: 1 },
     status: { type: Object, default: { _id: "" } },
+    searchText: {},
   },
   setup(props, { emit }) {
     const data = reactive({
-      item: [],
+      item: [{ name: "" }],
       uti: {
         previousElectric: "",
         currentElectric: "",
@@ -43,18 +44,43 @@ export default {
       bill: { end: "", roomId: "" },
       totalPage: 0,
       length: 0,
-      sizePage: 18,
+      sizePage: 1,
       setPage: [],
+      searchPage: [],
     });
-    data.totalPage = computed(() =>
-      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
-    );
+    // data.totalPage = computed(() =>
+    //   data.item ? Math.ceil(data.item.length / data.sizePage) : 0
+    // );
 
+    // data.setPage = computed(() =>
+    //   data.item
+    //     ? data.item.slice(
+    //         (props.currentPage - 1) * data.sizePage,
+    //         props.currentPage * data.sizePage
+    //       )
+    //     : []
+    // );
+
+    data.totalPage = computed(() =>
+      data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
+    );
+    data.searchPage = computed(
+      () => (
+        (data.currentPage = 1),
+        data.item
+          ? data.item.filter((item) =>
+              item.name
+                .toLowerCase()
+                .includes(props.searchText.toLocaleLowerCase())
+            )
+          : []
+      )
+    );
     data.setPage = computed(() =>
-      data.item
-        ? data.item.slice(
-            (props.currentPage - 1) * data.sizePage,
-            props.currentPage * data.sizePage
+      data.searchPage
+        ? data.searchPage.slice(
+            (data.currentPage - 1) * data.sizePage,
+            data.currentPage * data.sizePage
           )
         : []
     );
@@ -192,7 +218,12 @@ export default {
         await refresh();
       }
     );
-
+    watch(
+      () => props.searchText,
+      async (newValue, oldValue) => {
+        await refresh();
+      }
+    );
     const refresh = async () => {
       data.item = await roomService.getAll();
       data.item = data.item.message;

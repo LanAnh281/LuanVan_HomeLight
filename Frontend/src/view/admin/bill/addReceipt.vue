@@ -128,9 +128,7 @@ export default {
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title title" id="exampleModalLabel">
-            Thêm phòng trọ
-          </h5>
+          <h5 class="modal-title title" id="exampleModalLabel">Thanh toán</h5>
           <button
             type="button"
             class="close"

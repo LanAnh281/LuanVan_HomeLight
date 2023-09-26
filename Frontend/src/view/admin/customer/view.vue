@@ -102,12 +102,13 @@ export default {
           </div>
           <div class="col-12 m-0 p-0">
             <label class="col-2 p-0 m-0">Ảnh CCCD: </label>
-            <div class="text-center">
+            <div class="">
               <img
                 :src="`http://localhost:3000/api/users/getImg/${data.item.imagePrevious}`"
                 alt="Ảnh CCCD mặt sau"
                 class="mr-3"
               />
+
               <img
                 :src="`http://localhost:3000/api/users/getImg/${data.item.imageAfter}`"
                 alt="Ảnh CCCD mặt sau"

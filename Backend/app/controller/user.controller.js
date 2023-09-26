@@ -245,6 +245,7 @@ exports.findAllTenant = async (req, res, next) => {
         where: { _id: documents[i].tenantId },
       });
       documents[i].user = user;
+
       console.log(";;;;", user);
     }
 

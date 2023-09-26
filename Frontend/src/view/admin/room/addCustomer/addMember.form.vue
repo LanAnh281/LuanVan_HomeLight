@@ -43,7 +43,10 @@ export default {
     const handleDelete = async (value) => {
       try {
         if (data.item.Users.length == 1) {
-          warning("Cảnh báo", "Bạn cần thực hiện trả phòng để tính tiền.");
+          warning(
+            "Cảnh báo",
+            "Bạn cần thực hiện trả phòng tại giao diện phòng để tính tiền."
+          );
         } else {
           const isDeleted = await deleted(
             "Xóa khách trọ",
