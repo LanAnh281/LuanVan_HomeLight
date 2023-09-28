@@ -121,17 +121,6 @@ export default {
 
         // trả phòng
         if (formValues) {
-          // lấy thông tin phòng và thông tin khách qua api
-          const documentUserRoom = await userRoomService.get(value);
-          //cập nhật trạng thái phòng
-          const documentRoom = await roomService.update(value, {
-            name: documentUserRoom.message.name,
-            price: documentUserRoom.message.price,
-            wide: documentUserRoom.message.wide,
-            long: documentUserRoom.message.long,
-            status: false,
-            boardingId: documentUserRoom.message.boardingId,
-          });
           // create chỉ số điện nước
           const documentUti = await UtilityReadingsService.get(value);
           data.uti = {
@@ -166,6 +155,17 @@ export default {
           };
           const documentBill = await billService.create(data.bill);
           console.log(">>>bill:", documentBill);
+          // lấy thông tin phòng và thông tin khách qua api
+          const documentUserRoom = await userRoomService.get(value);
+          //cập nhật trạng thái phòng
+          const documentRoom = await roomService.update(value, {
+            name: documentUserRoom.message.name,
+            price: documentUserRoom.message.price,
+            wide: documentUserRoom.message.wide,
+            long: documentUserRoom.message.long,
+            status: false,
+            boardingId: documentUserRoom.message.boardingId,
+          });
           // xóa các dịch vụ của phòng
           const documentService = await service_roomService.deleteAll(value);
 

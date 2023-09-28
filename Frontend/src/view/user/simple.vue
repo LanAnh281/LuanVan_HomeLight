@@ -1,34 +1,42 @@
+<template>
+  <div>
+    <h1>Vue.js Socket.io Example</h1>
+    <input
+      v-model="message"
+      @keyup.enter="sendMessage"
+      placeholder="Nhập tin nhắn"
+    />
+    <ul>
+      <li v-for="msg in messages">{{ msg }}</li>
+    </ul>
+  </div>
+</template>
+
 <script>
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
-import { useRoute, useRouter } from "vue-router";
-//service
+import io from "socket.io-client";
 
-//asset/js
-import { checkAccessToken } from "../../assets/js/common.login";
 export default {
-  components: {},
-  setup() {
-    const router = useRouter();
-    const data = reactive({
-      items: {},
+  data() {
+    return {
+      message: "",
+      messages: [],
+    };
+  },
+  mounted() {
+    // Kết nối đến máy chủ Socket.io
+    this.socket = io("http://localhost:3000");
+    console.log("Lắng nghe sự kiện từ máy chủ");
+    // Lắng nghe sự kiện từ máy chủ
+    this.socket.on("message1", (data) => {
+      this.messages.push(data);
     });
-    let intervalId = null;
-    onMounted(async () => {
-      await checkAccessToken(router);
-      intervalId = setInterval(async () => {
-        await checkAccessToken(router);
-      }, 1 * 60 * 1000); // 60000 milliseconds = 1 minutes
-    });
-    onBeforeUnmount(() => {
-      clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
-    });
-
-    return { data };
+  },
+  methods: {
+    sendMessage() {
+      // Gửi tin nhắn tới máy chủ
+      this.socket.emit("message", this.message);
+      this.message = "";
+    },
   },
 };
 </script>
-<template>
-  <div class="body">
-    <p>Hello User</p>
-  </div>
-</template>
