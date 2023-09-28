@@ -355,26 +355,26 @@ Rooms.belongsToMany(Services, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-Accounts.hasMany(Notification, {
-  foreignKey: "accountId",
+// Users.hasMany(Notification, {
+//   foreignKey: "userId",
+//   onDelete: "CASCADE",
+//   onUpdate: "CASCADE",
+// }),
+//   Notification.belongsTo(Users, {
+//     foreignKey: "userId",
+//     onDelete: "CASCADE",
+//     onUpdate: "CASCADE",
+//   });
+const User_Notification = sequelize.define("User_Notification", {
+  isDelete: { type: DataTypes.BOOLEAN },
+});
+Users.belongsToMany(Notification, {
+  through: User_Notification,
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
-}),
-  Notification.belongsTo(Accounts, {
-    foreignKey: "accountId",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  });
-const Account_Notification = sequelize.define("Account_Notification", {
-  isdelete: { type: DataTypes.BOOLEAN },
 });
-Accounts.belongsToMany(Notification, {
-  through: Account_Notification,
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Notification.belongsToMany(Accounts, {
-  through: Account_Notification,
+Notification.belongsToMany(Users, {
+  through: User_Notification,
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
@@ -416,7 +416,7 @@ Services.sync();
 Service_Room.sync();
 Note.sync();
 Notification.sync();
-Account_Notification.sync();
+User_Notification.sync();
 ResetPassword.sync();
 
 Rule.sync();
@@ -442,7 +442,7 @@ module.exports = {
   Service_Room,
   Note,
   Notification,
-  Account_Notification,
+  User_Notification,
   ResetPassword,
   Rule,
   UtilityReadings,

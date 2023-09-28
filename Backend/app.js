@@ -7,7 +7,17 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const schedule = require("node-schedule");
 
+const app = express();
+app.use(cors());
+
+app.use(morgan("dev"));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(bodyParser.json());
 //route
 const accountRouter = require("./app/route/account.route");
 const loginRouter = require("./app/route/login.route");
@@ -36,19 +46,44 @@ const mediaRouter = require("./app/route/media.route");
 const UtilityReadingsRouter = require("./app/route/utilityreadings.route");
 //midderware
 const requestMidderware = require("./app/middeware/request.midderware");
-// initialize
-const app = express();
-app.use(cors());
-app.use(morgan("dev"));
-app.use(bodyParser.urlencoded({ extended: true }));
+// controller
+const billController = require("./app/controller/bill.controller");
+const billMiddeware = require("./app/middeware/bill.middeware.js");
+// Đặt lịch thực hiện lệnh vào ngày cuối cùng của mỗi tháng
+const job = schedule.scheduleJob("0 0 0 * * *", async () => {
+  const currentDate = new Date();
+  const lastDayOfMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0
+  ).getDate();
+  console.log("tạo bill cuối tháng", lastDayOfMonth);
+  if (currentDate.getDate() === lastDayOfMonth) {
+    console.log("Lệnh đã được thực thi vào ngày cuối của tháng.");
+    const bill = await billMiddeware.create();
+    console.log(bill);
+    // Đặt lệnh bạn muốn thực hiện ở đây 0 0 0 * * *
+  }
+});
 
-app.use(express.json());
-app.use(cookieParser());
-app.use(bodyParser.json());
+// const job = schedule.scheduleJob("*/1 * * * *", async () => {
+//   console.log("Lệnh sẽ thực thi sau mỗi 1 phút.");
+
+//   try {
+//     // Đặt lệnh bạn muốn thực hiện ở đây
+
+//     const bill = await billMiddeware.create();
+//     console.log(bill);
+//   } catch (error) {
+//     console.error("Lỗi khi gọi billMiddeware.findAll():", error);
+//   }
+// });
 
 //socket
 const http = require("http");
+const socketController = require("./app/controller/socket.controller");
 const server = http.createServer(app);
+socketController.attach(server);
 
 server.listen(3000, () => {
   console.log(`Server is listening on port`);
