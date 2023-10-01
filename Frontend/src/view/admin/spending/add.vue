@@ -21,7 +21,7 @@ export default {
         boardingId: "",
       },
       boarding: [],
-      error: { price: "", number: "", phone: "" },
+      error: { date: "", price: "", reason: "", boardingId: "" },
       flag: true,
     });
     const isModalOpen = ref(false);
@@ -49,12 +49,20 @@ export default {
       }
     };
     const save = async () => {
-      console.log("save", data.item);
       try {
-        const documentSpending = await spendingService.create(data.item);
-        if (documentSpending["status"] == "success") {
-          successAd("Thêm thành công chi phí phát sinh");
-          emit("add");
+        for (let key in data.item) {
+          console.log(key);
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập thông tin";
+            data.flag = true;
+          }
+        }
+        if (!data.flag) {
+          const documentSpending = await spendingService.create(data.item);
+          if (documentSpending["status"] == "success") {
+            successAd("Thêm thành công chi phí phát sinh");
+            emit("add");
+          }
         }
       } catch (error) {
         if (error.response) {
@@ -121,6 +129,9 @@ export default {
                   :data="data.boarding"
                   @choose="(value) => (data.item.boardingId = value)"
                 ></Select>
+                <div v-if="data.error.boardingId" class="invalid-error">
+                  {{ data.error.boardingId }}
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -190,7 +201,7 @@ export default {
             </div>
 
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+              <button type="submit" class="btn btn-login col-sm-2">Thêm</button>
             </div>
           </form>
         </div>
@@ -200,7 +211,6 @@ export default {
 </template>
 <style scoped>
 .modal-content {
-  width: 120%;
-  margin-left: -8%;
+  width: 100%;
 }
 </style>

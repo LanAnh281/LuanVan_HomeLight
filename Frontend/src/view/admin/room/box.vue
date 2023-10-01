@@ -6,6 +6,7 @@ import axios from "axios";
 //service
 import roomService from "../../../service/room.service";
 import service_roomService from "../../../service/service_room.service";
+import user_roomService from "../../../service/user_room.service";
 
 import userRoomService from "../../../service/user_room.service";
 import UtilityReadingsService from "../../../service/UtilityReadings.service";
@@ -48,18 +49,6 @@ export default {
       setPage: [],
       searchPage: [],
     });
-    // data.totalPage = computed(() =>
-    //   data.item ? Math.ceil(data.item.length / data.sizePage) : 0
-    // );
-
-    // data.setPage = computed(() =>
-    //   data.item
-    //     ? data.item.slice(
-    //         (props.currentPage - 1) * data.sizePage,
-    //         props.currentPage * data.sizePage
-    //       )
-    //     : []
-    // );
 
     data.totalPage = computed(() =>
       data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
@@ -191,16 +180,24 @@ export default {
     };
     const handleDelete = async (value) => {
       try {
-        const isDeleted = await deleted(
-          "Xóa",
-          "Bạn có chắc chắc xóa phòng trọ."
-        );
-        if (isDeleted) {
-          const document = await roomService.delete(value);
-          document["status"] == "success"
-            ? success("Thành công")
-            : warning("Thất bại", "");
-          emit("handleDelete");
+        const users = await userRoomService.getAllRoom(value);
+        if (users.message.length == 0) {
+          const isDeleted = await deleted(
+            "Xóa",
+            "Bạn có chắc chắc xóa phòng trọ."
+          );
+          if (isDeleted) {
+            const document = await roomService.delete(value);
+            document["status"] == "success"
+              ? success("Thành công")
+              : warning("Thất bại", "");
+            emit("handleDelete");
+          }
+        } else {
+          warning(
+            "Cảnh báo",
+            "Phòng trọ hiện đang có khách thuê. Bạn cần trả phòng trọ."
+          );
         }
       } catch (error) {
         if (error.response) {
@@ -316,6 +313,7 @@ export default {
             </span>
             <!-- delete room -->
             <span
+              v-if="status['_id']"
               class="material-symbols-outlined mr-1 delete border rounded p-1"
               style="font-size: 1.4rem"
               title="xóa phòng"

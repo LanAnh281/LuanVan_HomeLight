@@ -23,6 +23,7 @@ import Table from "../../../components/table/table.vue";
 import Pagination from "../../../components/pagination/pagination.vue";
 import Add from "./add.vue";
 import Edit from "./edit.vue";
+import boardinghouseService from "../../../service/boardinghouse.service";
 export default {
   components: { Table, Pagination, Add, Edit },
   setup() {
@@ -66,24 +67,27 @@ export default {
     );
     const refresh = async () => {
       try {
-        const documentSpending = await spendingService.getAll();
-        data.item = documentSpending.message;
-        data.item = data.item.filter((item) => {
-          const date = new Date(item.date);
-          return (
-            data.selectDate.month == date.getMonth() + 1 &&
-            data.selectDate.year == date.getFullYear()
-          );
-        });
-        data.item = data.item.map((item) => {
-          return {
-            ...item,
-            price: formatCurrency(item.price),
-            date: formatDateTime(item.date),
-            name: item.BoardingHouse["name"],
-          };
-        });
-        data.length = data.item.length;
+        const boarding = await boardinghouseService.getAllUser();
+        if (boarding.message.length > 0) {
+          const documentSpending = await spendingService.getAll();
+          data.item = documentSpending.message;
+          data.item = data.item.filter((item) => {
+            const date = new Date(item.date);
+            return (
+              data.selectDate.month == date.getMonth() + 1 &&
+              data.selectDate.year == date.getFullYear()
+            );
+          });
+          data.item = data.item.map((item) => {
+            return {
+              ...item,
+              price: formatCurrency(item.price),
+              date: formatDateTime(item.date),
+              name: item.BoardingHouse["name"],
+            };
+          });
+          data.length = data.item.length;
+        } else data.item = [];
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -106,7 +110,6 @@ export default {
     };
     const handleDelete = async (value) => {
       try {
-        console.log("de");
         const isDelete = await deleted(
           "Xóa phát sinh",
           "Bạn có chắc chắn xóa phát sinh này."
@@ -172,7 +175,7 @@ export default {
       />
       <div class="col-8 row justify-content-end p-0">
         <button
-          class="btn btn-primary p-0 col-3"
+          class="btn btn-primary p-0 col-2"
           style="height: 36px; margin-top: 6px; margin-right: -9%"
         >
           <div
@@ -184,7 +187,9 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white)">Thêm phát sinh</span>
+            <span style="color: var(--white); font-size: 16px"
+              >Thêm phát sinh</span
+            >
           </div>
         </button>
       </div>

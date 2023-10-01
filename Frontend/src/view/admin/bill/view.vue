@@ -164,10 +164,10 @@ export default {
                 <tr>
                   <td>Điện</td>
                   <td>
-                    {{ data.item.Room.UtilityReadings[0].previousElectric }} Kwh
+                    {{ data.item.Room.UtilityReadings[0].previousElectric }}
                   </td>
                   <td>
-                    {{ data.item.Room.UtilityReadings[0].currentElectric }} Kwh
+                    {{ data.item.Room.UtilityReadings[0].currentElectric }}
                   </td>
                   <td>
                     {{
@@ -190,10 +190,10 @@ export default {
                 <tr>
                   <td>Nước</td>
                   <td>
-                    {{ data.item.Room.UtilityReadings[0].previousWater }} m³
+                    {{ data.item.Room.UtilityReadings[0].previousWater }}
                   </td>
                   <td>
-                    {{ data.item.Room.UtilityReadings[0].currentWater }} m³
+                    {{ data.item.Room.UtilityReadings[0].currentWater }}
                   </td>
                   <td>
                     {{

@@ -32,7 +32,7 @@ export default {
     );
 
     data.setPage = computed(() =>
-      data.item
+      data.item.length > 0
         ? data.item.slice(
             (data.currentPage - 1) * data.sizePage,
             data.currentPage * data.sizePage
@@ -60,15 +60,18 @@ export default {
 
     const refresh = async () => {
       try {
-        data.item = await serviceService.getAll();
+        data.item = await serviceService.getAllUser();
         data.item = data.item.message;
-        data.item = data.item.map((item) => {
-          return {
-            ...item,
-            price: formatCurrency(item.price),
-            checked: false,
-          };
-        });
+        console.log(data.item);
+        if (data.item.length > 0) {
+          data.item = data.item.map((item) => {
+            return {
+              ...item,
+              price: formatCurrency(item.price),
+              checked: false,
+            };
+          });
+        }
         data.lenght = data.item.length;
       } catch (error) {
         if (error.response) {

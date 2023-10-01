@@ -140,7 +140,7 @@ export default {
     });
     const chartProfit = async () => {
       try {
-        data.profit = { receipt: 0, expense: 0 };
+        data.profit = { receipt: 0, expense: 0 }; // thu và chi
         chartSeriesProfit.data = [{}];
         //chi
         let documentSpending = await spendingService.getAll();
@@ -293,9 +293,9 @@ export default {
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
       const documnetBoarding = await boardinghouseService.getAllUser();
       data.boarding = documnetBoarding.message;
-
-      data.selectBoarding = data.boarding[0]._id;
-
+      if (data.boarding.length > 0) {
+        data.selectBoarding = data.boarding[0]._id;
+      }
       await refresh();
     });
     onBeforeUnmount(() => {
@@ -339,22 +339,20 @@ export default {
           height="300"
         />
       </div>
-      <div class="input-group col-6 m-0 p-0 row border-radius">
-        <!-- <div class="col-6"> -->
+      <!-- <div class="input-group col-6 m-0 p-0 row border-radius">
         <img
           class="card-img-top"
           src="../../../assets/image/users.jpg"
           style="width: 50%; height: 60%; display: inline; align-item: center"
           alt="ảnh người dùng"
         />
-        <!-- </div> -->
         <p class="card-text" style="width: 50%; display: inline">
           Some quick example text to build on the card title and make up the
           bulk of the card's content.
         </p>
-      </div>
-      <div class="col-6 border-radius mt-3">
-        Biểu đồ thu chi của nhà trọ
+      </div> -->
+      <div class="col-6 border-radius">
+        Biểu đồ thể hi thu chi của nhà trọ
         <apexchart
           :options="chartOptionsProfit"
           :series="chartSeriesProfit.data"
@@ -362,7 +360,7 @@ export default {
         />
       </div>
       <div class="col-6 border-radius mt-3">
-        Điện nước tiêu thụ
+        Biểu đồ thể hiện điện nước tiêu thụ
         <apexchart
           :options="chartOptionsEW"
           :series="chartSeriesEW.data"

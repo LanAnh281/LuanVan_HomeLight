@@ -204,7 +204,7 @@ export default {
             <!--  -->
             <div class="form-group row">
               <label for="inputreceive" class="col-sm-3 col-form-label p-0"
-                >Thanh toán :</label
+                >Số tiền thanh toán :</label
               >
               <div class="col-sm-9">
                 <input

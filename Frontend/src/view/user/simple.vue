@@ -7,7 +7,8 @@
       placeholder="Nhập tin nhắn"
     />
     <ul>
-      <li v-for="msg in messages">{{ msg }}</li>
+      <li v-for="(msg, index) in messages" :key="index">{{ msg }}</li>
+      <li v-for="(bill, index) in bill" :key="index">{{ bill }}</li>
     </ul>
   </div>
 </template>
@@ -20,6 +21,7 @@ export default {
     return {
       message: "",
       messages: [],
+      bill: [],
     };
   },
   mounted() {
@@ -29,6 +31,9 @@ export default {
     // Lắng nghe sự kiện từ máy chủ
     this.socket.on("message1", (data) => {
       this.messages.push(data);
+    });
+    this.socket.on("billProcessed", (bill) => {
+      this.bill = bill;
     });
   },
   methods: {

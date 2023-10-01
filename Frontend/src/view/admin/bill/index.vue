@@ -177,7 +177,9 @@ export default {
       };
       const documentBoarding = await boardinghouseService.getAllUser();
       data.boarding = documentBoarding.message;
-      data.boardingActice = data.boarding[0]._id;
+      if (data.boarding.length > 0) {
+        data.boardingActice = data.boarding[0]._id;
+      }
       await refresh();
     });
     onBeforeUnmount(() => {

@@ -16,7 +16,7 @@ import roomService from "../../../service/room.service";
 import utilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
-import { warning, deleted } from "../../../assets/js/common.alert";
+import { warning, deleted, successAd } from "../../../assets/js/common.alert";
 //component
 import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/input.table.vue";
@@ -229,13 +229,14 @@ export default {
     );
 
     const handleCreate = async (value) => {
-      console.log("create", value);
       try {
         value.date = new Date();
         value.roomId = value._id;
         const documentUti = await utilityReadingsService.create(value);
         console.log(documentUti);
-        // await refresh();
+        if (documentUti["status"] == "success") {
+          successAd("Thêm điện nước thành công");
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -259,7 +260,9 @@ export default {
       };
       const documentBoarding = await boardinghouseService.getAllUser();
       data.boarding = documentBoarding.message;
-      data.boardingActice = data.boarding[0]._id;
+      if (data.boarding.length > 0) {
+        data.boardingActice = data.boarding[0]._id;
+      }
       await refresh();
     });
     onBeforeUnmount(() => {
@@ -288,7 +291,10 @@ export default {
 
       <div class="col-9 mr-1 p-0 row justify-content-end"></div>
     </div>
-    <div class="border-radius my-3 mx-0 row justify-content-start">
+    <div
+      class="border-radius my-3 mx-0 row justify-content-start"
+      v-if="data.boarding.length != 0"
+    >
       <div class="col-8 boarding">
         <button
           class="btn px-2 mr-2 board-item"

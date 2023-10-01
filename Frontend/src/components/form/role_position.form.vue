@@ -159,7 +159,6 @@ export default {
               v-model="data.searchText"
             />
           </div>
-          {{ data.searchText }}
           <form
             @submit.prevent="save"
             enctype="multipart/form-data"
