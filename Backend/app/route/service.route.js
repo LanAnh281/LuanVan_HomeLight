@@ -4,7 +4,11 @@ const authorization = require("../middeware/authorization.middeware");
 const router = express.Router();
 router
   .route("/")
-  .get(service.findAll)
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem danh sách dịch vụ"),
+    service.findAll
+  )
   .post([
     authorization.authentication,
     authorization.authorization("thêm dịch vụ"),
@@ -12,11 +16,22 @@ router
   ]);
 router
   .route("/:id")
-  .get(service.findOne)
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem danh sách dịch vụ"),
+    service.findOne
+  )
   .put(
     authorization.authentication,
     authorization.authorization("chỉnh sửa dịch vụ"),
     service.updated
   )
   .delete(service.delete);
+router
+  .route("/getAll/user")
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem danh sách dịch vụ"),
+    service.findAllUser
+  );
 module.exports = router;

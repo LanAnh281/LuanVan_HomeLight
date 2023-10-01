@@ -136,6 +136,7 @@ const Rooms = sequelize.define("Rooms", {
   long: { type: DataTypes.INTEGER },
   content: { type: DataTypes.TEXT },
   status: { type: DataTypes.BOOLEAN },
+  isDelete: { type: DataTypes.BOOLEAN },
 });
 const Spending = sequelize.define("Spending", {
   _id: setPrimary,

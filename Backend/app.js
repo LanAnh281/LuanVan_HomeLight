@@ -47,37 +47,6 @@ const UtilityReadingsRouter = require("./app/route/utilityreadings.route");
 //midderware
 const requestMidderware = require("./app/middeware/request.midderware");
 // controller
-const billController = require("./app/controller/bill.controller");
-const billMiddeware = require("./app/middeware/bill.middeware.js");
-// Đặt lịch thực hiện lệnh vào ngày cuối cùng của mỗi tháng
-const job = schedule.scheduleJob("0 0 0 * * *", async () => {
-  const currentDate = new Date();
-  const lastDayOfMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1,
-    0
-  ).getDate();
-  console.log("tạo bill cuối tháng", lastDayOfMonth);
-  if (currentDate.getDate() === lastDayOfMonth) {
-    console.log("Lệnh đã được thực thi vào ngày cuối của tháng.");
-    const bill = await billMiddeware.create();
-    console.log(bill);
-    // Đặt lệnh bạn muốn thực hiện ở đây 0 0 0 * * *
-  }
-});
-
-// const job = schedule.scheduleJob("*/1 * * * *", async () => {
-//   console.log("Lệnh sẽ thực thi sau mỗi 1 phút.");
-
-//   try {
-//     // Đặt lệnh bạn muốn thực hiện ở đây
-
-//     const bill = await billMiddeware.create();
-//     console.log(bill);
-//   } catch (error) {
-//     console.error("Lỗi khi gọi billMiddeware.findAll():", error);
-//   }
-// });
 
 //socket
 const http = require("http");

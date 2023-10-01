@@ -60,7 +60,11 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const rooms = await Rooms.findAll({});
+    const rooms = await Rooms.findAll({
+      where: {
+        isDelete: !true,
+      },
+    });
     let documents = JSON.parse(JSON.stringify(rooms));
     documents = documents.sort((a, b) => a.name - b.name);
     res.json({ message: documents, status: "success" });
@@ -190,11 +194,16 @@ exports.updatedStatusRoom = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await Rooms.destroy({
-      where: {
-        _id: req.params.id,
+    const document = await Rooms.update(
+      {
+        isDelete: true,
       },
-    });
+      {
+        where: {
+          _id: req.params.id,
+        },
+      }
+    );
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
