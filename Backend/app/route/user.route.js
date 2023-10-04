@@ -22,9 +22,17 @@ router
     upload.upload.array("files"),
     user.createUserAccountAndUpdateRoom,
   ])
-  .delete(user.deleteOne)
+  .delete(
+    authorization.authentication,
+    authorization.authorization("xóa khách trọ"),
+    user.deleteOne
+  )
   .put([upload.upload.array("files"), user.update]);
-router.route("/getImg/:id").get(user.getImg);
+router.route("/getImg/:id").get(
+  // authorization.authentication,
+  // authorization.authorization("xem thông tin khách trọ"),
+  user.getImg
+);
 router
   .route("/findAllTenant/:id")
   .get(

@@ -62,7 +62,7 @@ export default {
       try {
         data.item = await serviceService.getAllUser();
         data.item = data.item.message;
-        console.log(data.item);
+
         if (data.item.length > 0) {
           data.item = data.item.map((item) => {
             return {

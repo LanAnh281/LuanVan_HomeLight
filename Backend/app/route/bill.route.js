@@ -2,9 +2,35 @@ const express = require("express");
 const router = express.Router();
 const bill = require("../controller/bill.controller");
 const authorization = require("../middeware/authorization.middeware");
-//  authorization.authentication,
-// authorization.authorization("xem danh sách dịch vụ"),
 
-router.route("/").post(bill.create).get(bill.findAll).delete(bill.deleteAll);
-router.route("/:id").put(bill.updated).get(bill.findOne).delete(bill.delete);
+router
+  .route("/")
+  .post(
+    authorization.authentication,
+    authorization.authorization("thêm hóa đơn"),
+    bill.create
+  )
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem hóa đơn"),
+    bill.findAll
+  )
+  .delete(bill.deleteAll);
+router
+  .route("/:id")
+  .put(
+    authorization.authentication,
+    authorization.authorization("chỉnh sửa hóa đơn"),
+    bill.updated
+  )
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem hóa đơn"),
+    bill.findOne
+  )
+  .delete(
+    authorization.authentication,
+    authorization.authorization("xóa hóa đơn"),
+    bill.delete
+  );
 module.exports = router;

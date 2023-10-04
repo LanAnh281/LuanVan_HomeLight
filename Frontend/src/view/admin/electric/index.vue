@@ -77,11 +77,9 @@ export default {
         current.getFullYear() == data.selectDate.year
       ) {
         // đùng thời gian hiện tại
-        console.log("Hiện tại date");
         await refresh();
       } else {
         //quá khứ hoặc tương lai
-        console.log("quá khứ hoặc tương lại date");
         const documentUti = await utilityReadingsService.getAll();
         data.item = documentUti.message;
         data.item = data.item.filter((item) => {
@@ -94,7 +92,6 @@ export default {
         });
         // await refresh();
         data.isInput = false;
-        console.log(data.item);
       }
     };
     const getUti = async (id) => {

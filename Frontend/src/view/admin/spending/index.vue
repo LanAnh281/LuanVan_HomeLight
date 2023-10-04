@@ -47,6 +47,7 @@ export default {
     data.totalPage = computed(() =>
       data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
     );
+    data.length = computed(() => data.searchPage.length);
     data.searchPage = computed(() => {
       data.currentPage = 1;
       return data.item

@@ -18,6 +18,7 @@ exports.authentication = (req, res, next) => {
           .json({ message: "Invalid token", status: "fail" });
       }
       req.user = decoded;
+      console.log(">>>req.user:", req.user);
       next();
     });
   } catch (error) {
@@ -44,15 +45,19 @@ exports.authorization = (requiredPermission) => {
 };
 const findByRoleName = async (position, name) => {
   try {
-    const document = await Roles.findOne({ where: { name: name } });
+    const document = await Roles.findAll({ where: { name: name } });
     if (!document) return res.status(403).json({ message: "Access denied" });
-    const role_position = await Roles_Positions.findOne({
-      where: {
-        positionId: position,
-        RoleId: document["_id"],
-      },
-    });
-    return role_position;
+    for (let value of document) {
+      const role_position = await Roles_Positions.findOne({
+        where: {
+          positionId: position,
+          RoleId: value["_id"],
+        },
+      });
+      if (role_position) return role_position;
+    }
+
+    return [];
   } catch (error) {
     return res.json({ message: "Access denied", status: "fail" });
   }

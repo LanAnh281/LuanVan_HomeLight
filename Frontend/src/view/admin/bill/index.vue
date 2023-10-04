@@ -72,7 +72,7 @@ export default {
         ? Math.ceil(data.searchPage.length / data.sizePage)
         : 0;
     });
-
+    data.length = computed(() => data.searchPage.length);
     data.setPage = computed(() => {
       // console.log(data.searchPage);
       return data.searchPage

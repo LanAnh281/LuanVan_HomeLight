@@ -42,17 +42,15 @@ export default {
     const remove = () => {
       data.item.pop();
       data.error.pop();
-      console.log("remove");
     };
     const save = async () => {
-      console.log("save");
       try {
         const length = data.item.length;
-        console.log("Data.item:", data.item);
         for (let i = 0; i < length; i++) {
           const document = await roleService.create(data.item[i]);
           if (document["status"] === "success") {
             data.flag = true;
+            emit("add");
           } else {
             data.flag = false;
           }

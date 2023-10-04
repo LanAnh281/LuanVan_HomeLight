@@ -53,6 +53,7 @@ export default {
     data.totalPage = computed(() =>
       data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
     );
+    data.length = computed(() => data.searchPage.length);
     data.searchPage = computed(
       () => (
         (data.currentPage = 1),
@@ -65,6 +66,7 @@ export default {
           : []
       )
     );
+
     data.setPage = computed(() =>
       data.searchPage
         ? data.searchPage.slice(
@@ -73,6 +75,7 @@ export default {
           )
         : []
     );
+
     const handleEdit = async (value) => {
       try {
         const showSweetAlert = async () => {
@@ -93,7 +96,7 @@ export default {
             preConfirm: () => {
               const currentElectric = document.getElementById("electric").value;
               const currentWater = document.getElementById("water").value;
-              if (!electric || !water) {
+              if (!currentElectric || !currentWater) {
                 Swal.showValidationMessage("Vui lòng điền đầy đủ thông tin");
               }
               return {
@@ -107,7 +110,7 @@ export default {
 
         // Gọi hàm showSweetAlert khi bạn muốn hiển thị SweetAlert
         const formValues = await showSweetAlert();
-
+        console.log(formValues);
         // trả phòng
         if (formValues) {
           // create chỉ số điện nước
@@ -240,7 +243,7 @@ export default {
           }),
         };
       });
-      data.length = data.item.length;
+      // data.length = data.item.length;
       emit("totalPage", { totalPage: data.totalPage, length: data.length });
     };
     watch(

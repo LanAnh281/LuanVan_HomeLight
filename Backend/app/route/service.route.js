@@ -26,7 +26,11 @@ router
     authorization.authorization("chỉnh sửa dịch vụ"),
     service.updated
   )
-  .delete(service.delete);
+  .delete(
+    authorization.authentication,
+    authorization.authorization("xóa dịch vụ"),
+    service.delete
+  );
 router
   .route("/getAll/user")
   .get(

@@ -77,6 +77,7 @@ export default {
           : []
       )
     );
+    data.length = computed(() => data.searchPage.length);
     data.setPage = computed(() =>
       data.searchPage
         ? data.searchPage.slice(

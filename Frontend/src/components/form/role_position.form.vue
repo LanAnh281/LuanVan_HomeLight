@@ -45,7 +45,7 @@ export default {
       emit("closeModal");
     };
     data.totalPage = computed(() =>
-      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
+      data.SeachPage ? Math.ceil(data.SeachPage.length / data.sizePage) : 0
     );
     data.SeachPage = computed(
       () => (
@@ -63,7 +63,7 @@ export default {
           )
         : []
     );
-
+    data.lenght = computed(() => data.SeachPage.length);
     const save = async () => {
       try {
         let roles = data.item.filter((value) => value.checked);
@@ -112,7 +112,7 @@ export default {
     };
 
     onMounted(async () => {
-      refresh();
+      await refresh();
       $("#rolePositionModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#rolePositionModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });

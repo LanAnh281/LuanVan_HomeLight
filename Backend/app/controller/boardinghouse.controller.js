@@ -30,6 +30,7 @@ exports.findAllUser = async (req, res, next) => {
     const boardings = await BorardingHouse.findAll({
       where: { userId: req.user.userId },
     });
+    console.log(">>", boardings, req.user.userId);
     let documents = JSON.parse(JSON.stringify(boardings));
     documents = documents.sort(
       (a, b) => new Date(a.createdAt) - new Date(b.createdAt)

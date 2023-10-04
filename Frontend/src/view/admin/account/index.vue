@@ -62,11 +62,12 @@ export default {
     });
     const component = reactive({
       roleModal: false,
-      checkPosition: "",
+
       accountModal: false,
       tablePosition_role: false,
       table: true,
     });
+    const checkPosition = ref("");
     let intervalId = null;
 
     watch(
@@ -85,6 +86,8 @@ export default {
     const createRole = async () => {
       const document = await roleService.getAll();
       data.items = document.message;
+      checkPosition.value = !checkPosition.value;
+      checkPosition.value = !checkPosition.value;
     };
     const createAccount = async () => {
       const documentAccount = await accountService.getAll();
@@ -156,6 +159,7 @@ export default {
       togge_off,
       positionService,
       refreshRolePosition,
+      checkPosition,
     };
   },
 };
@@ -235,13 +239,13 @@ export default {
       :fileds="['Vai trò', 'Danh sách quyền']"
       @checked="
         (value) => {
-          component.checkPosition = true;
+          checkPosition = true;
           data.positionId = value;
         }
       "
       @unchecked="
         (value) => {
-          component.checkPosition = false;
+          checkPosition = false;
           data.positionId = '';
         }
       "
@@ -291,7 +295,7 @@ export default {
       @closeModal="component.accountModal = !component.accountModal"
     ></accuountForm>
     <role_positionForm
-      v-if="component.checkPosition"
+      v-if="checkPosition"
       :position="data.positionId"
       @add="refreshRolePosition()"
     ></role_positionForm>
