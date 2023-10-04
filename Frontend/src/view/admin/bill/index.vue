@@ -124,15 +124,12 @@ export default {
         });
         if (data.selectFee == "0 ₫")
           data.item = data.item.filter((item) => {
-            console.log("đã thanh toán");
             return item.debt == "0 ₫";
           });
         else
           data.item = data.item.filter((item) => {
             return item.debt != "0 ₫";
           });
-        data.length = data.item.length;
-        // console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -153,7 +150,6 @@ export default {
           console.log("new:", newValue);
           await refresh();
         } else {
-          console.log("o");
           await refresh();
         }
       }

@@ -195,8 +195,8 @@ export default {
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
       const documnetBoarding = await boardinghouseService.getAllUser();
       data.boarding = documnetBoarding.message;
+      console.log(data.boarding);
       data.start = data.end = now;
-      // data.end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       if (data.boarding.length > 0) {
         data.selectBoarding = {
           _id: data.boarding[0]._id,

@@ -1,5 +1,5 @@
 <script>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //js
 import { checkMail, sanitizeInput } from "../../assets/js/checkInput.common";
@@ -24,6 +24,7 @@ export default {
       },
       flag: true,
     });
+    const togglePassword = ref(false);
     const login = async () => {
       console.log("login", data.item, data.flag);
       try {
@@ -68,6 +69,7 @@ export default {
       forgotPassword,
       checkMail,
       sanitizeInput,
+      togglePassword,
     };
   },
 };
@@ -77,12 +79,12 @@ export default {
     <div class="row justify-content-around align-items-center vh-100">
       <div class="card shadow col-4">
         <div class="row justify-content-center">
-          <!-- <router-link :to="{ name: 'user' }" class="col-3">
+          <div class="col-3">
             <img
               src="../../assets/image/logo.png"
               style="width: 100%; height: 100%"
             />
-          </router-link> -->
+          </div>
           <h4
             class="text-center mt-3 ml-3 col-12"
             style="color: var(--chocolate)"
@@ -92,7 +94,7 @@ export default {
         </div>
         <form @submit.prevent="login" class="container mt-3">
           <div class="form-group row">
-            <label for="inputUserName" class="col-sm-3 col-form-label p-0"
+            <label for="inputUserName" class="col-sm-3 col-form-label p-0 m-0"
               >Email :</label
             >
             <div class="col-sm-9">
@@ -107,14 +109,12 @@ export default {
                     if (isCheck) {
                       data.error.userName = 'Sai định dạng email';
                       data.flag = true;
-                      console.log('mailcheck', data.flag);
                     }
                   }
                 "
                 @input="
                   data.error.userName = '';
                   data.flag = false;
-                  console.log(data.flag);
                 "
                 v-model="data.item.userName"
               />
@@ -124,13 +124,17 @@ export default {
             </div>
           </div>
           <div class="form-group row">
-            <label for="inputPassword" class="col-sm-3 col-form-label p-0"
+            <label for="inputPassword" class="col-3 col-form-label m-0 p-0"
               >Mật khẩu :</label
             >
-            <div class="col-sm-9">
+            <div class="col-9 row m-0">
               <input
-                type="password"
-                class="form-control"
+                :type="togglePassword ? 'text' : 'password'"
+                class="form-control col-10"
+                style="
+                  border-top-right-radius: 0px;
+                  border-bottom-right-radius: 0px;
+                "
                 id="inputPassword"
                 autocomplete="current-password"
                 @blur="
@@ -138,7 +142,6 @@ export default {
                     if (data.item.password == '') {
                       data.error.password = 'Chưa nhập mật khẩu';
                       data.flag = true;
-                      console.log('passcheck', data.flag);
                     }
                   }
                 "
@@ -149,6 +152,46 @@ export default {
                 "
                 v-model="data.item.password"
               />
+              <div class="col-2 m-0 p-0">
+                <span
+                  v-if="togglePassword"
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  style="
+                    border-radius: 4px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    background-color: #fff;
+                    cursor: pointer;
+                    height: 34px;
+                  "
+                  @click="
+                    () => {
+                      togglePassword = !togglePassword;
+                    }
+                  "
+                >
+                  visibility
+                </span>
+                <span
+                  v-if="!togglePassword"
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  style="
+                    border-radius: 5px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    background-color: #fff;
+                    cursor: pointer;
+                    height: 34px;
+                  "
+                  @click="
+                    () => {
+                      togglePassword = !togglePassword;
+                    }
+                  "
+                >
+                  visibility_off
+                </span>
+              </div>
               <div v-if="data.error.password" class="invalid-error">
                 {{ data.error.password }}
               </div>

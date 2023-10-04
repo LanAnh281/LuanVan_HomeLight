@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //js
 import { success, warning } from "../../assets/js/common.alert";
@@ -17,6 +17,9 @@ export default {
       error: { password: "", confirmPassword: "" },
       flag: true,
     });
+    const togglePassword = ref(false);
+    const toggleComfirmPassword = ref(false);
+
     const resetPassword = async () => {
       try {
         for (const key in data.item) {
@@ -25,14 +28,12 @@ export default {
             data.flag = true;
           }
         }
-        console.log(">>status:", data.flag);
 
         if (!data.flag) {
           const document = await resetPasswordService.update(
             route.query.reset,
             data.item
           );
-          console.log(">>status:", document);
           if (document.status === "success") {
             success("Thành công", "Khôi phục mật khẩu thành công");
             router.push({ name: "login" });
@@ -41,12 +42,17 @@ export default {
           }
         }
       } catch (error) {
-        console.error(">>>er:", error);
         warning("Thất bại", "Khôi  phục mật khẩu thất bại");
       }
     };
     onMounted(async () => {});
-    return { data, resetPassword, sanitizeInput };
+    return {
+      data,
+      resetPassword,
+      sanitizeInput,
+      togglePassword,
+      toggleComfirmPassword,
+    };
   },
 };
 </script>
@@ -55,12 +61,12 @@ export default {
     <div class="row justify-content-around align-items-center vh-100">
       <div class="card shadow col-4">
         <div class="row justify-content-center">
-          <!-- <router-link :to="{ name: 'user' }" class="col-3">
+          <div class="col-3">
             <img
               src="../../assets/image/logo.PNG"
               style="width: 100%; height: 100%"
             />
-          </router-link> -->
+          </div>
           <h4 class="text-center mt-3 ml-3 col-12 title">Khôi phục mật khẩu</h4>
         </div>
         <form @submit.prevent="resetPassword" class="container mt-3">
@@ -68,10 +74,14 @@ export default {
             <label for="inputPassword" class="col-sm-3 col-form-label p-0"
               >Mật khẩu mới :</label
             >
-            <div class="col-sm-9">
+            <div class="col-sm-9 row p-0 m-0">
               <input
-                type="password"
-                class="form-control"
+                :type="togglePassword ? 'text' : 'password'"
+                class="form-control col-10"
+                style="
+                  border-top-right-radius: 0px;
+                  border-bottom-right-radius: 0px;
+                "
                 id="inputPassword"
                 @blur="
                   () => {
@@ -87,6 +97,46 @@ export default {
                 "
                 v-model="data.item.password"
               />
+              <div class="col-2 m-0 p-0 w-100">
+                <span
+                  v-if="togglePassword"
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  style="
+                    border-radius: 5px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    background-color: #fff;
+                    cursor: pointer;
+                    height: 34px;
+                  "
+                  @click="
+                    () => {
+                      togglePassword = !togglePassword;
+                    }
+                  "
+                >
+                  visibility
+                </span>
+                <span
+                  v-if="!togglePassword"
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  style="
+                    border-radius: 5px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    background-color: #fff;
+                    cursor: pointer;
+                    height: 34px;
+                  "
+                  @click="
+                    () => {
+                      togglePassword = !togglePassword;
+                    }
+                  "
+                >
+                  visibility_off
+                </span>
+              </div>
               <div v-if="data.error.password" class="invalid-error">
                 {{ data.error.password }}
               </div>
@@ -98,10 +148,14 @@ export default {
               class="col-sm-3 col-form-label p-0"
               >Nhập lại mật khẩu:</label
             >
-            <div class="col-sm-9">
+            <div class="col-sm-9 row m-0 p-0">
               <input
-                type="password"
-                class="form-control"
+                :type="toggleComfirmPassword ? 'text' : 'password'"
+                class="form-control col-10"
+                style="
+                  border-top-right-radius: 0px;
+                  border-bottom-right-radius: 0px;
+                "
                 id="inputConfirmPassword"
                 @blur="
                   () => {
@@ -118,6 +172,46 @@ export default {
                 "
                 v-model="data.item.confirmPassword"
               />
+              <div class="col-2 m-0 p-0 w-100">
+                <span
+                  v-if="toggleComfirmPassword"
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  style="
+                    border-radius: 5px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    background-color: #fff;
+                    cursor: pointer;
+                    height: 34px;
+                  "
+                  @click="
+                    () => {
+                      toggleComfirmPassword = !toggleComfirmPassword;
+                    }
+                  "
+                >
+                  visibility
+                </span>
+                <span
+                  v-if="!toggleComfirmPassword"
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  style="
+                    border-radius: 5px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    background-color: #fff;
+                    cursor: pointer;
+                    height: 34px;
+                  "
+                  @click="
+                    () => {
+                      toggleComfirmPassword = !toggleComfirmPassword;
+                    }
+                  "
+                >
+                  visibility_off
+                </span>
+              </div>
               <div v-if="data.error.confirmPassword" class="invalid-error">
                 {{ data.error.confirmPassword }}
               </div>

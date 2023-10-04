@@ -198,6 +198,7 @@ export default {
       try {
         const document = await boardinghouseService.getAllUser(); // api getAll borading houses
         data.boarding = document.message;
+        console.log(data.boarding);
         data.isActiveBoarding = data.boarding[0]._id;
         const documentRoom = await roomService.getAll(); //api getAll rooms
         data.items = documentRoom.message;

@@ -103,7 +103,6 @@ export default {
             data.customer.new++;
           }
         }
-        console.log("Khách mới && tổng khách", data.customer);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -169,6 +168,7 @@ export default {
             now.getMonth() + 1 == date.getMonth() + 1 &&
             now.getFullYear() == date.getFullYear()
           ) {
+            console.log(item);
             data.profit.receipt += Number(item.receive);
           }
           return (

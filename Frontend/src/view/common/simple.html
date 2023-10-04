@@ -1,109 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Modal Chồng Lên</title>
+    <style>
+      /* CSS để thiết kế con mắt */
+      .eye-container {
+        width: 100px;
+        height: 100px;
+        border: 2px solid black;
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .pupil {
+        width: 50px;
+        height: 50px;
+        background: black;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
   </head>
   <body>
-    <button id="openModalButton">Mở Modal</button>
-
-    <!-- Modal Gốc -->
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="closeModalButton">×</span>
-        <h2>Modal Gốc</h2>
-        <p>Nội dung modal gốc.</p>
-        <span id="openNestedModal">Mở Modal Khác</span>
-      </div>
+    <!-- HTML để tạo con mắt trong thẻ input -->
+    <div class="eye-container">
+      <div class="pupil"></div>
     </div>
-
-    <!-- Modal Chồng Lên -->
-    <div id="nestedModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="closeNestedModalButton">×</span>
-        <h2>Modal Khác</h2>
-        <p>Nội dung modal chồng lên.</p>
-      </div>
-    </div>
-
-    <script src="script.js"></script>
-    <script>
-      // Lấy các phần tử modal và nút mở modal gốc
-      const modal = document.getElementById("modal");
-      const nestedModal = document.getElementById("nestedModal");
-      const openModalButton = document.getElementById("openModalButton");
-      const closeButtons = document.querySelectorAll(".close");
-      const openNestedModalButton = document.getElementById("openNestedModal");
-
-      // Hiển thị modal gốc khi bấm vào nút mở modal
-      openModalButton.addEventListener("click", () => {
-        modal.style.display = "block";
-      });
-
-      // Ẩn modal gốc khi bấm vào nút đóng modal hoặc nền ngoài modal
-      closeButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          modal.style.display = "none";
-        });
-      });
-
-      // Hiển thị modal chồng lên khi bấm vào biểu tượng "Mở Modal Khác"
-      openNestedModalButton.addEventListener("click", () => {
-        nestedModal.style.display = "block";
-      });
-
-      // Ẩn modal chồng lên khi bấm vào nút đóng modal hoặc nền ngoài modal chồng lên
-      document
-        .getElementById("closeNestedModalButton")
-        .addEventListener("click", () => {
-          nestedModal.style.display = "none";
-        });
-    </script>
+    <input type="text" placeholder="Nhập vào đây" />
   </body>
 </html>
-<style>
-  /* CSS cho modal gốc */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-  }
-
-  .modal-content {
-    background-color: #fff;
-    margin: 20% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    position: relative;
-  }
-
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  /* CSS cho modal chồng lên */
-  #nestedModal {
-    display: none;
-    z-index: 2;
-  }
-
-  /* CSS cho button mở modal chồng lên */
-  #openNestedModal {
-    cursor: pointer;
-    color: blue;
-    text-decoration: underline;
-  }
-</style>
