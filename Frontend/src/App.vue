@@ -65,25 +65,21 @@ export default {
         <router-view class="col-10"></router-view>
       </template>
       <template v-else>
-        <Header v-if="position == 'user' || position == null"></Header>
-        <div class="fluid-container">
-          <div class="row m-0 p-0 isHeader">
-            <router-view class="col-12"></router-view>
-          </div>
-        </div>
+        <Header></Header>
+        <router-view></router-view>
       </template>
       <Footer></Footer>
     </div>
   </div>
 </template>
 <style scoped>
-.isHeader {
-  height: calc(100vh - - var(--header) - var(--footer));
-}
 .none {
   display: none;
 }
 </style>
+<!-- .isHeader {
+  height: calc(100vh - - var(--header) - var(--footer));
+} -->
 <!-- 
      <Header v-if="position == 'user' || position == null"></Header>
      <NavBar></NavBar> 

@@ -102,7 +102,7 @@ export default {
       </div>
       <div class="col-12 p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-2">Trạng thái :</label>
+          <label for="" class="col-2">Mô tả :</label>
           <p class="col-10 p-0 m-0">
             {{ data.item.content }}
           </p>

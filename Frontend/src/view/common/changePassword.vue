@@ -16,6 +16,7 @@ export default {
       item: { passwordOld: "", password: "", confirmPassword: "" },
       error: { passwordOld: "", password: "", confirmPassword: "" },
       flag: false,
+      position: "",
     });
     const togglePasswordOld = ref(false);
     const togglePassword = ref(false);
@@ -23,6 +24,8 @@ export default {
     const refresh = () => {
       data.item = { passwordOld: "", password: "", confirmPassword: "" };
       data.error = { passwordOld: "", password: "", confirmPassword: "" };
+      data.position = localStorage.getItem("position");
+      console.log(data.position);
     };
     const changePassword = async () => {
       try {
@@ -45,11 +48,12 @@ export default {
           }
         }
       } catch (error) {
-        console.error(">>>er:", error);
         warning("Thất bại", "Thay đổi mật khẩu thất bại.");
       }
     };
-    onMounted(async () => {});
+    onMounted(async () => {
+      refresh();
+    });
     return {
       data,
       changePassword,
@@ -64,8 +68,18 @@ export default {
 <template>
   <div class="body m-0 container-fluid">
     <div
-      class="row justify-content-around align-items-center"
+      class="row justify-content-around"
+      :class="
+        data.position == 'super-admin' || data.position == 'admin'
+          ? 'align-items-center'
+          : ['align-items-start']
+      "
       style="height: calc(100vh - var(--footer))"
+      :style="
+        data.position == 'super-admin' || data.position == 'admin'
+          ? ''
+          : 'margin-top:7%'
+      "
     >
       <div class="card shadow col-4 w-100">
         <div class="row justify-content-center">
@@ -314,6 +328,7 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh;
+  min-width: 100vh;
 }
 </style>

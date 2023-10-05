@@ -25,6 +25,7 @@ export default {
         wide: "",
         long: "",
         boardingId: "",
+        isDelete: false,
         status: false,
         countFiles: 0,
       },
@@ -60,6 +61,7 @@ export default {
         wide: "",
         long: "",
         content: "",
+        isDelete: false,
         boardingId: "",
         countFiles: 0,
       };
@@ -241,6 +243,7 @@ export default {
       "wide",
       "long",
       "content",
+      "isDelete",
       "boardingId",
       "status",
       "countFiles",

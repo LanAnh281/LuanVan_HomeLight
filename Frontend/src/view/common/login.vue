@@ -26,7 +26,6 @@ export default {
     });
     const togglePassword = ref(false);
     const login = async () => {
-      console.log("login", data.item, data.flag);
       try {
         for (const key in data.item) {
           if (data.item[key] == "") {
@@ -35,10 +34,9 @@ export default {
             console.log(key);
           }
         }
-        console.log(data.flag);
         if (!data.flag) {
-          console.log("â");
           const document = await Login.login(data.item);
+          console.log(document);
           if (document.status == "success") {
             setLocalStrorage(
               document["token"],
@@ -46,11 +44,10 @@ export default {
               document["userName"],
               document["expiresIn"]
             );
-            console.log(document);
             const allowedPositions = ["admin", "super-admin"];
             const routeName = allowedPositions.includes(document["position"])
               ? "dashboard"
-              : "user";
+              : "userInfo";
             router.push({ name: routeName });
           } else {
             warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
@@ -94,10 +91,10 @@ export default {
         </div>
         <form @submit.prevent="login" class="container mt-3">
           <div class="form-group row">
-            <label for="inputUserName" class="col-sm-3 col-form-label p-0 m-0"
+            <label for="inputUserName" class="col-3 col-form-label p-0 m-0"
               >Email :</label
             >
-            <div class="col-sm-9">
+            <div class="col-9">
               <input
                 type="text"
                 class="form-control"
@@ -148,21 +145,21 @@ export default {
                 @input="
                   data.error.password = '';
                   data.flag = false;
-                  console.log(data.flag);
                 "
                 v-model="data.item.password"
               />
-              <div class="col-2 m-0 p-0">
+              <div class="col-2 m-0 p-0 w-100" style="height: 40px">
                 <span
                   v-if="togglePassword"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  class="material-symbols-outlined border pt-1"
                   style="
-                    border-radius: 4px;
+                    border-radius: 5px;
                     border-top-left-radius: 0px;
                     border-bottom-left-radius: 0px;
                     background-color: #fff;
                     cursor: pointer;
-                    height: 34px;
+                    height: 88%;
+                    padding: 0 22%;
                   "
                   @click="
                     () => {
@@ -174,14 +171,15 @@ export default {
                 </span>
                 <span
                   v-if="!togglePassword"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
+                  class="material-symbols-outlined border pt-1"
                   style="
                     border-radius: 5px;
                     border-top-left-radius: 0px;
                     border-bottom-left-radius: 0px;
                     background-color: #fff;
                     cursor: pointer;
-                    height: 34px;
+                    height: 88%;
+                    padding: 0 22%;
                   "
                   @click="
                     () => {

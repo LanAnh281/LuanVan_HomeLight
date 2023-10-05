@@ -7,6 +7,16 @@ const routes = [
     component: () => import("../view/user/simple.vue"),
   },
   {
+    path: "/prime",
+    name: "prime",
+    component: () => import("../view/user/prime.vue"),
+  },
+  {
+    path: "/boot",
+    name: "boot",
+    component: () => import("../view/user/bootstrap.vue"),
+  },
+  {
     path: "/content",
     name: "content",
     component: () => import("../view/user/content.vue"),
@@ -85,10 +95,31 @@ const routes = [
     component: () => import("../view/admin/report/index.vue"),
   },
   //User
+  // {
+  //   path: "/",
+  //   name: "user",
+  //   component: () => import("../view/user/index.vue"),
+  // },
+  // userInfo
   {
-    path: "/",
-    name: "user",
-    component: () => import("../view/user/index.vue"),
+    path: "/userInfo",
+    name: "userInfo",
+    component: () => import("../view/user/userInfo.vue"),
+  },
+  {
+    path: "/homepage",
+    name: "homepage",
+    component: () => import("../view/user/homepage.vue"),
+  },
+  {
+    path: "/post",
+    name: "post",
+    component: () => import("../view/user/post.vue"),
+  },
+  {
+    path: "/contact",
+    name: "contact",
+    component: () => import("../view/user/contact.vue"),
   },
 ];
 
