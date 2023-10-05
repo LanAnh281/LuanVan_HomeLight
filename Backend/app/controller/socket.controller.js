@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
   socket.on("message", (data) => {
     console.log("Dữ liệu từ client:", data);
     // Gửi dữ liệu đến tất cả các client kết nối
-    io.emit("message1", data);
+    io.emit("message", data);
   });
 });
 

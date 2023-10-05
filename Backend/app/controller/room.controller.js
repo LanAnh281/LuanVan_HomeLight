@@ -1,11 +1,21 @@
-const { Rooms, Media } = require("../models/index.model.js");
+const { Rooms, Media, BorardingHouse } = require("../models/index.model.js");
 const fs = require("fs");
 const uploadDir = "./static/images";
 const path = require("path");
 
 exports.create = async (req, res, next) => {
-  const { name, price, wide, long, content, boardingId, countFiles, status } =
-    req.body;
+  const {
+    name,
+    price,
+    wide,
+    long,
+    content,
+    isDelete,
+    boardingId,
+    countFiles,
+    status,
+  } = req.body;
+  console.log(req.body);
   try {
     const document = await Rooms.create({
       name: name,
@@ -13,7 +23,8 @@ exports.create = async (req, res, next) => {
       wide: wide,
       long: long,
       content: content,
-      status: status,
+      status: status == "undefined" ? "" : status,
+      isDelete: isDelete,
       boardingId: boardingId,
     });
     if (document && countFiles > 0) {
@@ -64,6 +75,14 @@ exports.findAll = async (req, res, next) => {
       where: {
         isDelete: !true,
       },
+      include: [
+        {
+          model: Media,
+        },
+        {
+          model: BorardingHouse,
+        },
+      ],
     });
     let documents = JSON.parse(JSON.stringify(rooms));
     documents = documents.sort((a, b) => a.name - b.name);
