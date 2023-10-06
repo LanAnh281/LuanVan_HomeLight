@@ -265,7 +265,7 @@ export default {
 
     <div class="row m-2">
       <div
-        class="card p-3 mb-2 col-3"
+        class="card p-3 mb-2 col-2"
         v-for="(value, index) in data.setPage"
         :key="index"
         @click="handleRoom(value)"
@@ -278,7 +278,7 @@ export default {
               : `http://localhost:3000/static/images/lightHouse.png`
           "
           alt="ảnh phòng trọ"
-          style="height: 160px"
+          style="height: 120px; object-fit: contain"
         />
 
         <div class="card-body">

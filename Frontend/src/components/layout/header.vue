@@ -36,10 +36,9 @@ export default {
       userName: "",
       active: "",
       noti: 0,
-      sizeNoti: 2,
+      sizeNoti: 1,
     });
     let intervalId = null;
-    const isDropdownOpen = ref(false);
     const logout = async () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("expiresIn");
@@ -59,9 +58,9 @@ export default {
       console.log(msg);
       data.noti++;
     });
-    const toggleDropdown = () => {
+    const handleDelete = (value) => {
       try {
-        isDropdownOpen.value = !isDropdownOpen.value;
+        console.log("xóa thông báo", value);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -77,7 +76,6 @@ export default {
         data.userName = localStorage.getItem("userName");
         position.value = localStorage.getItem("position");
         data.active = "homepage";
-        document.body.addEventListener("click", toggleDropdown);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -92,7 +90,7 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
-    return { data, position, logout, toggleDropdown, isDropdownOpen };
+    return { data, position, logout, handleDelete };
   },
 };
 </script>
@@ -142,42 +140,71 @@ export default {
                 </router-link>
               </div>
 
-              <div
-                class="col-1 m-0 p-0 mr-2"
-                v-if="position"
-                style="position: relative; z-index: 1"
-              >
-                <span
-                  class="material-symbols-outlined text-warning btn noti"
-                  style="border: none; font-size: 24px"
-                  role="button"
-                  @click="toggleDropdown"
-                >
-                  notifications
-                </span>
-                <span class="notification-badge">{{ data.noti }}</span>
-                <div
-                  class="dropdown-menu p-0"
-                  style="opacity: 1; background-color: white; top: 0px"
-                  :class="{ show: isDropdownOpen }"
-                >
-                  <p class="p-1 p-0 m-0" style="font-weight: 500">Thông báo</p>
-                  <hr class="p-0 m-0" />
-                  <div
-                    class="row m-0 p-0"
-                    v-for="(value, index) in data.list"
-                    :key="index"
-                    v-show="index + 1 <= data.sizeNoti"
+              <!-- Noti -->
+              <div class="header__noti col-1 m-0 p-0 mr-2">
+                <div class="header__noti-wrap">
+                  <span
+                    class="material-symbols-outlined text-warning btn header__noti-icon"
+                    role="button"
                   >
-                    <a class="dropdown-item px-1 col-10">{{ value }}</a>
-                    <span
-                      class="material-symbols-outlined text-danger text-center col-1 mr-2"
-                      style="font-size: 1.2rem"
-                      >close</span
+                    notifications
+                  </span>
+                  <div
+                    v-if="data.sizeNoti == 0"
+                    class="header__noti-list header__noti-list-no-noti mt-5 text-center"
+                  >
+                    <img
+                      src="../../assets/image/background.jpg"
+                      class="header__noti-no-noti-img"
+                    />
+                    <p
+                      class="header__noti-list-no-noti-msg p-0 m-0 mt-3 text-center"
+                      @click="data.sizeNoti = data.sizeNoti + 2"
                     >
-                    <hr class="col-12 m-0 p-0" />
+                      chưa có thông báo {{ data.sizeNoti }}
+                    </p>
                   </div>
-                  <div @click="data.sizeNoti = data.sizeNoti + 2">xem thêm</div>
+
+                  <!--  have noti -->
+                  <div
+                    v-else
+                    class="header__noti-list header__noti-list-noti mt-5"
+                  >
+                    <p
+                      class="p-1 p-0 my-2 title"
+                      style="font-weight: 500; font-size: 16px"
+                    >
+                      Thông báo
+                    </p>
+                    <hr class="p-0 m-0" />
+                    <div
+                      class="row m-0 p-0 dropdown-item"
+                      v-for="(value, index) in data.list"
+                      :key="index"
+                      v-show="index + 1 <= data.sizeNoti"
+                    >
+                      <a class="px-1 col-11">{{ value }}</a>
+                      <span
+                        class="material-symbols-outlined text-danger mr-2 close-icon"
+                        style="
+                          font-size: 1.2rem;
+                          line-height: 2;
+                          align-item: center;
+                        "
+                        @click.stop="handleDelete(value._id)"
+                        >close</span
+                      >
+                      <hr class="col-12 m-0 p-0" />
+                    </div>
+                    <button
+                      class="header__noti-list-noti-msg my-3 btn w-100 btn-login"
+                      @click="data.sizeNoti = data.sizeNoti + 2"
+                    >
+                      xem thêm
+                    </button>
+                  </div>
+
+                  <span class="notification-badge">{{ data.noti }}</span>
                 </div>
               </div>
               <!-- Info -->
@@ -221,6 +248,68 @@ export default {
   </div>
 </template>
 <style scoped>
+.header__noti {
+  align-items: center;
+  width: 150px;
+}
+.header__noti-wrap {
+  position: relative;
+}
+.header__noti-list::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: -18px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent rgb(241, 243, 241) transparent;
+  cursor: default;
+}
+.header__noti-icon {
+  font-size: 1.6rem;
+  color: red;
+  margin-top: -2px;
+}
+.header__noti-list {
+  position: absolute;
+  top: 100%;
+  right: 0px;
+  background-color: rgb(241, 243, 241);
+  width: 400px;
+  border: solid 1px #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 10px 2px #ccc;
+  z-index: 1;
+  display: none;
+  animation: fadeInd ease-in 0.5s;
+}
+
+.header__noti-list-no-noti {
+  padding: 20px 0;
+}
+
+.header__noti-no-noti-img {
+  width: 50%;
+}
+
+.header__noti-wrap:hover .header__noti-list {
+  display: block;
+  cursor: default;
+}
+.header__noti-list-noti-msg {
+  text-transform: uppercase;
+}
+.header__noti-list-noti-msg:hover {
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+.close-icon:hover {
+  font-weight: 800;
+  scale: 1.2;
+}
+
 .header {
   height: 10vh;
 }
@@ -230,18 +319,14 @@ export default {
   transition: color 0.3s ease;
   text-transform: uppercase;
 }
-.menu div:hover {
-  color: var(--chocolate);
-  opacity: 0.8;
-  cursor: pointer;
-}
+
 a {
   color: #222000ed;
   font-weight: 400;
 }
 a:hover {
   color: var(--chocolate);
-  opacity: 0.8;
+  opacity: 1;
   cursor: pointer;
 }
 .isActive {
@@ -251,129 +336,29 @@ a:hover {
 .dropdown-menu > * {
   z-index: 1000 !important;
 }
-
+.menu div:hover {
+  color: var(--chocolate);
+  opacity: 1;
+  cursor: pointer;
+}
 .dropdown-toggle:active {
   border: none !important;
 }
+
 .dropdown-item:hover {
   text-decoration: none !important;
 }
+.dropdown-item:hover > * {
+  text-decoration: none;
+}
 .notification-badge {
   position: absolute;
-
-  top: 0px;
-  right: -3px;
+  top: -2px;
+  right: -4px;
   background-color: red;
   color: white;
   border-radius: 50%;
   padding: 0px 6px;
   font-size: 12px;
-}
-.notification-dropdown {
-  position: absolute;
-  top: 68px;
-  right: 0;
-  width: 400px;
-  max-height: calc(85vh - 120px); /* Adjust this value as needed */
-  overflow-y: auto;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  margin-right: 14px;
-  z-index: 99999;
-  /* display: grid;
-  grid-template-columns: 250px 100px;
-  grid-gap: 10px; */
-}
-.notification-dropdown::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: calc(50% - 18px);
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid white;
-}
-.markAllAsRead {
-  border: 1px solid rgb(188, 229, 255);
-  border-radius: 8px;
-  background-color: rgb(188, 229, 255);
-  font-size: 12px;
-  padding: 5px;
-  color: rgb(69, 69, 246);
-  font-weight: bold;
-}
-.markUnread {
-  border: 1px solid rgb(188, 229, 255);
-  border-radius: 8px;
-  /* background-color:  rgb(188, 229, 255); */
-  font-size: 12px;
-  padding: 5px;
-  color: rgb(69, 69, 246);
-  font-weight: bold;
-}
-.color-dark {
-  color: var(--dark);
-}
-.border-nav {
-  border: 1px solid var(--gray);
-  border-radius: 5px;
-}
-.avatar {
-  width: 50px;
-  height: 50px;
-}
-.italic-text {
-  font-style: italic;
-}
-.cursor-pointer {
-  cursor: pointer;
-}
-.font-size-13 {
-  font-size: 13px;
-}
-.notification-icon {
-  position: relative;
-}
-.notification-dot {
-  position: absolute;
-  top: 37%;
-  left: 60%;
-  transform: translate(-50%, -50%);
-  width: 17px;
-  height: 17px;
-  background-color: var(--red);
-  border-radius: 50%;
-  display: inline-block;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  line-height: 17px;
-  margin-left: 5px;
-  cursor: pointer;
-}
-.clearNotification {
-  position: sticky;
-  bottom: 10px; /* Adjust this value as needed */
-  width: 100%;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-align: center;
-  padding: 10px; /* Add padding for better visibility */
-  font-weight: bold;
-}
-.clearNotification::after {
-  content: "";
-  position: absolute;
-  top: 128%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 20px;
-  background-color: rgba(255, 255, 255, 1);
-  backdrop-filter: blur(10px);
 }
 </style>
