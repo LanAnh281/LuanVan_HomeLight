@@ -84,6 +84,12 @@ const routes = [
     name: "bill",
     component: () => import("../view/admin/bill/index.vue"),
   },
+
+  {
+    path: "/admin/notifications",
+    name: "notifications",
+    component: () => import("../view/admin/notifications/index.vue"),
+  },
   {
     path: "/admin/spending",
     name: "spending",

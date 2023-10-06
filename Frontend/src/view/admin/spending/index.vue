@@ -87,7 +87,7 @@ export default {
               name: item.BoardingHouse["name"],
             };
           });
-          data.length = data.item.length;
+          // data.length = data.item.length;
         } else data.item = [];
       } catch (error) {
         if (error.response) {
@@ -171,13 +171,13 @@ export default {
       <input
         type="search"
         placeholder="tìm kiếm theo nhà trọ"
-        class="p-2 border rounded col-2"
+        class="p-2 border rounded col-4 w-100"
         v-model="data.searchText"
       />
-      <div class="col-8 row justify-content-end p-0">
+      <div class="col-7 row justify-content-end p-0">
         <button
-          class="btn btn-primary p-0 col-2"
-          style="height: 36px; margin-top: 6px; margin-right: -9%"
+          class="btn btn-primary p-0 mr-4 col-3"
+          style="width: 20%; height: 36px; margin-top: 6px; margin-right: -9%"
         >
           <div
             class="row justify-content-center plus"

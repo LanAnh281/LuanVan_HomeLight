@@ -25,7 +25,7 @@ export default {
     <table class="table m-0 p-0">
       <thead class="thead-dark">
         <tr>
-          <th v-if="isInputChecked" scope="col">#</th>
+          <th v-if="isInputChecked" scope="col" style="width: 4%">#</th>
           <th scope="col" v-for="(filed, index) in fields" :key="index">
             {{ filed }}
           </th>

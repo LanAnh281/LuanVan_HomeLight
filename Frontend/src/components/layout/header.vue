@@ -55,10 +55,10 @@ export default {
         socket.emit("message", "abc");
       }
     );
-    socket.on("message", async (msg) => {
-      console.log(msg);
-      data.noti++;
-    });
+    // socket.on("message", async (msg) => {
+    //   console.log(msg);
+    //   data.noti++;
+    // });
     const handleDelete = (value) => {
       try {
         console.log("xóa thông báo", value);

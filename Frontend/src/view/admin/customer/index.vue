@@ -102,8 +102,6 @@ export default {
             checked: false,
           };
         });
-        data.length = data.item.length;
-        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

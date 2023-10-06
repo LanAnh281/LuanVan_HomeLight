@@ -30,7 +30,11 @@ export default {
           icon: "payments",
           active: "bill",
         },
-
+        {
+          name: "Thông báo",
+          icon: "notifications",
+          active: "notifications",
+        },
         {
           name: "Báo cáo",
           icon: "text_snippet",
