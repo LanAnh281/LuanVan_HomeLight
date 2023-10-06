@@ -1,4 +1,11 @@
-const { Users, Accounts, LandlordTenant } = require("../models/index.model");
+const {
+  Users,
+  Accounts,
+  LandlordTenant,
+  BorardingHouse,
+  User_Room,
+  Rooms,
+} = require("../models/index.model");
 const { dateTime } = require("../middeware/datetime.middeware");
 
 const fs = require("fs");
@@ -234,21 +241,39 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findAllTenant = async (req, res, next) => {
   try {
+    // lấy đc danh sách khách trọ của 1 người chủ
     const users = await LandlordTenant.findAll({
       where: {
         landlordId: req.user.userId,
       },
     });
+    console.log(users);
+    let i = 0;
+    // từ danh sách .user lặp từng người tìm trong user_room để tra ra nhà trọ họ đang ở
+
     const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */
     for (let i in documents) {
-      let user = await Users.findOne({
+      const user = await Users.findOne({
         where: { _id: documents[i].tenantId },
       });
-      documents[i].user = user;
 
-      console.log(";;;;", user);
+      const user_room = await User_Room.findOne({
+        where: {
+          UserId: user._id,
+        }, // lấy ra đc room
+      });
+      console.log("???user_room:", user_room);
+      const room = await Rooms.findOne({
+        where: {
+          _id: user_room.RoomId,
+        }, // lấy đc boarding
+      });
+      const item = JSON.parse(JSON.stringify(user));
+      item.boardingId = room.boardingId;
+      documents[i].user = item;
     }
 
+    console.log("/////", documents[0].user.boardingId);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

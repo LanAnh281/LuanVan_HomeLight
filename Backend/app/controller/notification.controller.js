@@ -1,16 +1,15 @@
 const { Notification } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
-  let { date, content, accountId } = req.body;
+  // let { date, content } = req.body;
   console.log("Notification Body:", req.body);
-  date = date == null ? null : dateTime(date);
+  // date = date == null ? null : dateTime(date);
   try {
-    const document = await Notification.create({
-      date: date,
-      content: content,
-      accountId: accountId,
-    });
-    res.json({ message: document, status: "success" });
+    // const document = await Notification.create({
+    //   date: date,
+    //   content: content,
+    // });
+    // res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });
@@ -39,7 +38,7 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  let { date, content, accountId } = req.body;
+  let { date, content } = req.body;
   console.log("Notification Body:", req.body);
   date = date == null ? null : dateTime(date);
   try {
@@ -47,7 +46,6 @@ exports.updated = async (req, res, next) => {
       {
         date: date,
         content: content,
-        accountId: accountId,
       },
       {
         where: {

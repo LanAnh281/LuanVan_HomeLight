@@ -6,6 +6,7 @@ const http = require("http");
 const app = express();
 const server = http.createServer(app);
 const billMiddeware = require("../middeware/bill.middeware");
+const { Notification } = require("../models/index.model");
 
 // Đặt lịch thực hiện lệnh vào ngày cuối cùng của mỗi tháng
 const job = schedule.scheduleJob("0 0 0 * * *", async () => {
@@ -51,6 +52,15 @@ io.on("connection", (socket) => {
     console.log("Dữ liệu từ client:", data);
     // Gửi dữ liệu đến tất cả các client kết nối
     io.emit("message", data);
+  });
+  socket.on("createNoti", async (data) => {
+    console.log("Dữ liệu tạo thông báo:", data);
+    try {
+      const documentNoti = await Notification.create(data);
+    } catch (error) {}
+
+    //1. thêm 1 thông báo mới
+    //2. gán danh sách vào user_noti
   });
 });
 
