@@ -6,6 +6,7 @@ import {
   onBeforeMount,
   onBeforeUnmount,
   computed,
+  watch,
 } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
@@ -40,6 +41,7 @@ export default {
         { _id: "from 1000 to 1500", name: "Từ 1 - 1.5 triệu" },
         { _id: "under 1500", name: "Trên 1.5 triệu" },
       ],
+      selectPrice: "",
       searchText: "",
       setPage: "",
       searchPage: "",
@@ -88,7 +90,7 @@ export default {
         );
         data.district = response;
         data.address = data.district.data.name;
-        console.log(data.address);
+        await refresh();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -108,7 +110,7 @@ export default {
         );
         data.ward = response;
         data.address = data.ward.data.name;
-        console.log(data.address);
+        await refresh();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -127,6 +129,7 @@ export default {
             break;
           }
         }
+        await refresh();
         console.log(data.address);
       } catch (error) {
         if (error.response) {
@@ -138,19 +141,13 @@ export default {
         }
       }
     };
-    const changePrice = (value) => {
-      try {
-        console.log("chọn giá", value);
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
+
+    watch(
+      () => data.selectPrice,
+      async (newValue, oldValue) => {
+        await refresh();
       }
-    };
+    );
     const handleRoom = (value) => {
       try {
         console.log("Phòng đã chọn:", value);
@@ -169,6 +166,34 @@ export default {
         const documentRoom = await roomService.getAll();
         data.items = documentRoom.message;
         data.items = data.items.filter((item) => item.status == false);
+        if (data.address != "") {
+          data.items = data.items.filter((item) =>
+            item.BoardingHouse.address.includes(data.address)
+          );
+        }
+        if (data.selectPrice != "") {
+          switch (data.selectPrice) {
+            case "under 1000": {
+              data.items = data.items.filter((item) => item.price < 1000000);
+              break;
+            }
+            case "from 1000 to 1500": {
+              data.items = data.items.filter(
+                (item) => item.price >= 1000000 && item.price <= 1500000
+              );
+
+              break;
+            }
+            case "under 1500": {
+              data.items = data.items.filter((item) => item.price > 1500000);
+
+              break;
+            }
+            default: {
+              console.log("không chọn");
+            }
+          }
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -181,13 +206,14 @@ export default {
     };
     onBeforeMount(async () => {
       try {
-        if (position.value != null) {
-          checkAccessToken(router);
-          intervalId = setInterval(async () => {
-            await checkAccessToken(router);
-          }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
-        }
         position.value = localStorage.getItem("position");
+        // if (position.value != null) {
+        //   checkAccessToken(router);
+        //   intervalId = setInterval(async () => {
+        //     await checkAccessToken(router);
+        //   }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
+        // }
+
         await axios
           .get(`https://provinces.open-api.vn/api/?depth=1`, {})
           .then((response) => {
@@ -214,7 +240,6 @@ export default {
       change,
       changeDistrict,
       changeWard,
-      changePrice,
       handleRoom,
     };
   },
@@ -222,7 +247,7 @@ export default {
 </script>
 <template>
   <div class="body container-fluid m-0 pr-5" v-if="data.items">
-    <div class="row m-0 text-center">
+    <div class="row m-0 text-center mt-2">
       <div class="input-group col-2" style="margin-left: 5%">
         <Select
           :title="`Chọn thành phố`"
@@ -249,7 +274,7 @@ export default {
         <selectNormal
           :title="`Chọn giá thuê`"
           :data="data.price"
-          @choose="(value) => changePrice(value)"
+          @choose="(value) => (data.selectPrice = value)"
         ></selectNormal>
       </div>
       <div class="input-group col-3" style="z-index: 0">
@@ -265,7 +290,7 @@ export default {
 
     <div class="row m-2">
       <div
-        class="card p-3 mb-2 col-2"
+        class="card p-2 mb-2 col-2"
         v-for="(value, index) in data.setPage"
         :key="index"
         @click="handleRoom(value)"
@@ -281,7 +306,7 @@ export default {
           style="height: 120px; object-fit: contain"
         />
 
-        <div class="card-body">
+        <div class="card-body m-0 p-0">
           <p class="card-text">Phòng: {{ value.name }}</p>
           <p class="card-text">
             Diện tích: {{ value.long }} x {{ value.wide }} m²

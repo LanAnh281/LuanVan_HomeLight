@@ -124,15 +124,7 @@ export default {
               <div class="col-2 m-0 p-0 w-100">
                 <span
                   v-if="togglePasswordOld"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 34px;
-                  "
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2 visibility"
                   @click="
                     () => {
                       togglePasswordOld = !togglePasswordOld;
@@ -143,15 +135,7 @@ export default {
                 </span>
                 <span
                   v-if="!togglePasswordOld"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 34px;
-                  "
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2 visibility"
                   @click="
                     () => {
                       togglePasswordOld = !togglePasswordOld;
@@ -196,15 +180,7 @@ export default {
               <div class="col-2 m-0 p-0 w-100">
                 <span
                   v-if="togglePassword"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 34px;
-                  "
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2 visibility"
                   @click="
                     () => {
                       togglePassword = !togglePassword;
@@ -215,15 +191,7 @@ export default {
                 </span>
                 <span
                   v-if="!togglePassword"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 34px;
-                  "
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2 visibility"
                   @click="
                     () => {
                       togglePassword = !togglePassword;
@@ -271,15 +239,7 @@ export default {
               <div class="col-2 m-0 p-0 w-100">
                 <span
                   v-if="toggleComfirmPassword"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 34px;
-                  "
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2 visibility"
                   @click="
                     () => {
                       toggleComfirmPassword = !toggleComfirmPassword;
@@ -290,15 +250,7 @@ export default {
                 </span>
                 <span
                   v-if="!toggleComfirmPassword"
-                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 34px;
-                  "
+                  class="material-symbols-outlined m-0 p-0 border pt-1 px-2 visibility"
                   @click="
                     () => {
                       toggleComfirmPassword = !toggleComfirmPassword;
@@ -330,5 +282,14 @@ export default {
 .body {
   height: 100vh;
   min-width: 100vh;
+}
+.visibility {
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background-color: #fff;
+  cursor: pointer;
+  height: 34px;
+  color: #ccc;
 }
 </style>

@@ -47,7 +47,7 @@ export default {
             const allowedPositions = ["admin", "super-admin"];
             const routeName = allowedPositions.includes(document["position"])
               ? "dashboard"
-              : "userInfo";
+              : "homepage";
             router.push({ name: routeName });
           } else {
             warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <div v-for="notification in visibleNotifications" :key="notification.id">
       {{ notification.message }}
@@ -70,6 +70,43 @@ export default {
   beforeUnmount() {
     // Gỡ bỏ sự kiện lắng nghe cuộn trang khi component bị hủy
     window.removeEventListener("scroll", this.handleScroll);
+  },
+};
+</script> -->
+<template>
+  <div>
+    a
+    <quill-editor v-model="content" :options="editorOptions"></quill-editor>
+  </div>
+</template>
+
+<script>
+import { ref } from "vue";
+import "quill/dist/quill.snow.css"; // Import CSS của Quill
+import { quillEditor } from "vue-quill-editor";
+
+export default {
+  components: {
+    quillEditor,
+  },
+  setup() {
+    const content = ref("");
+    const editorOptions = {
+      // Các tùy chọn của trình soạn thảo
+      modules: {
+        toolbar: [
+          [{ header: "1" }, { header: "2" }, { font: [] }],
+          [{ list: "ordered" }, { list: "bullet" }],
+          ["bold", "italic", "underline"],
+          ["image", "code-block"],
+        ],
+      },
+    };
+
+    return {
+      content,
+      editorOptions,
+    };
   },
 };
 </script>

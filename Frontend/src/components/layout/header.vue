@@ -39,6 +39,7 @@ export default {
       sizeNoti: 1,
     });
     let intervalId = null;
+    const isRegistration = ref(false);
     const logout = async () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("expiresIn");
@@ -73,7 +74,10 @@ export default {
     };
     onMounted(async () => {
       try {
-        data.userName = localStorage.getItem("userName");
+        let name = localStorage.getItem("userName");
+        name = name.split(" ");
+
+        data.userName = `${name[name.length - 2]} ${name[name.length - 1]}`;
         position.value = localStorage.getItem("position");
         data.active = "homepage";
       } catch (error) {
@@ -90,7 +94,7 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
-    return { data, position, logout, handleDelete };
+    return { data, position, logout, handleDelete, isRegistration };
   },
 };
 </script>
@@ -100,32 +104,40 @@ export default {
       class="row align-items-center justify-content-between"
       style="height: 100%"
     >
-      <div class="ml-5">
-        <img src="../../assets/image/logo.png" style="width: 50px" />
+      <div class="ml-4 m-0 p-0">
+        <img
+          src="../../assets/image/logo.png"
+          style="width: 50px; height: 50px"
+        />
       </div>
       <div class="col m-0">
         <div class="d-flex flex-column m-0">
           <div class="row justify-content-between mb-2 m-0 p-0">
             <div class="col-8 row menu m-0 p-0">
               <router-link
-                class="col-2"
+                class="mr-3 ml-2"
                 :class="value.active == data.active ? 'isActive' : ''"
                 @click="data.active = value.active"
                 v-for="(value, index) in data.list"
                 :key="index"
                 :to="{ name: value.active }"
-                style="font-size: 16px; text-transform: uppercase"
+                style="
+                  font-size: 16px;
+                  text-transform: uppercase;
+                  line-height: 2;
+                "
               >
                 {{ value.name }}
               </router-link>
             </div>
-            <div class="col-4 row justify-content-end menu m-0 p-0">
+            <div class="col-3 row justify-content-end menu p-0 m-0">
               <div
                 v-if="!position"
-                class="col-3 m-0 p-0 mt-2"
+                class="col-3 m-0 p-0 mt-1"
                 data-toggle="modal"
                 data-target="#registrationModal"
                 style="font-size: 16px"
+                @click="isRegistration = !isRegistration"
               >
                 Đăng ký
               </div>
@@ -134,14 +146,14 @@ export default {
                 style="border-right: 1px solid #ccc; height: 24px"
                 class="mt-2"
               ></div>
-              <div class="col-4" v-if="!position">
+              <div class="col-4 m-0 p-0 px-2 mt-1" v-if="!position">
                 <router-link :to="{ name: 'login' }" style="font-size: 16px"
                   >Đăng nhập
                 </router-link>
               </div>
 
               <!-- Noti -->
-              <div class="header__noti col-1 m-0 p-0 mr-2">
+              <div v-if="position" class="header__noti col-1 m-0 p-0 mr-2">
                 <div class="header__noti-wrap">
                   <span
                     class="material-symbols-outlined text-warning btn header__noti-icon"
@@ -209,8 +221,8 @@ export default {
               </div>
               <!-- Info -->
               <div
-                class="dropdown col-4 m-0 p-0"
                 v-if="position"
+                class="dropdown col-4 m-0 p-0"
                 style="position: relative; z-index: 1"
               >
                 <a
@@ -244,7 +256,7 @@ export default {
         </div>
       </div>
     </div>
-    <registration></registration>
+    <registration v-if="isRegistration"></registration>
   </div>
 </template>
 <style scoped>
@@ -311,7 +323,7 @@ export default {
 }
 
 .header {
-  height: 10vh;
+  height: 8vh;
 }
 .menu div {
   top: 3.5px;
@@ -323,6 +335,7 @@ export default {
 a {
   color: #222000ed;
   font-weight: 400;
+  text-decoration: none;
 }
 a:hover {
   color: var(--chocolate);
