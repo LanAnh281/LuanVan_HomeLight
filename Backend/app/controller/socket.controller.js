@@ -53,11 +53,10 @@ io.on("connection", (socket) => {
     // Gửi dữ liệu đến tất cả các client kết nối
     io.emit("message", data);
   });
+
   socket.on("createNoti", async (data) => {
     console.log("Dữ liệu tạo thông báo:", data);
-    try {
-      const documentNoti = await Notification.create(data);
-    } catch (error) {}
+    io.emit("noti", "Thành công");
 
     //1. thêm 1 thông báo mới
     //2. gán danh sách vào user_noti

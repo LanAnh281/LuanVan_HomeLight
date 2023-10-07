@@ -44,6 +44,7 @@ const uploadRouter = require("./app/route/upload.route");
 const ruleRouter = require("./app/route/rule.route");
 const mediaRouter = require("./app/route/media.route");
 const UtilityReadingsRouter = require("./app/route/utilityreadings.route");
+const userNotificationRouter = require("./app/route/userNotification.route");
 //midderware
 const requestMidderware = require("./app/middeware/request.midderware");
 // controller
@@ -93,6 +94,7 @@ app.use("/api/upload", uploadRouter);
 app.use("/api/rule", ruleRouter);
 app.use("/api/media", mediaRouter);
 app.use("/api/UtilityReadings", UtilityReadingsRouter);
+app.use("/api/usernotification", userNotificationRouter);
 
 // check errors
 app.use((req, res, next) => {

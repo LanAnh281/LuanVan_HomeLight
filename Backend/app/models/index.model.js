@@ -188,6 +188,7 @@ const Notification = sequelize.define("Notification", {
   _id: setPrimary,
   date: { type: DataTypes.DATE },
   content: { type: DataTypes.TEXT },
+  sender: { type: DataTypes.STRING },
 });
 const ResetPassword = sequelize.define("ResetPassword", {
   _id: setPrimary,
@@ -368,6 +369,7 @@ Rooms.belongsToMany(Services, {
 //   });
 const User_Notification = sequelize.define("User_Notification", {
   isDelete: { type: DataTypes.BOOLEAN },
+  isRead: { type: DataTypes.BOOLEAN },
 });
 Users.belongsToMany(Notification, {
   through: User_Notification,
