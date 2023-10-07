@@ -1,13 +1,13 @@
 <script>
 import { reactive, onMounted, onBeforeUnmount, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import io from "socket.io-client";
 import socket from "../../socket";
 //component
 import Select from "../../components/select/selectdependent.vue";
 import registration from "../../components/form/registration.form.vue";
 //services
 import loginService from "../../service/login.service";
+import user_notificationService from "../../service/user_notification.service";
 //js
 
 export default {
@@ -30,13 +30,13 @@ export default {
           active: "contact",
         },
       ],
-      items: {},
+      items: [],
 
       address: "",
       userName: "",
       active: "",
       noti: 0,
-      sizeNoti: 1,
+      sizeNoti: 5,
     });
     let intervalId = null;
     const isRegistration = ref(false);
@@ -55,13 +55,66 @@ export default {
         socket.emit("message", "abc");
       }
     );
-    // socket.on("message", async (msg) => {
-    //   console.log(msg);
-    //   data.noti++;
-    // });
+    socket.on("noti", async (msg) => {
+      await refresh();
+    });
     const handleDelete = (value) => {
       try {
         console.log("xóa thông báo", value);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const refresh = async () => {
+      try {
+        data.noti = 0;
+        const documentUserNoti = await user_notificationService.getAllUser();
+        data.items = documentUserNoti.message;
+        const now = new Date();
+        data.items = data.items.Notifications.map((item) => {
+          const time =
+            now.getTime() -
+            new Date(item.User_Notification.createdAt).getTime();
+          let previousTime = "";
+          const minutes = Math.ceil(time / (60 * 1000));
+          const hours = Math.ceil(time / (60 * 60 * 1000));
+          const days = Math.ceil(time / (24 * 60 * 60 * 1000));
+          if (minutes < 60) {
+            previousTime = `${minutes} phút trước`;
+          } else if (hours < 24) {
+            previousTime = `${hours} giờ trước`;
+          } else {
+            previousTime = ` ${days}) ngày trước`;
+          }
+          if (item.User_Notification.isRead == false) {
+            data.noti++;
+          }
+          return {
+            ...item,
+            time: previousTime,
+          };
+        });
+        console.log(data.items);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const handleUpdate = async (value) => {
+      try {
+        // update user_not
+        //value là của notiId
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -80,6 +133,7 @@ export default {
         data.userName = `${name[name.length - 2]} ${name[name.length - 1]}`;
         position.value = localStorage.getItem("position");
         data.active = "homepage";
+        await refresh();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -94,7 +148,14 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
-    return { data, position, logout, handleDelete, isRegistration };
+    return {
+      data,
+      position,
+      logout,
+      handleDelete,
+      handleUpdate,
+      isRegistration,
+    };
   },
 };
 </script>
@@ -191,11 +252,12 @@ export default {
                     <hr class="p-0 m-0" />
                     <div
                       class="row m-0 p-0 dropdown-item"
-                      v-for="(value, index) in data.list"
+                      v-for="(value, index) in data.items"
                       :key="index"
                       v-show="index + 1 <= data.sizeNoti"
+                      @click="handleUpdate(value._id)"
                     >
-                      <a class="px-1 col-11">{{ value }}</a>
+                      <a class="px-1 col-11">{{ value.content }}</a>
                       <span
                         class="material-symbols-outlined text-danger mr-2 close-icon"
                         style="
@@ -205,6 +267,15 @@ export default {
                         "
                         @click.stop="handleDelete(value._id)"
                         >close</span
+                      >
+                      <a
+                        class="px-1"
+                        style="display: block"
+                        :style="{
+                          color: !value.User_Notification.isRead ? 'blue' : '',
+                        }"
+                      >
+                        {{ value.time }}</a
                       >
                       <hr class="col-12 m-0 p-0" />
                     </div>

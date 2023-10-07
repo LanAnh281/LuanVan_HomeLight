@@ -3,6 +3,8 @@ import { reactive, onMounted, ref, computed, watch } from "vue";
 import socket from "../../../socket";
 //service
 import userService from "../../../service/user.service";
+import notificationService from "../../../service/notification.service";
+import user_notification from "../../../service/user_notification.service";
 //component
 import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/tableChecked.table.vue";
@@ -117,11 +119,9 @@ export default {
         data.checkedList = data.users.filter((item) => {
           return item.checked == true;
         });
-        socket.emit("createNoti", data.item);
-        emit("add");
+
         console.log(data.checkedList);
         for (let key in data.item) {
-          console.log(key);
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin";
             data.flag = true;
@@ -129,10 +129,17 @@ export default {
         }
         if (!data.flag) {
           // 1.tạo 1 thông báo mới
-          // 2.dùng checkbox lấy ra đc danh sách các users
-          //  sẽ nhận đc thông báo để tạo dữ liệu mới trong bảng noti_user
-          //gửi đến BE 1 thông điệp tạo thông báo socket.emit
-          // client nhận thông điệp socket.io
+          const documentNoti = await notificationService.create(data.item);
+
+          for (let value of data.checkedList) {
+            const data = {
+              NotificationId: documentNoti.message["_id"],
+              UserId: value["_id"],
+            };
+            const documentUserNoti = await user_notification.create(data);
+          }
+          socket.emit("createNoti", documentNoti);
+          emit("add");
         }
       } catch (error) {
         if (error.response) {
