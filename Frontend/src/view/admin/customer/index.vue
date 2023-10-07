@@ -390,11 +390,11 @@ export default {
       :fields="['Họ tên', 'GT', 'SĐT', 'Email', 'Địa chỉ']"
       :titles="['userName', 'sex', 'phone', 'email', 'address']"
       :action="true"
-      :actionList="['info', 'edit', 'cancel']"
+      :actionList="['visibility', 'edit', 'cancel']"
       :isInputChecked="true"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
-      @info="
+      @visibility="
         (value) => {
           console.log(value);
           handleInfo(value);

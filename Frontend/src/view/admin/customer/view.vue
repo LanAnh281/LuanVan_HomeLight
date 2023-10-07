@@ -18,10 +18,10 @@ export default {
 
     const openModal = () => {
       isModalOpen.value = true;
-      console.log("open modal info user");
+      console.log("open modal visibility user");
     };
     const closeModal = () => {
-      console.log("close modal info user");
+      console.log("close modal visibility user");
       emit("closeModal");
     };
     onMounted(async () => {
@@ -29,8 +29,8 @@ export default {
       const documentUser = await userService.get(props._id);
       data.item = documentUser.message;
       console.log(data.item);
-      $("#infoUserModal").on("show.bs.modal", openModal); //lắng nghe mở modal
-      $("#infoUserModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+      $("#visibilityUserModal").on("show.bs.modal", openModal); //lắng nghe mở modal
+      $("#visibilityUserModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
     return { data, formatDateTime };
   },
@@ -39,7 +39,7 @@ export default {
 <template>
   <div
     class="modal fade"
-    id="infoUserModal"
+    id="visibilityUserModal"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"

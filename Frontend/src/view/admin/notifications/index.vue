@@ -7,9 +7,11 @@ import NotificationService from "../../../service/notification.service";
 //component
 import Add from "./add.vue";
 import Table from "../../../components/table/table.vue";
+import View from "./view.vue";
+//js
 import { formatDateTime } from "../../../assets/js/format.common";
 export default {
-  components: { Add, Table },
+  components: { Add, Table, View },
   setup() {
     const data = reactive({
       item: [],
@@ -20,8 +22,10 @@ export default {
       sizePage: 6,
       length: 0,
       totalPage: 0,
+      selectNoti: "",
     });
     const isNotification = ref(false);
+    const isNotiModal = ref(false);
     data.length = computed(() => (data.item ? data.item.length : 0));
     data.totalPage = computed(() =>
       data.item ? Math.ceil(data.item.length / data.sizePage) : 0
@@ -47,8 +51,21 @@ export default {
         : []
     );
     const handleCreate = () => {
-      console.log("create");
       socket.on("noti", (msg) => console.log(msg));
+    };
+    const handleView = (value) => {
+      try {
+        data.selectNoti = value;
+        isNotiModal.value = !isNotiModal.value;
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
 
     const refresh = async () => {
@@ -71,10 +88,11 @@ export default {
         }
       }
     };
+
     onMounted(async () => {
       await refresh();
     });
-    return { data, isNotification, handleCreate };
+    return { data, isNotification, isNotiModal, handleCreate, handleView };
   },
 };
 </script>
@@ -109,29 +127,23 @@ export default {
       :fields="['Ngày tạo', 'Nội dung']"
       :titles="['date', 'content']"
       :action="true"
-      :actionList="['info', 'edit', 'cancel']"
+      :actionList="['visibility']"
       :isInputChecked="true"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
-    ></Table>
-
-    <!--   @info="
+      @visibility="
         (value) => {
           console.log(value);
-          handleInfo(value);
+          handleView(value);
         }
       "
-      @edit="
-        (value) => {
-          handleEdit(value);
-        }
-      "
-      @cancel="
-        (value) => {
-          console.log('cancel:', value);
-          handleDelete(value);
-        }
-      " -->
+    ></Table>
+
+    <View
+      v-if="isNotiModal"
+      :_id="data.selectNoti"
+      @closeModal="isNotiModal = !isNotiModal"
+    ></View>
     <Add
       v-if="isNotification"
       @closeModal="isNotification = !isNotification"

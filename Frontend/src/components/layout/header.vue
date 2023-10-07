@@ -58,9 +58,36 @@ export default {
     socket.on("noti", async (msg) => {
       await refresh();
     });
-    const handleDelete = (value) => {
+    const handleUpdate = async (value) => {
+      try {
+        console.log("update");
+        // update user_not
+        const documentUserNoti = await user_notificationService.update(value, {
+          isRead: true,
+          isDelete: false,
+        });
+        console.log(documentUserNoti);
+        await refresh();
+        //value là của notiId
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const handleDelete = async (value) => {
       try {
         console.log("xóa thông báo", value);
+        const documentUserNoti = await user_notificationService.update(value, {
+          isRead: true,
+          isDelete: true,
+        });
+        console.log(documentUserNoti);
+        await refresh();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -111,20 +138,7 @@ export default {
         }
       }
     };
-    const handleUpdate = async (value) => {
-      try {
-        // update user_not
-        //value là của notiId
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
+
     onMounted(async () => {
       try {
         let name = localStorage.getItem("userName");
@@ -251,7 +265,7 @@ export default {
                     </p>
                     <hr class="p-0 m-0" />
                     <div
-                      class="row m-0 p-0 dropdown-item"
+                      class="row m-0 p-1 dropdown-item justify-content-around align-item-center"
                       v-for="(value, index) in data.items"
                       :key="index"
                       v-show="index + 1 <= data.sizeNoti"
@@ -259,15 +273,11 @@ export default {
                     >
                       <a class="px-1 col-11">{{ value.content }}</a>
                       <span
-                        class="material-symbols-outlined text-danger mr-2 close-icon"
-                        style="
-                          font-size: 1.2rem;
-                          line-height: 2;
-                          align-item: center;
-                        "
+                        class="material-symbols-outlined text-danger close-icon col-1 px-1 float-right"
                         @click.stop="handleDelete(value._id)"
                         >close</span
                       >
+
                       <a
                         class="px-1"
                         style="display: block"
@@ -280,6 +290,7 @@ export default {
                       <hr class="col-12 m-0 p-0" />
                     </div>
                     <button
+                      v-if="data.sizeNoti < data.items.length"
                       class="header__noti-list-noti-msg my-3 btn w-100 btn-login"
                       @click="data.sizeNoti = data.sizeNoti + 2"
                     >
@@ -287,7 +298,9 @@ export default {
                     </button>
                   </div>
 
-                  <span class="notification-badge">{{ data.noti }}</span>
+                  <span class="notification-badge" v-if="data.noti > 0">{{
+                    data.noti
+                  }}</span>
                 </div>
               </div>
               <!-- Info -->
@@ -333,7 +346,6 @@ export default {
 <style scoped>
 .header__noti {
   align-items: center;
-  width: 150px;
 }
 .header__noti-wrap {
   position: relative;
@@ -352,6 +364,7 @@ export default {
   font-size: 1.6rem;
   color: red;
   margin-top: -2px;
+  width: 50px;
 }
 .header__noti-list {
   position: absolute;
@@ -438,11 +451,11 @@ a:hover {
 .notification-badge {
   position: absolute;
   top: -2px;
-  right: -4px;
+  right: -10px;
   background-color: red;
   color: white;
   border-radius: 50%;
-  padding: 0px 6px;
+  padding: 0px 4px;
   font-size: 12px;
 }
 </style>
