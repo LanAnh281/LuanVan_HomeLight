@@ -10,8 +10,16 @@ router
   .delete(userNotification.deleteAll);
 router
   .route("/:id")
-  .put(userNotification.updated)
-  .get(userNotification.findOne)
+  .put(
+    authorization.authentication,
+    authorization.authorization("xem thông báo"),
+    userNotification.updated
+  )
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem thông báo"),
+    userNotification.findOne
+  )
   .delete(userNotification.delete);
 router
   .route("/getAll/user")

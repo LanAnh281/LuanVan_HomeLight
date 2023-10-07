@@ -42,13 +42,16 @@ exports.findAllUser = async (req, res, next) => {
       ],
     });
     let documents = JSON.parse(JSON.stringify(userNotis));
-    documents.Notification = documents.Notifications.sort((a, b) => {
+    documents.Notifications = documents.Notifications.filter((item) => {
+      return !item.User_Notification.isDelete;
+    });
+
+    documents.Notifications = documents.Notifications.sort((a, b) => {
       return (
         new Date(b.User_Notification.createdAt) -
         new Date(a.User_Notification.createdAt)
       );
     });
-    // console.log(documents);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -57,30 +60,33 @@ exports.findAllUser = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await User_Notification.findAll({
-      where: {
-        _id: req.params.id,
-      },
+    const documents = await Notification.findByPk(req.params.id, {
+      include: [
+        {
+          model: Users,
+        },
+      ],
     });
-    res.json({ message: document, status: "success" });
+
+    res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });
   }
 };
 exports.updated = async (req, res, next) => {
-  let { date, content } = req.body;
+  let { isDelete, isRead } = req.body;
   console.log("User_Notification Body:", req.body);
-  date = date == null ? null : dateTime(date);
   try {
     const document = await User_Notification.update(
       {
-        date: date,
-        content: content,
+        isDelete: isDelete,
+        isRead: isRead,
       },
       {
         where: {
-          _id: req.params.id,
+          NotificationId: req.params.id,
+          UserId: req.user.userId,
         },
       }
     );
