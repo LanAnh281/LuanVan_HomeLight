@@ -1,4 +1,9 @@
-const { Rooms, Media, BorardingHouse } = require("../models/index.model.js");
+const {
+  Rooms,
+  Media,
+  BorardingHouse,
+  User_Room,
+} = require("../models/index.model.js");
 const fs = require("fs");
 const uploadDir = "./static/images";
 const path = require("path");
@@ -84,6 +89,7 @@ exports.findAll = async (req, res, next) => {
         },
       ],
     });
+    console.log(rooms);
     let documents = JSON.parse(JSON.stringify(rooms));
     documents = documents.sort((a, b) => a.name - b.name);
     res.json({ message: documents, status: "success" });
@@ -106,11 +112,12 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, price, wide, long, content, boardingId, status, countFiles } =
-    req.body;
-
+  const { name, price, wide, long, content, boardingId, countFiles } = req.body;
+  const status = req.body.status == "false" ? false : true;
   let removeMedia = !req.body.removeMedia ? 0 : req.body.removeMedia;
   if (removeMedia.length > 0) removeMedia.pop();
+  console.log("xxxx", typeof status, status);
+
   try {
     const document = await Rooms.update(
       {
@@ -138,7 +145,6 @@ exports.updated = async (req, res, next) => {
               name: media,
             },
           });
-          console.log(">>>Destroy:", destroyMedia);
         }
       }
     }

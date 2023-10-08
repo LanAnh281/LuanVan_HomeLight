@@ -1,5 +1,5 @@
 const { BorardingHouse } = require("../models/index.model.js");
-
+const { deleteBoardingAndRooms } = require("../models/transaction.service");
 exports.create = async (req, res, next) => {
   const { name, address, phone } = req.body;
   try {
@@ -8,8 +8,8 @@ exports.create = async (req, res, next) => {
       address: address,
       phone: phone,
       userId: req.user.userId,
+      isDelete: false,
     });
-    console.log("doc", document);
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
@@ -28,14 +28,12 @@ exports.findAll = async (req, res, next) => {
 exports.findAllUser = async (req, res, next) => {
   try {
     const boardings = await BorardingHouse.findAll({
-      where: { userId: req.user.userId },
+      where: { userId: req.user.userId, isDelete: false },
     });
-    console.log(">>", boardings, req.user.userId);
     let documents = JSON.parse(JSON.stringify(boardings));
     documents = documents.sort(
       (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
     );
-    console.log(documents);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -56,7 +54,7 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, address, phone } = req.body;
+  const { name, address, phone, isDelete } = req.body;
   console.log("Update BorardingHouse", req.body);
   try {
     const document = await BorardingHouse.update(
@@ -65,6 +63,7 @@ exports.updated = async (req, res, next) => {
         address: address,
         phone: phone,
         userId: req.user.userId,
+        isDelete: isDelete,
       },
       {
         where: {
@@ -72,7 +71,6 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
-    console.log(">>>doc:", document);
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
@@ -81,11 +79,16 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await BorardingHouse.destroy({
-      where: {
-        _id: req.params.id,
-      },
-    });
+    // const document = await BorardingHouse.destroy({
+    //   where: {
+    //     _id: req.params.id,
+    //   },
+    // });
+    const data = {
+      _id: req.params.id,
+    };
+    const document = await deleteBoardingAndRooms(data);
+    console.log(">>>doc:", document);
     return res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);

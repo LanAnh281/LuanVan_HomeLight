@@ -119,6 +119,9 @@ const BorardingHouse = sequelize.define("BoardingHouse", {
   address: {
     type: DataTypes.TEXT,
   },
+  isDelete: {
+    type: DataTypes.BOOLEAN,
+  },
 });
 const Rule = sequelize.define("Rule", {
   _id: setPrimary,

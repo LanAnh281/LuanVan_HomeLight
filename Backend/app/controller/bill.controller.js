@@ -6,6 +6,7 @@ const {
   UtilityReadings,
   Rooms,
   Receipt,
+  BorardingHouse,
 } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { debt, roomId } = req.body;
@@ -86,6 +87,7 @@ exports.findAll = async (req, res, next) => {
         },
         {
           model: Rooms,
+          include: [{ model: BorardingHouse }],
         },
       ],
     });

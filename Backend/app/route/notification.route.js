@@ -17,4 +17,12 @@ router
   .put(notification.updated)
   .get(notification.findOne)
   .delete(notification.delete);
+
+router
+  .route("/getAll/user")
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem thông báo"),
+    notification.findAllUser
+  );
 module.exports = router;

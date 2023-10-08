@@ -7,6 +7,7 @@ const {
   Rooms,
   User_Room,
   LandlordTenant,
+  BorardingHouse,
 } = require("../models/index.model");
 
 const crypto = require("crypto");
@@ -56,21 +57,15 @@ exports.createUserAndAccount = async (userData) => {
 exports.createUserAccountAndUpdateRoom = async (userData) => {
   const transaction = await sequelize.transaction();
   try {
-    console.log("????newUser:", userData);
-
     const newUser = await Users.create(userData, { transaction });
-    console.log(">>>newUser:", newUser);
     if (userData.landlordId && newUser._id) {
       const documentLandlordTenant = await LandlordTenant.create(
         { landlordId: userData.landlordId, tenantId: newUser._id },
         { transaction }
       );
-      console.log(">>> LandlordTenant:", documentLandlordTenant);
     }
     const position = await Positions.findOne({ where: { name: "user" } });
-    console.log("???pos:", position);
     let password = setEncrypt(userData.password);
-    console.log("???pas:", password);
     let accountData = {
       userName: newUser.email,
       password: password,
@@ -78,10 +73,8 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
       userId: newUser._id,
       positionId: position._id,
     };
-    console.log("???acc:", accountData);
 
     const newAccount = await Accounts.create(accountData, { transaction });
-    console.log(">>>acc:", newAccount);
 
     const updateRoom = await Rooms.update(
       {
@@ -94,7 +87,6 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
       },
       { transaction }
     );
-    console.log(">>>>room:", updateRoom);
     const newUserRoom = await User_Room.create(
       {
         RoomId: userData.roomId,
@@ -104,7 +96,6 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
       },
       { transaction }
     );
-    console.log(">>>userrooom:", newUserRoom);
     await transaction.commit();
     return { message: "success", status: "success" };
   } catch (error) {
@@ -117,5 +108,53 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
     }
     // throw error;
     return { message: error, status: "fail2" };
+  }
+};
+
+exports.deleteBoardingAndRooms = async (data) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const documentBoarding = await BorardingHouse.update(
+      {
+        isDelete: true,
+      },
+      {
+        where: {
+          _id: data._id,
+        },
+      },
+
+      { transaction }
+    );
+    const documentRooms = await Rooms.findAll({
+      where: {
+        BoardingId: data._id,
+      },
+    });
+    for (let value of documentRooms) {
+      console.log(value);
+      const deleteRoom = await Rooms.update(
+        {
+          isDelete: true,
+        },
+        {
+          where: {
+            _id: value._id,
+          },
+        },
+        { transaction }
+      );
+    }
+
+    await transaction.commit();
+    return { message: "success", status: "success" };
+  } catch (error) {
+    if (transaction) {
+      if (!transaction.finished) {
+        console.log(">>>Error");
+        await transaction.rollback();
+      }
+    }
+    throw error;
   }
 };

@@ -14,12 +14,12 @@ exports.sanitizeDataMiddleware = (req, res, next) => {
       for (const key in req.body) {
         console.log(key);
         if (Object.hasOwnProperty.call(req.body, key)) {
-          if (req.body[key] != null)
+          if (req.body[key] != null && key != "isDelete" && key != "status")
             req.body[key] = sanitizeString(req.body[key]);
         }
       }
     }
-
+    console.log(req.body);
     next();
   } catch (error) {
     return res.json({ message: error, status: "fail1" });
