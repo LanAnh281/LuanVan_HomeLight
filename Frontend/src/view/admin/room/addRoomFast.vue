@@ -24,7 +24,10 @@ export default {
         price: "",
         wide: "",
         long: "",
+        to: "",
+        from: "",
         boardingId: "",
+        isDelete: false,
         status: false,
         countFiles: 0,
       },
@@ -32,6 +35,8 @@ export default {
         price: "",
         wide: "",
         long: "",
+        to: "",
+        from: "",
         boardingId: "",
       },
       uploadFiles: [],
@@ -69,6 +74,8 @@ export default {
         price: "",
         wide: "",
         long: "",
+        to: "",
+        from: "",
         boardingId: "",
       };
       data.flag = true;
@@ -242,8 +249,8 @@ export default {
       "wide",
       "long",
       "content",
-      "from",
-      "to",
+      "isDelete",
+
       "boardingId",
       "status",
       "countFiles",
@@ -252,7 +259,7 @@ export default {
       try {
         for (const key in data.error) {
           if (data.item[key] == "" && key != "name") {
-            console.log(key);
+            console.log(key, ":", data.item[key]);
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
           }
@@ -282,8 +289,6 @@ export default {
           }
 
           await refresh();
-        } else {
-          warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
         }
       } catch (error) {
         if (error.response) {
@@ -356,7 +361,16 @@ export default {
                   :data="boarding"
                   :selected="data.item.boardingId"
                   @choose="(value) => (data.item.boardingId = value)"
+                  @input="
+                    () => {
+                      data.flag = false;
+                      data.error.boardingId = '';
+                    }
+                  "
                 ></Select>
+                <div v-if="data.error.boardingId" class="invalid-error">
+                  {{ data.error.boardingId }}
+                </div>
               </div>
             </div>
 
@@ -536,14 +550,11 @@ export default {
                   class="form-control"
                   id="inputImage"
                 />
-                <!-- <div v-if="data.error.image" class="invalid-error">
-                  {{ data.error.image }}
-                </div> -->
               </div>
               <div id="previewImages" class="container mt-2"></div>
             </div>
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+              <button type="submit" class="btn btn-login col-sm-2">Thêm</button>
             </div>
           </form>
         </div>

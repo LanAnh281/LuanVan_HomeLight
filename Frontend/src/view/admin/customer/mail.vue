@@ -1,18 +1,20 @@
 <script>
 import { reactive, onMounted, ref, onBeforeMount } from "vue";
-import _ from "lodash";
 
 //service
 import mailService from "../../../service/mail.service";
 import { checkCookieExistence } from "../../../assets/js/common.login";
 import { successAd } from "../../../assets/js/common.alert";
-// view
+// js
+import { sanitizeInput } from "../../../assets/js/checkInput.common";
 export default {
   components: {},
   props: { checkedList: { type: Array, default: [] } },
   setup(props, { emit }) {
     const data = reactive({
       item: { content: "", title: "", btnSubmit: "Gửi" },
+      error: { title: "", content: "" },
+      flag: false,
     });
     const isModalOpen = ref(false);
 
@@ -26,16 +28,26 @@ export default {
     };
     const save = async () => {
       try {
-        data.item.btnSubmit = "Đang gửi...";
-        for (let index in props.checkedList) {
-          const documentMail = await mailService.sendMail({
-            title: data.item.title,
-            content: data.item.content,
-            mail: props.checkedList[index].email,
-          });
+        data.flag = false;
+        for (let key in data.item) {
+          if (data.item[key] == "" && key != "btnSubmit") {
+            data.error[key] = "Chưa nhập thông tin";
+            data.flag = true;
+          }
         }
-        successAd("Thành công");
-        data.item.btnSubmit = "Gửi";
+        console.log(data.flag);
+        if (!data.flag) {
+          data.item.btnSubmit = "Đang gửi...";
+          for (let index in props.checkedList) {
+            const documentMail = await mailService.sendMail({
+              title: data.item.title,
+              content: data.item.content,
+              mail: props.checkedList[index].email,
+            });
+          }
+          successAd("Thành công");
+          data.item.btnSubmit = "Gửi";
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -93,22 +105,32 @@ export default {
             </div>
             <div class="row form-group">
               <label for="title" class="col-sm-2">Tiêu đề :</label>
-              <input
-                type="text"
-                id="title"
-                class="col-sm-10 form-control"
-                v-model="data.item.title"
-              />
+              <div class="col-sm-10 m-0 p-0">
+                <input
+                  type="text"
+                  id="title"
+                  v-model="data.item.title"
+                  class="form-control"
+                />
+                <div v-if="data.error.title" class="invalid-error">
+                  {{ data.error.title }}
+                </div>
+              </div>
             </div>
             <div class="row form-group">
               <label for="content" class="col-sm-2">Nội dung :</label>
-              <textarea
-                id="content"
-                cols="30"
-                rows="10"
-                class="col-sm-10 form-control"
-                v-model="data.item.content"
-              ></textarea>
+              <div class="col-sm-10 m-0 p-0">
+                <textarea
+                  id="content"
+                  cols="30"
+                  rows="10"
+                  class="form-control"
+                  v-model="data.item.content"
+                ></textarea>
+                <div v-if="data.error.content" class="invalid-error">
+                  {{ data.error.content }}
+                </div>
+              </div>
             </div>
             <div class="text-center row justify-content-around">
               <button

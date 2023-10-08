@@ -65,7 +65,12 @@ export default {
       try {
         const documentNoti = await user_notificationService.get(props._id);
         data.item = documentNoti.message;
-        console.log(data.item);
+        data.item.Users = data.item.Users.map((item) => {
+          return {
+            ...item,
+            sex: item.sex ? "Nữ" : "Nam",
+          };
+        });
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -77,7 +82,6 @@ export default {
       }
     };
     onMounted(async () => {
-      console.log("PropsId:", props._id);
       await refresh();
       $("#visibilityNotiModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#visibilityNotiModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal

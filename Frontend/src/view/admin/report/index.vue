@@ -252,7 +252,7 @@ export default {
         @input="handleEnd"
       />
       <Select
-        class="col-1 mt-2"
+        class="col-1 mt-2 select"
         :title="'Chọn nhà trọ'"
         :data="data.boarding"
         :selected="data.selectBoarding['_id']"
@@ -284,5 +284,8 @@ export default {
 <style scoped>
 .body {
   min-height: 150vh;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

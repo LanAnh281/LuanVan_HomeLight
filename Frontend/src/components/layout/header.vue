@@ -127,7 +127,6 @@ export default {
             time: previousTime,
           };
         });
-        console.log(data.items);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

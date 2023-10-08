@@ -303,6 +303,7 @@ export default {
     });
     return {
       data,
+      now,
       //1
       roomStatus,
       roomStatusSeries,
@@ -322,7 +323,7 @@ export default {
   <div class="body m-0">
     <div class="border-radius my-3 row m-0 justify-content-end">
       <Select
-        class="col-2 mt-2"
+        class="col-1 mt-2 mr-3"
         :title="'Chọn nhà trọ'"
         :data="data.boarding"
         :selected="data.selectBoarding"
@@ -332,7 +333,7 @@ export default {
     <div class="border-radius my-3 row m-0 justify-content-start">
       <div class="col-12"></div>
       <div class="col-6 border-radius">
-        Biểu đồ thể hiện trạng thái phòng
+        <h6>Biểu đồ thể hiện trạng thái phòng</h6>
         <apexchart
           :options="roomStatus"
           :series="roomStatusSeries"
@@ -352,21 +353,24 @@ export default {
         </p>
       </div> -->
       <div class="col-6 border-radius">
-        Biểu đồ thể hi thu chi của nhà trọ
+        <h6>
+          Biểu đồ thể hiện doanh thu và chi phí của nhà trọ tháng
+          {{ now.getMonth() + 1 }}/{{ now.getFullYear() }}
+        </h6>
         <apexchart
           :options="chartOptionsProfit"
           :series="chartSeriesProfit.data"
           height="400"
         />
       </div>
-      <div class="col-6 border-radius mt-3">
+      <!-- <div class="col-6 border-radius mt-3">
         Biểu đồ thể hiện điện nước tiêu thụ
         <apexchart
           :options="chartOptionsEW"
           :series="chartSeriesEW.data"
           height="400"
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

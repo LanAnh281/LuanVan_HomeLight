@@ -280,15 +280,25 @@ export default {
         <input
           type="date"
           @input="handleDate"
-          class="border rounded py-1 text-center"
-          style="height: 39px; background-color: var(--background)"
+          class="border rounded py-1 text-center select"
+          style="height: 39px"
         />
       </div>
-      <div class="input-group col-1 m-0 align-items-center p-0"></div>
-
-      <div class="col-9 mr-1 p-0 row justify-content-end"></div>
+      <div class="mt-1 mb-1 mr-1">
+        <Select
+          :title="`Chọn nhà trọ`"
+          :data="data.boarding"
+          @choose="
+            async (value) => {
+              data.boardingActice = value;
+            }
+          "
+          class="select"
+          style="height: 39px"
+        ></Select>
+      </div>
     </div>
-    <div
+    <!-- <div
       class="border-radius my-3 mx-0 row justify-content-start"
       v-if="data.boarding.length != 0"
     >
@@ -307,7 +317,7 @@ export default {
           {{ value.name }}
         </button>
       </div>
-    </div>
+    </div> -->
     <span>
       <span class="text-primary">(*)</span> Trước khi thực hiện lọc cần lưu giá
       trị điện nước trước.</span
@@ -382,5 +392,8 @@ export default {
 .isActiveBoarding {
   background-color: var(--ruby);
   text-shadow: 0 0 2px #fff;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

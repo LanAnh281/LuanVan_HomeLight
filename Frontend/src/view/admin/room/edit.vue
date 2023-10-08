@@ -288,10 +288,10 @@ export default {
           >
             <!-- nhà trọ -->
             <div class="form-group row">
-              <label for="inputname" class="col-sm-3 col-form-label p-0"
+              <label for="inputname" class="col-sm-2 col-form-label p-0"
                 >Nhà trọ :
               </label>
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <Select
                   :title="'Chọn nhà trọ'"
                   :data="data.boarding"
@@ -303,10 +303,10 @@ export default {
 
             <!--  -->
             <div class="form-group row">
-              <label for="inputroom" class="col-sm-3 col-form-label p-0"
+              <label for="inputroom" class="col-sm-2 col-form-label p-0"
                 >Tên phòng trọ :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <input
                   type="text"
                   class="form-control"
@@ -333,10 +333,10 @@ export default {
             </div>
 
             <div class="form-group row">
-              <label for="inputprice" class="col-sm-3 col-form-label p-0"
+              <label for="inputprice" class="col-sm-2 col-form-label p-0"
                 >Giá phòng :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <input
                   type="text"
                   class="form-control"
@@ -362,10 +362,10 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputlong" class="col-sm-3 col-form-label p-0"
+              <label for="inputlong" class="col-sm-2 col-form-label p-0"
                 >Chiều dài :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <input
                   type="text"
                   class="form-control"
@@ -391,10 +391,10 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputwide" class="col-sm-3 col-form-label p-0"
+              <label for="inputwide" class="col-sm-2 col-form-label p-0"
                 >Chiều dài :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <input
                   type="text"
                   class="form-control"
@@ -420,10 +420,10 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputContent" class="col-sm-3 col-form-label p-0"
+              <label for="inputContent" class="col-sm-2 col-form-label p-0"
                 >Mô tả thêm :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <textarea
                   type="text"
                   class="form-control"
@@ -436,10 +436,10 @@ export default {
             <div class="form-group row">
               <label
                 for="inputImagePrevious"
-                class="col-sm-3 col-form-label p-0"
+                class="col-sm-2 col-form-label p-0"
                 >Ảnh phòng trọ :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <input
                   type="file"
                   ref="files"

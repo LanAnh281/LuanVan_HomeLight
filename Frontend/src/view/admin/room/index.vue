@@ -37,6 +37,7 @@ import roomForm from "./add.vue";
 import roomFast from "./addRoomFast.vue";
 import Edit from "./edit.vue";
 import View from "./view/view.vue";
+import ViewStatus from "./view/viewStatus.vue";
 import addCustomer from "./addCustomer/index.form.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
 
@@ -51,6 +52,7 @@ export default {
     Edit,
     EditBoardingForm,
     View,
+    ViewStatus,
     addCustomer,
     paginationVue,
   },
@@ -91,6 +93,7 @@ export default {
       length: 0,
       sizePage: 18,
       searchText: "",
+      flag: false,
     });
     const component = reactive({
       isBoardingModal: false,
@@ -144,6 +147,19 @@ export default {
     };
     const handleDeleteClick = async (id, name) => {
       try {
+        console.log(data.items);
+        data.flag = false;
+        for (let value of data.items) {
+          if (value.status == true) {
+            warning(
+              "Cảnh báo",
+              `Các phòng trọ của nhà trọ ${name} vẫn còn khách trọ`
+            );
+            data.flag = true;
+            break;
+          }
+        }
+        if (data.flag) return;
         const isDelete = await deleted(
           `Xóa nhà trọ ${name}`,
           `Bạn sẽ xóa tất cả phòng trọ thuộc nhà trọ ${name}`
@@ -186,6 +202,7 @@ export default {
       setTimeout(() => {
         data.isActiveBoarding = boardingId;
       }, 1);
+      await refreshRoom();
     };
     const handleAddRoomFast = async () => {
       const boardingId = data.isActiveBoarding;
@@ -198,7 +215,7 @@ export default {
       try {
         const document = await boardinghouseService.getAllUser(); // api getAll borading houses
         data.boarding = document.message;
-        console.log(data.boarding);
+
         data.isActiveBoarding = data.boarding[0]._id;
         const documentRoom = await roomService.getAll(); //api getAll rooms
         data.items = documentRoom.message;
@@ -218,7 +235,7 @@ export default {
     };
     onMounted(async () => {
       await refresh();
-
+      await refreshRoom();
       await checkAccessToken(router); //access token
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
@@ -257,7 +274,7 @@ export default {
   <div class="body m-0">
     <!-- Status  and fee-->
     <div class="border-radius my-3 row m-0 justify-content-start">
-      <div class="input-group col-2 align-items-center pt-0 pr-0 mr-1">
+      <div class="input-group col-2 align-items-center pt-0 pr-0 mr-1 mt-1">
         <Select
           :title="`Trạng thái phòng`"
           :data="data.status"
@@ -266,21 +283,31 @@ export default {
           style="background-color: var(--background)"
         ></Select>
       </div>
-      <!-- <div class="input-group col-2 align-items-center p-0">
+      <div class="input-group col-2 align-items-center p-0">
         <Select
-          :title="`Thanh toán`"
-          :data="data.fee"
-          @choose="(value) => handlefee(value)"
+          :title="`Chọn nhà trọ`"
+          :data="data.boarding"
+          @choose="
+            async (value) => {
+              data.isActiveBoarding = value;
+              const documentRoom = await roomService.getAll();
+              data.items = documentRoom.message;
+              data.items = data.items.filter(
+                (item) => item.boardingId == data.isActiveBoarding
+              );
+            }
+          "
+          class="select"
         ></Select>
-      </div> -->
-      <div class="input-group col-8 align-items-center p-0">
+      </div>
+      <div class="input-group col-7 align-items-center">
         <input
           type="search"
           placeholder="tìm kiếm theo tên phòng trọ"
-          class="p-2 border rounded"
+          class="p-2 pb-1 border rounded"
           style="
             background-color: var(--background);
-            width: 30%;
+            width: 50%;
             font-size: 0.9rem;
           "
           v-model="data.searchText"
@@ -288,8 +315,8 @@ export default {
       </div>
     </div>
     <!-- Boarding house items -->
-    <div class="border-radius my-3 mx-0 row justify-content-start">
-      <div class="col-4 boarding">
+    <div class="border-radius my-3 mx-0 row justify-content-end">
+      <!-- <div class="col-4 boarding">
         <button
           class="btn px-2 mr-2 board-item"
           v-for="(value, index) in data.boarding"
@@ -312,10 +339,10 @@ export default {
             @click.stop="handleDeleteClick(value._id, value.name)"
           >
             x
-            <!--click.stop not parent element -->
+          
           </span>
         </button>
-      </div>
+      </div> -->
       <div class="col-8 mr-1 p-0 row justify-content-end">
         <div class="mr-1">
           <button
@@ -516,6 +543,7 @@ export default {
       @edit="handleEdit"
     ></Edit>
     <View v-if="isViewModal" :_id="data.isActiveRoom"></View>
+    <ViewStatus v-if="isViewModal" :_id="data.isActiveRoom"> </ViewStatus>
     <addCustomer
       v-if="isAddCustomerModal"
       :_id="data.isActiveRoom"
@@ -609,5 +637,8 @@ export default {
   color: red;
   font-size: 1.2rem;
   font-weight: 600;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

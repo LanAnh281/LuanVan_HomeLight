@@ -2,19 +2,11 @@
 import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
-//service
-import boardinghouseService from "../../../service/boardinghouse.service";
-import roomService from "../../../service/room.service";
 //component
 import Select from "../../../components/select/select.vue";
 //js
-import {
-  checkStringAndNumber,
-  checkAddress,
-  checkNumber,
-  sanitizeInput,
-} from "../../../assets/js/checkInput.common";
-import { successAd, warning } from "../../../assets/js/common.alert";
+import { sanitizeInput } from "../../../assets/js/checkInput.common";
+import { successAd } from "../../../assets/js/common.alert";
 import serviceService from "../../../service/service.service";
 export default {
   components: { Select },
@@ -42,11 +34,9 @@ export default {
     const add = () => {
       console.log("add");
       data.item.push({ name: "", price: "", unit: "" });
-      //   data.error.push({ name: "", price: "" });
     };
     const remove = () => {
       data.item.pop();
-      //   data.error.pop();
       console.log("remove");
     };
     const handleDelete = (value) => {
@@ -56,7 +46,6 @@ export default {
       try {
         data.item.forEach(async (value) => {
           value.name = sanitizeInput(value.name);
-          value.price = sanitizeInput(value.price);
           value.unit = sanitizeInput(value.unit);
           const document = await serviceService.create(value);
           emit("add");
@@ -119,13 +108,13 @@ export default {
         <div class="modal-body">
           <div class="row justify-content-end mr-3">
             <span
-              class="material-symbols-outlined add-icon mr-2 p-1"
+              class="material-symbols-outlined add-icon mr-1 p-1 border"
               @click="add"
             >
               add
             </span>
             <span
-              class="material-symbols-outlined remove-icon p-1"
+              class="material-symbols-outlined remove-icon p-1 border"
               @click="remove"
             >
               remove
@@ -184,7 +173,7 @@ export default {
               </tbody>
             </table>
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+              <button type="submit" class="btn btn-login col-sm-1">Thêm</button>
             </div>
           </form>
         </div>

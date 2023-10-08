@@ -146,7 +146,6 @@ export default {
             roomId: value,
           };
           const documentBill = await billService.create(data.bill);
-          console.log(">>>bill:", documentBill);
           // lấy thông tin phòng và thông tin khách qua api
           const documentUserRoom = await userRoomService.get(value);
           //cập nhật trạng thái phòng
@@ -287,7 +286,7 @@ export default {
               {{ value.price }}
             </p>
             <p class="card-text">
-              <b>Diện tích:</b> {{ value.long }} x {{ value.wide }}
+              <b>Diện tích:</b> {{ value.long }} x {{ value.wide }} m²
             </p>
           </div>
 
@@ -298,7 +297,9 @@ export default {
               style="font-size: 1.4rem"
               title="chi tiết"
               data-toggle="modal"
-              data-target="#viewRoomModal"
+              :data-target="
+                status['_id'] ? '#viewRoomStatusModal' : '#viewRoomModal'
+              "
               @click="$emit('view', value._id)"
             >
               visibility

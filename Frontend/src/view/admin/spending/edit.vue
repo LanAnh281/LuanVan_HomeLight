@@ -198,7 +198,7 @@ export default {
             </div>
 
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">
+              <button type="submit" class="btn btn-login col-sm-2">
                 Cập nhật
               </button>
             </div>

@@ -61,7 +61,7 @@ export default {
           </button>
         </div>
         <div class="modal-body">
-          <div class="row p-0 m-0">
+          <div class="row p-0 m-0 px-2">
             <div class="col-6 p-0 m-0">
               <div class="row justify-content-start p-0 m-0">
                 <label class="pr-2">Họ và tên:</label>
@@ -77,7 +77,7 @@ export default {
               </div>
 
               <div class="row justify-content-start p-0 m-0">
-                <label class="pr-2">CCCD:</label>
+                <label class="pr-2">Số CCCD:</label>
                 <label class="">{{ data.item.identification }}</label>
               </div>
             </div>
@@ -99,20 +99,20 @@ export default {
                 <label class="col-10 p-0 m-0">{{ data.item.address }}</label>
               </div>
             </div>
-          </div>
-          <div class="col-12 m-0 p-0">
-            <label class="col-2 p-0 m-0">Ảnh CCCD: </label>
-            <div class="">
-              <img
-                :src="`http://localhost:3000/api/users/getImg/${data.item.imagePrevious}`"
-                alt="Ảnh CCCD mặt sau"
-                class="mr-3"
-              />
+            <div class="col-12 m-0 p-0">
+              <label class="col-2 p-0 m-0">Ảnh CCCD: </label>
+              <div class="px-2">
+                <img
+                  :src="`http://localhost:3000/api/users/getImg/${data.item.imagePrevious}`"
+                  alt="Ảnh CCCD mặt sau"
+                  class="mr-5"
+                />
 
-              <img
-                :src="`http://localhost:3000/api/users/getImg/${data.item.imageAfter}`"
-                alt="Ảnh CCCD mặt sau"
-              />
+                <img
+                  :src="`http://localhost:3000/api/users/getImg/${data.item.imageAfter}`"
+                  alt="Ảnh CCCD mặt sau"
+                />
+              </div>
             </div>
           </div>
         </div>

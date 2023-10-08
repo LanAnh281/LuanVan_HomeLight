@@ -22,14 +22,21 @@ export default {
       item: {
         name: "",
         phone: "",
-        city: "",
-        district: "",
-        ward: "",
+        city: { name: "" },
+        district: { name: "" },
+        ward: { name: "" },
         number: "",
         address: "",
         rules: "",
       },
-      error: { name: "", number: "", phone: "" },
+      error: {
+        name: "",
+        number: "",
+        phone: "",
+        city: "",
+        district: "",
+        ward: "",
+      },
       flag: true,
       city: {},
       district: { data: { districts: [] } },
@@ -97,28 +104,46 @@ export default {
       data.item = {
         name: "",
         phone: "",
-        city: "",
-        district: "",
-        ward: "",
+        city: { name: "" },
+        district: { name: "" },
+        ward: { name: "" },
         number: "",
         address: "",
         rules: "",
       };
-      data.error = { name: "", number: "", phone: "" };
+      data.error = {
+        name: "",
+        number: "",
+        phone: "",
+        city: "",
+        district: "",
+        ward: "",
+      };
       data.flag = true;
     };
     const save = async () => {
       console.log("save");
-      const keys = ["name", "number", "phone"];
+
+      const keys = ["name", "number", "phone", "city", "district", "ward"];
       try {
         for (const key of keys) {
-          console.log("key", data.item[key]);
-          if (data.item[key] == "") {
+          if (
+            data.item[key] == "" &&
+            key != "city" &&
+            key != "district" &&
+            key != "ward"
+          ) {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
-            console.log("1");
+          } else if (key == "city" || key == "district" || key == "ward") {
+            if (data.item[key].name == "") {
+              console.log(key, ":", data.item[key].name);
+              data.error[key] = "Chưa nhập thông tin.";
+              data.flag = true;
+            }
           }
         }
+        console.log(data.error);
         if (!data.flag) {
           data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
           const document = await boardinghouseService.create({
@@ -267,7 +292,16 @@ export default {
                   :title="`Chọn thành phố`"
                   :data="data.city.data"
                   @choose="(value) => change(value)"
+                  @input="
+                    () => {
+                      data.flag = false;
+                      data.error.city = '';
+                    }
+                  "
                 ></Select>
+                <div v-if="data.error.city" class="invalid-error">
+                  {{ data.error.city }}
+                </div>
               </div>
             </div>
 
@@ -280,7 +314,16 @@ export default {
                   :title="`Chọn quận huyện`"
                   :data="data.district.data.districts"
                   @choose="(value) => changeDistrict(value)"
+                  @input="
+                    () => {
+                      data.flag = false;
+                      data.error.district = '';
+                    }
+                  "
                 ></Select>
+                <div v-if="data.error.district" class="invalid-error">
+                  {{ data.error.district }}
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -292,7 +335,16 @@ export default {
                   :title="`Chọn phường xã`"
                   :data="data.ward.data.wards"
                   @choose="(value) => changeWard(value)"
+                  @input="
+                    () => {
+                      data.flag = false;
+                      data.error.ward = '';
+                    }
+                  "
                 ></Select>
+                <div v-if="data.error.ward" class="invalid-error">
+                  {{ data.error.ward }}
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -324,39 +376,8 @@ export default {
                 </div>
               </div>
             </div>
-
-            <!-- <div class="form-group row">
-                <label for="inputrules" class="col-sm-3 col-form-label p-0"
-                  >Quy định :</label
-                >
-                <div class="col-sm-9">
-                  <textarea
-                    class="form-control"
-                    id="inputrules"
-                    @blur="
-                      () => {
-                        let isCheck = checkAddress(data.item.rules);
-                        if (isCheck) {
-                          data.error.rules =
-                            'Quy định không chứa các kí tự đặc biệt';
-                          data.flag = true;
-                        }
-                      }
-                    "
-                    @input="
-                      data.error.rules = '';
-                      data.flag = false;
-                    "
-                    v-model="data.item.rules"
-                  ></textarea>
-                  <div v-if="data.error.rules" class="invalid-error">
-                    {{ data.error.rules }}
-                  </div>
-                </div>
-              </div> -->
-
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+              <button type="submit" class="btn btn-login col-sm-2">Thêm</button>
             </div>
           </form>
         </div>

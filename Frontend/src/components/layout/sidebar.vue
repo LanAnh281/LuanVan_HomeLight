@@ -40,11 +40,11 @@ export default {
           icon: "text_snippet",
           active: "report",
         },
-        {
-          name: "Tài khoản",
-          icon: "manage_accounts",
-          active: "account",
-        },
+        // {
+        //   name: "Tài khoản",
+        //   icon: "manage_accounts",
+        //   active: "account",
+        // },
         { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },
         { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
       ],
@@ -76,7 +76,7 @@ export default {
 };
 </script>
 <template>
-  <div class="sidebar px-0">
+  <div class="sidebar px-0 m-0">
     <div
       style="width: 100%"
       class="row justify-items-around align-items-center"
@@ -90,7 +90,7 @@ export default {
         class="col-3 ml-4 mr-0 p-0"
       />
       <div class="col row mt-0">
-        <div class="col-12 my-3">
+        <div class="col-12 my-3 mx-3">
           <span
             style="
               display: block;

@@ -50,8 +50,19 @@ export default {
           )
         : []
     );
-    const handleCreate = () => {
-      socket.on("noti", (msg) => console.log(msg));
+    const handleCreate = async () => {
+      try {
+        // socket.on("noti", (msg) => console.log(msg));
+        await refresh();
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
     const handleView = (value) => {
       try {
@@ -70,7 +81,7 @@ export default {
 
     const refresh = async () => {
       try {
-        const documentNoti = await NotificationService.getAll();
+        const documentNoti = await NotificationService.getAllUser();
         data.item = documentNoti.message;
         data.item = data.item.map((item) => {
           return {
@@ -133,7 +144,6 @@ export default {
       :sizePage="data.sizePage"
       @visibility="
         (value) => {
-          console.log(value);
           handleView(value);
         }
       "

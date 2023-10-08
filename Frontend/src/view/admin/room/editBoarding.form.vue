@@ -27,6 +27,7 @@ export default {
         phone: "",
         address: "",
         rules: "",
+        isDelete: false,
         city: { code: "", name: "" },
         district: { code: "", name: "" },
         ward: { code: "", name: "" },
@@ -156,13 +157,13 @@ export default {
     };
     const save = async () => {
       try {
-        console.log(data.item);
         data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
         const document = await boardinghouseService.update(props.boardingId, {
           boardingId: data.item.boardingId,
           address: data.item.address,
           name: data.item.name,
           phone: data.item.phone,
+          isDelete: false,
         });
         if (document["status"] == "success") {
           successAd(`Đã cập nhật nhà trọ `);

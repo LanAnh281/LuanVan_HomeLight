@@ -11,6 +11,7 @@ import { useRoute, useRouter } from "vue-router";
 
 //service
 import spendingService from "../../../service/spending.service";
+import boardinghouseService from "../../../service/boardinghouse.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import {
@@ -19,13 +20,13 @@ import {
 } from "../../../assets/js/format.common";
 import { deleted, successAd } from "../../../assets/js/common.alert";
 //component
+import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/table.vue";
 import Pagination from "../../../components/pagination/pagination.vue";
 import Add from "./add.vue";
 import Edit from "./edit.vue";
-import boardinghouseService from "../../../service/boardinghouse.service";
 export default {
-  components: { Table, Pagination, Add, Edit },
+  components: { Select, Table, Pagination, Add, Edit },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -40,6 +41,8 @@ export default {
       searchText: "",
       selectDate: { month: "", year: "" },
       activeSpending: "",
+      boarding: [],
+      boardingActice: "",
     });
     const isSpending = ref(false);
     let intervalId = null;
@@ -66,39 +69,6 @@ export default {
           )
         : []
     );
-    const refresh = async () => {
-      try {
-        const boarding = await boardinghouseService.getAllUser();
-        if (boarding.message.length > 0) {
-          const documentSpending = await spendingService.getAll();
-          data.item = documentSpending.message;
-          data.item = data.item.filter((item) => {
-            const date = new Date(item.date);
-            return (
-              data.selectDate.month == date.getMonth() + 1 &&
-              data.selectDate.year == date.getFullYear()
-            );
-          });
-          data.item = data.item.map((item) => {
-            return {
-              ...item,
-              price: formatCurrency(item.price),
-              date: formatDateTime(item.date),
-              name: item.BoardingHouse["name"],
-            };
-          });
-          // data.length = data.item.length;
-        } else data.item = [];
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
 
     const handleDate = async (value) => {
       const date = new Date(value.target.value);
@@ -132,6 +102,47 @@ export default {
         }
       }
     };
+    watch(
+      () => data.boardingActice,
+      async (newValue, oldValue) => {
+        await refresh();
+      }
+    );
+    const refresh = async () => {
+      try {
+        const boarding = await boardinghouseService.getAllUser();
+        if (boarding.message.length > 0) {
+          const documentSpending = await spendingService.getAll();
+          data.item = documentSpending.message;
+
+          data.item = data.item.filter((item) => {
+            const date = new Date(item.date);
+            return (
+              data.selectDate.month == date.getMonth() + 1 &&
+              data.selectDate.year == date.getFullYear() &&
+              item.boardingId == data.boardingActice
+            );
+          });
+          data.item = data.item.map((item) => {
+            return {
+              ...item,
+              price: formatCurrency(item.price),
+              date: formatDateTime(item.date),
+              name: item.BoardingHouse["name"],
+            };
+          });
+          // data.length = data.item.length;
+        } else data.item = [];
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     onMounted(async () => {
       await checkAccessToken(router); //access token
       intervalId = setInterval(async () => {
@@ -143,7 +154,12 @@ export default {
         month: date.getMonth() + 1,
         year: date.getFullYear(),
       };
+      data.boarding = await boardinghouseService.getAllUser();
+      data.boarding = data.boarding.message;
+
+      data.boardingActice = data.boarding[0]._id;
       await refresh();
+      console.log(data.item);
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
@@ -168,13 +184,25 @@ export default {
         @input="handleDate"
         class="border rounded ml-3 mr-2 text-center col-1 p-0"
       />
-      <input
+      <Select
+        :title="`Chọn nhà trọ`"
+        :data="data.boarding"
+        :selected="data.boardingActice"
+        @choose="
+          async (value) => {
+            data.boardingActice = value;
+          }
+        "
+        class="select p-2 border rounded col-2 w-100 mt-2"
+        style="height: 36px"
+      ></Select>
+      <!-- <input
         type="search"
         placeholder="tìm kiếm theo nhà trọ"
         class="p-2 border rounded col-4 w-100"
         v-model="data.searchText"
-      />
-      <div class="col-7 row justify-content-end p-0">
+      /> -->
+      <div class="col row justify-content-end p-0">
         <button
           class="btn btn-primary p-0 mr-4 col-3"
           style="width: 20%; height: 36px; margin-top: 6px; margin-right: -9%"
@@ -262,5 +290,8 @@ input {
   width: 120px;
   height: 36px;
   margin-top: 6px;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

@@ -13,8 +13,8 @@ import { useRoute, useRouter } from "vue-router";
 
 //service
 import userService from "../../../service/user.service";
-import accountService from "../../../service/account.service";
 import userRoomService from "../../../service/user_room.service";
+import boardinghouseService from "../../../service/boardinghouse.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import { city, district, ward } from "../../../assets/js/dependent.common";
@@ -28,11 +28,12 @@ import {
 import paginationVue from "../../../components/pagination/pagination.vue";
 import Table from "../../../components/table/tableChecked.table.vue";
 import Select from "../../../components/select/selectdependent.vue";
+import SelectNormal from "../../../components/select/select.vue";
 import View from "./view.vue";
 import Edit from "./edit.vue";
 import Mail from "./mail.vue";
 export default {
-  components: { paginationVue, Table, Select, View, Edit, Mail },
+  components: { paginationVue, Table, Select, SelectNormal, View, Edit, Mail },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -60,6 +61,9 @@ export default {
       isMail: false,
       user: "",
       checkedList: [],
+      //boarding
+      boarding: [],
+      boardingActice: "",
     });
     let intervalId = null;
     data.totalPage = computed(() =>
@@ -90,6 +94,9 @@ export default {
       try {
         const documentUser = await userService.getAllTenant("Landloard");
         data.item = documentUser.message;
+        data.item = documentUser.message.filter(
+          (item) => item.user.boardingId == data.boardingActice
+        );
         data.item = data.item.map((item) => {
           return {
             ...item,
@@ -112,15 +119,18 @@ export default {
         }
       }
     };
-
+    watch(
+      () => data.boardingActice,
+      async (newValue, oldValue) => {
+        await refresh();
+      }
+    );
     const changeCity = async (value) => {
       try {
         const document = await city(value);
-        // data.item.city = document.city;
         data.chooseCity = document.city;
         data.choose = document.city;
         data.district = document.district;
-        data.length = data.item.length;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -135,18 +145,10 @@ export default {
       () => data.choose,
       async (newValue, oldValue) => {
         try {
-          const documentUser = await userService.getAll();
-          data.item = documentUser.message;
-          data.item = data.item.filter(
-            (item) =>
-              item.address.includes(newValue.name) && item.isActive == true
+          await refresh();
+          data.item = data.item.filter((item) =>
+            item.user.address.includes(newValue.name)
           );
-          data.item = data.item.map((item) => {
-            return {
-              ...item,
-              sex: item.sex ? "Nữ" : "Nam",
-            };
-          });
         } catch (error) {
           if (error.response) {
             console.log("Server-side errors", error.response.data);
@@ -187,9 +189,6 @@ export default {
         );
         data.chooseWard = document.ward;
         data.choose = document.ward;
-
-        // data.item.ward = document.ward;
-        // console.log(data.chooseCity, data.chooseDistrict, data.chooseWard);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -285,8 +284,14 @@ export default {
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
-
+      const documentBoarding = await boardinghouseService.getAllUser();
+      data.boarding = documentBoarding.message;
+      if (data.boarding.length > 0) {
+        data.boardingActice = data.boarding[0]._id;
+      }
+      console.log(data.boarding, data.boardingActice);
       await refresh();
+      console.log(data.item);
       try {
         data.city = await axios.get(
           `https://provinces.open-api.vn/api/?depth=1`,
@@ -323,6 +328,7 @@ export default {
           :title="`Chọn thành phố`"
           :data="data.city.data"
           @choose="(value) => changeCity(value)"
+          class="select"
         ></Select>
       </div>
       <div class="input-group col-2 align-items-center p-0 pl-1">
@@ -330,6 +336,7 @@ export default {
           :title="`Chọn quận huyện`"
           :data="data.district.data.districts"
           @choose="(value) => changeDistrict(value)"
+          class="select"
         ></Select>
       </div>
       <div class="input-group col-2 align-items-center p-0 pl-1">
@@ -337,7 +344,22 @@ export default {
           :title="`Chọn phường xã`"
           :data="data.ward.data.wards"
           @choose="(value) => changeWard(value)"
+          class="select"
         ></Select>
+      </div>
+      <div class="input-group col-2 align-items-center p-0 pl-1">
+        <SelectNormal
+          :title="`Chọn nhà trọ`"
+          :data="data.boarding"
+          :selected="data.boardingActice"
+          @choose="
+            async (value) => {
+              data.boardingActice = value;
+            }
+          "
+          class="select"
+          style="height: 36px"
+        ></SelectNormal>
       </div>
     </div>
     <!-- Search -->
@@ -346,7 +368,7 @@ export default {
       <div class="my-2 mx-3 row justify-content-between">
         <input
           type="search"
-          placeholder="tìm kiếm theo tên"
+          placeholder="tìm kiếm theo tên khách hàng"
           class="p-2 border rounded"
           style="
             background-color: var(--background);
@@ -453,5 +475,8 @@ export default {
 <style scoped>
 .body {
   min-height: 200vh;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

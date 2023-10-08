@@ -66,49 +66,48 @@ export default {
 <template>
   <div>
     <div class="row">
-      <div class="col-6">
+      <div class="col-6 m-0 mr-1 p-0">
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Tên nhà trọ:</label>
-          <p class="class-2">{{ data.boarding.name }}</p>
+          <p class="col-3 m-0 p-0">Tên nhà trọ:</p>
+          <p class="col-8 m-0 p-0">{{ data.boarding.name }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-4">Địa chỉ:</label>
+          <p class="col-3 m-0 p-0">Địa chỉ:</p>
           <p class="col-8 m-0 p-0">{{ data.boarding.address }}</p>
         </div>
       </div>
-      <div class="col-6 p-0 m-0">
+      <div class="col p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Tên phòng :</label>
+          <p class="col-3 m-0 p-0">Tên phòng :</p>
           <p class="col-6 p-0 m-0">{{ data.item.name }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Diện tích :</label>
+          <p class="col-3 m-0 p-0">Diện tích :</p>
           <p class="col-6 p-0 m-0">
-            {{ data.item.long }}x {{ data.item.wide }}
+            {{ data.item.long }}x {{ data.item.wide }} m²
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Đơn giá :</label>
+          <p class="col-3 m-0 p-0">Đơn giá :</p>
           <p class="col-6 p-0 m-0">
             {{ formatCurrency(data.item.price) }}
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-6">Trạng thái :</label>
+          <p class="col-3 m-0 p-0">Trạng thái :</p>
           <p class="col-6 p-0 m-0">
             {{ !data.item.status ? "Chưa thuê" : "Đang thuê" }}
           </p>
         </div>
       </div>
-      <div class="col-12 p-0 m-0">
-        <div class="row justify-content-start p-0 m-0">
-          <label for="" class="col-2">Mô tả :</label>
-          <p class="col-10 p-0 m-0">
-            {{ data.item.content }}
-          </p>
-        </div>
+      <div class="col-12 row justify-content-start p-0 m-0">
+        <p class="col-1 mr-5 p-0">Mô tả :</p>
+        <p class="col-8 p-0 m-0">
+          {{ data.item.content }}
+        </p>
       </div>
     </div>
+
     <hr />
     <div
       v-for="(value, index) in data.medias"

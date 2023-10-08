@@ -120,7 +120,6 @@ export default {
           return item.checked == true;
         });
 
-        console.log(data.checkedList);
         for (let key in data.item) {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin";

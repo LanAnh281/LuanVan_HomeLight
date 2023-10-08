@@ -352,7 +352,16 @@ export default {
                   :data="boarding"
                   :selected="data.item.boardingId"
                   @choose="(value) => (data.item.boardingId = value)"
+                  @input="
+                    () => {
+                      data.flag = false;
+                      data.error.boardingId = '';
+                    }
+                  "
                 ></Select>
+                <div v-if="data.error.boardingId" class="invalid-error">
+                  {{ data.error.boardingId }}
+                </div>
               </div>
             </div>
 
@@ -504,14 +513,11 @@ export default {
                   class="form-control"
                   id="inputImage"
                 />
-                <!-- <div v-if="data.error.image" class="invalid-error">
-                  {{ data.error.image }}
-                </div> -->
               </div>
               <div id="previewImages" class="container mt-2"></div>
             </div>
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">Thêm</button>
+              <button type="submit" class="btn btn-login col-sm-2">Thêm</button>
             </div>
           </form>
         </div>

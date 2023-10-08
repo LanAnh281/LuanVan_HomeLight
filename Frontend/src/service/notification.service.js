@@ -8,6 +8,10 @@ class notificationService {
   async getAll() {
     return (await this.api.get("/")).data;
   }
+
+  async getAllUser() {
+    return (await this.api.get("/getAll/user")).data;
+  }
   async create(data) {
     return (await this.api.post("/", data)).data;
   }

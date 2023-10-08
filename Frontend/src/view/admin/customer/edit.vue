@@ -567,7 +567,7 @@ export default {
                 >
                   Giới tính:
                 </legend>
-                <div class="col-sm-8 ml-2">
+                <div class="col-sm-8 ml-4">
                   <div class="form-check">
                     <input
                       class="form-check-input"
@@ -673,7 +673,7 @@ export default {
             </form>
 
             <!-- form 2 -->
-            <form class="col-6 pl-4">
+            <form class="col pl-4 ml-1">
               <!-- cccd -->
               <div class="form-group row">
                 <label
@@ -837,10 +837,15 @@ export default {
                 <div id="previewImages"></div>
               </div>
               <!-- <div class="row ml-5"> -->
-              <div class="imagesDiv ml-5 pl-5" id="imagePrevious">
+
+              <div
+                class="imagesDiv pl-5"
+                id="imagePrevious"
+                style="margin-left: 78px"
+              >
                 <img
                   class="images ml-5"
-                  style="width: 200px; heigth: 200px"
+                  style="width: 200px; object-fit: contain"
                   :src="`http://localhost:3000/api/users/getImg/${data.item.imagePrevious}`"
                 />
                 <span class="delete-icon" @click="handleDeleteImagePrevious"
@@ -850,7 +855,7 @@ export default {
               <div class="imagesDiv pl-5" id="imageAfter">
                 <img
                   class="images ml-5 pl-5"
-                  style="width: 200px; heigth: 200px"
+                  style="width: 200px; object-fit: contain"
                   :src="`http://localhost:3000/api/users/getImg/${data.item.imageAfter}`"
                 />
                 <span class="delete-icon" @click="handleDeleteImageAfter"

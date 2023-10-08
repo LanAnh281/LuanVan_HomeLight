@@ -128,6 +128,12 @@ export default {
                   :title="'Chọn nhà trọ'"
                   :data="data.boarding"
                   @choose="(value) => (data.item.boardingId = value)"
+                  @input="
+                    () => {
+                      data.error.boardingId = '';
+                      data.flag = false;
+                    }
+                  "
                 ></Select>
                 <div v-if="data.error.boardingId" class="invalid-error">
                   {{ data.error.boardingId }}
@@ -144,6 +150,12 @@ export default {
                   class="form-control"
                   id="inputdate"
                   v-model="data.item.date"
+                  @input="
+                    () => {
+                      data.error.date = '';
+                      data.flag = false;
+                    }
+                  "
                 />
                 <div v-if="data.error.date" class="invalid-error">
                   {{ data.error.date }}
@@ -160,6 +172,12 @@ export default {
                   class="form-control"
                   id="inputprice"
                   v-model="data.item.price"
+                  @input="
+                    () => {
+                      data.error.price = '';
+                      data.flag = false;
+                    }
+                  "
                 />
                 <div v-if="data.error.price" class="invalid-error">
                   {{ data.error.price }}

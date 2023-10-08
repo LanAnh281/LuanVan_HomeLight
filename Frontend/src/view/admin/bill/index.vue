@@ -60,7 +60,7 @@ export default {
         (data.currentPage = 1),
         data.item
           ? data.item.filter((item) =>
-              item.name
+              item.boardingName
                 .toLowerCase()
                 .includes(data.searchText.toLocaleLowerCase())
             )
@@ -111,6 +111,7 @@ export default {
             ...item,
             roomId: item.Room["_id"],
             name: item.Room["name"],
+            boardingName: item.Room.BoardingHouse.name,
             total: formatCurrency(item.total),
             receive: item.Receipts[0]
               ? formatCurrency(Number(item.Receipts[0].receive))
@@ -177,6 +178,7 @@ export default {
         data.boardingActice = data.boarding[0]._id;
       }
       await refresh();
+      console.log(data.item);
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
@@ -211,28 +213,40 @@ export default {
           style="height: 36px; background-color: var(--background)"
         ></Select>
       </div>
-
-      <div class="input-group col m-0 align-items-center p-0">
+      <div class="input-group col-2 m-0 align-items-center p-0 mr-1">
+        <Select
+          :title="`Chọn nhà trọ`"
+          :data="data.boarding"
+          :selected="data.boardingActice"
+          @choose="
+            async (value) => {
+              data.boardingActice = value;
+            }
+          "
+          class="select"
+          style="height: 36px"
+        ></Select>
+      </div>
+      <!-- <div class="input-group col m-0 align-items-center p-0">
         <input
           type="search"
-          placeholder="tìm kiếm theo tên phòng trọ"
+          placeholder="tìm kiếm theo tên nhà trọ"
           class="p-2 border rounded"
           style="
             background-color: var(--background);
-            width: 30%;
+            width: 40%;
             font-size: 0.9rem;
           "
           v-model="data.searchText"
         />
-      </div>
+      </div> -->
     </div>
-    <div class="border-radius my-3 mx-0 row justify-content-start">
+    <!-- <div class="border-radius my-3 mx-0 row justify-content-start">
       <div class="col-8 boarding">
         <button
           class="btn px-2 mr-2 board-item"
           v-for="(value, index) in data.boarding"
           :key="index"
-          :class="value._id == data.boardingActice ? 'isActiveBoarding' : ''"
           @click="
             async () => {
               data.boardingActice = value._id;
@@ -241,14 +255,15 @@ export default {
         >
           {{ value.name }}
         </button>
+       :class="value._id == data.boardingActice ? 'isActiveBoarding' : ''"
       </div>
-    </div>
+    </div> -->
 
     <Table
       class="text-center mt-2"
       :data="data.setPage"
-      :fields="['Phòng', 'Tổng tiền(₫)', 'Đã trả(₫)', 'Còn lại(₫)']"
-      :titles="['name', 'total', 'receive', 'debt']"
+      :fields="['Nhà trọ', 'Phòng', 'Tổng tiền(₫)', 'Đã trả(₫)', 'Còn lại(₫)']"
+      :titles="['boardingName', 'name', 'total', 'receive', 'debt']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
       :action="true"
@@ -296,14 +311,14 @@ export default {
       v-if="ispayments"
       :_id="data.activeBill"
       @closeModal="ispayments = !ispayments"
-      @payments="data.boardingActice = '0'"
     ></Payment>
+    <!--    @payments="data.boardingActice = '0'" -->
     <View
       v-if="isView"
       :_id="data.activeBill"
-      :boardingId="data.boardingActice"
       @closeModal="isView = !isView"
     ></View>
+    <!--  :boardingId="data.boardingActice" -->
   </div>
 </template>
 <style scoped>
@@ -328,5 +343,8 @@ export default {
 .isActiveBoarding {
   background-color: var(--ruby);
   text-shadow: 0 0 2px #fff;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

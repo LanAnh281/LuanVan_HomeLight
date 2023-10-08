@@ -52,11 +52,14 @@ export default {
     };
 
     onBeforeMount(async () => {
-      const documentBoarding = await boardinghouseService.get(props.boardingId);
-      data.boarding = documentBoarding.message;
       const documentBill = await billService.get(props._id);
       data.item = documentBill.message;
       console.log(data.item, data.item.services);
+      const documentBoarding = await boardinghouseService.get(
+        data.item.Room.boardingId
+      );
+      data.boarding = documentBoarding.message;
+      console.log(data.boarding);
       let services = "";
       if (data.item.services) {
         services = data.item.services.split(",");
@@ -123,7 +126,7 @@ export default {
           </button>
         </div>
         <div class="modal-body">
-          <div class="row justify-content-between">
+          <div class="row justify-content-between mx-2">
             <div class="col-9 row">
               <div class="col-12">{{ data.boarding["name"] }}</div>
               <div class="col-12">{{ data.boarding["phone"] }}</div>
@@ -137,8 +140,8 @@ export default {
               <h3>Hóa đơn</h3>
               <p>Tháng {{ data.item.month }}/ {{ data.item.year }}</p>
             </div>
-            <div class="col-12 row">
-              <p class="col-2 m-0">Phòng :</p>
+            <div class="col-12 row mx-1 m-0 px-1 p-0">
+              <p class="col-1 m-0 p-0">Phòng :</p>
               <p class="col-10 m-0 p-0">1</p>
             </div>
 
@@ -154,12 +157,22 @@ export default {
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr class="">
                   <td>Phòng</td>
-
-                  <td colspan="4"></td>
-
+                  <td colspan="3"></td>
                   <td>{{ formatCurrency(data.item.Room.price) }}</td>
+                  <td>{{ formatCurrency(data.item.Room.price) }}</td>
+                </tr>
+                <tr
+                  v-for="(value, index) in data.servicesOther"
+                  :key="index"
+                  v-show="value != ''"
+                >
+                  <td>{{ value.split(" - ")[0] }}</td>
+                  <td colspan="3"></td>
+
+                  <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
+                  <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
                 </tr>
                 <tr>
                   <td>Điện</td>
@@ -187,6 +200,7 @@ export default {
                     }}
                   </td>
                 </tr>
+
                 <tr>
                   <td>Nước</td>
                   <td>
@@ -213,17 +227,7 @@ export default {
                     }}
                   </td>
                 </tr>
-                <tr
-                  v-for="(value, index) in data.servicesOther"
-                  :key="index"
-                  v-show="value != ''"
-                >
-                  <td>{{ value.split(" - ")[0] }}</td>
-                  <td colspan="3"></td>
 
-                  <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
-                  <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
-                </tr>
                 <tr>
                   <th>Tổng tiền</th>
                   <td colspan="4"></td>
