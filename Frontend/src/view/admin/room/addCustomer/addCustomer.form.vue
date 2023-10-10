@@ -301,12 +301,12 @@ export default {
           console.log("key:image");
         }
         for (let key in data.error) {
-          // if (key == "sex") continue;
-          // if (data.item[key] == "") {
-          //   data.error[key] = "Chưa nhập thông tin";
-          //   data.flag = true;
-          //   console.log("key:", key, data.item[key]);
-          // }
+          if (key == "sex") continue;
+          if (data.item[key] == "") {
+            data.error[key] = "Chưa nhập thông tin";
+            data.flag = true;
+            console.log("key:", key, data.item[key]);
+          }
         }
         if (!data.flag) {
           const formData = new FormData();
@@ -480,7 +480,7 @@ export default {
         <legend class="col-form-label col-sm-3 p-0 m-0 float-sm-left pt-0">
           Giới tính:
         </legend>
-        <div class="col-sm-8 ml-2">
+        <div class="col-sm-8 ml-4">
           <div class="form-check">
             <input
               class="form-check-input"
@@ -582,7 +582,7 @@ export default {
           />
           <div class="input-group-append col-sm-3 p-0 m-0">
             <span
-              class="input-group-text m-0 px-2 pt-1"
+              class="input-group-text m-0 px-3 pt-1"
               style="
                 border-top-left-radius: 0px;
                 border-bottom-left-radius: 0px;
@@ -617,7 +617,7 @@ export default {
     </form>
 
     <!-- form 2 -->
-    <form class="col-6 pl-4">
+    <form class="col pl-4 ml-2">
       <!-- cccd -->
       <div class="form-group row">
         <label for="inputidentificationCard" class="col-sm-4 col-form-label p-0"
@@ -767,7 +767,7 @@ export default {
     </form>
     <div class="form-group row col-12 p-0 m-0">
       <label for="" class="col-sm-2 col-form-label p-0">Ảnh CCCD:</label>
-      <div class="col-sm-10 p-0 m-0 mb-2 border rounded">
+      <div class="col-sm-10 p-0 m-0 mb-2 border rounded px-2">
         <input
           type="file"
           ref="files"
@@ -791,10 +791,10 @@ export default {
     </div>
 
     <!-- checkbox -->
-    <div class="form-group row col-12 p-0" style="margin-left: 16%">
+    <!-- <div class="form-group row col-12 p-0" style="margin-left: 16%">
       <input class="ml-5" type="checkbox" v-model="data.item.isUser" />
       Chủ phòng trọ
-    </div>
+    </div> -->
 
     <div class="form-group mt-2 col-2 text-center">
       <button type="submit" class="btn btn-login">Lưu</button>

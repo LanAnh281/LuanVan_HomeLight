@@ -165,6 +165,7 @@ export default {
       "long",
       "wide",
       "content",
+      "status",
     ];
     const save = async () => {
       try {

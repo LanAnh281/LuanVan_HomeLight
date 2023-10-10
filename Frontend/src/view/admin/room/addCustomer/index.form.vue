@@ -63,7 +63,7 @@ export default {
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title title" id="exampleModalLabel">
+          <h5 class="modal-title title py-0" id="exampleModalLabel">
             Thêm khách trọ
           </h5>
           <button
@@ -75,7 +75,7 @@ export default {
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body mt-0 py-0">
           <!-- nhà trọ -->
           <div class="form-group row" style="margin-right: -82px">
             <ul class="col-sm-2 m-0 mt-2 p-0">
@@ -140,8 +140,8 @@ export default {
 </template>
 <style scoped>
 .modal-content {
-  width: 160%;
-  margin-left: -16%;
+  width: 180%;
+  margin-left: -36%;
 }
 ul {
   list-style: none;

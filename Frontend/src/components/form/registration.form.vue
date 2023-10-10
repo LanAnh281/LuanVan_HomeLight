@@ -24,7 +24,7 @@ export default {
     const data = reactive({
       item: {
         userName: "",
-        identification: "",
+        // identification: "",
         phone: "",
         city: "",
         district: "",
@@ -38,7 +38,7 @@ export default {
       },
       error: {
         userName: "",
-        identification: "",
+        // identification: "",
         phone: "",
         number: "",
         email: "",
@@ -202,25 +202,26 @@ export default {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
-            console.log("1");
+            console.log("key:", key);
           }
         }
+        console.log(data.flag);
         if (!data.flag) {
           data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
           const formData = new FormData();
           _.forEach(formFields, (field) => {
             formData.append(field, data.item[field]);
           });
-          _.forEach(data.uploadFiles, (file) => {
-            if (validate(file) === "") {
-              formData.append("files", file);
-            }
-          });
-          if (data.uploadFiles.length == 0) {
-            for (let i = 0; i < 2; i++) {
-              formData.append("files", "");
-            }
-          }
+          // _.forEach(data.uploadFiles, (file) => {
+          //   if (validate(file) === "") {
+          //     formData.append("files", file);
+          //   }
+          // });
+          // if (data.uploadFiles.length == 0) {
+          //   for (let i = 0; i < 2; i++) {
+          //     formData.append("files", "");
+          //   }
+          // }
           // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
           //Kết nối với backend
           setTimeout(() => {
@@ -269,20 +270,20 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal");
-      const previewImages = document.getElementById("previewImages");
-      previewImages.innerHTML = "";
+      // const previewImages = document.getElementById("previewImages");
+      // previewImages.innerHTML = "";
       isModalOpen.value = false;
       data.message = "Files has been uploaded";
       //Đặt lại giá trị ban đầu
-      data.files = [];
-      filesRef.value.value = "";
-      data.uploadFiles = [];
+      // data.files = [];
+      // filesRef.value.value = "";
+      // data.uploadFiles = [];
       _.forEach(formFields, (field) => {
         data.item[field] = "";
       });
     };
     onMounted(async () => {
-      filesRef.value = document.getElementById("inputImage"); //Get input
+      // filesRef.value = document.getElementById("inputImage"); //Get input
       $("#registrationModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#registrationModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
       try {
@@ -371,7 +372,7 @@ export default {
                   </div>
                 </div>
               </div>
-              <div class="form-group row">
+              <!-- <div class="form-group row">
                 <label
                   for="inputidentificationCard"
                   class="col-sm-3 col-form-label p-0"
@@ -403,9 +404,9 @@ export default {
                     {{ data.error.identification }}
                   </div>
                 </div>
-              </div>
+              </div> -->
               <!-- Image -->
-              <div class="form-group row">
+              <!-- <div class="form-group row">
                 <label
                   for="inputImagePrevious"
                   class="col-sm-3 col-form-label p-0"
@@ -437,7 +438,7 @@ export default {
                   </div>
                 </div>
                 <div id="previewImages" class="container"></div>
-              </div>
+              </div> -->
               <div class="form-group row">
                 <label for="inputEmail" class="col-sm-3 col-form-label p-0"
                   >Email :</label

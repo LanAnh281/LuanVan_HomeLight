@@ -83,18 +83,18 @@ export default {
             />
           </div>
           <h4
-            class="text-center mt-3 ml-3 col-12"
+            class="text-center mt-0 ml-3 col-12"
             style="color: var(--chocolate)"
           >
             Đăng nhập
           </h4>
         </div>
-        <form @submit.prevent="login" class="container mt-3">
+        <form @submit.prevent="login" class="container mt-1">
           <div class="form-group row">
             <label for="inputUserName" class="col-3 col-form-label p-0 m-0"
               >Email :</label
             >
-            <div class="col-9">
+            <div class="col-9 m-0 p-0">
               <input
                 type="text"
                 class="form-control"
@@ -124,7 +124,7 @@ export default {
             <label for="inputPassword" class="col-3 col-form-label m-0 p-0"
               >Mật khẩu :</label
             >
-            <div class="col-9 row m-0">
+            <div class="col-9 row m-0 p-0">
               <input
                 :type="togglePassword ? 'text' : 'password'"
                 class="form-control col-10"
@@ -148,48 +148,29 @@ export default {
                 "
                 v-model="data.item.password"
               />
-              <div class="col-2 m-0 p-0 w-100" style="height: 40px">
-                <span
-                  v-if="togglePassword"
-                  class="material-symbols-outlined border pt-1"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 88%;
-                    padding: 0 22%;
-                  "
-                  @click="
-                    () => {
-                      togglePassword = !togglePassword;
-                    }
-                  "
-                >
-                  visibility
-                </span>
-                <span
-                  v-if="!togglePassword"
-                  class="material-symbols-outlined border pt-1"
-                  style="
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-bottom-left-radius: 0px;
-                    background-color: #fff;
-                    cursor: pointer;
-                    height: 88%;
-                    padding: 0 22%;
-                  "
-                  @click="
-                    () => {
-                      togglePassword = !togglePassword;
-                    }
-                  "
-                >
-                  visibility_off
-                </span>
-              </div>
+              <span
+                v-if="togglePassword"
+                class="material-symbols-outlined border m-0 p-0 pt-1 px-1 visibility col-2 text-center"
+                @click="
+                  () => {
+                    togglePassword = !togglePassword;
+                  }
+                "
+              >
+                visibility
+              </span>
+              <span
+                v-if="!togglePassword"
+                class="material-symbols-outlined border m-0 p-0 pt-1 px-1 visibility col-2 text-center"
+                style=""
+                @click="
+                  () => {
+                    togglePassword = !togglePassword;
+                  }
+                "
+              >
+                visibility_off
+              </span>
               <div v-if="data.error.password" class="invalid-error">
                 {{ data.error.password }}
               </div>
@@ -204,7 +185,10 @@ export default {
             </button>
           </div>
         </form>
-        <div class="col-12 text-center forgot title" @click="forgotPassword">
+        <div
+          class="col-12 p-0 m-0 text-center forgot title"
+          @click="forgotPassword"
+        >
           Quên mật khẩu
         </div>
       </div>
@@ -218,5 +202,13 @@ export default {
 }
 .title {
   text-transform: none;
+}
+.visibility {
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background-color: #fff;
+  cursor: pointer;
+  height: 100%;
 }
 </style>
