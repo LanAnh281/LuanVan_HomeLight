@@ -3,7 +3,7 @@ const room = require("../controller/room.controller");
 const authorization = require("../middeware/authorization.middeware");
 const request = require("../middeware/request.midderware");
 const upload = require("../middeware/upload.middeware");
-
+const FormatImg = require("../middeware/formatImg");
 const router = express.Router();
 router
   .route("/")
@@ -12,6 +12,7 @@ router
     request.sanitizeDataMiddleware,
     authorization.authentication,
     upload.uploadStatic.array("files"),
+
     authorization.authorization("thêm phòng trọ"),
     room.create,
   ]);
@@ -23,6 +24,7 @@ router
     authorization.authentication,
     authorization.authorization("chỉnh sửa phòng trọ"),
     upload.uploadStatic.array("files"),
+    FormatImg.format,
     room.updated,
   ])
   .delete([

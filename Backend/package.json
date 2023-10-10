@@ -34,7 +34,7 @@
     "save-dev": "^0.0.1-security",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.1",
-    "sharp": "^0.32.4",
+    "sharp": "^0.32.6",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.0"
   },

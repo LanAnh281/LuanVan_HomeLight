@@ -103,6 +103,11 @@ exports.findOne = async (req, res, next) => {
       where: {
         _id: req.params.id,
       },
+      include: [
+        {
+          model: Media,
+        },
+      ],
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
