@@ -12,16 +12,16 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 
 //service
-import boardinghouseService from "../../service/boardinghouse.service";
-import roomService from "../../service/room.service";
+import boardinghouseService from "../../../service/boardinghouse.service";
+import roomService from "../../../service/room.service";
 //component
-import Select from "../../components/select/selectdependent.vue";
-import selectNormal from "../../components/select/select.vue";
-import paginationVue from "../../components/pagination/pagination.vue";
+import Select from "../../../components/select/selectdependent.vue";
+import selectNormal from "../../../components/select/select.vue";
+import paginationVue from "../../../components/pagination/pagination.vue";
 
 //asset/js
-import { checkAccessToken } from "../../assets/js/common.login";
-import { formatCurrency } from "../../assets/js/format.common";
+import { checkAccessToken } from "../../../assets/js/common.login";
+import { formatCurrency } from "../../../assets/js/format.common";
 export default {
   components: { Select, selectNormal, paginationVue },
 
@@ -130,7 +130,6 @@ export default {
           }
         }
         await refresh();
-        console.log(data.address);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -148,19 +147,7 @@ export default {
         await refresh();
       }
     );
-    const handleRoom = (value) => {
-      try {
-        console.log("Phòng đã chọn:", value);
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
+
     const refresh = async () => {
       try {
         const documentRoom = await roomService.getAll();
@@ -240,7 +227,6 @@ export default {
       change,
       changeDistrict,
       changeWard,
-      handleRoom,
     };
   },
 };
@@ -289,11 +275,11 @@ export default {
     </div>
 
     <div class="row m-2">
-      <div
+      <router-link
+        :to="{ name: 'roomDetail', query: { _id: value._id } }"
         class="card p-2 mb-2 col-2"
         v-for="(value, index) in data.setPage"
         :key="index"
-        @click="handleRoom(value)"
       >
         <img
           class="card-img-top"
@@ -313,7 +299,7 @@ export default {
           </p>
           <p class="card-text">Giá phòng: {{ formatCurrency(value.price) }}</p>
         </div>
-      </div>
+      </router-link>
     </div>
     <paginationVue
       class="m-0 p-0 mt-1"
@@ -345,55 +331,3 @@ export default {
   height: 240vh;
 }
 </style>
-<!-- 
-    <div
-          id="carouselExampleCaptions"
-          class="carousel slide"
-          data-ride="carousel"
-        >
-          <ol class="carousel-indicators">
-            <li
-              data-target="#carouselExampleCaptions"
-              data-slide-to="0"
-              class="active"
-            ></li>
-            <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-            <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-          </ol>
-
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img
-                src="../../assets/image/background.jpg"
-                class="d-block w-100"
-                alt="ảnh nhà trọ"
-              />
-            </div>
-            <div class="carousel-item">
-              <img
-                src="../../assets/image/background.jpg"
-                class="d-block w-100"
-                alt="ảnh nhà trọ"
-              />
-            </div>
-          </div>
-          <button
-            class="carousel-control-prev"
-            type="button"
-            data-target="#carouselExampleCaptions"
-            data-slide="prev"
-          >
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            data-target="#carouselExampleCaptions"
-            data-slide="next"
-          >
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </button>
-        </div>
- -->

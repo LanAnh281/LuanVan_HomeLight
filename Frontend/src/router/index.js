@@ -112,11 +112,18 @@ const routes = [
     name: "userInfo",
     component: () => import("../view/user/userInfo.vue"),
   },
+
   {
     path: "/homepage",
     name: "homepage",
-    component: () => import("../view/user/homepage.vue"),
+    component: () => import("../view/user/homepage/homepage.vue"),
   },
+  {
+    path: "/roomDetail",
+    name: "roomDetail",
+    component: () => import("../view/user/homepage/roomDetail.vue"),
+  },
+  //
   {
     path: "/post",
     name: "post",

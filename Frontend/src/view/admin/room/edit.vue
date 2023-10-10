@@ -211,8 +211,7 @@ export default {
             filesRef.value.value = "";
             data.removeMedia = [];
           } else {
-            console.log("Thất bại");
-            warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
+            warning("Thất bại", "Bạn không có quyền chỉnh sửa phòng trọ.");
           }
         }
       } catch (error) {

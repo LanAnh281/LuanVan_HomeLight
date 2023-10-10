@@ -61,6 +61,7 @@
     background-color: var(--light);
     display: inline-block;
     flex: 1;
+    
 }
 
 
@@ -68,7 +69,7 @@
     background-color: var(--black-light-sidebar);
     display: inline-block;
     position: fixed; 
-    width: 20%;
+    width: 18%;
     top: 0;
     left: 0;
     bottom: 0;

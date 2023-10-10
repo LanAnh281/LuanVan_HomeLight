@@ -311,7 +311,6 @@ export default {
         if (!data.flag) {
           const formData = new FormData();
           for (let key in data.item) {
-            console.log(">>>>key:", key, data.item[key]);
             formData.append(key, data.item[key]);
           }
           _.forEach(data.uploadFiles, (file) => {
@@ -319,13 +318,11 @@ export default {
               formData.append("files", file);
             }
           });
-          console.log(data.uploadFiles);
           setTimeout(() => {
             load();
           }, 0);
           const documentCreateAndUpdateRoom =
             await userService.createAndUpdateRoom(props._id, formData);
-          console.log(documentCreateAndUpdateRoom);
           if (documentCreateAndUpdateRoom["status"] == "success") {
             successAd("Thành công");
             await refresh();

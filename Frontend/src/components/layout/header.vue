@@ -250,7 +250,7 @@ export default {
                       class="header__noti-list-no-noti-msg p-0 m-0 mt-3 text-center"
                       @click="data.sizeNoti = data.sizeNoti + 2"
                     >
-                      chưa có thông báo {{ data.sizeNoti }}
+                      Chưa có thông báo {{ data.sizeNoti }}
                     </p>
                   </div>
 
@@ -308,7 +308,7 @@ export default {
               <!-- Info -->
               <div
                 v-if="position"
-                class="dropdown col-4 m-0 p-0"
+                class="dropdown col-6 m-0 p-0"
                 style="position: relative; z-index: 1"
               >
                 <a
