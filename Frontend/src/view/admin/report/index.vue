@@ -11,12 +11,9 @@ import { useRoute, useRouter } from "vue-router";
 
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
-import roomService from "../../../service/room.service";
 
-import userService from "../../../service/user.service";
 import receiptService from "../../../service/receipt.service";
 import spendingService from "../../../service/spending.service";
-import UtilityReadingsService from "../../../service/UtilityReadings.service";
 
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
@@ -28,8 +25,10 @@ import {
 import Select from "../../../components/select/select.vue";
 import Box from "./box.vue";
 import Table from "../../../components/table/table.vue";
+import paginationVue from "../../../components/pagination/pagination.vue";
+
 export default {
-  components: { Select, Box, Table },
+  components: { Select, Box, Table, paginationVue },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -55,9 +54,28 @@ export default {
           name: "",
         },
       ],
+      setPage: [],
+      currentPage: 1,
+      sizePage: 10,
+      length: 0,
+      totalPage: 0,
     });
     const now = new Date();
     let intervalId = null;
+    data.length = computed(() => (data.item ? data.item.length : 0));
+    data.totalPage = computed(() => {
+      return data.item ? Math.ceil(data.item.length / data.sizePage) : 0;
+    });
+
+    data.setPage = computed(() => {
+      return data.item
+        ? data.item.slice(
+            (data.currentPage - 1) * data.sizePage,
+            data.currentPage * data.sizePage
+          )
+        : [];
+    });
+
     const handleSpending = async (boardingId) => {
       // CHI
       let expense = 0;
@@ -94,6 +112,7 @@ export default {
     const refresh = async () => {
       try {
         data.item = [];
+        if (data.selectBoarding["_id"] == "") return;
         // so sánh giá trị selectBoarding =='all' hay khác all
         if (data.selectBoarding._id != "all") {
           // CHI PHÍ
@@ -117,11 +136,9 @@ export default {
         } else {
           console.log("Tất cả");
           for (let value of data.boarding) {
-            console.log(value);
             if (value._id == "all") continue;
             const receipt = await handleReceipt(value._id);
             const expense = await handleSpending(value._id);
-            console.log(receipt);
             data.item.push({
               receipt: receipt,
               expense: expense,
@@ -133,7 +150,6 @@ export default {
           let totalExpense = 0;
 
           for (let value of data.item) {
-            console.log(value);
             totalReceipt = totalReceipt + Number(value.receipt);
             totalExpense = totalExpense + Number(value.expense);
           }
@@ -173,7 +189,6 @@ export default {
     const handleBoarding = (value) => {
       data.selectBoarding["_id"] = value;
       for (let item of data.boarding) {
-        console.log(item);
         if (item._id == value) {
           data.selectBoarding["name"] = item.name;
           return;
@@ -195,7 +210,6 @@ export default {
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
       const documnetBoarding = await boardinghouseService.getAllUser();
       data.boarding = documnetBoarding.message;
-      console.log(data.boarding);
       data.start = data.end = now;
       if (data.boarding.length > 0) {
         data.selectBoarding = {
@@ -274,11 +288,32 @@ export default {
       {{ formatDateTime(data.end) }}
     </h5>
     <Table
-      :data="data.item"
+      :data="data.setPage"
       :fields="['Tên nhà trọ', 'Doanh thu(₫)', 'Chi phi(₫)', 'Lãi(₫)']"
       :titles="['name', 'receipt', 'expense', 'profit']"
     >
     </Table>
+    <paginationVue
+      :currentPage="data.currentPage"
+      :totalPage="data.totalPage"
+      :size="data.sizePage"
+      :length="data.length"
+      @page="(value) => (data.currentPage = value)"
+      @previous="
+        () => {
+          if (data.currentPage > 1) {
+            data.currentPage = data.currentPage - 1;
+          }
+        }
+      "
+      @next="
+        () => {
+          if (data.currentPage < data.totalPage) {
+            data.currentPage = data.currentPage + 1;
+          }
+        }
+      "
+    ></paginationVue>
   </div>
 </template>
 <style scoped>

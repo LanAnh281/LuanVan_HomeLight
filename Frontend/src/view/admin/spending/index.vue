@@ -31,7 +31,7 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const data = reactive({
-      item: [{ name: "" }], //list
+      item: [], //list
       setPage: [],
       searchPage: [],
       currentPage: 1,
@@ -156,10 +156,10 @@ export default {
       };
       data.boarding = await boardinghouseService.getAllUser();
       data.boarding = data.boarding.message;
-
-      data.boardingActice = data.boarding[0]._id;
-      await refresh();
-      console.log(data.item);
+      if (data.boarding.length > 0) {
+        data.boardingActice = data.boarding[0]._id;
+        await refresh();
+      }
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy

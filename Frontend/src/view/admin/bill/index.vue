@@ -178,7 +178,6 @@ export default {
         data.boardingActice = data.boarding[0]._id;
       }
       await refresh();
-      console.log(data.item);
     });
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy

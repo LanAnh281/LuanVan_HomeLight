@@ -53,86 +53,7 @@ export default {
       ward: { data: { wards: [] } },
       flag: true,
     });
-    const filesRef = ref(null);
     const isModalOpen = ref(false);
-    // Khi chọn file
-    const handleFileUpload = async (event) => {
-      data.uploadFiles = [];
-      const files = event.target.files;
-      data.uploadFiles = [...data.uploadFiles, ...files];
-      const previewImages = document.getElementById("previewImages");
-
-      previewImages.innerHTML = "";
-      const rowImages = document.createElement("div");
-      rowImages.classList.add("row");
-      for (const file of data.uploadFiles) {
-        const reader = new FileReader();
-        let invalidMessage = validate(file);
-        if (invalidMessage == "") {
-          reader.onload = function (e) {
-            const colImage = document.createElement("div");
-            colImage.classList.add("col-6");
-
-            const img = document.createElement("img");
-            img.src = e.target.result;
-            img.style.width = "190px";
-            img.style.height = "70px";
-            img.style.objectFit = "contain";
-            const br = document.createElement("br");
-            colImage.appendChild(img);
-            colImage.appendChild(br);
-
-            const span = document.createElement("span");
-            span.textContent = `${file.name}`;
-            colImage.appendChild(span);
-
-            rowImages.appendChild(colImage);
-            previewImages.appendChild(rowImages);
-          };
-
-          // reader.onloadend = function () {
-          //   previewImages.appendChild(rowImages);
-          // };
-          reader.readAsDataURL(file);
-        } else {
-          const colImage = document.createElement("div");
-          colImage.classList.add("col-6");
-          const span = document.createElement("span");
-          span.textContent = `${file.name}`;
-          span.style.color = "red";
-          colImage.appendChild(span);
-
-          rowImages.appendChild(colImage);
-          previewImages.appendChild(rowImages);
-        }
-      }
-
-      data.files = [
-        ...data.files,
-        ..._.map(files, (file) => ({
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          url: null,
-          invalidMessage: validate(file),
-        })),
-      ];
-    };
-
-    //Kiểm tra loại file và kích thước file
-    const validate = (file) => {
-      const MAX_SIZE = 200000;
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-
-      if (!allowedTypes.includes(file.type)) {
-        return "not an image";
-      }
-
-      if (file.size > MAX_SIZE) {
-        return `Max size: ${MAX_SIZE / 1000}kb `;
-      }
-      return "";
-    };
     const formFields = [
       "userName",
       "identification",
@@ -198,30 +119,18 @@ export default {
     const save = async () => {
       try {
         for (const key in data.error) {
-          console.log(`${key}: ${data.item[key]}`);
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
-            console.log("key:", key);
           }
         }
-        console.log(data.flag);
         if (!data.flag) {
           data.item.address = `${data.item.number} -  ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
           const formData = new FormData();
           _.forEach(formFields, (field) => {
             formData.append(field, data.item[field]);
           });
-          // _.forEach(data.uploadFiles, (file) => {
-          //   if (validate(file) === "") {
-          //     formData.append("files", file);
-          //   }
-          // });
-          // if (data.uploadFiles.length == 0) {
-          //   for (let i = 0; i < 2; i++) {
-          //     formData.append("files", "");
-          //   }
-          // }
+
           // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
           //Kết nối với backend
           setTimeout(() => {
@@ -236,19 +145,14 @@ export default {
               },
             }
           );
-          console.log("Doc:", documents.data.status);
           if (documents.data.status == "success") {
             success(
               "Thành công",
               "Đã tạo tài khoản thành công. Bạn hãy kiểm tra email đã đăng ký để đăng nhập."
             );
-            const previewImages = document.getElementById("previewImages");
-            previewImages.innerHTML = "";
-            data.message = "Files has been uploaded";
+
             //Đặt lại giá trị ban đầu
-            data.files = [];
-            filesRef.value.value = "";
-            data.uploadFiles = [];
+
             _.forEach(formFields, (field) => {
               data.item[field] = "";
             });
@@ -270,20 +174,12 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal");
-      // const previewImages = document.getElementById("previewImages");
-      // previewImages.innerHTML = "";
       isModalOpen.value = false;
-      data.message = "Files has been uploaded";
-      //Đặt lại giá trị ban đầu
-      // data.files = [];
-      // filesRef.value.value = "";
-      // data.uploadFiles = [];
       _.forEach(formFields, (field) => {
         data.item[field] = "";
       });
     };
     onMounted(async () => {
-      // filesRef.value = document.getElementById("inputImage"); //Get input
       $("#registrationModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#registrationModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
       try {
@@ -293,13 +189,19 @@ export default {
             data.city = response;
           });
       } catch (error) {
-        console.log(error);
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
       }
     });
 
     return {
       data,
-      handleFileUpload,
+
       save,
       checkString,
       checkIdentification,
@@ -327,7 +229,7 @@ export default {
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Đăng ký</h5>
+            <h5 class="modal-title title" id="exampleModalLabel">Đăng ký</h5>
             <button
               type="button"
               class="close"
@@ -345,7 +247,7 @@ export default {
             >
               <div class="form-group row">
                 <label for="inputUserName" class="col-sm-3 col-form-label p-0"
-                  >Họ Tên :</label
+                  >Họ và Tên :</label
                 >
                 <div class="col-sm-9">
                   <input
@@ -567,7 +469,7 @@ export default {
               </div>
 
               <div class="form-group row justify-content-around mb-0">
-                <button type="submit" class="btn btn-login col-sm-3">
+                <button type="submit" class="btn btn-login col-sm-2">
                   Đăng ký
                 </button>
               </div>

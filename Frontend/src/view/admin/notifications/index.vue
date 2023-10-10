@@ -8,21 +8,23 @@ import NotificationService from "../../../service/notification.service";
 import Add from "./add.vue";
 import Table from "../../../components/table/table.vue";
 import View from "./view.vue";
+import paginationVue from "../../../components/pagination/pagination.vue";
 //js
 import { formatDateTime } from "../../../assets/js/format.common";
 export default {
-  components: { Add, Table, View },
+  components: { Add, Table, View, paginationVue },
   setup() {
     const data = reactive({
       item: [],
       setPage: [],
       searchPage: [],
       searchText: "",
-      currentPage: 0,
-      sizePage: 6,
+      currentPage: 1,
+      sizePage: 10,
       length: 0,
       totalPage: 0,
       selectNoti: "",
+      selectDate: { month: "", year: "" },
     });
     const isNotification = ref(false);
     const isNotiModal = ref(false);
@@ -78,11 +80,37 @@ export default {
         }
       }
     };
-
+    const handleDate = async (value) => {
+      try {
+        const date = new Date(value.target.value);
+        console.log(value);
+        data.selectDate = {
+          month: date.getMonth() + 1,
+          year: date.getFullYear(),
+        };
+        await refresh();
+        console.log(data.selectDate);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     const refresh = async () => {
       try {
         const documentNoti = await NotificationService.getAllUser();
         data.item = documentNoti.message;
+        data.item = data.item.filter((item) => {
+          const date = new Date(item.date);
+          return (
+            date.getMonth() + 1 == data.selectDate.month &&
+            date.getFullYear() == data.selectDate.year
+          );
+        });
         data.item = data.item.map((item) => {
           return {
             ...item,
@@ -101,16 +129,39 @@ export default {
     };
 
     onMounted(async () => {
+      const now = new Date();
+      data.selectDate = { month: now.getMonth() + 1, year: now.getFullYear() };
       await refresh();
     });
-    return { data, isNotification, isNotiModal, handleCreate, handleView };
+    return {
+      data,
+      isNotification,
+      isNotiModal,
+      handleCreate,
+      handleView,
+      handleDate,
+    };
   },
 };
 </script>
 <template>
   <div class="body m-0">
     <div class="border-radius my-3 row m-0 justify-content-start">
-      <div class="col-6"></div>
+      <div class="input-group col-2 align-items-center ml-2">
+        <input
+          type="date"
+          @input="handleDate"
+          class="select border rounded p-1"
+        />
+      </div>
+      <div class="input-group col-3 m-0 p-0 align-items-center">
+        <input
+          type="search"
+          v-model="data.searchText"
+          placeholder="Tìm kiếm theo nội dung"
+          class="select border rounded p-1 w-100"
+        />
+      </div>
       <div class="row justify-content-end m-0 p-0 col">
         <button
           class="btn btn-primary p-0 mr-4 col-3"
@@ -148,7 +199,27 @@ export default {
         }
       "
     ></Table>
-
+    <paginationVue
+      :currentPage="data.currentPage"
+      :totalPage="data.totalPage"
+      :size="data.sizePage"
+      :length="data.length"
+      @page="(value) => (data.currentPage = value)"
+      @previous="
+        () => {
+          if (data.currentPage > 1) {
+            data.currentPage = data.currentPage - 1;
+          }
+        }
+      "
+      @next="
+        () => {
+          if (data.currentPage < data.totalPage) {
+            data.currentPage = data.currentPage + 1;
+          }
+        }
+      "
+    ></paginationVue>
     <View
       v-if="isNotiModal"
       :_id="data.selectNoti"
@@ -164,5 +235,8 @@ export default {
 <style scoped>
 .body {
   min-height: 100vh;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

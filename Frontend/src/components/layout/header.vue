@@ -52,12 +52,10 @@ export default {
       () => data.active,
       (newValue, oldValue) => {
         console.log(newValue, oldValue);
-        socket.emit("message", "abc");
+        // socket.emit("message", "abc");
       }
     );
-    socket.on("noti", async (msg) => {
-      await refresh();
-    });
+
     const handleUpdate = async (value) => {
       try {
         console.log("update");
@@ -98,35 +96,40 @@ export default {
         }
       }
     };
+    socket.on("noti", async (msg) => {
+      await refresh();
+    });
     const refresh = async () => {
       try {
-        data.noti = 0;
-        const documentUserNoti = await user_notificationService.getAllUser();
-        data.items = documentUserNoti.message;
-        const now = new Date();
-        data.items = data.items.Notifications.map((item) => {
-          const time =
-            now.getTime() -
-            new Date(item.User_Notification.createdAt).getTime();
-          let previousTime = "";
-          const minutes = Math.ceil(time / (60 * 1000));
-          const hours = Math.ceil(time / (60 * 60 * 1000));
-          const days = Math.ceil(time / (24 * 60 * 60 * 1000));
-          if (minutes < 60) {
-            previousTime = `${minutes} phút trước`;
-          } else if (hours < 24) {
-            previousTime = `${hours} giờ trước`;
-          } else {
-            previousTime = ` ${days}) ngày trước`;
-          }
-          if (item.User_Notification.isRead == false) {
-            data.noti++;
-          }
-          return {
-            ...item,
-            time: previousTime,
-          };
-        });
+        if (position.value != null) {
+          data.noti = 0;
+          const documentUserNoti = await user_notificationService.getAllUser();
+          data.items = documentUserNoti.message;
+          const now = new Date();
+          data.items = data.items.Notifications.map((item) => {
+            const time =
+              now.getTime() -
+              new Date(item.User_Notification.createdAt).getTime();
+            let previousTime = "";
+            const minutes = Math.ceil(time / (60 * 1000));
+            const hours = Math.ceil(time / (60 * 60 * 1000));
+            const days = Math.ceil(time / (24 * 60 * 60 * 1000));
+            if (minutes < 60) {
+              previousTime = `${minutes} phút trước`;
+            } else if (hours < 24) {
+              previousTime = `${hours} giờ trước`;
+            } else {
+              previousTime = ` ${days}) ngày trước`;
+            }
+            if (item.User_Notification.isRead == false) {
+              data.noti++;
+            }
+            return {
+              ...item,
+              time: previousTime,
+            };
+          });
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

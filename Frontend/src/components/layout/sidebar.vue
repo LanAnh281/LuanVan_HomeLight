@@ -78,10 +78,10 @@ export default {
 };
 </script>
 <template>
-  <div class="sidebar px-0 m-0">
+  <div class="sidebar p-0 m-0">
     <div
       style="width: 100%"
-      class="row justify-items-around align-items-center"
+      class="row justify-items-around align-items-center p-0"
     >
       <img
         src="../../assets/image/logo.png"
@@ -92,7 +92,7 @@ export default {
         class="col-3 ml-4 mr-0 p-0"
       />
       <div class="col row mt-0">
-        <div class="col-12 my-3 mx-3">
+        <div class="col-12 my-0 mx-2">
           <span
             style="
               display: block;

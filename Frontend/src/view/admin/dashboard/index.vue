@@ -323,7 +323,7 @@ export default {
   <div class="body m-0">
     <div class="border-radius my-3 row m-0 justify-content-end">
       <Select
-        class="col-1 mt-2 mr-3"
+        class="col-1 mt-2 mr-3 select"
         :title="'Chọn nhà trọ'"
         :data="data.boarding"
         :selected="data.selectBoarding"
@@ -378,5 +378,8 @@ export default {
 <style scoped>
 .body {
   min-height: 150vh;
+}
+.select {
+  background-color: var(--background);
 }
 </style>

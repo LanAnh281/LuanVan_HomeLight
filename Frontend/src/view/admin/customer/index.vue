@@ -289,9 +289,7 @@ export default {
       if (data.boarding.length > 0) {
         data.boardingActice = data.boarding[0]._id;
       }
-      console.log(data.boarding, data.boardingActice);
       await refresh();
-      console.log(data.item);
       try {
         data.city = await axios.get(
           `https://provinces.open-api.vn/api/?depth=1`,

@@ -70,7 +70,7 @@ export const ward = async (city, district, value) => {
       {}
     );
     data.ward = ward;
-    console.log(">>>ward:", data.ward.data);
+    // console.log(">>>ward:", data.ward.data);
     for (let i = 0; i < data.ward.data.wards.length; i++) {
       if (data.ward.data.wards[i].code == value) {
         return {

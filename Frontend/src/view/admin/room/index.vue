@@ -12,7 +12,6 @@ import axios from "axios";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
-import mediaService from "../../../service/media.service";
 
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
@@ -22,7 +21,6 @@ import {
   success,
   warning,
 } from "../../../assets/js/common.alert";
-import { city, district, ward } from "../../../assets/js/dependent.common";
 
 //components
 import Select from "../../../components/select/select.vue";
@@ -58,7 +56,6 @@ export default {
   },
   setup() {
     const router = useRouter();
-    // const route = useRoute();
     const data = reactive({
       items: [{ name: "", wide: "", long: "", price: "" }], //list rooms
 
@@ -215,14 +212,15 @@ export default {
       try {
         const document = await boardinghouseService.getAllUser(); // api getAll borading houses
         data.boarding = document.message;
-
-        data.isActiveBoarding = data.boarding[0]._id;
-        const documentRoom = await roomService.getAll(); //api getAll rooms
-        data.items = documentRoom.message;
-        data.items = data.items.filter(
-          //filter rooms of a boarding house
-          (item) => item.boardingId == data.isActiveBoarding
-        );
+        if (data.boarding.length > 0) {
+          data.isActiveBoarding = data.boarding[0]._id;
+          const documentRoom = await roomService.getAll(); //api getAll rooms
+          data.items = documentRoom.message;
+          data.items = data.items.filter(
+            //filter rooms of a boarding house
+            (item) => item.boardingId == data.isActiveBoarding
+          );
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
