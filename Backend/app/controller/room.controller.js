@@ -89,7 +89,6 @@ exports.findAll = async (req, res, next) => {
         },
       ],
     });
-    console.log(rooms);
     let documents = JSON.parse(JSON.stringify(rooms));
     documents = documents.sort((a, b) => a.name - b.name);
     res.json({ message: documents, status: "success" });

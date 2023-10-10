@@ -47,56 +47,53 @@ exports.createUserAndAccount = async (req, res) => {
   end = end === "" ? null : end;
   start = start === "" ? null : start;
   try {
-    fs.readdir(uploadDir, async (err, files) => {
-      if (err) {
-        console.error("Error reading upload directory:", err);
-        return;
-      }
-      let newestFiles = [];
-      if (files[0] != "") {
-        //sort the file list by time (using mtime)
-        // sort in descending order-
-        files.sort((file1, file2) => {
-          const stat1 = fs.statSync(path.join(uploadDir, file1));
-          const stat2 = fs.statSync(path.join(uploadDir, file2));
-          return stat2.mtime - stat1.mtime;
-        });
+    // fs.readdir(uploadDir, async (err, files) => {
+    //   if (err) {
+    //     console.error("Error reading upload directory:", err);
+    //     return;
+    //   }
+    //   let newestFiles = [];
+    //   if (files[0] != "") {
+    //     //sort the file list by time (using mtime)
+    //     // sort in descending order-
+    //     files.sort((file1, file2) => {
+    //       const stat1 = fs.statSync(path.join(uploadDir, file1));
+    //       const stat2 = fs.statSync(path.join(uploadDir, file2));
+    //       return stat2.mtime - stat1.mtime;
+    //     });
 
-        // Retrieve the two most recent files.
-        newestFiles = files.slice(0, 2);
-      } else {
-        newestFiles = [...file];
-      }
-      const userData = {
-        userName: userName,
-        identification: identification,
-        imagePrevious: newestFiles[0],
-        imageAfter: newestFiles[1],
-        phone: phone,
-        address: address,
-        email: email,
-        start: start,
-        end: end,
-        numberPlate: numberPlate,
-        sex: sex,
-        birthday: birthday,
-        securityDeposit: securityDeposit,
-        password: password,
-      };
-      const result = await createUserAndAccount(userData);
-      if (result.status == "success") {
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: "nguyenanh160201@gmail.com",
-            pass: "lsvqdizarolouqrn",
-          },
-        });
-        const mailOptions = {
-          from: "nguyenanh160201@gmail.com",
-          to: userData.email,
-          subject: `Quản lý nhà trọ HomeLight`,
-          html: `<h3>Quản lý nhà trọ HomeLight kính chào Anh/Chị: ${userData.userName}</h3>
+    //     // Retrieve the two most recent files.
+    //     newestFiles = files.slice(0, 2);
+    //   } else {
+    //     newestFiles = [...file];
+    //   }
+    const userData = {
+      userName: userName,
+      phone: phone,
+      address: address,
+      email: email,
+      start: start,
+      end: end,
+      numberPlate: numberPlate,
+      sex: sex,
+      birthday: birthday,
+      securityDeposit: securityDeposit,
+      password: password,
+    };
+    const result = await createUserAndAccount(userData);
+    if (result.status == "success") {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "nguyenanh160201@gmail.com",
+          pass: "lsvqdizarolouqrn",
+        },
+      });
+      const mailOptions = {
+        from: "nguyenanh160201@gmail.com",
+        to: userData.email,
+        subject: `Quản lý nhà trọ HomeLight`,
+        html: `<h3>Quản lý nhà trọ HomeLight kính chào Anh/Chị: ${userData.userName}</h3>
                   <p>Anh/Chị vừa kích hoạt tài khoản thành công trên HomeLight. 
                   Để sử dụng quý khách vui lòng truy cập đường dẫn sau: <a href="http://localhost:3001/login">Click vào đây</a></p>
                   <p>Tên đăng nhập: ${userData.email} </p>
@@ -105,11 +102,11 @@ exports.createUserAndAccount = async (req, res) => {
                   <p> Email hỗ trợ: info@maple.com.vn </p>
                   <p> Điện thoại: 0915 85 0918</p>
                   <p>HomeLight trân trọng cảm ơn và rất hân hạnh được phục vụ Anh/Chị.</p>`,
-        };
-        const info = await transporter.sendMail(mailOptions);
-      }
-      return res.json({ message: result, status: "success" });
-    });
+      };
+      const info = await transporter.sendMail(mailOptions);
+    }
+    return res.json({ message: result, status: "success" });
+    // });
   } catch (error) {
     res
       .status(500)
@@ -247,33 +244,37 @@ exports.findAllTenant = async (req, res, next) => {
         landlordId: req.user.userId,
       },
     });
-    console.log(users);
-    let i = 0;
-    // từ danh sách .user lặp từng người tìm trong user_room để tra ra nhà trọ họ đang ở
+    console.log("YYYYY:", users.length);
+    if (users.length > 0) {
+      let i = 0;
+      // từ danh sách .user lặp từng người tìm trong user_room để tra ra nhà trọ họ đang ở
 
-    const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */
-    for (let i in documents) {
-      const user = await Users.findOne({
-        where: { _id: documents[i].tenantId },
-      });
+      const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */
+      for (let i in documents) {
+        const user = await Users.findOne({
+          where: { _id: documents[i].tenantId },
+        });
 
-      const user_room = await User_Room.findOne({
-        where: {
-          UserId: user._id,
-        }, // lấy ra đc room
-      });
-      console.log("???user_room:", user_room);
-      const room = await Rooms.findOne({
-        where: {
-          _id: user_room.RoomId,
-        }, // lấy đc boarding
-      });
-      const item = JSON.parse(JSON.stringify(user));
-      item.boardingId = room.boardingId;
-      documents[i].user = item;
+        const user_room = await User_Room.findOne({
+          where: {
+            UserId: user._id,
+          }, // lấy ra đc room
+        });
+        console.log("???user_room:", user_room);
+        const room = await Rooms.findOne({
+          where: {
+            _id: user_room.RoomId,
+          }, // lấy đc boarding
+        });
+        const item = JSON.parse(JSON.stringify(user));
+        item.boardingId = room.boardingId;
+        documents[i].user = item;
+      }
+      return res.json({ message: documents, status: "success" });
+    } else {
+      return res.json({ message: users, status: "success" });
     }
 
-    console.log("/////", documents[0].user.boardingId);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
