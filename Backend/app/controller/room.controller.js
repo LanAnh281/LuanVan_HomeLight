@@ -200,7 +200,7 @@ exports.updatedStatusRoom = async (req, res, next) => {
         price: price,
         wide: wide,
         long: long,
-        status: status,
+
         boardingId: boardingId,
       },
       {
