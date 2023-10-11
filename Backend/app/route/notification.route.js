@@ -25,4 +25,5 @@ router
     authorization.authorization("xem thông báo"),
     notification.findAllUser
   );
+router.route("/customer/noti").post(notification.createCustomer);
 module.exports = router;

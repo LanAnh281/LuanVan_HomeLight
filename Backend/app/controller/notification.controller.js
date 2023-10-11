@@ -11,11 +11,27 @@ exports.create = async (req, res, next) => {
       content: content,
       sender: req.user.userId,
     });
-    io.on("connection", (socket) => {
-      console.log("*** client đã kết nối");
-      socket.on("createNoti", async (data) => {
-        io.emit("noti", "abc1");
-      });
+    // io.on("connection", (socket) => {
+    //   console.log("*** client đã kết nối");
+    //   socket.on("createNoti", async (data) => {
+    //     io.emit("noti", "abc1");
+    //   });
+    // });
+    res.json({ message: document, status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error, status: "faild" });
+  }
+};
+exports.createCustomer = async (req, res, next) => {
+  let { date, content } = req.body;
+  console.log("Notification Body:", req.body);
+  date = date == null ? null : dateTime(date);
+  try {
+    const document = await Notification.create({
+      date: date,
+      content: content,
+      sender: "Khách vãng lai",
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
