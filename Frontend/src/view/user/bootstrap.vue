@@ -28,12 +28,12 @@ export default {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`
       );
-      const data = await response.json();
+      const dataMap = await response.json();
 
       // Kiểm tra xem có kết quả trả về từ dịch vụ geocoding không
-      if (data && data.length > 0) {
+      if (dataMap && dataMap.length > 0) {
         // Trích xuất tọa độ từ kết quả đầu tiên
-        const firstResult = data[0];
+        const firstResult = dataMap[0];
         const coordinates = [
           parseFloat(firstResult.lat),
           parseFloat(firstResult.lon),
