@@ -107,6 +107,9 @@ exports.findOne = async (req, res, next) => {
         {
           model: Media,
         },
+        {
+          model: BorardingHouse,
+        },
       ],
     });
     res.json({ message: document, status: "success" });
