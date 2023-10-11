@@ -9,6 +9,8 @@ import registration from "../../components/form/registration.form.vue";
 import loginService from "../../service/login.service";
 import user_notificationService from "../../service/user_notification.service";
 //js
+import { checkAccessToken } from "../../assets/js/common.login";
+import internal from "stream";
 
 export default {
   components: { Select, registration },
@@ -29,6 +31,10 @@ export default {
           name: "Liên hệ",
           active: "contact",
         },
+        {
+          name: "Hóa đơn",
+          active: "billCustomer",
+        },
       ],
       items: [],
 
@@ -36,7 +42,7 @@ export default {
       userName: "",
       active: "",
       noti: 0,
-      sizeNoti: 5,
+      sizeNoti: 2,
     });
     let intervalId = null;
     const isRegistration = ref(false);
@@ -99,9 +105,16 @@ export default {
     socket.on("noti", async (msg) => {
       await refresh();
     });
+    const formatItem = (item) => {
+      return item.replace(/ - /g, "<br>");
+    };
     const refresh = async () => {
       try {
         if (position.value != null) {
+          await checkAccessToken(router); //access token
+          intervalId = setInterval(async () => {
+            await checkAccessToken(router);
+          }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
           data.noti = 0;
           const documentUserNoti = await user_notificationService.getAllUser();
           data.items = documentUserNoti.message;
@@ -145,10 +158,12 @@ export default {
       try {
         let name = localStorage.getItem("userName");
         name = name.split(" ");
-
-        data.userName = `${name[name.length - 2]} ${name[name.length - 1]}`;
+        if (name.length >= 2) {
+          data.userName = `${name[name.length - 2]} ${name[name.length - 1]}`;
+        } else data.userName = name[0];
         position.value = localStorage.getItem("position");
         data.active = "homepage";
+
         await refresh();
       } catch (error) {
         if (error.response) {
@@ -171,12 +186,21 @@ export default {
       handleDelete,
       handleUpdate,
       isRegistration,
+      formatItem,
     };
   },
 };
 </script>
 <template>
-  <div class="header container-fluid m-0">
+  <div
+    class="header container-fluid m-0"
+    :style="{
+      background:
+        position != 'admin' && position != 'super-admin'
+          ? 'white'
+          : ' var(--light)',
+    }"
+  >
     <div
       class="row align-items-center justify-content-between"
       style="height: 100%"
@@ -203,11 +227,12 @@ export default {
                   text-transform: uppercase;
                   line-height: 2;
                 "
+                v-show="position != 'admin' && position != 'super-admin'"
               >
                 {{ value.name }}
               </router-link>
             </div>
-            <div class="col-3 row justify-content-end menu p-0 m-0">
+            <div class="col-3 row justify-content-end menu p-0 m-0 float-right">
               <div
                 v-if="!position"
                 class="col-3 m-0 p-0 mt-1"
@@ -254,7 +279,6 @@ export default {
                     </p>
                   </div>
 
-                  <!--  have noti -->
                   <div
                     v-else
                     class="header__noti-list header__noti-list-noti mt-5"
@@ -273,9 +297,14 @@ export default {
                       v-show="index + 1 <= data.sizeNoti"
                       @click="handleUpdate(value._id)"
                     >
-                      <a class="px-1 col-11">{{ value.content }}</a>
+                      <a
+                        class="px-1 col-11"
+                        style="text-transform: none"
+                        v-html="formatItem(value.content)"
+                      ></a>
+
                       <span
-                        class="material-symbols-outlined text-danger close-icon col-1 px-1 float-right"
+                        class="material-symbols-outlined text-danger cancle-icon col-1 px-1 float-right"
                         @click.stop="handleDelete(value._id)"
                         >close</span
                       >
@@ -322,11 +351,11 @@ export default {
                 </a>
 
                 <div class="dropdown-menu p-0">
-                  <router-link
+                  <!-- <router-link
                     :to="{ name: 'userInfo' }"
                     class="dropdown-item px-1"
                     >Thông tin cá nhân</router-link
-                  >
+                  > -->
                   <router-link
                     :to="{ name: 'changePassword' }"
                     class="dropdown-item px-1"
@@ -343,6 +372,7 @@ export default {
       </div>
     </div>
     <registration v-if="isRegistration"></registration>
+    <hr style="border-color: rgb(230, 221, 221)" class="m-0" width="" />
   </div>
 </template>
 <style scoped>
@@ -395,15 +425,15 @@ export default {
   cursor: default;
 }
 .header__noti-list-noti-msg {
-  text-transform: uppercase;
+  text-transform: lowercase;
 }
 .header__noti-list-noti-msg:hover {
   color: white;
   font-weight: 600;
   text-decoration: underline;
-  text-transform: uppercase;
+  text-transform: lowercase;
 }
-.close-icon:hover {
+.cancle-icon:hover {
   font-weight: 800;
   scale: 1.2;
 }
@@ -453,7 +483,7 @@ a:hover {
 .notification-badge {
   position: absolute;
   top: -2px;
-  right: -10px;
+  right: -14px;
   background-color: red;
   color: white;
   border-radius: 50%;

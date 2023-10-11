@@ -36,7 +36,7 @@ export default {
         }
         if (!data.flag) {
           const document = await Login.login(data.item);
-          console.log(document);
+
           if (document.status == "success") {
             setLocalStrorage(
               document["token"],

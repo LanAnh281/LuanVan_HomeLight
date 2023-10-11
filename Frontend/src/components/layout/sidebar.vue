@@ -47,8 +47,8 @@ export default {
         // },
         // { name: "Ghi chú", icon: "note", active: "note" },
 
-        { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },
-        { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
+        // { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },
+        // { name: "Đăng xuất", icon: "power_settings_new", active: "logout" },
       ],
       active: "dashboard",
       userName: "",
@@ -69,8 +69,6 @@ export default {
     );
 
     onMounted(async () => {
-      // const document = await userService.get("user");
-      // data.user = document.message;
       data.userName = localStorage.getItem("userName");
     });
     return { data, router, logout };
@@ -80,7 +78,7 @@ export default {
 <template>
   <div class="sidebar p-0 m-0">
     <div
-      style="width: 100%"
+      style="width: 100%; height: 8vh"
       class="row justify-items-around align-items-center p-0"
     >
       <img
@@ -89,9 +87,9 @@ export default {
           object-fit: contain;
           box-shadow: 0 0 20px 1px rgba(255, 255, 0, 0.3);
         "
-        class="col-3 ml-4 mr-0 p-0"
+        class="col-3 ml-4 mr-0 p-0 mb-1"
       />
-      <div class="col row mt-0">
+      <div class="col row m-0 p-0">
         <div class="col-12 my-0 mx-2">
           <span
             style="

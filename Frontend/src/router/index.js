@@ -134,6 +134,11 @@ const routes = [
     name: "contact",
     component: () => import("../view/user/contact.vue"),
   },
+  {
+    path: "/billCustomer",
+    name: "billCustomer",
+    component: () => import("../view/user/Bill/index.vue"),
+  },
 ];
 
 // router.beforeEach((to, from, next) => {

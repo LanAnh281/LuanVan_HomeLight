@@ -15,6 +15,10 @@ class notificationService {
   async create(data) {
     return (await this.api.post("/", data)).data;
   }
+
+  async createCustomer(data) {
+    return (await this.api.post("/customer/noti", data)).data;
+  }
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
   }

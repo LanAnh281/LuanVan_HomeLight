@@ -1,77 +1,87 @@
 <script>
-import { ref, reactive, watch, computed, onMounted, onBeforeMount } from "vue";
+import {
+  ref,
+  reactive,
+  watch,
+  computed,
+  onMounted,
+  onBeforeMount,
+  onBeforeUnmount,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import "leaflet/dist/leaflet.css"; // Import CSS của Leaflet
 import L from "leaflet";
 //service
 import roomService from "../../../service/room.service";
+
 //js
 import { formatCurrency } from "../../../assets/js/format.common";
+
+//component
+import paginationVue from "../../../components/pagination/pagination.vue";
+import Message from "./message.vue";
+
 export default {
+  components: { paginationVue, Message },
   setup() {
     const router = useRoute();
+    const route = useRoute();
     const data = reactive({
       item: { name: "" },
     });
-    // const isMap = ref(false);
-    // watch(
-    //   () => isMap.value,
-    //   async (newValue, oldValue) => {
-    //     console.log(isMap.value);
-    //     try {
-    //       console.log(oldValue, ":", newValue);
-    //       if (newValue == false) {
-    //         return;
-    //       } else {
-    //         console.log("else");
-    //         // Tạo bản đồ
-    //         const map = L.map("map").setView([0, 0], 12);
+    const room = reactive({
+      items: [
+        { name: "", long: "", wide: "", Media: [{ name: "lightHouse.png" }] },
+      ],
+      city: {},
+      district: { data: { districts: [] } },
+      ward: { data: { wards: [] } },
+      address: "",
 
-    //         // Sử dụng dữ liệu OpenStreetMap miễn phí
-    //         L.tileLayer(
-    //           "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    //         ).addTo(map);
+      setPage: "",
 
-    //         // Tên địa điểm bạn muốn tìm
-    //         const locationName = data.item.BoardingHouse.address;
-    //         // "Phường Trà Nóc - Quận Bình Thủy - Thành phố Cần Thơ ";
-
-    //         // Sử dụng dịch vụ OpenStreetMap Nominatim
-    //         const response = await fetch(
-    //           `https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`
-    //         );
-    //         const dataMap = await response.json();
-
-    //         // Kiểm tra xem có kết quả trả về từ dịch vụ geocoding không
-    //         if (dataMap && dataMap.length > 0) {
-    //           // Trích xuất tọa độ từ kết quả đầu tiên
-    //           const firstResult = dataMap[0];
-    //           const coordinates = [
-    //             parseFloat(firstResult.lat),
-    //             parseFloat(firstResult.lon),
-    //           ];
-
-    //           // Chuyển đến vị trí tìm thấy trên bản đồ
-    //           map.setView(coordinates, 15);
-
-    //           // Thêm marker cho địa điểm tìm thấy
-    //           L.marker(coordinates).addTo(map);
-    //         } else {
-    //           console.error("Không tìm thấy địa điểm.");
-    //         }
-    //       }
-    //     } catch (error) {}
-    //   }
-    // );
-    //
-    onBeforeMount(async () => {
+      totalPage: 0,
+      currentPage: 1,
+      length: 0,
+      sizePage: 6,
+    });
+    let intervalId = null;
+    const isMessage = ref(false);
+    room.totalPage = computed(() =>
+      room.items ? Math.ceil(room.items.length / room.sizePage) : 0
+    );
+    room.length = computed(() => (room.items ? room.items.length : 0));
+    room.setPage = computed(() =>
+      room.items
+        ? room.items.slice(
+            (room.currentPage - 1) * room.sizePage,
+            room.currentPage * room.sizePage
+          )
+        : []
+    );
+    const refresh = async () => {
       try {
         const documentRoom = await roomService.get(router.query["_id"]);
         data.item = documentRoom.message;
+        data.item.content = data.item.content.split("-");
         if (data.item.Media.length == 0) {
           data.item.Media[0] = { name: "lightHouse.png" };
         }
+        room.address = data.item.BoardingHouse.address.split("-");
+        room.address = room.address[2];
 
+        const documentRooms = await roomService.getAll();
+        room.items = documentRooms.message;
+        room.items = room.items.filter((item) => item.status == false);
+        if (room.address != "") {
+          room.items = room.items.filter((item) => {
+            return (
+              item.BoardingHouse.address.includes(room.address) &&
+              Number(item.price) <= Number(data.item.price)
+            );
+          });
+        }
+        console.log(room.items);
         //Map
         // Tạo bản đồ
         const map = L.map("map").setView([0, 0], 12);
@@ -83,7 +93,6 @@ export default {
 
         // Tên địa điểm bạn muốn tìm
         const locationName = data.item.BoardingHouse.address;
-        // "Phường Trà Nóc - Quận Bình Thủy - Thành phố Cần Thơ ";
 
         // Sử dụng dịch vụ OpenStreetMap Nominatim
         const response = await fetch(
@@ -101,7 +110,7 @@ export default {
           ];
 
           // Chuyển đến vị trí tìm thấy trên bản đồ
-          map.setView(coordinates, 15);
+          map.setView(coordinates, 50);
 
           // Thêm marker cho địa điểm tìm thấy
           L.marker(coordinates).addTo(map);
@@ -117,21 +126,34 @@ export default {
           console.log("Errors:", error.message);
         }
       }
+    };
+    watch(
+      () => route.fullPath,
+      async (newValue, oldValue) => {
+        console.log("path:", newValue);
+        await refresh();
+      }
+    );
+    onBeforeMount(async () => {
+      await refresh();
     });
+
     return {
       data,
-      //  isMap,
+      room,
       formatCurrency,
+      isMessage,
     };
   },
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 px-5">
+  <div class="body container-fluid m-0 px-5 pt-3">
     <div class="row" v-if="data.item.BoardingHouse">
       <div
         id="carouselExampleCaptions"
         class="carousel slide col-6"
+        style="z-index: 0"
         data-ride="carousel"
       >
         <ol class="carousel-indicators">
@@ -180,35 +202,114 @@ export default {
       </div>
       <!-- Infor -->
       <div class="col mx-2">
-        <h6 class="mt-5">
+        <h5 class="mt-5">
           Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
           {{ data.item.name }}
-        </h6>
+        </h5>
         <p>
-          <span class="text-danger"
+          <span class="text-danger" style="font-size: 16px"
             >Giá: {{ formatCurrency(data.item.price) }} / tháng</span
           >
-          - {{ data.item.long * data.item.wide }} m2
+          - {{ data.item.long * data.item.wide }}m²
         </p>
         <p class="">
           <span class="material-symbols-outlined"> home_pin </span>
           Địa chỉ: {{ data.item.BoardingHouse.address }}
-          <!-- <span class="text-info d-block mx-5 address">Xem bản đồ</span> -->
         </p>
-        <!-- <div id="map" style="height: 400px"></div> -->
 
         <h6>Mô tả chi tiết</h6>
+
         <p>
-          Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
-          {{ data.item.name }}
+          <span class="mr-3"> Chiều dài: {{ data.item.long }} m</span>
+          <span>Chiều rộng: {{ data.item.wide }} m</span>
         </p>
-        <p>Mô tả: {{ data.item.content }}</p>
+
+        <p>Mô tả:</p>
+        <p v-for="(value, index) in data.item.content" :key="index">
+          {{ value }}
+        </p>
         <h6>Liên hệ</h6>
         <p>Địa chỉ: {{ data.item.BoardingHouse.address }}</p>
-        <p>SĐT: {{ data.item.BoardingHouse.phone }}</p>
+        <p>
+          SĐT:
+          <span class="text-info"> {{ data.item.BoardingHouse.phone }}</span>
+        </p>
+        <button
+          class="btn btn-login"
+          data-toggle="modal"
+          data-target="#messageModal"
+          @click="isMessage = !isMessage"
+        >
+          Nhắn tin cho chủ trọ
+        </button>
+        <!-- component -->
+        <Message
+          v-if="isMessage"
+          :userId="data.item.BoardingHouse.userId"
+          @closeModal="isMessage = !isMessage"
+        ></Message>
       </div>
+      <!-- <div class="col my-3 m-0 px-3 p-0">
+        <h6 class="my-3">Bản đồ</h6>
+        <div id="map" style="height: 500px; width: 100%"></div>
+      </div> -->
     </div>
+    <hr />
+    <h6 class="my-3">Bản đồ</h6>
     <div id="map" style="height: 400px; width: 100%"></div>
+
+    <!-- Rooms -->
+    <hr />
+    <h6 class="my-3">Nhà trọ tương tự</h6>
+    <div class="row m-2">
+      <router-link
+        :to="{ name: 'roomDetail', query: { _id: value._id } }"
+        class="card p-2 mb-2 col-2"
+        v-for="(value, index) in room.setPage"
+        :key="index"
+      >
+        <img
+          class="card-img-top"
+          :src="
+            value.Media.length > 0
+              ? `http://localhost:3000/static/images/${value.Media[0].name}`
+              : `http://localhost:3000/static/images/lightHouse.png`
+          "
+          alt="ảnh phòng trọ"
+          style="height: 120px; object-fit: contain"
+        />
+
+        <div class="card-body m-0 p-0">
+          <p class="card-text">Phòng: {{ value.name }}</p>
+          <p class="card-text">
+            Diện tích: {{ value.long }} x {{ value.wide }} m²
+          </p>
+          <p class="card-text">Giá phòng: {{ formatCurrency(value.price) }}</p>
+        </div>
+      </router-link>
+    </div>
+    <paginationVue
+      class="m-0 p-0 mt-1"
+      :currentPage="room.currentPage"
+      :totalPage="room.totalPage"
+      :size="room.sizePage"
+      :length="room.length"
+      @page="(value) => (room.currentPage = value)"
+      @previous="
+        () => {
+          if (room.currentPage > 1) {
+            room.currentPage = room.currentPage - 1;
+          }
+        }
+      "
+      @next="
+        () => {
+          if (room.currentPage < room.totalPage) {
+            room.currentPage = room.currentPage + 1;
+          }
+        }
+      "
+    ></paginationVue>
   </div>
 </template>
 <style scoped>
@@ -217,5 +318,8 @@ export default {
 }
 .address:hover {
   text-decoration: underline;
+}
+#map {
+  z-index: 0;
 }
 </style>

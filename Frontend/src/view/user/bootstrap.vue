@@ -1,55 +1,26 @@
-<template>
-  <div>
-    <div id="map" style="height: 400px"></div>
-  </div>
-</template>
-
 <script>
 import { onMounted } from "vue";
-import "leaflet/dist/leaflet.css"; // Import CSS của Leaflet
-import L from "leaflet";
-
+import axios from "axios";
+import cheerio from "cheerio";
 export default {
   setup() {
     onMounted(async () => {
-      // Tạo bản đồ
-      const map = L.map("map").setView([0, 0], 12);
-
-      // Sử dụng dữ liệu OpenStreetMap miễn phí
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-        map
+      const documents = await axios.get(
+        `https://www.anninhthudo.vn/trinh-phuong-an-dieu-chinh-gia-dien-truoc-ngay-25-10-post554485.antd`
       );
+      const data = documents.data;
+      const $ = cheerio.load(data);
 
-      // Tên địa điểm bạn muốn tìm
-      const locationName =
-        "Phường Trà Nóc - Quận Bình Thủy - Thành phố Cần Thơ ";
+      const title = $("h1").text(); // Điều này phải được điều chỉnh để phù hợp với cấu trúc HTML của trang web nguồn.
+      const content = $("p").text(); // Điều này cũng phải điều chỉnh.
 
-      // Sử dụng dịch vụ OpenStreetMap Nominatim
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`
-      );
-      const dataMap = await response.json();
-
-      // Kiểm tra xem có kết quả trả về từ dịch vụ geocoding không
-      if (dataMap && dataMap.length > 0) {
-        // Trích xuất tọa độ từ kết quả đầu tiên
-        const firstResult = dataMap[0];
-        const coordinates = [
-          parseFloat(firstResult.lat),
-          parseFloat(firstResult.lon),
-        ];
-
-        // Chuyển đến vị trí tìm thấy trên bản đồ
-        map.setView(coordinates, 15);
-
-        // Thêm marker cho địa điểm tìm thấy
-        L.marker(coordinates).addTo(map);
-      } else {
-        console.error("Không tìm thấy địa điểm.");
-      }
+      // const documents = "";
+      console.log("a", title, content);
     });
-
     return {};
   },
 };
 </script>
+<template>
+  <div class="hello"></div>
+</template>

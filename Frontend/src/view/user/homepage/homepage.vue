@@ -323,7 +323,6 @@ export default {
         }
       "
     ></paginationVue>
-    <div class="row"></div>
   </div>
 </template>
 <style scoped>

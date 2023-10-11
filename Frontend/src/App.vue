@@ -61,6 +61,7 @@ export default {
 
     <div v-if="isLoginPath == false">
       <template v-if="position == 'admin' || position == 'super-admin'">
+        <Header></Header>
         <SideBar class="col-2"></SideBar>
         <router-view class="col-10"></router-view>
       </template>
