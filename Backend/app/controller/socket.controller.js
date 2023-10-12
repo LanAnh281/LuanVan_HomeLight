@@ -17,6 +17,7 @@ const job = schedule.scheduleJob("0 0 0 * * *", async () => {
     0
   ).getDate();
   console.log("tạo bill cuối tháng", lastDayOfMonth);
+  // const bill = await billMiddeware.create();
   if (currentDate.getDate() === lastDayOfMonth) {
     console.log("Lệnh đã được thực thi vào ngày cuối của tháng.");
     const bill = await billMiddeware.create();

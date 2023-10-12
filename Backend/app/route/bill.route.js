@@ -33,4 +33,11 @@ router
     authorization.authorization("xóa hóa đơn"),
     bill.delete
   );
+router
+  .route("/getAll/Customer")
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem hóa đơn"),
+    bill.findAllCustomer
+  );
 module.exports = router;

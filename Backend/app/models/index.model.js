@@ -200,6 +200,13 @@ const ResetPassword = sequelize.define("ResetPassword", {
     type: DataTypes.DATE,
   },
 });
+const Payment = sequelize.define("Payment", {
+  _id: setPrimary,
+  clientId: { type: DataTypes.STRING },
+  secretId: {
+    type: DataTypes.STRING,
+  },
+});
 // checked
 //many-to-many relationship
 Roles.belongsToMany(Positions, {
@@ -234,7 +241,7 @@ Accounts.belongsTo(Users, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-
+//
 Users.hasMany(BorardingHouse, {
   foreignKey: "userId",
   onDelete: "CASCADE",
@@ -360,16 +367,7 @@ Rooms.belongsToMany(Services, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-// Users.hasMany(Notification, {
-//   foreignKey: "userId",
-//   onDelete: "CASCADE",
-//   onUpdate: "CASCADE",
-// }),
-//   Notification.belongsTo(Users, {
-//     foreignKey: "userId",
-//     onDelete: "CASCADE",
-//     onUpdate: "CASCADE",
-//   });
+
 const User_Notification = sequelize.define("User_Notification", {
   isDelete: { type: DataTypes.BOOLEAN },
   isRead: { type: DataTypes.BOOLEAN },
@@ -400,6 +398,17 @@ Users.belongsToMany(Users, {
   foreignKey: "landlordId", // Trường trong bảng LandlordTenant tham chiếu đến Users
   otherKey: "tenantId", // Trường trong bảng LandlordTenant tham chiếu đến Users khác
 });
+//one-to
+Users.hasOne(Payment, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Payment.belongsTo(Users, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 // Sync the model with the database
 
 Roles.sync();
@@ -428,6 +437,8 @@ ResetPassword.sync();
 Rule.sync();
 UtilityReadings.sync();
 LandlordTenant.sync();
+
+Payment.sync();
 module.exports = {
   Roles,
   Positions,
@@ -453,4 +464,6 @@ module.exports = {
   Rule,
   UtilityReadings,
   LandlordTenant,
+
+  Payment,
 };

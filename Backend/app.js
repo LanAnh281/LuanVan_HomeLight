@@ -45,8 +45,9 @@ const ruleRouter = require("./app/route/rule.route");
 const mediaRouter = require("./app/route/media.route");
 const UtilityReadingsRouter = require("./app/route/utilityreadings.route");
 const userNotificationRouter = require("./app/route/userNotification.route");
+
+const routepaypal = require("./app/route/paypal.route");
 //midderware
-const requestMidderware = require("./app/middeware/request.midderware");
 // controller
 
 //socket
@@ -95,6 +96,22 @@ app.use("/api/rule", ruleRouter);
 app.use("/api/media", mediaRouter);
 app.use("/api/UtilityReadings", UtilityReadingsRouter);
 app.use("/api/usernotification", userNotificationRouter);
+app.use("/api/paypal", routepaypal);
+
+app.get("/success", (req, res) => {
+  // Xử lý kết quả thành công từ PayPal
+  const payerId = req.query.PayerID;
+  const paymentId = req.query.paymentId;
+
+  // Kiểm tra và cập nhật trạng thái đơn hàng trong cơ sở dữ liệu của bạn
+
+  res.send("Payment successful");
+});
+
+app.get("/cancel", (req, res) => {
+  // Xử lý trường hợp hủy bỏ thanh toán
+  res.send("Payment canceled");
+});
 
 // check errors
 app.use((req, res, next) => {

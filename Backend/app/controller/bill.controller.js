@@ -7,6 +7,7 @@ const {
   Rooms,
   Receipt,
   BorardingHouse,
+  Users,
 } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { debt, roomId } = req.body;
@@ -64,7 +65,6 @@ exports.create = async (req, res, next) => {
       where: { _id: roomId },
     });
     total = total + Number(documentRoom.dataValues.price);
-    console.log(">>>data:", end, total, roomId, services);
     const document = await Bill.create({
       end: end,
       total: total,
@@ -94,6 +94,53 @@ exports.findAll = async (req, res, next) => {
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
+    res.json({ message: error, status: "faild" });
+  }
+};
+exports.findAllCustomer = async (req, res, next) => {
+  try {
+    // danh sách khách của 1 bill
+    //  const documents = await Bill.findAll({
+    //   include: [
+    //     {
+    //       model: Rooms,
+    //       include: [
+    //         {
+    //           model: Users,
+    //           through: {
+    //             attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // });
+    //? danh sách bill của 1 khách
+    const documents = await Users.findOne({
+      where: {
+        _id: req.user.userId,
+      },
+      include: [
+        {
+          model: Rooms,
+          through: {
+            attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
+          },
+          include: [{ model: Bill }],
+          include: [
+            {
+              model: UtilityReadings,
+              order: [["createdAt", "DESC"]], // Sắp xếp giảm dần theo createdAt
+              limit: 1, // Giới hạn để chỉ lấy bản ghi mới nhất
+            },
+          ],
+        },
+      ],
+    });
+    console.log(documents);
+
+    res.json({ message: documents, status: "success" });
+  } catch (error) {
     res.json({ message: error, status: "faild" });
   }
 };

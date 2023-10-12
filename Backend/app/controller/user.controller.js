@@ -41,8 +41,12 @@ exports.createUserAndAccount = async (req, res) => {
     sex,
     birthday,
     securityDeposit,
+
+    clientId,
+    secretId,
     file,
   } = req.body;
+  console.log(clientId, "...", secretId);
   const password = setPassword();
   end = end === "" ? null : end;
   start = start === "" ? null : start;
@@ -79,6 +83,8 @@ exports.createUserAndAccount = async (req, res) => {
       birthday: birthday,
       securityDeposit: securityDeposit,
       password: password,
+      clientId: clientId,
+      secretId: secretId,
     };
     const result = await createUserAndAccount(userData);
     if (result.status == "success") {
@@ -244,7 +250,6 @@ exports.findAllTenant = async (req, res, next) => {
         landlordId: req.user.userId,
       },
     });
-    console.log("YYYYY:", users.length);
     if (users.length > 0) {
       let i = 0;
       // từ danh sách .user lặp từng người tìm trong user_room để tra ra nhà trọ họ đang ở
@@ -260,7 +265,6 @@ exports.findAllTenant = async (req, res, next) => {
             UserId: user._id,
           }, // lấy ra đc room
         });
-        console.log("???user_room:", user_room);
         const room = await Rooms.findOne({
           where: {
             _id: user_room.RoomId,

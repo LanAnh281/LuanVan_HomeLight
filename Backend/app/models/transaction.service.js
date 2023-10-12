@@ -8,6 +8,7 @@ const {
   User_Room,
   LandlordTenant,
   BorardingHouse,
+  Payment,
 } = require("../models/index.model");
 
 const crypto = require("crypto");
@@ -19,14 +20,7 @@ const setEncrypt = (value) => {
   encrypted += cipher.final("hex");
   return encrypted;
 };
-const getDecrypt = (name) => {
-  if (name) {
-    const decipher = crypto.createDecipheriv("aes-256-cbc", encryptionKey, iv);
-    let decrypted = decipher.update(name, "hex", "utf8");
-    decrypted += decipher.final("utf8");
-    return decrypted;
-  }
-};
+
 exports.createUserAndAccount = async (userData) => {
   const transaction = await sequelize.transaction();
   try {
@@ -41,7 +35,20 @@ exports.createUserAndAccount = async (userData) => {
       positionId: position._id,
     };
     const newAccount = await Accounts.create(accountData, { transaction });
-
+    console.log(userData.clientId, ":", userData.secretId);
+    if (userData.clientId != "" && userData.secretId != "") {
+      const documentPayment = await Payment.create(
+        {
+          userId: newUser._id,
+          clientId: userData.clientId,
+          secretId: userData.secretId,
+        },
+        {
+          transaction,
+        }
+      );
+      console.log(">>Pay:", documentPayment);
+    }
     await transaction.commit();
     return { message: "success", status: "success" };
   } catch (error) {
