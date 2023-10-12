@@ -24,7 +24,7 @@ export default {
 
   setup() {
     const data = reactive({
-      items: [],
+      item: [],
 
       setPage: "",
       totalPage: 0,
@@ -54,18 +54,18 @@ export default {
     //       : []
     //   )
     // );
-    data.totalPage = computed(() =>
-      data.items ? Math.ceil(data.items.length / data.sizePage) : 0
-    );
-    data.length = computed(() => (data.items ? data.items.length : 0));
-    data.setPage = computed(() =>
-      data.items
-        ? data.items.slice(
-            (data.currentPage - 1) * data.sizePage,
-            data.currentPage * data.sizePage
-          )
-        : []
-    );
+    // data.totalPage = computed(() =>
+    //   data.items ? Math.ceil(data.items.length / data.sizePage) : 0
+    // );
+    // data.length = computed(() => (data.items ? data.items.length : 0));
+    // data.setPage = computed(() =>
+    //   data.items
+    //     ? data.items.slice(
+    //         (data.currentPage - 1) * data.sizePage,
+    //         data.currentPage * data.sizePage
+    //       )
+    //     : []
+    // );
     const change = async (value) => {
       try {
         console.log(value);
@@ -94,9 +94,10 @@ export default {
     };
     const refresh = async () => {
       try {
-        const documentBill = await billService.getAll();
-        data.items = documentBill.message;
-        console.log(data.items);
+        const documentBill = await billService.getAllCustomer();
+        data.item = documentBill.message;
+
+        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -150,7 +151,7 @@ export default {
     <h5 class="text-center title my-3">Danh sách Hóa đơn</h5>
 
     <Table
-      :data="data.setPage"
+      :data="data.item"
       :fields="['Nhà trọ', 'Phòng', 'Tổng tiền(₫)', 'Đã trả(₫)', 'Còn lại(₫)']"
       :titles="['boardingName', 'name', 'total', 'receive', 'debt']"
       :currentPage="data.currentPage"
@@ -172,7 +173,7 @@ export default {
           data.activeBill = value;
         }
       " -->
-    <paginationVue
+    <!-- <paginationVue
       class="m-0 p-0 mt-1"
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
@@ -193,7 +194,7 @@ export default {
           }
         }
       "
-    ></paginationVue>
+    ></paginationVue> -->
   </div>
 </template>
 <style scoped>

@@ -8,6 +8,10 @@ class billService {
   async getAll() {
     return (await this.api.get("/")).data;
   }
+
+  async getAllCustomer() {
+    return (await this.api.get("/getAll/Customer")).data;
+  }
   async create(data) {
     return (await this.api.post("/", data)).data;
   }

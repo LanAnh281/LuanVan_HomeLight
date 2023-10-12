@@ -34,6 +34,8 @@ export default {
         email: "",
         start: "",
         end: "",
+        clientId: "",
+        secretId: "",
         files: [],
       },
       error: {
@@ -53,6 +55,7 @@ export default {
       ward: { data: { wards: [] } },
       flag: true,
     });
+    const isPay = ref(false);
     const isModalOpen = ref(false);
     const formFields = [
       "userName",
@@ -66,6 +69,8 @@ export default {
       "email",
       "start",
       "end",
+      "clientId",
+      "secretId",
     ];
     const change = async (value) => {
       try {
@@ -201,7 +206,7 @@ export default {
 
     return {
       data,
-
+      isPay,
       save,
       checkString,
       checkIdentification,
@@ -467,6 +472,55 @@ export default {
                   </div>
                 </div>
               </div>
+
+              <!-- Payment -->
+              <div class="form-group row">
+                <label
+                  for="inputIsPay"
+                  class="col-sm-3 col-form-label p-0"
+                ></label>
+                <div class="col-sm-9 m-0">
+                  <input
+                    type="checkbox"
+                    class=""
+                    id="inputIsPay"
+                    placeholder="Nhập mã kết nối do cổng thanh toán cung cấp"
+                    v-model="isPay"
+                  /><span class="text-info"
+                    >Tích hợp thanh toán điện tử Paypal</span
+                  >
+                </div>
+              </div>
+              <div class="form-group row" v-if="isPay">
+                <label for="inputClientId" class="col-sm-3 col-form-label p-0"
+                  >ClientId:
+                </label>
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="inputClientId"
+                    placeholder="Nhập mã kết nối do Paypal cung cấp"
+                    v-model="data.item.clientId"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group row" v-if="isPay">
+                <label for="inputSecretId" class="col-sm-3 col-form-label p-0"
+                  >SecretId:</label
+                >
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="inputSecretId"
+                    placeholder="Nhập key mã hóa do Paypal cung cấp"
+                    v-model="data.item.secretId"
+                  />
+                </div>
+              </div>
+              <!-- BTN submit -->
 
               <div class="form-group row justify-content-around mb-0">
                 <button type="submit" class="btn btn-login col-sm-2">
