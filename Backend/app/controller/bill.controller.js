@@ -65,13 +65,14 @@ exports.create = async (req, res, next) => {
       where: { _id: roomId },
     });
     total = total + Number(documentRoom.dataValues.price);
+    services = `Phòng - ${documentRoom.dataValues.price}`;
     const document = await Bill.create({
       end: end,
       total: total,
       services: services,
       roomId: roomId,
     });
-    console.log("///", document);
+
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
@@ -116,7 +117,7 @@ exports.findAllCustomer = async (req, res, next) => {
     //   ],
     // });
     //? danh sách bill của 1 khách
-    const documents = await Users.findOne({
+    const bills = await Users.findOne({
       where: {
         _id: req.user.userId,
       },
@@ -126,18 +127,27 @@ exports.findAllCustomer = async (req, res, next) => {
           through: {
             attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
           },
+
           include: [{ model: Bill }],
-          include: [
-            {
-              model: UtilityReadings,
-              order: [["createdAt", "DESC"]], // Sắp xếp giảm dần theo createdAt
-              limit: 1, // Giới hạn để chỉ lấy bản ghi mới nhất
-            },
-          ],
         },
       ],
     });
-    console.log(documents);
+    const uti = await UtilityReadings.findAll({
+      where: {
+        roomId: bills.Rooms[0]._id,
+      },
+      order: [["createdAt", "DESC"]], // Sắp xếp giảm dần theo createdAt
+      limit: 1, // Giới hạn để chỉ lấy bản ghi mới nhất
+    });
+    const boarding = await BorardingHouse.findOne({
+      whereL: {
+        _id: bills.Rooms[0].boardingId,
+      },
+    });
+    const documents = JSON.parse(JSON.stringify(bills));
+
+    documents.Rooms[0].UtilityReadings = uti;
+    documents.Rooms[0].BoardingHouse = boarding;
 
     res.json({ message: documents, status: "success" });
   } catch (error) {

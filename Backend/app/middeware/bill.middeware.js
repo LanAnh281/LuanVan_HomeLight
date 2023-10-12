@@ -35,6 +35,14 @@ exports.create = async () => {
       },
     });
     for (let room of documentRoom) {
+      let total = 0;
+      let services = "";
+      // phòng
+      const documentRoom = await Rooms.findOne({
+        where: { _id: room._id },
+      });
+      total = total + Number(documentRoom.dataValues.price);
+      services = `${services}Phòng - ${documentRoom.dataValues.price} ,`;
       // tìm chỉ số điện nước mới nhất của phòng
       const documentUti = await UtilityReadings.findAll({
         where: {
@@ -43,7 +51,7 @@ exports.create = async () => {
         order: [["createdAt", "DESC"]], // Sắp xếp giảm dần theo createdAt
         limit: 1, // Giới hạn để chỉ lấy bản ghi mới nhất
       });
-      console.log("Điện nước mới của phòng:", documentUti);
+
       // tìm các dịch vụ của phòng
       const documentServiceRoom = await Service_Room.findAll({
         where: {
@@ -51,8 +59,8 @@ exports.create = async () => {
         },
       });
       // dùng id service-tìm giá dịch vụ
-      let total = 0;
-      let services = "";
+      // let total = 0;
+      // let services = "";
       for (let value of documentServiceRoom) {
         const documentService = await Services.findOne({
           where: { _id: value.ServiceId },
@@ -88,11 +96,12 @@ exports.create = async () => {
               (currentElectric - previousElectric);
         } else total = total + Number(documentService.price);
       }
-      const documentRoom = await Rooms.findOne({
-        where: { _id: room._id },
-      });
-      total = total + Number(documentRoom.dataValues.price);
-      console.log(">>>data:", new Date(), total, room._id, services);
+      // const documentRoom = await Rooms.findOne({
+      //   where: { _id: room._id },
+      // });
+      // total = total + Number(documentRoom.dataValues.price);
+      // services = `${services}Phòng - ${documentRoom.dataValues.price}`;
+      services = services.replace(/,$/, "");
       const now = new Date();
       const document = await Bill.create({
         end: now,
@@ -111,7 +120,6 @@ exports.create = async () => {
       });
       console.log("user_room:", documentUser_Room);
       for (let user of documentUser_Room) {
-        console.log("***userId:", user.UserId);
         const documentUser_Noti = await User_Notification.create({
           UserId: user.UserId,
           NotificationId: documentNoti._id,
