@@ -157,17 +157,7 @@ export default {
                 </tr>
               </thead>
               <tbody>
-                <tr class="">
-                  <td>Phòng</td>
-                  <td colspan="3"></td>
-                  <td>{{ formatCurrency(data.item.Room.price) }}</td>
-                  <td>{{ formatCurrency(data.item.Room.price) }}</td>
-                </tr>
-                <tr
-                  v-for="(value, index) in data.servicesOther"
-                  :key="index"
-                  v-show="value != ''"
-                >
+                <tr v-for="(value, index) in data.servicesOther" :key="index">
                   <td>{{ value.split(" - ")[0] }}</td>
                   <td colspan="3"></td>
 
