@@ -1,5 +1,11 @@
 const paypal = require("paypal-rest-sdk");
-const { Payment, Users, BorardingHouse } = require("../models/index.model");
+const {
+  Payment,
+  Users,
+  BorardingHouse,
+  Bill,
+  Receipt,
+} = require("../models/index.model");
 exports.hien = (req, res, next) => {
   res.json({ hi: "hello" });
 };
@@ -39,7 +45,7 @@ exports.taopaypal = async (req, res, next) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: `http://localhost:3000/api/paypal/success?tongtien=1&_id=${req.body._id}&clientId=${documentPay.clientId}&secretId=${documentPay.secretId}`,
+      return_url: `http://localhost:3000/api/paypal/success?received=${req.body.total}&_id=${req.body._id}&clientId=${documentPay.clientId}&secretId=${documentPay.secretId}`,
       cancel_url: "http://localhost:3000/api/paypal/cancel",
     },
     transactions: [
@@ -50,7 +56,7 @@ exports.taopaypal = async (req, res, next) => {
               name: "Thanh toán hóa đơn tiền trọ",
               sku: "001",
               // price: `${req.body.tongtien}`,
-              price: 1,
+              price: `${req.body.total}`,
               currency: "USD",
               quantity: 1,
             },
@@ -59,7 +65,7 @@ exports.taopaypal = async (req, res, next) => {
         amount: {
           currency: "USD",
           // total: `${req.body.tongtien}`,
-          total: 1,
+          total: `${req.body.total}`,
         },
         description: "Thanh toán hóa đơn tiền trọ",
       },
@@ -79,7 +85,7 @@ exports.taopaypal = async (req, res, next) => {
   });
 };
 exports.thanhcong = (req, res) => {
-  console.log(req.query.tongtien);
+  console.log(req.query.received);
   paypal.configure({
     mode: "sandbox", //sandbox or live
     // client_id:
@@ -98,7 +104,7 @@ exports.thanhcong = (req, res) => {
       {
         amount: {
           currency: "USD",
-          total: `${req.query.tongtien}`,
+          total: `${req.query.received}`,
         },
       },
     ],
@@ -106,20 +112,75 @@ exports.thanhcong = (req, res) => {
   paypal.payment.execute(
     paymentId,
     execute_payment_json,
-    function (error, payment) {
+
+    async (error, payment) => {
       if (error) {
         console.log(error.response);
         throw error;
       } else {
-        console.log(JSON.stringify(payment));
-        console.log("---Total:", payment.transactions[0].amount.total);
+        // console.log(JSON.stringify(payment));
+        // console.log("---Total:", payment.transactions[0].amount.total);
         // res.send('Success (Mua hàng thành công)');
-        res.writeHead(302, {
-          Location: `http://localhost:3001/billCustomer?trangthai=1&_id=${req.query._id}&total=${payment.transactions[0].amount.total}`,
-          //add other headers here...
+
+        // tìm hóa đơn
+        const documentBill = await Bill.findOne({
+          where: { _id: req.query._id },
         });
-        res.end();
+        console.log("--Bill:", documentBill);
+        // cập nhật lại hóa đơn sau khi thanh toán
+        const updateBill = await Bill.update(
+          {
+            debt:
+              Number(documentBill.debt) -
+              Number(payment.transactions[0].amount.total),
+          },
+          { where: { _id: req.query._id } }
+        );
+        console.log("--update:", updateBill);
+        //tạo hoặc update
+        const documentReceipt = await Receipt.findOne({
+          where: {
+            billId: req.query._id,
+          },
+        });
+        console.log("---Receipt:", documentReceipt);
+        if (documentReceipt != null) {
+          //update
+
+          const updateReceipt = await Receipt.update(
+            {
+              receive:
+                Number(documentReceipt.receive) +
+                Number(payment.transactions[0].amount.total),
+              debt:
+                Number(documentReceipt.debt) -
+                Number(payment.transactions[0].amount.total),
+            },
+            {
+              where: {
+                _id: documentReceipt._id,
+              },
+            }
+          );
+          console.log("---Update receipt:", updateReceipt);
+        } else {
+          //create
+          const createReceipt = await Receipt.create({
+            receive: payment.transactions[0].amount.total,
+            debt:
+              Number(documentBill.total) -
+              Number(payment.transactions[0].amount.total),
+            billId: req.query._id,
+          });
+          console.log("---create receipt:", createReceipt);
+        }
       }
+
+      res.writeHead(302, {
+        Location: `http://localhost:3001/billCustomer?status=1`,
+        //add other headers here...
+      });
+      res.end();
     }
   );
 };

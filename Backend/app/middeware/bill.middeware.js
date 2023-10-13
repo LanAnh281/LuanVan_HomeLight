@@ -96,16 +96,13 @@ exports.create = async () => {
               (currentElectric - previousElectric);
         } else total = total + Number(documentService.price);
       }
-      // const documentRoom = await Rooms.findOne({
-      //   where: { _id: room._id },
-      // });
-      // total = total + Number(documentRoom.dataValues.price);
-      // services = `${services}Phòng - ${documentRoom.dataValues.price}`;
+
       services = services.replace(/,$/, "");
       const now = new Date();
       const document = await Bill.create({
         end: now,
         total: total,
+        debt: total,
         services: services,
         roomId: room._id,
       });

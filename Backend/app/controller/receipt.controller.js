@@ -36,11 +36,13 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
+    console.log("----ID:", req.params.id);
     const document = await Receipt.findOne({
       where: {
-        _id: req.params.id,
+        billId: req.params.id,
       },
     });
+
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
