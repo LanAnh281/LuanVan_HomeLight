@@ -12,6 +12,7 @@ import { useRoute, useRouter } from "vue-router";
 
 //service
 import billService from "../../../service/bill.service";
+import receiptService from "../../../service/receipt.service";
 import payService from "../../../service/pay.service";
 //component
 import Select from "../../../components/select/selectdependent.vue";
@@ -122,11 +123,8 @@ export default {
     };
     onBeforeMount(async () => {
       try {
-        console.log("Query:", route.query);
-        // cập nhật lại hóa đơn sau khi thanh toán
-        // có trạng thái =1, mã hóa đơn, số tiền đã thanh toán
-        // update
         await refresh();
+        // console.log("Query:", route.query, route.query.status == 1);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -146,6 +144,7 @@ export default {
         const documentPay = await payService.create({
           boardingId: data.item.Rooms[0].boardingId,
           _id: data.item.Rooms[0].Bills[0]._id,
+          total: data.item.Rooms[0].Bills[0].debt,
         });
         console.log(documentPay);
         // var url=await paypalService.taoTT(thanhtoan);

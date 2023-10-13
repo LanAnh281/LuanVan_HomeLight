@@ -83,10 +83,7 @@ export default {
     >
       <img
         src="../../assets/image/logo.png"
-        style="
-          object-fit: contain;
-          box-shadow: 0 0 20px 1px rgba(255, 255, 0, 0.3);
-        "
+        style="object-fit: contain; height: 7vh"
         class="col-3 ml-4 mr-0 p-0 mb-1"
       />
       <div class="col row m-0 p-0">

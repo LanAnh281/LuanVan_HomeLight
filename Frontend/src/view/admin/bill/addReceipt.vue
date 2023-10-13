@@ -78,10 +78,6 @@ export default {
             emit("payments");
           }
         }
-        // const documentBill = await billService.update(props._id, {
-        //   debt: data.item.debt,
-        // });
-        // console.log(documentBill);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

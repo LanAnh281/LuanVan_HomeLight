@@ -24,13 +24,17 @@ export default {
           active: "homepage",
         },
         {
+          name: "Phòng trọ",
+          active: "rooms",
+        },
+        {
           name: "Bài viết",
           active: "post",
         },
-        {
-          name: "Liên hệ",
-          active: "contact",
-        },
+        // {
+        //   name: "Liên hệ",
+        //   active: "contact",
+        // },
         {
           name: "Hóa đơn",
           active: "billCustomer",
@@ -132,7 +136,7 @@ export default {
             } else if (hours < 24) {
               previousTime = `${hours} giờ trước`;
             } else {
-              previousTime = ` ${days}) ngày trước`;
+              previousTime = ` ${days} ngày trước`;
             }
             if (item.User_Notification.isRead == false) {
               data.noti++;
@@ -232,7 +236,7 @@ export default {
                 {{ value.name }}
               </router-link>
             </div>
-            <div class="col-3 row justify-content-end menu p-0 m-0 float-right">
+            <div class="col-2 row justify-content-end menu p-0 m-0 float-right">
               <div
                 v-if="!position"
                 class="col-3 m-0 p-0 mt-1"

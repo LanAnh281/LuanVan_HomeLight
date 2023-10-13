@@ -112,16 +112,22 @@ const routes = [
     name: "userInfo",
     component: () => import("../view/user/userInfo.vue"),
   },
-
+  //homepage
   {
     path: "/homepage",
     name: "homepage",
-    component: () => import("../view/user/homepage/homepage.vue"),
+    component: () => import("../view/user/homepage/index.vue"),
+  },
+  //rooms
+  {
+    path: "/rooms",
+    name: "rooms",
+    component: () => import("../view/user/rooms/index.vue"),
   },
   {
     path: "/roomDetail",
     name: "roomDetail",
-    component: () => import("../view/user/homepage/roomDetail.vue"),
+    component: () => import("../view/user/rooms/roomDetail.vue"),
   },
   //
   {
