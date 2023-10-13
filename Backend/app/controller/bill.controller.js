@@ -184,23 +184,23 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const {
-    start,
-    end,
+    // start,
+    // end,
 
     debt,
-    total,
-    roomId,
+    // total,
+    // roomId,
   } = req.body;
   console.log("Bill Body:", req.body);
   try {
     const document = await Bill.update(
       {
-        start: start,
-        end: end,
+        // start: start,
+        // end: end,
 
         debt: debt,
-        total: total,
-        roomId: roomId,
+        // total: total,
+        // roomId: roomId,
       },
       {
         where: {

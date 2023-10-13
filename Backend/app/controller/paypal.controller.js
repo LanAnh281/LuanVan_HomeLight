@@ -1,5 +1,5 @@
 const paypal = require("paypal-rest-sdk");
-const { Payment } = require("../models/index.model");
+const { Payment, Users, BorardingHouse } = require("../models/index.model");
 exports.hien = (req, res, next) => {
   res.json({ hi: "hello" });
 };
@@ -11,18 +11,27 @@ exports.hien = (req, res, next) => {
 //     "EJMEPqAIH2Goh-iXFt79S18RSpvkH6lkNdF4YD9ClBYn7un_TRsn_47ZdybtHPTS9YnT5gpbsb6_E8la",
 // });
 exports.taopaypal = async (req, res, next) => {
-  const documentPay = await Payment.findOne({
+  console.log("Body pay,", req.body._id, req.body.boardingId);
+  const documentLand = await BorardingHouse.findOne({
     where: {
-      userId: req.user.userId,
+      _id: req.body.boardingId,
     },
   });
-  console.log(documentPay);
+  console.log("----land:", documentLand);
+  const documentPay = await Payment.findOne({
+    where: {
+      userId: documentLand.userId,
+    },
+  });
+  console.log("-----PPPPay", documentPay);
   paypal.configure({
     mode: "sandbox", //sandbox or live
-    client_id:
-      "AUx79GN75wtsieggQqfykauj9mYDTmnb9sWjkkx-qCwP1NiaJX59Kg5jypChJ-mxfpT1lfsbnD52ImEI",
-    client_secret:
-      "EJMEPqAIH2Goh-iXFt79S18RSpvkH6lkNdF4YD9ClBYn7un_TRsn_47ZdybtHPTS9YnT5gpbsb6_E8la",
+    // client_id:
+    //   "AUx79GN75wtsieggQqfykauj9mYDTmnb9sWjkkx-qCwP1NiaJX59Kg5jypChJ-mxfpT1lfsbnD52ImEI",
+    // client_secret:
+    //   "EJMEPqAIH2Goh-iXFt79S18RSpvkH6lkNdF4YD9ClBYn7un_TRsn_47ZdybtHPTS9YnT5gpbsb6_E8la",
+    client_id: documentPay.clientId,
+    client_secret: documentPay.secretId,
   });
   const create_payment_json = {
     intent: "sale",
@@ -30,7 +39,7 @@ exports.taopaypal = async (req, res, next) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: `http://localhost:3000/api/paypal/success?tongtien=1`,
+      return_url: `http://localhost:3000/api/paypal/success?tongtien=1&_id=${req.body._id}&clientId=${documentPay.clientId}&secretId=${documentPay.secretId}`,
       cancel_url: "http://localhost:3000/api/paypal/cancel",
     },
     transactions: [
@@ -38,9 +47,10 @@ exports.taopaypal = async (req, res, next) => {
         item_list: {
           items: [
             {
-              name: "Iphone 4S",
+              name: "Thanh toán hóa đơn tiền trọ",
               sku: "001",
-              price: `${req.body.tongtien}`,
+              // price: `${req.body.tongtien}`,
+              price: 1,
               currency: "USD",
               quantity: 1,
             },
@@ -48,9 +58,10 @@ exports.taopaypal = async (req, res, next) => {
         },
         amount: {
           currency: "USD",
-          total: `${req.body.tongtien}`,
+          // total: `${req.body.tongtien}`,
+          total: 1,
         },
-        description: "Iphone 4S cũ giá siêu rẻ",
+        description: "Thanh toán hóa đơn tiền trọ",
       },
     ],
   };
@@ -71,10 +82,12 @@ exports.thanhcong = (req, res) => {
   console.log(req.query.tongtien);
   paypal.configure({
     mode: "sandbox", //sandbox or live
-    client_id:
-      "AUx79GN75wtsieggQqfykauj9mYDTmnb9sWjkkx-qCwP1NiaJX59Kg5jypChJ-mxfpT1lfsbnD52ImEI",
-    client_secret:
-      "EJMEPqAIH2Goh-iXFt79S18RSpvkH6lkNdF4YD9ClBYn7un_TRsn_47ZdybtHPTS9YnT5gpbsb6_E8la",
+    // client_id:
+    //   "AUx79GN75wtsieggQqfykauj9mYDTmnb9sWjkkx-qCwP1NiaJX59Kg5jypChJ-mxfpT1lfsbnD52ImEI",
+    // client_secret:
+    //   "EJMEPqAIH2Goh-iXFt79S18RSpvkH6lkNdF4YD9ClBYn7un_TRsn_47ZdybtHPTS9YnT5gpbsb6_E8la",
+    client_id: req.query.clientId,
+    client_secret: req.query.secretId,
   });
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
@@ -99,9 +112,10 @@ exports.thanhcong = (req, res) => {
         throw error;
       } else {
         console.log(JSON.stringify(payment));
+        console.log("---Total:", payment.transactions[0].amount.total);
         // res.send('Success (Mua hàng thành công)');
         res.writeHead(302, {
-          Location: `http://localhost:3001/homepage`,
+          Location: `http://localhost:3001/billCustomer?trangthai=1&_id=${req.query._id}&total=${payment.transactions[0].amount.total}`,
           //add other headers here...
         });
         res.end();
