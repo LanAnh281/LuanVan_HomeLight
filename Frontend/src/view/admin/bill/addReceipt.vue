@@ -42,10 +42,14 @@ export default {
           if (documentReceipt["status"] == "success") {
             successAd("Thành công thanh toán");
             console.log(documentReceipt);
+            const documentBill = await billService.update(props._id, {
+              debt: data.item.debt,
+            });
             await refresh();
             emit("payments");
           }
         }
+
         // đã trả
         else if (data.item["received"] != "0 ₫") {
           //đã có thanh toàn trc đó
@@ -65,10 +69,19 @@ export default {
           );
           if (documentReceipt["status"] == "success") {
             successAd("Thành công thanh toán");
+            const documentBill = await billService.update(props._id, {
+              debt:
+                Number(data.item.total) -
+                (Number(data.item.receive) + Number(receipt)),
+            });
             await refresh();
             emit("payments");
           }
         }
+        // const documentBill = await billService.update(props._id, {
+        //   debt: data.item.debt,
+        // });
+        // console.log(documentBill);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

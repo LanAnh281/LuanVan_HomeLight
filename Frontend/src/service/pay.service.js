@@ -5,9 +5,9 @@ class payPalService {
     this.api = createApiClient(baseUrl);
   }
 
-  //   async getAll() {
-  //     return (await this.api.get("/")).data;
-  //   }
+  async get() {
+    return (await this.api.get("/")).data;
+  }
   async create(data) {
     return (await this.api.post("/", data)).data;
   }

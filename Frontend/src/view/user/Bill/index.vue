@@ -12,6 +12,7 @@ import { useRoute, useRouter } from "vue-router";
 
 //service
 import billService from "../../../service/bill.service";
+import payService from "../../../service/pay.service";
 //component
 import Select from "../../../components/select/selectdependent.vue";
 import selectNormal from "../../../components/select/select.vue";
@@ -26,6 +27,7 @@ export default {
   components: { Select, selectNormal, paginationVue, Table },
 
   setup() {
+    const route = useRoute();
     const data = reactive({
       item: {
         total: 0,
@@ -40,7 +42,7 @@ export default {
                 currentWater: 0,
               },
             ],
-            Bills: [{ createdAt: new Date(), total: 0, services: "" }],
+            Bills: [{ createdAt: new Date(), total: 0, services: "", debt: 0 }],
             BoardingHouse: {
               name: "",
               address: "",
@@ -49,7 +51,7 @@ export default {
           },
         ],
       },
-
+      selectDate: new Date(),
       service: [],
       setPage: "",
       totalPage: 0,
@@ -66,48 +68,11 @@ export default {
     });
     const now = new Date();
     let intervalId = null;
-    // data.searchPage = computed(
-    //   () => (
-    //     (data.currentPage = 1),s
-    //     data.items
-    //       ? data.items.filter((item) => {
-    //           if (item.BoardingHouse && item.BoardingHouse.name) {
-    //             return item.BoardingHouse.name
-    //               .toLowerCase()
-    //               .includes(data.searchText.toLocaleLowerCase());
-    //           }
-    //         })
-    //       : []
-    //   )
-    // );
-    // data.totalPage = computed(() =>
-    //   data.items ? Math.ceil(data.items.length / data.sizePage) : 0
-    // );
-    // data.length = computed(() => (data.items ? data.items.length : 0));
-    // data.setPage = computed(() =>
-    //   data.items
-    //     ? data.items.slice(
-    //         (data.currentPage - 1) * data.sizePage,
-    //         data.currentPage * data.sizePage
-    //       )
-    //     : []
-    // );
-    const change = async (value) => {
-      try {
-        console.log(value);
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
+
     const handleDate = async (value) => {
       try {
-        console.log(value.target.value);
+        data.selectDate = new Date(value.target.value);
+        await refresh();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -123,17 +88,28 @@ export default {
         const documentBill = await billService.getAllCustomer();
         data.item = documentBill.message;
 
-        const services =
-          documentBill.message.Rooms[0].Bills[0].services.split(" ,");
-        let electricPrice = services.filter((item) => item.includes("Điện"));
-        electricPrice = electricPrice.join("");
-        let waterPrice = services.filter((item) => item.includes("Nước"));
-        waterPrice = waterPrice.join("");
-        data.item.electricPrice = electricPrice.split(" - ")[1];
-        data.item.waterPrice = waterPrice.split(" - ")[1];
-        data.service = services.filter((item) => {
-          return !item.includes("Điện") && !item.includes("Nước");
+        data.item.Rooms[0].Bills = data.item.Rooms[0].Bills.filter((item) => {
+          const createdAt = new Date(item.createdAt);
+
+          return (
+            data.selectDate.getMonth() + 1 == createdAt.getMonth() + 1 &&
+            data.selectDate.getFullYear() == createdAt.getFullYear()
+          );
         });
+
+        if (data.item.Rooms[0].Bills[0]) {
+          const services =
+            documentBill.message.Rooms[0].Bills[0].services.split(" ,");
+          let electricPrice = services.filter((item) => item.includes("Điện"));
+          electricPrice = electricPrice.join("");
+          let waterPrice = services.filter((item) => item.includes("Nước"));
+          waterPrice = waterPrice.join("");
+          data.item.electricPrice = electricPrice.split(" - ")[1];
+          data.item.waterPrice = waterPrice.split(" - ")[1];
+          data.service = services.filter((item) => {
+            return !item.includes("Điện") && !item.includes("Nước");
+          });
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -146,6 +122,10 @@ export default {
     };
     onBeforeMount(async () => {
       try {
+        console.log("Query:", route.query);
+        // cập nhật lại hóa đơn sau khi thanh toán
+        // có trạng thái =1, mã hóa đơn, số tiền đã thanh toán
+        // update
         await refresh();
       } catch (error) {
         if (error.response) {
@@ -160,33 +140,56 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
+    const handlePay = async () => {
+      try {
+        console.log("Thanh toán", data.item.Rooms[0].Bills[0].debt);
+        const documentPay = await payService.create({
+          boardingId: data.item.Rooms[0].boardingId,
+          _id: data.item.Rooms[0].Bills[0]._id,
+        });
+        console.log(documentPay);
+        // var url=await paypalService.taoTT(thanhtoan);
+        //  console.log(url)
+        window.location = documentPay;
+        // window.open(documentPay, '_blank');
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
 
     return {
       data,
       formatCurrency,
       formatDateTime,
-      change,
       handleDate,
+      handlePay,
       now,
     };
   },
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 pr-5" v-if="data.item.Rooms[0]">
+  <div class="body container-fluid m-0 pr-5">
     <div class="row m-0 text-center mt-2">
-      <div class="input-group col-2 mr-2" style="margin-left: 5%">
-        <input type="month" @input="handleDate" />
-      </div>
-      <div class="input-group col-2">
-        <selectNormal
-          :title="`Chọn trạng thái`"
-          :data="data.status"
-          @choose="(value) => change(value)"
-        ></selectNormal>
+      <div class="input-group col-2" style="">
+        <input
+          type="month"
+          @input="handleDate"
+          class="p-1"
+          style="background-color: var(--background); border: 1px solid #ebebeb"
+        />
       </div>
     </div>
-    <div class="row justify-content-between mx-2">
+    <div
+      class="row justify-content-between mx-2"
+      v-if="data.item.Rooms[0].Bills[0]"
+    >
       <div class="col-9 row">
         <div class="col-12">
           Nhà trọ: {{ data.item.Rooms[0].BoardingHouse.name }}
@@ -199,10 +202,28 @@ export default {
         </div>
       </div>
       <div class="col-3">
-        Ngày lập:
-        {{ formatDateTime(data.item.Rooms[0].Bills[0].createdAt) }}
+        <p>
+          Ngày lập:
+          {{ formatDateTime(data.item.Rooms[0].Bills[0].createdAt) }}
+        </p>
+        <button
+          class="btn"
+          :class="
+            data.item.Rooms[0].Bills[0].debt == 0
+              ? 'btn-success'
+              : 'btn-primary'
+          "
+          :disabled="data.item.Rooms[0].Bills[0].debt == 0"
+          @click="handlePay"
+        >
+          {{
+            data.item.Rooms[0].Bills[0].debt == 0
+              ? "Đã thanh toán"
+              : "Thanh toán"
+          }}
+        </button>
       </div>
-      <div class="col-12 text-center mt-2">
+      <div class="col-12 text-center m-0 p-0">
         <h3>Hóa đơn</h3>
         <p>Tháng {{ now.getMonth() + 1 }} / {{ now.getFullYear() }}</p>
       </div>
@@ -289,10 +310,11 @@ export default {
         </tbody>
       </table>
     </div>
+    <div v-else class="text-center">Không có hóa đơn</div>
   </div>
 </template>
 <style scoped>
 .body {
-  height: 240vh;
+  height: 120vh;
 }
 </style>
