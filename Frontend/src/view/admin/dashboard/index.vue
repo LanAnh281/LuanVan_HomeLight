@@ -22,9 +22,9 @@ import UtilityReadingsService from "../../../service/UtilityReadings.service";
 import { checkAccessToken } from "../../../assets/js/common.login";
 //component
 import Select from "../../../components/select/select.vue";
-
+import Box from "./box.vue";
 export default {
-  components: { apexchart: VueApexCharts, Select },
+  components: { apexchart: VueApexCharts, Select, Box },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -286,6 +286,19 @@ export default {
         await refresh();
       }
     );
+    const handleDate = async (value) => {
+      try {
+        console.log(value.target.value);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     onMounted(async () => {
       await checkAccessToken(router); //access token
       intervalId = setInterval(async () => {
@@ -314,6 +327,8 @@ export default {
       // 4.
       chartOptionsEW,
       chartSeriesEW,
+      //
+      handleDate,
     };
   },
 };
@@ -321,26 +336,38 @@ export default {
 
 <template>
   <div class="body m-0">
-    <div class="border-radius my-3 row m-0 justify-content-end">
-      <Select
-        class="col-1 mt-2 mr-3 select"
-        :title="'Chọn nhà trọ'"
-        :data="data.boarding"
-        :selected="data.selectBoarding"
-        @choose="(value) => (data.selectBoarding = value)"
-      ></Select>
+    <!-- box -->
+    <div>
+      <Box></Box>
     </div>
-    <div class="border-radius my-3 row m-0 justify-content-start">
-      <div class="col-12"></div>
-      <div class="col-6 border-radius">
-        <h6>Biểu đồ thể hiện trạng thái phòng</h6>
-        <apexchart
-          :options="roomStatus"
-          :series="roomStatusSeries"
-          height="300"
+    <!-- chart -->
+    <div>
+      <div class="border-radius my-3 row m-0 justify-content-end">
+        <input
+          type="month"
+          class="col-2 mt-2 mr-3 select py-0"
+          style="border: solid 1px #ccc; border-radius: 4px; height: 34px"
+          @input="handleDate"
         />
+        <Select
+          class="col-1 mt-2 mr-3 select"
+          :title="'Chọn nhà trọ'"
+          :data="data.boarding"
+          :selected="data.selectBoarding"
+          @choose="(value) => (data.selectBoarding = value)"
+        ></Select>
       </div>
-      <!-- <div class="input-group col-6 m-0 p-0 row border-radius">
+      <div class="border-radius my-3 row m-0 justify-content-start">
+        <div class="col-12"></div>
+        <div class="col-6 border-radius">
+          <h6>Biểu đồ thể hiện trạng thái phòng</h6>
+          <apexchart
+            :options="roomStatus"
+            :series="roomStatusSeries"
+            height="300"
+          />
+        </div>
+        <!-- <div class="input-group col-6 m-0 p-0 row border-radius">
         <img
           class="card-img-top"
           src="../../../assets/image/users.jpg"
@@ -352,18 +379,18 @@ export default {
           bulk of the card's content.
         </p>
       </div> -->
-      <div class="col-6 border-radius">
-        <h6>
-          Biểu đồ thể hiện doanh thu và chi phí của nhà trọ tháng
-          {{ now.getMonth() + 1 }}/{{ now.getFullYear() }}
-        </h6>
-        <apexchart
-          :options="chartOptionsProfit"
-          :series="chartSeriesProfit.data"
-          height="400"
-        />
-      </div>
-      <!-- <div class="col-6 border-radius mt-3">
+        <div class="col-6 border-radius">
+          <h6>
+            Biểu đồ thể hiện doanh thu và chi phí của nhà trọ tháng
+            {{ now.getMonth() + 1 }}/{{ now.getFullYear() }}
+          </h6>
+          <apexchart
+            :options="chartOptionsProfit"
+            :series="chartSeriesProfit.data"
+            height="400"
+          />
+        </div>
+        <!-- <div class="col-6 border-radius mt-3">
         Biểu đồ thể hiện điện nước tiêu thụ
         <apexchart
           :options="chartOptionsEW"
@@ -371,6 +398,7 @@ export default {
           height="400"
         />
       </div> -->
+      </div>
     </div>
   </div>
 </template>

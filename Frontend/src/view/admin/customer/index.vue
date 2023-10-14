@@ -217,7 +217,6 @@ export default {
         const isUserRoom = documentUserRoom.filter(
           (item) => item.UserId == value
         );
-        console.log(isUserRoom);
         if (isUserRoom.length > 0) {
           warning(
             "Cảnh báo",

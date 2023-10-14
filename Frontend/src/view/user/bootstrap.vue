@@ -1,52 +1,25 @@
 <template>
-  <div>
-    <button @click="handlePay">Pay with PayPal</button>
-  </div>
+  <div class="hello"></div>
 </template>
 
 <script>
-import paypal from "paypal-rest-sdk";
-
+import { onMounted } from "vue";
+import axios from "axios";
+import cheerio from "cheerio";
 export default {
   setup() {
-    const handlePay = async () => {
-      // Tạo đơn hàng PayPal
-      const createPayment = {
-        intent: "sale",
-        payer: {
-          payment_method: "paypal",
-        },
-        transactions: [
-          {
-            amount: {
-              total: "10.00",
-              currency: "USD",
-            },
-          },
-        ],
-        redirect_urls: {
-          return_url: "http://localhost:3000/success",
-          cancel_url: "http://localhost:3000/cancel",
-        },
-      };
-
-      paypal.payment.create(createPayment, (error, payment) => {
-        if (error) {
-          console.error(error);
-        } else {
-          // Chuyển người dùng đến trang thanh toán PayPal
-          for (let link of payment.links) {
-            if (link.method === "redirect") {
-              window.location.href = link.href;
-            }
-          }
-        }
-      });
-    };
-
-    return {
-      handlePay,
-    };
+    onMounted(async () => {
+      const documents = await axios.get(
+        `https://www.anninhthudo.vn/trinh-phuong-an-dieu-chinh-gia-dien-truoc-ngay-25-10-post554485.antd`
+      );
+      const data = documents.data;
+      const $ = cheerio.load(data);
+      const title = $("h1").text(); // Điều này phải được điều chỉnh để phù hợp với cấu trúc HTML của trang web nguồn.
+      const content = $("p").text(); // Điều này cũng phải điều chỉnh.
+      // const documents = "";
+      console.log("a", title, content);
+    });
+    return {};
   },
 };
 </script>

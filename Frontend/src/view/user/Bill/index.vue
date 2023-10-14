@@ -84,6 +84,97 @@ export default {
         }
       }
     };
+    const handlePay = async () => {
+      try {
+        console.log("Thanh toán", data.item.Rooms[0].Bills[0].debt);
+        const documentPay = await payService.create({
+          boardingId: data.item.Rooms[0].boardingId,
+          _id: data.item.Rooms[0].Bills[0]._id,
+          total: data.item.Rooms[0].Bills[0].debt,
+        });
+        console.log(documentPay);
+        // var url=await paypalService.taoTT(thanhtoan);
+        //  console.log(url)
+        window.location = documentPay;
+        // window.open(documentPay, '_blank');
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const numberToWords = (num) => {
+      const units = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ"];
+      const words = [
+        "",
+        "một",
+        "hai",
+        "ba",
+        "bốn",
+        "năm",
+        "sáu",
+        "bảy",
+        "tám",
+        "chín",
+      ];
+      const teens = [
+        "mười",
+        "mười một",
+        "mười hai",
+        "mười ba",
+        "mười bốn",
+        "mười năm",
+        "mười sáu",
+        "mười bảy",
+        "mười tám",
+        "mười chín",
+      ];
+
+      const convertChunk = (num) => {
+        if (num === 0) return "";
+        if (num < 10) return words[num];
+        if (num < 20) return teens[num - 10];
+        const ten = Math.floor(num / 10);
+        const one = num % 10;
+        return words[ten] + " mươi" + (one ? ` ${words[one]}` : "");
+      };
+
+      const convertGroup = (num, index) => {
+        if (num === 0) return "";
+        if (num < 1000) {
+          return `${convertChunk(num)} ${units[index]}`;
+        }
+        const hundred = Math.floor(num / 100);
+        const remainder = num % 100;
+        if (remainder === 0) {
+          return `${words[hundred]} trăm ${units[index]}`;
+        }
+        return `${words[hundred]} trăm ${convertChunk(remainder)} ${
+          units[index]
+        }`;
+      };
+
+      if (num === 0) return "Không đồng";
+
+      let result = "";
+      let chunkIndex = 0;
+
+      while (num > 0) {
+        const chunk = num % 1000;
+        if (chunk !== 0) {
+          result = convertGroup(chunk, chunkIndex) + " " + result;
+        }
+        num = Math.floor(num / 1000);
+        chunkIndex++;
+      }
+
+      return result.trim() + " đồng";
+    };
+
     const refresh = async () => {
       try {
         const documentBill = await billService.getAllCustomer();
@@ -124,7 +215,6 @@ export default {
     onBeforeMount(async () => {
       try {
         await refresh();
-        // console.log("Query:", route.query, route.query.status == 1);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -138,29 +228,6 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
-    const handlePay = async () => {
-      try {
-        console.log("Thanh toán", data.item.Rooms[0].Bills[0].debt);
-        const documentPay = await payService.create({
-          boardingId: data.item.Rooms[0].boardingId,
-          _id: data.item.Rooms[0].Bills[0]._id,
-          total: data.item.Rooms[0].Bills[0].debt,
-        });
-        console.log(documentPay);
-        // var url=await paypalService.taoTT(thanhtoan);
-        //  console.log(url)
-        window.location = documentPay;
-        // window.open(documentPay, '_blank');
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
 
     return {
       data,
@@ -169,6 +236,7 @@ export default {
       handleDate,
       handlePay,
       now,
+      numberToWords,
     };
   },
 };
@@ -206,25 +274,29 @@ export default {
           {{ formatDateTime(data.item.Rooms[0].Bills[0].createdAt) }}
         </p>
         <button
+          v-if="data.item.Rooms[0].Bills[0].debt == 0"
+          class="btn btn-success"
+          disabled="true"
+        >
+          Đã thanh toán
+        </button>
+        <button
+          v-else
           class="btn"
-          :class="
-            data.item.Rooms[0].Bills[0].debt == 0
-              ? 'btn-success'
-              : 'btn-primary'
-          "
-          :disabled="data.item.Rooms[0].Bills[0].debt == 0"
+          :class="data.item.isPay == false ? 'btn-danger' : 'btn-primary'"
+          :disabled="data.item.isPay == false"
           @click="handlePay"
         >
-          {{
-            data.item.Rooms[0].Bills[0].debt == 0
-              ? "Đã thanh toán"
-              : "Thanh toán"
-          }}
+          {{ data.item.isPay == false ? "Chưa thanh toán" : "Thanh toán" }}
         </button>
       </div>
       <div class="col-12 text-center m-0 p-0">
-        <h3>Hóa đơn</h3>
-        <p>Tháng {{ now.getMonth() + 1 }} / {{ now.getFullYear() }}</p>
+        <h4 class="title" style="color: black">
+          Hóa đơn tiền trọ Tháng {{ now.getMonth() + 1 }}/{{
+            now.getFullYear()
+          }}
+        </h4>
+        <!-- <p>Tháng {{ now.getMonth() + 1 }} / {{ now.getFullYear() }}</p> -->
       </div>
       <div class="col-12 row mx-1 m-0 px-1 p-0">
         <p class="col-1 m-0 p-0">Phòng :</p>
@@ -298,7 +370,7 @@ export default {
           </tr>
 
           <tr>
-            <th>Tổng tiền</th>
+            <th>Thành tiền</th>
             <td colspan="4"></td>
             <td>
               <strong>
@@ -308,12 +380,16 @@ export default {
           </tr>
         </tbody>
       </table>
+      <strong class="mx-2 text-center"
+        >Thành tiền bằng chữ:
+        {{ numberToWords(data.item.Rooms[0].Bills[0].total) }}</strong
+      >
     </div>
     <div v-else class="text-center">Không có hóa đơn</div>
   </div>
 </template>
 <style scoped>
 .body {
-  height: 120vh;
+  height: 150vh;
 }
 </style>

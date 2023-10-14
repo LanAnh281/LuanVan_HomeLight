@@ -36,6 +36,7 @@ export default {
         end: "",
         clientId: "",
         secretId: "",
+        isPay: false,
         files: [],
       },
       error: {
@@ -55,7 +56,7 @@ export default {
       ward: { data: { wards: [] } },
       flag: true,
     });
-    const isPay = ref(false);
+    // const isPay = ref(false);
     const isModalOpen = ref(false);
     const formFields = [
       "userName",
@@ -71,6 +72,7 @@ export default {
       "end",
       "clientId",
       "secretId",
+      "isPay",
     ];
     const change = async (value) => {
       try {
@@ -123,6 +125,7 @@ export default {
     };
     const save = async () => {
       try {
+        console.log(data.item);
         for (const key in data.error) {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
@@ -206,7 +209,7 @@ export default {
 
     return {
       data,
-      isPay,
+      // isPay,
       save,
       checkString,
       checkIdentification,
@@ -482,16 +485,15 @@ export default {
                 <div class="col-sm-9 m-0">
                   <input
                     type="checkbox"
-                    class=""
                     id="inputIsPay"
                     placeholder="Nhập mã kết nối do cổng thanh toán cung cấp"
-                    v-model="isPay"
+                    v-model="data.item.isPay"
                   /><span class="text-info"
                     >Tích hợp thanh toán điện tử Paypal</span
                   >
                 </div>
               </div>
-              <div class="form-group row" v-if="isPay">
+              <div class="form-group row" v-if="data.item.isPay">
                 <label for="inputClientId" class="col-sm-3 col-form-label p-0"
                   >ClientId:
                 </label>
@@ -506,7 +508,7 @@ export default {
                 </div>
               </div>
 
-              <div class="form-group row" v-if="isPay">
+              <div class="form-group row" v-if="data.item.isPay">
                 <label for="inputSecretId" class="col-sm-3 col-form-label p-0"
                   >SecretId:</label
                 >
