@@ -299,6 +299,7 @@ exports.findOne = async (req, res, next) => {
   try {
     const document = await Users.findOne({
       where: { _id: req.params.id },
+      include: [{ model: Rooms, include: [{ model: BorardingHouse }] }],
     });
 
     res.json({ message: document, status: "success" });
