@@ -24,6 +24,7 @@ const setEncrypt = (value) => {
 exports.createUserAndAccount = async (userData) => {
   const transaction = await sequelize.transaction();
   try {
+    // console.log("USER DATA:", userData);
     const newUser = await Users.create(userData, { transaction });
     const position = await Positions.findOne({ where: { name: "admin" } });
     let password = setEncrypt(userData.password);
@@ -35,7 +36,7 @@ exports.createUserAndAccount = async (userData) => {
       positionId: position._id,
     };
     const newAccount = await Accounts.create(accountData, { transaction });
-    console.log(userData.clientId, ":", userData.secretId);
+
     if (userData.clientId != "" && userData.secretId != "") {
       const documentPayment = await Payment.create(
         {
@@ -54,7 +55,7 @@ exports.createUserAndAccount = async (userData) => {
   } catch (error) {
     if (transaction) {
       if (!transaction.finished) {
-        console.log(">>>Error");
+        console.log(">>>Error", error);
         await transaction.rollback();
       }
     }
@@ -64,6 +65,13 @@ exports.createUserAndAccount = async (userData) => {
 exports.createUserAccountAndUpdateRoom = async (userData) => {
   const transaction = await sequelize.transaction();
   try {
+    const landlord = await Users.findOne({
+      where: {
+        _id: userData.landlordId,
+      },
+    });
+    userData.isPay = landlord.isPay;
+    console.log("USER DATA:", userData);
     const newUser = await Users.create(userData, { transaction });
     if (userData.landlordId && newUser._id) {
       const documentLandlordTenant = await LandlordTenant.create(

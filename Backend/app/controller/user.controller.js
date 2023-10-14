@@ -41,15 +41,24 @@ exports.createUserAndAccount = async (req, res) => {
     sex,
     birthday,
     securityDeposit,
-
+    isPay,
     clientId,
     secretId,
     file,
   } = req.body;
-  console.log(clientId, "...", secretId);
+  console.log(
+    "ISPAY:",
+    "...",
+    isPay,
+    isPay == false,
+    isPay == true,
+    isPay == "true",
+    isPay == "false"
+  );
   const password = setPassword();
   end = end === "" ? null : end;
   start = start === "" ? null : start;
+  isPay = isPay == "true" ? true : false;
   try {
     // fs.readdir(uploadDir, async (err, files) => {
     //   if (err) {
@@ -83,6 +92,7 @@ exports.createUserAndAccount = async (req, res) => {
       birthday: birthday,
       securityDeposit: securityDeposit,
       password: password,
+      isPay: isPay,
       clientId: clientId,
       secretId: secretId,
     };
@@ -135,7 +145,7 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
     birthday,
     securityDeposit,
     status,
-    isUser,
+
     file,
   } = req.body;
   let start = req.body.start;
@@ -181,7 +191,7 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
         birthday: birthday,
         securityDeposit: securityDeposit,
         status: status,
-        isUser: isUser,
+        // isPay:false,
         roomId: req.params.id,
         password: password,
         landlordId: req.user.userId,

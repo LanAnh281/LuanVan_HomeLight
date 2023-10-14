@@ -105,7 +105,7 @@ const Users = sequelize.define("Users", {
   },
   numberPlate: { type: DataTypes.TEXT },
   securityDeposit: { type: DataTypes.STRING },
-  isUser: { type: DataTypes.BOOLEAN }, // host or not host
+  isPay: { type: DataTypes.BOOLEAN }, // host or not host
 });
 
 const BorardingHouse = sequelize.define("BoardingHouse", {
