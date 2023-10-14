@@ -1,3 +1,4 @@
+const { log } = require("console");
 const {
   Rooms,
   Media,
@@ -7,6 +8,7 @@ const {
 const fs = require("fs");
 const uploadDir = "./static/images";
 const path = require("path");
+const QRCode = require("qrcode");
 
 exports.create = async (req, res, next) => {
   const {
@@ -99,7 +101,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Rooms.findOne({
+    const documentRoom = await Rooms.findOne({
       where: {
         _id: req.params.id,
       },
@@ -112,7 +114,21 @@ exports.findOne = async (req, res, next) => {
         },
       ],
     });
-    res.json({ message: document, status: "success" });
+    let document = JSON.parse(JSON.stringify(documentRoom));
+    const phoneNumber = document.BoardingHouse.phone; // Thay thế bằng số điện thoại thực tế
+
+    QRCode.toDataURL(`tel:${phoneNumber}`, (err, url) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      // Ở đây, bạn có thể gửi URL của mã QR về phía frontend hoặc lưu nó trong cơ sở dữ liệu để sử dụng sau này.
+      console.log("URL::::", url);
+      // res.json({ qrCodeUrl: url });
+      document["qrCodeUrl"] = url;
+      res.json({ message: document, status: "success" });
+    });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });

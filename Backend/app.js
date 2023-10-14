@@ -97,27 +97,26 @@ app.use("/api/media", mediaRouter);
 app.use("/api/UtilityReadings", UtilityReadingsRouter);
 app.use("/api/usernotification", userNotificationRouter);
 app.use("/api/paypal", routepaypal);
+const QRCode = require("qrcode");
+app.use("/api/test", (req, res, next) => {
+  const phoneNumber = "0797735289"; // Thay thế bằng số điện thoại thực tế
 
-app.get("/success", (req, res) => {
-  // Xử lý kết quả thành công từ PayPal
-  const payerId = req.query.PayerID;
-  const paymentId = req.query.paymentId;
+  QRCode.toDataURL(`tel:${phoneNumber}`, (err, url) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
 
-  // Kiểm tra và cập nhật trạng thái đơn hàng trong cơ sở dữ liệu của bạn
-
-  res.send("Payment successful");
-});
-
-app.get("/cancel", (req, res) => {
-  // Xử lý trường hợp hủy bỏ thanh toán
-  res.send("Payment canceled");
+    // Ở đây, bạn có thể gửi URL của mã QR về phía frontend hoặc lưu nó trong cơ sở dữ liệu để sử dụng sau này.
+    console.log(url);
+    res.json({ qrCodeUrl: url });
+  });
 });
 
 // check errors
 app.use((req, res, next) => {
   return next(createError(404, "Resource Not Found"));
 });
-
 app.use((err, req, res, next) => {
   return res.status(err.statusCode || 500).json({
     message: err.message || "Internal Server Error",
