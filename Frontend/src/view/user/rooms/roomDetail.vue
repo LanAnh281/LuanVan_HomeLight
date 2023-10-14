@@ -81,6 +81,7 @@ export default {
             );
           });
         }
+        console.log(data.item);
         console.log(room.items);
         //Map
         // Tạo bản đồ
@@ -242,6 +243,8 @@ export default {
         >
           Nhắn tin cho chủ trọ
         </button>
+        <img :src="data.item.qrCodeUrl" alt="QR" class="mx-2" />
+
         <!-- component -->
         <Message
           v-if="isMessage"

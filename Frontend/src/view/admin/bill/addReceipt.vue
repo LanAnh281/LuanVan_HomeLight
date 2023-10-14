@@ -92,6 +92,7 @@ export default {
       try {
         const document = await billService.get(props._id);
         data.item = document.message;
+        console.log(data.item);
         const receipt = data.item.Receipts[0]
           ? data.item.Receipts[0].receive
           : 0;

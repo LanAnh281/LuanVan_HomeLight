@@ -28,10 +28,10 @@ export default {
           name: "Phòng trọ",
           active: "rooms",
         },
-        {
-          name: "Bài viết",
-          active: "post",
-        },
+        // {
+        //   name: "Bài viết",
+        //   active: "post",
+        // },
         // {
         //   name: "Liên hệ",
         //   active: "contact",
@@ -365,6 +365,11 @@ export default {
                 </a>
 
                 <div class="dropdown-menu p-0">
+                  <router-link
+                    :to="{ name: 'roomInfo' }"
+                    class="dropdown-item px-1"
+                    >Thông tin phòng</router-link
+                  >
                   <router-link
                     :to="{ name: 'billCustomer' }"
                     class="dropdown-item px-1"

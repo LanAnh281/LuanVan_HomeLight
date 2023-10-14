@@ -220,13 +220,33 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
+    const first = () => {
+      console.log("first");
+      const scrollToTopButton = document.getElementById("scrollToTopButton");
 
+      window.onscroll = () => {
+        if (
+          document.body.scrollTop > 20 ||
+          document.documentElement.scrollTop > 20
+        ) {
+          scrollToTopButton.style.display = "block";
+        } else {
+          scrollToTopButton.style.display = "none";
+        }
+      };
+
+      scrollToTopButton.addEventListener("click", () => {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      });
+    };
     return {
       data,
       formatCurrency,
       change,
       changeDistrict,
       changeWard,
+      first,
     };
   },
 };
@@ -323,10 +343,31 @@ export default {
         }
       "
     ></paginationVue>
+    <button id="scrollToTopButton" @click="first">
+      <span class="material-symbols-outlined text-white"> arrow_upward </span>
+    </button>
   </div>
 </template>
 <style scoped>
 .body {
-  height: 240vh;
+  height: 160vh;
+}
+a:hover {
+  text-decoration: none;
+  background: #f9f9f9;
+}
+#scrollToTopButton {
+  display: block;
+  position: fixed;
+  bottom: 50px;
+  right: 30px;
+  z-index: 5;
+  background-color: var(--chocolate);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 15px;
+  font-size: 16px;
 }
 </style>

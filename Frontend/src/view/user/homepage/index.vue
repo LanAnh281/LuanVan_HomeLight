@@ -57,7 +57,10 @@
         <span class="material-symbols-outlined"> line_end_circle </span>
         <span class="material-symbols-outlined"> line_start_circle </span>
       </p>
-      <p>Sống Dễ Dàng - Tìm Nhà Trọ - Quản Lý Thuận Tiện</p>
+      <p class="font-bold-itali">
+        Sống Dễ Dàng - Tìm Nhà Trọ - Quản Lý Thuận Tiện
+      </p>
+
       <p>
         Hệ thống của chúng tôi giúp bạn dễ dàng tìm kiếm các căn nhà trọ lý
         tưởng và cũng cung cấp cho chủ trọ một cách thuận tiện để quản lý nhà
@@ -66,22 +69,23 @@
       <p>
         Chúng tôi luôn sẵn sàng phục vụ nhu cầu "tìm nhà trọ, tìm phòng trọ,
         chung cư mini, căn hộ mini" cho mọi khách hàng, với mong muốn "Xây dựng
-        những căn phòng ĐẸP - Tạo dựng môi trường sống TỐT - Đảm bảo sự MINH
-        BẠCH" cũng như QUYỀN LỢI cho người thuê phòng và cả cộng đồng.
+        những căn phòng <strong>ĐẸP</strong> - Tạo dựng môi trường sống
+        <strong>TỐT</strong> - Đảm bảo sự <strong>MINH BẠCH</strong> " cũng như
+        <strong>QUYỀN LỢI</strong> cho người thuê phòng và cả cộng đồng.
       </p>
     </div>
-    <div class="text-center">
+    <!-- <div class="text-center">
       <h5 class="title">Tin tức</h5>
       <p>
         <span class="material-symbols-outlined"> line_end_circle </span>
         <span class="material-symbols-outlined"> line_start_circle </span>
       </p>
-    </div>
+    </div> -->
   </div>
 </template>
 <style scoped>
 .body {
-  height: 240vh;
+  height: 120vh;
 }
 #carouselExampleControls {
   /* left: 0;
@@ -93,5 +97,9 @@
 }
 p {
   font-size: 16px;
+}
+.font-bold-itali {
+  font-weight: bold; /* Độ đậm vừa */
+  font-style: italic; /* Nghiêng */
 }
 </style>

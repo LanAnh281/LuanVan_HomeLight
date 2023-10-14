@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="hello"></div>
 </template>
 
@@ -20,6 +20,34 @@ export default {
       console.log("a", title, content);
     });
     return {};
+  },
+};
+</script> -->
+<template>
+  <div>
+    <!-- <qrcode-vue :value="data.qrCodeUrl"></qrcode-vue> -->
+    <img :src="data.qrCodeUrl" alt="QR Code" />
+  </div>
+</template>
+
+<script>
+import VueQrcode from "vue-qrcode";
+import axios from "axios";
+import { onMounted, reactive } from "vue";
+export default {
+  components: {
+    VueQrcode,
+  },
+  setup() {
+    const data = reactive({ qrCodeUrl: "" });
+    onMounted(async () => {
+      const url = await axios.get(`http://localhost:3000/api/test`);
+      // Lấy URL của mã QR từ phía backend (thông qua API hoặc cách khác)
+      // Gán giá trị qrCodeURL từ dữ liệu được lấy từ phía server
+      console.log(url);
+      data.qrCodeUrl = url.data.qrCodeUrl;
+    });
+    return { data };
   },
 };
 </script>

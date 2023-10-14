@@ -118,7 +118,7 @@ export default {
         <li
           v-for="(value, index) in data.item"
           :key="index"
-          class="pl-2 my-3"
+          class="pl-2 my-3 w-100"
           :class="data.active == value.active ? 'isActive' : ''"
           @click="
             () => {
@@ -170,5 +170,11 @@ li:hover > div > * {
 }
 .isActive > div > * {
   text-shadow: 0 0 6px rgba(255, 255, 255, 1);
+}
+.isActive {
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 6px 0;
 }
 </style>

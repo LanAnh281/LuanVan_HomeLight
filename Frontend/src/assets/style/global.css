@@ -57,7 +57,7 @@
 
 .body{
     min-height: calc( 100vh - var(--header) - var(--footer) );
-    right: calc(  83.333% - 100% );
+    right: calc(  83.3333% - 100% );
     background-color: var(--light);
     display: inline-block;
     flex: 1;
@@ -69,7 +69,7 @@
     background-color: var(--black-light-sidebar);
     display: inline-block;
     position: fixed; 
-    width: 18%;
+    width: 16.666%;
     top: 0;
     left: 0;
     bottom: 0;

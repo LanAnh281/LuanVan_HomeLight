@@ -155,6 +155,7 @@ export default {
         }
       }
     );
+
     const handlefee = async (value) => {
       if (value == "true") {
         data.selectFee = "2 ₫";
@@ -184,6 +185,7 @@ export default {
     });
     return {
       data,
+      refresh,
       handleDate,
       ispayments,
       isView,
@@ -310,6 +312,7 @@ export default {
       v-if="ispayments"
       :_id="data.activeBill"
       @closeModal="ispayments = !ispayments"
+      @payments="refresh"
     ></Payment>
     <!--    @payments="data.boardingActice = '0'" -->
     <View

@@ -410,7 +410,7 @@ export default {
 
 <style scoped>
 .body {
-  min-height: 100vh;
+  min-height: 110vh;
 }
 .select {
   background-color: var(--background);

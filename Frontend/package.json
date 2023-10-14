@@ -25,6 +25,7 @@
     "socket.io-client": "^4.7.2",
     "sweetalert2": "^11.7.28",
     "vue": "^3.3.4",
+    "vue-qrcode": "^2.2.0",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^4.2.4",
     "vue3-apexcharts": "^1.4.4"

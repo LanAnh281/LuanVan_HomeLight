@@ -69,9 +69,7 @@ export default {
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-white text-uppercase mb-1"
-              >
+              <div class="font-weight-bold text-white text-uppercase mb-1">
                 Số nhà trọ
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">
@@ -93,9 +91,7 @@ export default {
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-uppercase mb-1 text-white"
-              >
+              <div class="font-weight-bold text-uppercase mb-1 text-white">
                 phòng trọ
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">
@@ -117,9 +113,7 @@ export default {
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-uppercase mb-1 text-white"
-              >
+              <div class="font-weight-bold text-uppercase mb-1 text-white">
                 Khách trọ
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">
@@ -138,9 +132,7 @@ export default {
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-uppercase mb-1 text-white"
-              >
+              <div class="font-weight-bold text-uppercase mb-1 text-white">
                 phòng trống
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">

@@ -108,9 +108,9 @@ const routes = [
   // },
   // userInfo
   {
-    path: "/userInfo",
-    name: "userInfo",
-    component: () => import("../view/user/userInfo.vue"),
+    path: "/roomInfo",
+    name: "roomInfo",
+    component: () => import("../view/user/roomInfo.vue"),
   },
   //homepage
   {
