@@ -7,12 +7,12 @@ import serviceService from "../../../service/service.service";
 import { checkAccessToken } from "../../../assets/js/common.login";
 import { formatCurrency } from "../../../assets/js/format.common";
 //component
-import TableChecked from "../../../components/table/tablechecked.table.vue";
+import Table from "../../../components/table/table.vue";
 import Add from "./add.vue";
 import Edit from "./edit.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
 export default {
-  components: { TableChecked, Add, Edit, paginationVue },
+  components: { Table, Add, Edit, paginationVue },
 
   setup() {
     const router = useRouter();
@@ -166,7 +166,7 @@ export default {
       </div>
     </div>
     <!-- component Table -->
-    <TableChecked
+    <Table
       class="text-center"
       :data="data.setPage"
       :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
@@ -176,7 +176,7 @@ export default {
       :action="false"
       :isInputChecked="false"
       :actionList="['edit', 'delete_forever']"
-    ></TableChecked>
+    ></Table>
     <!--  @edit="
         (value) => {
           console.log('edit', value);

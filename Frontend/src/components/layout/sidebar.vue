@@ -21,7 +21,7 @@ export default {
           active: "service",
         },
         {
-          name: "Phát sinh",
+          name: "Chi phí",
           icon: "monetization_on",
           active: "spending",
         },
@@ -40,11 +40,12 @@ export default {
           icon: "text_snippet",
           active: "report",
         },
-        {
-          name: "Tài khoản",
-          icon: "manage_accounts",
-          active: "account",
-        },
+
+        // {
+        //   name: "Tài khoản",
+        //   icon: "manage_accounts",
+        //   active: "account",
+        // },
         // { name: "Ghi chú", icon: "note", active: "note" },
 
         // { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },

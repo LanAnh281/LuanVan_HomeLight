@@ -69,6 +69,7 @@ export default {
     const handleView = (value) => {
       try {
         data.selectNoti = value;
+
         isNotiModal.value = !isNotiModal.value;
       } catch (error) {
         if (error.response) {
@@ -147,11 +148,14 @@ export default {
 <template>
   <div class="body m-0">
     <div class="border-radius my-3 row m-0 justify-content-start">
-      <div class="input-group col-2 align-items-center ml-2">
+      <div
+        class="input-group col-2 align-items-center ml-2 m-0 pr-0"
+        style="width: 135px"
+      >
         <input
           type="date"
           @input="handleDate"
-          class="select border rounded p-1"
+          class="select border rounded p-1 m-0 p-0"
         />
       </div>
       <div class="input-group col-3 m-0 p-0 align-items-center">
@@ -159,7 +163,7 @@ export default {
           type="search"
           v-model="data.searchText"
           placeholder="Tìm kiếm theo nội dung"
-          class="select border rounded p-1 w-100"
+          class="select border rounded p-1 w-100 m-0 p-0"
         />
       </div>
       <div class="row justify-content-end m-0 p-0 col">
@@ -176,29 +180,58 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white); font-size: 16px"
-              >Thêm thông báo</span
-            >
+            <span style="color: var(--white); font-size: 16px">Thông báo</span>
           </div>
         </button>
       </div>
     </div>
-    <Table
-      :data="data.setPage"
-      :name="'Noti'"
-      :fields="['Ngày tạo', 'Nội dung']"
-      :titles="['date', 'content']"
-      :action="true"
-      :actionList="['visibility']"
-      :isInputChecked="true"
-      :currentPage="data.currentPage"
-      :sizePage="data.sizePage"
-      @visibility="
-        (value) => {
-          handleView(value);
-        }
-      "
-    ></Table>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th>Ngày tạo</th>
+          <th class="w-100">Nội dung</th>
+
+          <th scope="col"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          v-for="(value, index) in data.setPage"
+          :key="index"
+          class="m-0 p-0"
+          style="line-height: 2"
+        >
+          <td class="m-0 px-1 py-0" style="width: 10%">
+            {{ value.date }}
+          </td>
+
+          <td
+            class="m-0 px-1 py-0 w-100"
+            style="
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+              white-space: normal;
+            "
+          >
+            {{ value.content }}
+          </td>
+
+          <td class="ml-2 text-center">
+            <span
+              class="material-symbols-outlined mr-1"
+              data-toggle="modal"
+              data-target="#visibilityNotiModal"
+              @click="handleView(value._id)"
+            >
+              visibility
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
     <paginationVue
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"

@@ -341,7 +341,7 @@ export default {
           </span>
         </button>
       </div> -->
-      <div class="col-8 mr-1 p-0 row justify-content-end">
+      <div class="col-8 mr-1 p-0 row justify-content-end mr-3">
         <div class="mr-1">
           <button
             class="btn btn-primary p-0"

@@ -10,7 +10,10 @@ import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/tableChecked.table.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
 //js
-import { checkStringAndNumber } from "../../../assets/js/checkInput.common";
+import {
+  checkStringAndNumber,
+  sanitizeInput,
+} from "../../../assets/js/checkInput.common";
 import { successAd } from "../../../assets/js/common.alert";
 import boardinghouseService from "../../../service/boardinghouse.service";
 export default {
@@ -128,6 +131,7 @@ export default {
         }
         if (!data.flag) {
           // 1.tạo 1 thông báo mới
+          data.item.content = sanitizeInput(data.item.content);
           const documentNoti = await notificationService.create(data.item);
 
           for (let value of data.checkedList) {
@@ -206,9 +210,8 @@ export default {
                   id="inputContent"
                   @blur="
                     () => {
-                      let isCheck = checkStringAndNumber(data.item.content);
-                      if (isCheck) {
-                        data.error.content = 'Không chứa các ký tự đặc biệt.';
+                      if (data.item.content == '') {
+                        data.error.content = 'Chưa nhập nội dung thông báo';
                         data.flag = true;
                       }
                     }

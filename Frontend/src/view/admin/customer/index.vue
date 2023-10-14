@@ -267,7 +267,13 @@ export default {
     const sendMail = async () => {
       try {
         data.checkedList = data.item.filter((item) => item.checked == true);
-        data.isMail = data.checkedList.length > 0 ? !data.isMail : false;
+        // data.isMail = data.checkedList.length > 0 ? !data.isMail : false;
+        if (data.checkedList.length > 0) {
+          data.isMail = !data.isMail;
+        } else {
+          data.isMail = false;
+          warning("Cảnh báo", "Bạn chưa chọn khách trọ");
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

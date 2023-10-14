@@ -22,18 +22,18 @@ export default {
 </script>
 <template>
   <div>
-    <table class="table m-0 p-0">
+    <table class="table">
       <thead class="thead-dark">
         <tr>
-          <th v-if="isInputChecked" scope="col" style="width: 4%">#</th>
+          <th v-if="isInputChecked" scope="col">#</th>
           <th scope="col" v-for="(filed, index) in fields" :key="index">
             {{ filed }}
           </th>
-          <th scope="col p-0" v-if="action" style="line-height: 3"></th>
+          <th scope="col p-0" v-if="action"></th>
         </tr>
       </thead>
 
-      <tbody class="m-0 p-0">
+      <tbody>
         <tr
           v-for="(value, index) in data"
           :key="index"
@@ -74,15 +74,7 @@ export default {
 span {
   font-size: 20px;
 }
-th {
-  padding: 0px;
-  text-align: center;
-  line-height: 3;
-  font-size: 0.9rem;
-}
-td {
-  font-size: 0.9rem;
-}
+
 .info-icon:hover {
   color: #00c1cf;
   text-shadow: 0 0 2px #00f0ff;

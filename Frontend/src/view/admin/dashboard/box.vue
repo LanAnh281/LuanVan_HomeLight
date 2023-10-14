@@ -64,7 +64,7 @@ export default {
 </script>
 <template>
   <div class="row mx-2 justify-content-around">
-    <div class="col-md-3col-12 mb-4">
+    <div class="col-md-3 col-12 mb-4">
       <div class="card border-left-primary shadow h-100 py-2 boardingCard">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
@@ -88,7 +88,7 @@ export default {
       </div>
     </div>
     <!--  -->
-    <div class="col-md-3col-12 mb-4">
+    <div class="col-md-3 col-12 mb-4">
       <div class="card border-left-primary shadow h-100 py-2 roomCard">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
@@ -112,7 +112,7 @@ export default {
       </div>
     </div>
     <!--  -->
-    <div class="col-md-3col-12 mb-4">
+    <div class="col-md-3 col-12 mb-4">
       <div class="card border-left-primary shadow h-100 py-2 customerCard">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
@@ -133,7 +133,7 @@ export default {
         </div>
       </div>
     </div>
-    <div class="col-md-3col-12 mb-4">
+    <div class="col-md-3 col-12 mb-4">
       <div class="card border-left-primary shadow h-100 py-2 roomCard">
         <div class="card-body">
           <div class="row no-gutters align-items-center">

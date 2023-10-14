@@ -1,6 +1,6 @@
 <script>
 import { reactive, onMounted, onBeforeUnmount, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import socket from "../../socket";
 //component
 import Select from "../../components/select/selectdependent.vue";
@@ -16,6 +16,7 @@ export default {
   components: { Select, registration },
   setup() {
     const router = useRouter();
+    const route = useRoute();
     const position = ref("");
     const data = reactive({
       list: [
@@ -35,10 +36,10 @@ export default {
         //   name: "Liên hệ",
         //   active: "contact",
         // },
-        {
-          name: "Hóa đơn",
-          active: "billCustomer",
-        },
+        // {
+        //   name: "Hóa đơn",
+        //   active: "billCustomer",
+        // },
       ],
       items: [],
 
@@ -157,7 +158,13 @@ export default {
         }
       }
     };
-
+    watch(
+      () => route.fullPath,
+      (newPath, oldPath) => {
+        data.active = newPath.substring(newPath.lastIndexOf("/") + 1);
+        console.log("Path:", data.active);
+      }
+    );
     onMounted(async () => {
       try {
         let name = localStorage.getItem("userName");
@@ -166,7 +173,7 @@ export default {
           data.userName = `${name[name.length - 2]} ${name[name.length - 1]}`;
         } else data.userName = name[0];
         position.value = localStorage.getItem("position");
-        data.active = "homepage";
+        // data.active = "homepage";
 
         await refresh();
       } catch (error) {
@@ -236,7 +243,10 @@ export default {
                 {{ value.name }}
               </router-link>
             </div>
-            <div class="col-2 row justify-content-end menu p-0 m-0 float-right">
+            <div
+              class="row justify-content-end menu p-0 m-0 float-right"
+              :class="!position ? 'col-3' : 'col-2'"
+            >
               <div
                 v-if="!position"
                 class="col-3 m-0 p-0 mt-1"
@@ -355,11 +365,11 @@ export default {
                 </a>
 
                 <div class="dropdown-menu p-0">
-                  <!-- <router-link
-                    :to="{ name: 'userInfo' }"
+                  <router-link
+                    :to="{ name: 'billCustomer' }"
                     class="dropdown-item px-1"
-                    >Thông tin cá nhân</router-link
-                  > -->
+                    >Hóa đơn</router-link
+                  >
                   <router-link
                     :to="{ name: 'changePassword' }"
                     class="dropdown-item px-1"

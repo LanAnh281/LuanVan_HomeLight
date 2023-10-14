@@ -31,6 +31,7 @@ export default {
     const data = reactive({
       boarding: [],
       selectBoarding: "",
+      selectDate: new Date(),
       //1
       roomList: [],
       roomStatusList: { rentedRooms: 0, notRentedRooms: 0 },
@@ -42,7 +43,7 @@ export default {
       //4
       ElectricWater: { electric: 0, water: 0 },
     });
-    const now = new Date();
+    // const now = new Date();
 
     let intervalId = null;
     //Biểu đồ 1
@@ -97,8 +98,8 @@ export default {
         for (let value of data.customerList) {
           const date = new Date(value.createdAt);
           if (
-            date.getMonth() + 1 == now.getMonth() + 1 &&
-            date.getFullYear() == now.getFullYear()
+            date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+            date.getFullYear() == data.selectDate.getFullYear()
           ) {
             data.customer.new++;
           }
@@ -145,17 +146,17 @@ export default {
         let documentSpending = await spendingService.getAll();
         documentSpending = documentSpending.message.filter((item) => {
           const date = new Date(item.date);
-
+          //Thời gian đã chọn == tgian trong csdl
           if (
-            now.getMonth() + 1 == date.getMonth() + 1 &&
-            now.getFullYear() == date.getFullYear() &&
+            data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+            data.selectDate.getFullYear() == date.getFullYear() &&
             item.boardingId == data.selectBoarding
           ) {
-            data.profit.expense += item.price;
+            data.profit.expense += Number(item.price);
           }
           return (
-            now.getMonth() + 1 == date.getMonth() + 1 &&
-            now.getFullYear() == date.getFullYear() &&
+            data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+            data.selectDate.getFullYear() == date.getFullYear() &&
             item.boardingId == data.selectBoarding
           );
         });
@@ -165,16 +166,16 @@ export default {
           const date = new Date(item.updatedAt);
           if (
             item.Bill.Room.boardingId == data.selectBoarding &&
-            now.getMonth() + 1 == date.getMonth() + 1 &&
-            now.getFullYear() == date.getFullYear()
+            data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+            data.selectDate.getFullYear() == date.getFullYear()
           ) {
-            console.log(item);
-            data.profit.receipt += Number(item.receive);
+            data.profit.receipt =
+              Number(data.profit.receipt) + Number(item.receive);
           }
           return (
             item.Bill.Room.boardingId == data.selectBoarding &&
-            now.getMonth() + 1 == date.getMonth() + 1 &&
-            now.getFullYear() == date.getFullYear()
+            data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+            data.selectDate.getFullYear() == date.getFullYear()
           );
         });
         chartSeriesProfit.data[0] = {
@@ -186,8 +187,8 @@ export default {
           data: [data.profit.expense],
         };
         chartOptionsProfit.xaxis.categories[0] = `Tháng ${
-          now.getMonth() + 1
-        }/ ${now.getFullYear()}`;
+          data.selectDate.getMonth() + 1
+        }/ ${data.selectDate.getFullYear()}`;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -230,8 +231,8 @@ export default {
           const date = new Date(item.date);
           if (
             item.Room.boardingId == data.selectBoarding &&
-            date.getMonth() + 1 == now.getMonth() + 1 &&
-            date.getFullYear() == now.getFullYear()
+            date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+            date.getFullYear() == data.selectDate.getFullYear()
           ) {
             data.ElectricWater.electric =
               data.ElectricWater.electric +
@@ -251,8 +252,8 @@ export default {
           data: [data.ElectricWater.water],
         };
         chartOptionsEW.xaxis.categories[0] = `Tháng ${
-          now.getMonth() + 1
-        }/ ${now.getFullYear()}`;
+          data.selectDate.getMonth() + 1
+        }/ ${data.selectDate.getFullYear()}`;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -266,9 +267,9 @@ export default {
     const refresh = async () => {
       try {
         await chartRoomStatus();
-        await chartCustomer();
+        // await chartCustomer();
         await chartProfit();
-        await chartEW();
+        // await chartEW();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -288,7 +289,8 @@ export default {
     );
     const handleDate = async (value) => {
       try {
-        console.log(value.target.value);
+        data.selectDate = new Date(value.target.value);
+        await refresh();
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -309,6 +311,7 @@ export default {
       if (data.boarding.length > 0) {
         data.selectBoarding = data.boarding[0]._id;
       }
+      data.selectDate = new Date();
       await refresh();
     });
     onBeforeUnmount(() => {
@@ -316,7 +319,7 @@ export default {
     });
     return {
       data,
-      now,
+      // now,
       //1
       roomStatus,
       roomStatusSeries,
@@ -360,7 +363,7 @@ export default {
       <div class="border-radius my-3 row m-0 justify-content-start">
         <div class="col-12"></div>
         <div class="col-6 border-radius">
-          <h6>Biểu đồ thể hiện trạng thái phòng</h6>
+          <h6 class="text-center title">Biểu đồ thể hiện trạng thái phòng</h6>
           <apexchart
             :options="roomStatus"
             :series="roomStatusSeries"
@@ -380,9 +383,11 @@ export default {
         </p>
       </div> -->
         <div class="col-6 border-radius">
-          <h6>
+          <h6 class="text-center title">
             Biểu đồ thể hiện doanh thu và chi phí của nhà trọ tháng
-            {{ now.getMonth() + 1 }}/{{ now.getFullYear() }}
+            {{ data.selectDate.getMonth() + 1 }}/{{
+              data.selectDate.getFullYear()
+            }}
           </h6>
           <apexchart
             :options="chartOptionsProfit"
@@ -405,7 +410,7 @@ export default {
 
 <style scoped>
 .body {
-  min-height: 150vh;
+  min-height: 100vh;
 }
 .select {
   background-color: var(--background);

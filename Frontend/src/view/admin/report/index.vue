@@ -283,10 +283,11 @@ export default {
         }
       "
     ></Box> -->
-    <h5 class="text-center">
-      Báo cáo doanh thu và chi phí từ ngày {{ formatDateTime(data.start) }} đến
+    <h5 class="text-center title">Báo cáo doanh thu và chi phí</h5>
+    <h6 class="text-center title mb-5">
+      từ ngày {{ formatDateTime(data.start) }} đến
       {{ formatDateTime(data.end) }}
-    </h5>
+    </h6>
     <Table
       :data="data.setPage"
       :fields="['Tên nhà trọ', 'Doanh thu(₫)', 'Chi phi(₫)', 'Lãi(₫)']"

@@ -116,13 +116,17 @@ export default {
         </div>
         <div class="modal-body">
           <div class="row justify-content-start p-0 m-0">
-            <label class="col-2">Ngày tạo : </label>
-            <label class="col-10"> {{ formatDateTime(data.item.date) }}</label>
+            <label class="col-2 m-0">Ngày tạo : </label>
+            <label class="col-10 m-0">
+              {{ formatDateTime(data.item.date) }}</label
+            >
           </div>
           <div class="row justify-content-start p-0 m-0">
-            <label class="col-2">Nội dung : </label>
-            <label class="col-10"> {{ data.item.content }}</label>
+            <label class="col-2 m-0">Nội dung : </label>
+            <label class="col-10 m-0"> {{ data.item.content }}</label>
           </div>
+          <hr />
+          <h6 class="title text-center">Danh sách khách trọ</h6>
           <Table
             :data="data.setPage"
             :name="'Noti'"

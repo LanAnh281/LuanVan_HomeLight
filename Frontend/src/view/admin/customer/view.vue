@@ -12,7 +12,10 @@ export default {
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
-      item: { userName: "" },
+      item: {
+        userName: "",
+        Rooms: [{ name: "", BoardingHouse: { name: "" } }],
+      },
     });
     const isModalOpen = ref(false);
 
@@ -64,13 +67,20 @@ export default {
           <div class="row p-0 m-0 px-2">
             <div class="col-6 p-0 m-0">
               <div class="row justify-content-start p-0 m-0">
+                <label class="col-2 p-0 m-0">Nhà trọ:</label>
+                <label class="col-10 p-0 m-0">{{
+                  data.item.Rooms[0].BoardingHouse.name
+                }}</label>
+              </div>
+              <div class="row justify-content-start p-0 mt-2 m-0">
+                <label class="pr-2">Phòng trọ :</label>
+                <label class="">{{ data.item.Rooms[0].name }}</label>
+              </div>
+              <div class="row justify-content-start p-0 m-0">
                 <label class="pr-2">Họ và tên:</label>
                 <label class="">{{ data.item.userName }}</label>
               </div>
-              <div class="row justify-content-start p-0 m-0">
-                <label class="pr-2">Giới tính:</label>
-                <span class=""> {{ data.item.sex ? "Nữ" : "Nam" }}</span>
-              </div>
+
               <div class="row justify-content-start p-0 m-0">
                 <label class="pr-2">Ngày sinh:</label>
                 <label class="">{{ formatDateTime(data.item.birthday) }}</label>
@@ -82,6 +92,10 @@ export default {
               </div>
             </div>
             <div class="col-6 m-0 p-0">
+              <div class="row justify-content-start p-0 m-0">
+                <label class="pr-2">Giới tính:</label>
+                <span class=""> {{ data.item.sex ? "Nữ" : "Nam" }}</span>
+              </div>
               <div class="row justify-content-start p-0 m-0">
                 <label class="pr-2">Email:</label>
                 <label class="">{{ data.item.email }}</label>
