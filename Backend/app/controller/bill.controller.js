@@ -9,6 +9,8 @@ const {
   BorardingHouse,
   Users,
 } = require("../models/index.model.js");
+const QRCode = require("qrcode");
+
 exports.create = async (req, res, next) => {
   const { debt, roomId } = req.body;
   let endDay = new Date();
@@ -143,13 +145,31 @@ exports.findAllCustomer = async (req, res, next) => {
       whereL: {
         _id: bills.Rooms[0].boardingId,
       },
+      include: {
+        model: Users,
+      },
     });
     const documents = JSON.parse(JSON.stringify(bills));
+    const phoneNumber = boarding.User.phone; // Thay thế bằng số điện thoại thực tế
 
-    documents.Rooms[0].UtilityReadings = uti;
-    documents.Rooms[0].BoardingHouse = boarding;
+    QRCode.toDataURL(`tel:${phoneNumber}`, (err, url) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
 
-    res.json({ message: documents, status: "success" });
+      // Ở đây, bạn có thể gửi URL của mã QR về phía frontend hoặc lưu nó trong cơ sở dữ liệu để sử dụng sau này.
+      console.log("URL::::", url);
+      // res.json({ qrCodeUrl: url });
+      // document["qrCodeUrl"] = url;
+      documents.Rooms[0].UtilityReadings = uti;
+      documents.Rooms[0].BoardingHouse = boarding;
+      documents.Rooms[0].qrCodeUrl = url;
+      res.json({ message: documents, status: "success" });
+    });
+    // const documents = JSON.parse(JSON.stringify(bills));
+
+    // res.json({ message: documents, status: "success" });
   } catch (error) {
     res.json({ message: error, status: "faild" });
   }
