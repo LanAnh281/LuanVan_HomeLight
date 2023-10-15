@@ -81,8 +81,6 @@ export default {
             );
           });
         }
-        console.log(data.item);
-        console.log(room.items);
         //Map
         // Tạo bản đồ
         const map = L.map("map").setView([0, 0], 12);
@@ -258,12 +256,12 @@ export default {
       </div> -->
     </div>
     <hr />
-    <h6 class="my-3">Bản đồ</h6>
+    <h6 class="my-3 title">Bản đồ</h6>
     <div id="map" style="height: 400px; width: 100%"></div>
 
     <!-- Rooms -->
     <hr />
-    <h6 class="my-3">Nhà trọ tương tự</h6>
+    <h6 class="my-3 title">Nhà trọ tương tự</h6>
     <div class="row m-2">
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"
@@ -324,5 +322,9 @@ export default {
 }
 #map {
   z-index: 0;
+}
+a:hover {
+  text-decoration: none;
+  background: #f9f9f9;
 }
 </style>

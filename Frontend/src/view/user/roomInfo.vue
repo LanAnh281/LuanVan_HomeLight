@@ -1,10 +1,16 @@
 <script>
 import { ref, reactive, onMounted } from "vue";
+import socket from "../../socket";
+//service
 import billService from "../../service/bill.service";
 import serviceService from "../../service/service.service";
 import service_roomService from "../../service/service_room.service";
-
+import notificationService from "../../service/notification.service";
+import user_notificationService from "../../service/user_notification.service";
+// js
 import { formatCurrency } from "../../assets/js/format.common";
+import { successAd } from "../../assets/js/common.alert";
+//component
 import Table from "../../components/table/table.vue";
 
 export default {
@@ -13,18 +19,33 @@ export default {
     const data = reactive({
       item: {
         Rooms: [
-          { name: "", address: "", price: 0, BoardingHouse: { name: "" } },
+          {
+            name: "",
+            address: "",
+            price: 0,
+            BoardingHouse: {
+              name: "",
+              User: {
+                userName: "",
+                address: "",
+                phone: "",
+                email: "",
+                qrCodeUrl: "",
+              },
+            },
+          },
         ],
       },
       services: [],
       serviceRoom: [],
+      message: { comment: "", content: "" },
     });
     const refresh = async () => {
       try {
         const documentBill = await billService.getAllCustomer();
         data.item = documentBill.message;
-        console.log(data.item);
         //lấy danh sách dịch vụ
+        console.log(data.item);
         const documentService = await serviceService.getAll();
         data.services = documentService.message;
         // lấy ds dịch vụ của phòng
@@ -41,7 +62,34 @@ export default {
         });
         // lọc từ danh sách dịch vụ , lấy đầy đủ thông tin của dịch vụ
         data.services = data.services.filter((item) => item.checked == true);
-        console.log(data.services);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const save = async () => {
+      try {
+        if (!data.flag) {
+          // data.submit = "Đang gửi tin...";
+          data.message.content = `Nhà trọ ${data.item.Rooms[0].BoardingHouse.name} - Phòng ${data.item.Rooms[0].name} - Vấn đề ${data.message.comment}`;
+          const documentNoti = await notificationService.create(data.message);
+
+          const documentUserNoti = await user_notificationService.create({
+            NotificationId: documentNoti.message["_id"],
+            UserId: data.item.Rooms[0].BoardingHouse.User._id,
+          });
+          socket.emit("createNoti", data.item);
+          // data.submit = "Gửi tin nhắn";
+          refresh();
+          successAd("Đã gửi");
+          data.message.comment = "";
+          data.message.content = "";
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -68,6 +116,7 @@ export default {
     return {
       data,
       formatCurrency,
+      save,
     };
   },
 };
@@ -75,7 +124,7 @@ export default {
 <template>
   <div class="body m-0 container-fluid">
     <h6 class="title text-center my-3">Thông tin phòng trọ</h6>
-    <div class="row">
+    <div class="row mx-2">
       <div class="col-6 m-0 mr-1 p-0">
         <div class="row justify-content-start p-0 m-0">
           <p class="col-3 m-0 p-0">Tên nhà trọ:</p>
@@ -89,8 +138,14 @@ export default {
             {{ data.item.Rooms[0].BoardingHouse.address }}
           </p>
         </div>
+        <div class="col-12 row justify-content-start p-0 m-0">
+          <p class="col-3 m-0 p-0">Mô tả :</p>
+          <p class="col-6 p-0 m-0">
+            {{ data.item.Rooms[0].content }}
+          </p>
+        </div>
       </div>
-      <div class="col p-0 m-0">
+      <div class="col-4 p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
           <p class="col-3 m-0 p-0">Tên phòng :</p>
           <p class="col-6 p-0 m-0">{{ data.item.Rooms[0].name }}</p>
@@ -108,12 +163,6 @@ export default {
           </p>
         </div>
       </div>
-      <div class="col-12 row justify-content-start p-0 m-0">
-        <p class="col-1 mr-5 p-0">Mô tả :</p>
-        <p class="col-8 p-0 m-0">
-          {{ data.item.Rooms[0].content }}
-        </p>
-      </div>
     </div>
     <hr />
     <h6 class="title text-center my-3">Dịch vụ</h6>
@@ -122,10 +171,67 @@ export default {
       :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
       :titles="['name', 'price', 'unit']"
     ></Table>
+    <hr />
+    <div class="row m-0 p-0 mr-5">
+      <h6 class="title text-center col-12">Hỗ trợ</h6>
+      <div class="col-6">
+        <form @submit.prevent="save" class="col m-0 p-0 ml-2">
+          <div class="form-group row">
+            <label for="inputroom" class="col-sm-1 m-0 col-form-label p-0"
+              >Vấn đề :</label
+            >
+            <div class="col-sm-10">
+              <textarea
+                type="text"
+                class="form-control"
+                id="inputContent"
+                rows="4"
+                v-model="data.message.comment"
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-group text-center justify-content-around mb-0 ml-3">
+            <button type="submit" class="btn btn-login col-sm-2 text-center">
+              Gửi
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-4 m-0 ml-2 p-0">
+        <div class="row justify-content-start p-0 m-0">
+          <p class="col-3 m-0 p-0">Tên chủ trọ :</p>
+          <p class="col-6 p-0 m-0">
+            {{ data.item.Rooms[0].BoardingHouse.User.userName }}
+          </p>
+        </div>
+
+        <div class="row justify-content-start p-0 m-0">
+          <p class="col-3 m-0 p-0">Điện thoại :</p>
+          <p class="col-6 p-0 m-0">
+            {{ data.item.Rooms[0].BoardingHouse.User.phone }}
+          </p>
+        </div>
+        <div class="row justify-content-start p-0 m-0">
+          <p class="col-3 m-0 p-0">Email :</p>
+          <p class="col-6 p-0 m-0">
+            {{ data.item.Rooms[0].BoardingHouse.User.email }}
+          </p>
+        </div>
+        <div class="row justify-content-start p-0 m-0">
+          <p class="col-3 m-0 p-0">Địa chỉ :</p>
+          <p class="col-6 p-0 m-0">
+            {{ data.item.Rooms[0].BoardingHouse.User.address }}
+          </p>
+        </div>
+      </div>
+      <div class="col-1 m-0 p-0">
+        <img :src="data.item.Rooms[0].qrCodeUrl" alt="QR" class="mx-2" />
+      </div>
+    </div>
   </div>
 </template>
 <style scoped>
 .body {
-  height: 240vh;
+  height: 120vh;
 }
 </style>

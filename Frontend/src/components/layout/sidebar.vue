@@ -41,11 +41,11 @@ export default {
           active: "report",
         },
 
-        // {
-        //   name: "Tài khoản",
-        //   icon: "manage_accounts",
-        //   active: "account",
-        // },
+        {
+          name: "Tài khoản",
+          icon: "manage_accounts",
+          active: "account",
+        },
         // { name: "Ghi chú", icon: "note", active: "note" },
 
         // { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },

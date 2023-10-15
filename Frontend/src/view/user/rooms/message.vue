@@ -55,7 +55,7 @@ export default {
             NotificationId: documentNoti.message["_id"],
             UserId: props.userId,
           });
-          socket.emit("message", data.item);
+          socket.emit("createNoti", data.item);
           data.submit = "Gửi tin nhắn";
           refresh();
           successAd("Đã gửi tin nhắn");

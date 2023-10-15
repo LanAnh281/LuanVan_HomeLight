@@ -162,7 +162,6 @@ export default {
       () => route.fullPath,
       (newPath, oldPath) => {
         data.active = newPath.substring(newPath.lastIndexOf("/") + 1);
-        console.log("Path:", data.active);
       }
     );
     onMounted(async () => {
@@ -313,9 +312,10 @@ export default {
                     >
                       <a
                         class="px-1 col-11"
-                        style="text-transform: none"
-                        v-html="formatItem(value.content)"
-                      ></a>
+                        style="text-transform: none; text-wrap: wrap"
+                      >
+                        {{ value.content }}</a
+                      >
 
                       <span
                         class="material-symbols-outlined text-danger cancle-icon col-1 px-1 float-right"

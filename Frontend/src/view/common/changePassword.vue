@@ -74,11 +74,11 @@ export default {
           ? 'align-items-center'
           : ['align-items-start']
       "
-      style="height: calc(100vh - var(--footer))"
+      style="height: 70vh"
       :style="
         data.position == 'super-admin' || data.position == 'admin'
           ? ''
-          : 'margin-top:7%'
+          : 'margin-top:4%'
       "
     >
       <div class="card shadow col-4 w-100">

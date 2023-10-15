@@ -85,7 +85,7 @@
 </template>
 <style scoped>
 .body {
-  height: 120vh;
+  height: 130vh;
 }
 #carouselExampleControls {
   /* left: 0;
