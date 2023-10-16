@@ -287,7 +287,9 @@ export default {
           :disabled="data.item.isPay == false"
           @click="handlePay"
         >
-          {{ data.item.isPay == false ? "Chưa thanh toán" : "Thanh toán" }}
+          {{
+            data.item.isPay == false ? "Chưa thanh toán" : "Thanh toán PayPal"
+          }}
         </button>
       </div>
       <div class="col-12 text-center m-0 p-0">

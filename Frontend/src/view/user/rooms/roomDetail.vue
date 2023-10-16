@@ -31,7 +31,13 @@ export default {
     });
     const room = reactive({
       items: [
-        { name: "", long: "", wide: "", Media: [{ name: "lightHouse.png" }] },
+        {
+          name: "",
+          long: "",
+          wide: "",
+          Media: [{ name: "lightHouse.png" }],
+          url: "",
+        },
       ],
       city: {},
       district: { data: { districts: [] } },
@@ -81,41 +87,43 @@ export default {
             );
           });
         }
-        //Map
-        // Tạo bản đồ
-        const map = L.map("map").setView([0, 0], 12);
+        //gg map
+        data.item.url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyCqNLriKAssr6bSDriqJg2YdfwqdBAYy30&q=${data.item.BoardingHouse.address}`;
+        // //Map
+        // // Tạo bản đồ
+        // const map = L.map("map").setView([0, 0], 12);
 
-        // Sử dụng dữ liệu OpenStreetMap miễn phí
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-          map
-        );
+        // // Sử dụng dữ liệu OpenStreetMap miễn phí
+        // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        //   map
+        // );
 
-        // Tên địa điểm bạn muốn tìm
-        const locationName = data.item.BoardingHouse.address;
+        // // Tên địa điểm bạn muốn tìm
+        // const locationName = data.item.BoardingHouse.address;
 
-        // Sử dụng dịch vụ OpenStreetMap Nominatim
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`
-        );
-        const dataMap = await response.json();
+        // // Sử dụng dịch vụ OpenStreetMap Nominatim
+        // const response = await fetch(
+        //   `https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`
+        // );
+        // const dataMap = await response.json();
 
-        // Kiểm tra xem có kết quả trả về từ dịch vụ geocoding không
-        if (dataMap && dataMap.length > 0) {
-          // Trích xuất tọa độ từ kết quả đầu tiên
-          const firstResult = dataMap[0];
-          const coordinates = [
-            parseFloat(firstResult.lat),
-            parseFloat(firstResult.lon),
-          ];
+        // // Kiểm tra xem có kết quả trả về từ dịch vụ geocoding không
+        // if (dataMap && dataMap.length > 0) {
+        //   // Trích xuất tọa độ từ kết quả đầu tiên
+        //   const firstResult = dataMap[0];
+        //   const coordinates = [
+        //     parseFloat(firstResult.lat),
+        //     parseFloat(firstResult.lon),
+        //   ];
 
-          // Chuyển đến vị trí tìm thấy trên bản đồ
-          map.setView(coordinates, 50);
+        //   // Chuyển đến vị trí tìm thấy trên bản đồ
+        //   map.setView(coordinates, 50);
 
-          // Thêm marker cho địa điểm tìm thấy
-          L.marker(coordinates).addTo(map);
-        } else {
-          console.error("Không tìm thấy địa điểm.");
-        }
+        //   // Thêm marker cho địa điểm tìm thấy
+        //   L.marker(coordinates).addTo(map);
+        // } else {
+        //   console.error("Không tìm thấy địa điểm.");
+        // }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -257,7 +265,16 @@ export default {
     </div>
     <hr />
     <h6 class="my-3 title">Bản đồ</h6>
-    <div id="map" style="height: 400px; width: 100%"></div>
+    <!-- <div id="map" style="height: 400px; width: 100%"></div> -->
+
+    <iframe
+      width="100%"
+      height="450"
+      frameborder="0"
+      style="border: 0"
+      :src="`${data.item.url}`"
+      allowfullscreen
+    ></iframe>
 
     <!-- Rooms -->
     <hr />
@@ -315,7 +332,7 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 240vh;
+  height: 280vh;
 }
 .address:hover {
   text-decoration: underline;

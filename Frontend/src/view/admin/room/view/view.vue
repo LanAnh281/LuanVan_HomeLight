@@ -75,7 +75,6 @@ export default {
           </button>
         </div>
         <div class="modal-body">
-          <!-- nhà trọ -->
           <div class="form-group row">
             <ul class="col-sm-3 p-0" style="margin-top: -3%">
               <li

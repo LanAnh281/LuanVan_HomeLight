@@ -20,7 +20,7 @@ export default {
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
-      item: { receive: "", Room: { name: "" }, billId: "" },
+      item: { receive: "", Room: { name: "" }, billId: "", method: "tiền mặt" },
     });
     const isModalOpen = ref(false);
 
@@ -45,8 +45,6 @@ export default {
             const documentBill = await billService.update(props._id, {
               debt: data.item.debt,
             });
-            await refresh();
-            emit("payments");
           }
         }
 
@@ -62,11 +60,14 @@ export default {
             debt:
               Number(data.item.total) -
               (Number(data.item.receive) + Number(receipt)),
+            method: "tiền mặt",
+            billId: props._id,
           };
           const documentReceipt = await receiptService.update(
             data.item.Receipts[0]._id,
             dataUpdate
           );
+          console.log(documentReceipt);
           if (documentReceipt["status"] == "success") {
             successAd("Thành công thanh toán");
             const documentBill = await billService.update(props._id, {
@@ -74,10 +75,17 @@ export default {
                 Number(data.item.total) -
                 (Number(data.item.receive) + Number(receipt)),
             });
-            await refresh();
-            emit("payments");
+            console.log(
+              "Debt:",
+              Number(data.item.total) -
+                (Number(data.item.receive) + Number(receipt)),
+              documentBill
+            );
           }
         }
+
+        await refresh();
+        emit("payments");
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -92,7 +100,7 @@ export default {
       try {
         const document = await billService.get(props._id);
         data.item = document.message;
-        console.log(data.item);
+
         const receipt = data.item.Receipts[0]
           ? data.item.Receipts[0].receive
           : 0;

@@ -41,11 +41,11 @@ export default {
           active: "report",
         },
 
-        {
-          name: "Tài khoản",
-          icon: "manage_accounts",
-          active: "account",
-        },
+        // {
+        //   name: "Tài khoản",
+        //   icon: "manage_accounts",
+        //   active: "account",
+        // },
         // { name: "Ghi chú", icon: "note", active: "note" },
 
         // { name: "Đổi mật khẩu", icon: "key", active: "changePassword" },
@@ -109,6 +109,9 @@ export default {
             {{ data.userName }}
           </span>
         </div>
+      </div>
+      <div>
+        <span class="material-symbols-outlined"> menu </span>
       </div>
     </div>
     <!-- Sử dụng inline styles để tùy chỉnh dòng gạch ngang -->
