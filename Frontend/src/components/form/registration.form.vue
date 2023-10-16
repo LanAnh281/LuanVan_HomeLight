@@ -262,6 +262,7 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputUserName"
+                    placeholder="Nhập họ và tên"
                     @blur="
                       () => {
                         let isCheck = checkString(data.item.userName);
@@ -358,6 +359,7 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputEmail"
+                    placeholder="Nhập email"
                     @blur="
                       () => {
                         let isCheck = checkMail(data.item.email);
@@ -387,6 +389,7 @@ export default {
                     type="tel"
                     class="form-control"
                     id="inputPhone"
+                    placeholder="Nhập số điện thoại"
                     @blur="
                       () => {
                         let isCheck = checkPhone(data.item.phone);
@@ -454,6 +457,7 @@ export default {
                     type="text"
                     class="form-control"
                     id="inputaddress"
+                    placeholder="Nhập địa chỉ"
                     @blur="
                       () => {
                         let isCheck = checkAddress(data.item.number);

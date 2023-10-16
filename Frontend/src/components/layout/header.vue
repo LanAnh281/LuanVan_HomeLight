@@ -48,6 +48,7 @@ export default {
       active: "",
       noti: 0,
       sizeNoti: 2,
+      position: "",
     });
     let intervalId = null;
     const isRegistration = ref(false);
@@ -367,11 +368,13 @@ export default {
                 <div class="dropdown-menu p-0">
                   <router-link
                     :to="{ name: 'roomInfo' }"
+                    v-if="position == 'user'"
                     class="dropdown-item px-1"
                     >Thông tin phòng</router-link
                   >
                   <router-link
                     :to="{ name: 'billCustomer' }"
+                    v-if="position == 'user'"
                     class="dropdown-item px-1"
                     >Hóa đơn</router-link
                   >

@@ -345,7 +345,7 @@ export default {
     </div>
     <!-- chart -->
     <div>
-      <div class="border-radius my-3 row m-0 justify-content-end">
+      <div class="border-radius row m-0 justify-content-end">
         <input
           type="month"
           class="col-2 mt-2 mr-3 select py-0"

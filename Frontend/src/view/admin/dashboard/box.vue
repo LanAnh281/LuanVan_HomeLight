@@ -159,4 +159,7 @@ export default {
 .roomCard {
   background: var(--purple);
 }
+.font-weight-bold {
+  font-size: 18px;
+}
 </style>
