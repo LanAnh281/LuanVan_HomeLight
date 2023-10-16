@@ -1,11 +1,22 @@
-const { Receipt, Bill, Rooms } = require("../models/index.model.js");
+const {
+  Receipt,
+  Bill,
+  Rooms,
+  PAYMENTHISTORY,
+} = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
+  const { receive, debt, billId, method } = req.body;
   console.log("Receipt Body:", req.body);
   try {
     const document = await Receipt.create({
       receive: receive,
       debt: debt,
+      billId: billId,
+    });
+    // lịch sử thanh toán
+    const documentPayHistory = await PAYMENTHISTORY.create({
+      money: receive,
+      method: method,
       billId: billId,
     });
     res.json({ message: document, status: "success" });
@@ -36,7 +47,6 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    console.log("----ID:", req.params.id);
     const document = await Receipt.findOne({
       where: {
         billId: req.params.id,
@@ -50,7 +60,7 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { receive, debt, billId } = req.body;
+  const { receive, debt, billId, method } = req.body;
   console.log("Receipt Body:", req.body);
   try {
     const document = await Receipt.update(
@@ -65,6 +75,11 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
+    const documentPayHistory = await PAYMENTHISTORY.create({
+      money: receive,
+      method: method,
+      billId: billId,
+    });
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);

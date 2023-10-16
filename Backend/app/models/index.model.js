@@ -207,6 +207,11 @@ const Payment = sequelize.define("Payment", {
     type: DataTypes.STRING,
   },
 });
+const PAYMENTHISTORY = sequelize.define("PAYMENTHISTORY", {
+  _id: setPrimary,
+  money: { type: DataTypes.STRING },
+  method: { type: DataTypes.STRING },
+});
 // checked
 //many-to-many relationship
 Roles.belongsToMany(Positions, {
@@ -315,6 +320,17 @@ Bill.hasMany(Receipt, {
   onUpdate: "CASCADE",
 });
 Receipt.belongsTo(Bill, {
+  foreignKey: "billId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+PAYMENTHISTORY;
+Bill.hasMany(PAYMENTHISTORY, {
+  foreignKey: "billId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+PAYMENTHISTORY.belongsTo(Bill, {
   foreignKey: "billId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
@@ -439,6 +455,7 @@ UtilityReadings.sync();
 LandlordTenant.sync();
 
 Payment.sync();
+PAYMENTHISTORY.sync();
 module.exports = {
   Roles,
   Positions,
@@ -466,4 +483,5 @@ module.exports = {
   LandlordTenant,
 
   Payment,
+  PAYMENTHISTORY,
 };

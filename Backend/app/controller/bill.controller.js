@@ -8,6 +8,7 @@ const {
   Receipt,
   BorardingHouse,
   Users,
+  PAYMENTHISTORY,
 } = require("../models/index.model.js");
 const QRCode = require("qrcode");
 
@@ -159,9 +160,7 @@ exports.findAllCustomer = async (req, res, next) => {
       }
 
       // Ở đây, bạn có thể gửi URL của mã QR về phía frontend hoặc lưu nó trong cơ sở dữ liệu để sử dụng sau này.
-      console.log("URL::::", url);
-      // res.json({ qrCodeUrl: url });
-      // document["qrCodeUrl"] = url;
+
       documents.Rooms[0].UtilityReadings = uti;
       documents.Rooms[0].BoardingHouse = boarding;
       documents.Rooms[0].qrCodeUrl = url;
@@ -190,6 +189,9 @@ exports.findOne = async (req, res, next) => {
               limit: 1, // Giới hạn để chỉ lấy bản ghi mới nhất
             },
           ],
+        },
+        {
+          model: PAYMENTHISTORY,
         },
       ],
       where: {

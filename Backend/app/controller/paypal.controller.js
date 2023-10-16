@@ -5,6 +5,7 @@ const {
   BorardingHouse,
   Bill,
   Receipt,
+  PAYMENTHISTORY,
 } = require("../models/index.model");
 exports.hien = (req, res, next) => {
   res.json({ hi: "hello" });
@@ -146,7 +147,6 @@ exports.thanhcong = (req, res) => {
         console.log("---Receipt:", documentReceipt);
         if (documentReceipt != null) {
           //update
-
           const updateReceipt = await Receipt.update(
             {
               receive:
@@ -174,6 +174,11 @@ exports.thanhcong = (req, res) => {
           });
           console.log("---create receipt:", createReceipt);
         }
+        const documentPayHistory = await PAYMENTHISTORY.create({
+          money: payment.transactions[0].amount.total,
+          method: "thanh toán PayPal",
+          billId: req.query._id,
+        });
       }
 
       res.writeHead(302, {
