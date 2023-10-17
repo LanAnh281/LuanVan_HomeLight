@@ -242,7 +242,7 @@ export default {
 </script>
 <template>
   <div class="body m-0">
-    <div class="border-radius my-3 row m-0 justify-content-start">
+    <div class="border-radius mb-3 row m-0 justify-content-start">
       <label
         class="py-1 text-center mt-2 ml-3"
         style="height: 33px; background-color: var(--background)"
@@ -250,7 +250,7 @@ export default {
       </label>
       <input
         type="date"
-        class="border rounded py-1 text-center col-2 mt-2 ml-1"
+        class="border rounded py-1 text-center col-1 mt-2 ml-1"
         style="height: 33px; background-color: var(--background)"
         @input="handleStart"
       />
@@ -261,7 +261,7 @@ export default {
       >
       <input
         type="date"
-        class="border rounded py-1 text-center col-2 mt-2 mr-1"
+        class="border rounded py-1 text-center col-1 mt-2 mr-1"
         style="height: 33px; background-color: var(--background)"
         @input="handleEnd"
       />

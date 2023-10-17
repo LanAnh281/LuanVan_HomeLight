@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, onMounted, ref, onBeforeMount, computed } from "vue";
 import _ from "lodash";
 
 //service
@@ -7,11 +7,13 @@ import serviceService from "../../../service/service.service";
 
 //component
 import Select from "../../../components/select/select.vue";
+import paginationVue from "../../../components/pagination/pagination.vue";
+
 //js
 import { sanitizeInput } from "../../../assets/js/checkInput.common";
 import { successAd } from "../../../assets/js/common.alert";
 export default {
-  components: { Select },
+  components: { Select, paginationVue },
   setup(props, { emit }) {
     const data = reactive({
       item: [
@@ -21,7 +23,39 @@ export default {
           unit: "",
         },
       ],
+      searchText: "",
+      searchPage: [],
+      setPage: [],
+      sizePage: 4,
+      currentPage: 1,
+      totalPage: 0,
+      length: 0,
     });
+    data.length = computed(() => (data.item ? data.searchPage.length : 0));
+    data.searchPage = computed(
+      () => (
+        (data.currentPage = 1),
+        data.item
+          ? data.item.filter((item) =>
+              item.name
+                .toLocaleLowerCase()
+                .includes(data.searchText.toLocaleLowerCase())
+            )
+          : []
+      )
+    );
+    data.totalPage = computed(() =>
+      data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
+    );
+    data.setPage = computed(() =>
+      data.searchPage
+        ? data.searchPage.slice(
+            (data.currentPage - 1) * data.sizePage,
+            data.currentPage * data.sizePage
+          )
+        : []
+    );
+
     const isModalOpen = ref(false);
 
     const openModal = () => {
@@ -45,7 +79,7 @@ export default {
         });
 
         successAd("Cập nhật thành công");
-        data.item = await serviceService.getAll();
+        data.item = await serviceService.getAllUser();
         data.item = data.item.message;
       } catch (error) {
         if (error.response) {
@@ -58,7 +92,7 @@ export default {
       }
     };
     onBeforeMount(async () => {
-      data.item = await serviceService.getAll();
+      data.item = await serviceService.getAllUser();
       data.item = data.item.message;
       $("#editServiceModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#editServiceModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
@@ -95,29 +129,37 @@ export default {
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <form @submit.prevent="handleEdit" class="container mt-3">
+        <div class="modal-body container">
+          <input
+            type="search"
+            placeholder="tìm kiếm theo tên dịch vụ"
+            class="p-2 w-50"
+            style="border: 1px solid #ccc; border-radius: 6px"
+            v-model="data.searchText"
+          />
+
+          <form @submit.prevent="handleEdit" class="mt-3">
             <!--Table  -->
             <table class="table m-0 p-0">
               <thead class="thead-dark">
-                <tr>
-                  <th>Tên dịch vụ</th>
-                  <th>Đơn giá</th>
-                  <th>Đơn vị tính</th>
+                <tr class="m-0 p-0">
+                  <th scope="col">Tên dịch vụ</th>
+                  <th scope="col">Đơn giá</th>
+                  <th scope="col">Đơn vị tính</th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(value, index) in data.item"
+                  v-for="(value, index) in data.setPage"
                   :key="index"
                   :id="index"
                 >
                   <th>
                     <input
                       type="text"
-                      class="w-100 m-0 p-0"
+                      class="w-100 p-1"
                       v-model="value.name"
-                      style="border: none"
+                      style="border: 1px solid #ccc"
                     />
                   </th>
                   <th>
@@ -125,7 +167,7 @@ export default {
                       type="text"
                       v-model="value.price"
                       class="p-1 w-100"
-                      style="border: none"
+                      style="border: 1px solid #ccc"
                     />
                   </th>
                   <th>
@@ -133,7 +175,7 @@ export default {
                       type="text"
                       class="p-1 w-100"
                       v-model="value.unit"
-                      style="border: none"
+                      style="border: 1px solid #ccc"
                     />
                   </th>
                 </tr>
@@ -145,6 +187,28 @@ export default {
               </button>
             </div>
           </form>
+          <paginationVue
+            class="m-0 p-0 mt-1"
+            :currentPage="data.currentPage"
+            :totalPage="data.totalPage"
+            :size="data.sizePage"
+            :length="data.length"
+            @page="(value) => (data.currentPage = value)"
+            @previous="
+              () => {
+                if (data.currentPage > 1) {
+                  data.currentPage = data.currentPage - 1;
+                }
+              }
+            "
+            @next="
+              () => {
+                if (data.currentPage < data.totalPage) {
+                  data.currentPage = data.currentPage + 1;
+                }
+              }
+            "
+          ></paginationVue>
         </div>
       </div>
     </div>
@@ -154,9 +218,5 @@ export default {
 .modal-content {
   width: 160%;
   margin-left: -16%;
-}
-th {
-  padding: 0px 2px;
-  margin: 0px;
 }
 </style>

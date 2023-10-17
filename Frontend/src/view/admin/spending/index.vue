@@ -178,7 +178,7 @@ export default {
 </script>
 <template>
   <div class="body m-0">
-    <div class="border-radius my-3 row m-0 justify-content-start">
+    <div class="border-radius mb-3 row m-0 justify-content-start">
       <input
         type="date"
         @input="handleDate"
@@ -205,7 +205,7 @@ export default {
       <div class="col row justify-content-end p-0">
         <button
           class="btn btn-primary p-0 mr-5 col-2"
-          style="width: 14%; height: 36px; margin-top: 6px; margin-right: -9%"
+          style="width: 12%; height: 36px; margin-top: 6px; margin-right: -9%"
         >
           <div
             class="row justify-content-center plus"
@@ -216,7 +216,7 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white); font-size: 16px">Chi phi</span>
+            <span style="color: var(--white); font-size: 16px">Chi phí</span>
           </div>
         </button>
       </div>

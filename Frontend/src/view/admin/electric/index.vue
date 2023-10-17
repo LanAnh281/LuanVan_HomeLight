@@ -275,7 +275,7 @@ export default {
 </script>
 <template>
   <div class="body m-0">
-    <div class="border-radius my-3 row m-0 p-0 justify-content-start">
+    <div class="border-radius mb-3 row m-0 p-0 justify-content-start">
       <div class="mt-1 mb-1 ml-3 mr-1">
         <input
           type="date"

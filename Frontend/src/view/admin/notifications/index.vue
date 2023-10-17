@@ -147,7 +147,7 @@ export default {
 </script>
 <template>
   <div class="body m-0">
-    <div class="border-radius my-3 row m-0 justify-content-start">
+    <div class="border-radius mb-3 row m-0 justify-content-start">
       <div
         class="input-group col-2 align-items-center ml-2 m-0 pr-0"
         style="width: 135px"
@@ -156,6 +156,7 @@ export default {
           type="date"
           @input="handleDate"
           class="select border rounded p-1 m-0 p-0"
+          style="height: 36px"
         />
       </div>
       <div class="input-group col-3 m-0 p-0 align-items-center">
@@ -164,11 +165,12 @@ export default {
           v-model="data.searchText"
           placeholder="Tìm kiếm theo nội dung"
           class="select border rounded p-1 w-100 m-0 p-0"
+          style="height: 36px"
         />
       </div>
       <div class="row justify-content-end m-0 p-0 col">
         <button
-          class="btn btn-primary p-0 mr-4 col-3"
+          class="btn btn-primary p-0 mr-4 col-2"
           style="width: 24%; height: 36px; margin-top: 6px; margin-right: -9%"
         >
           <div

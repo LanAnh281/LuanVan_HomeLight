@@ -325,7 +325,7 @@ export default {
 </script>
 <template>
   <div class="body m-0">
-    <div class="border-radius my-3 row m-0 justify-content-start">
+    <div class="border-radius mb-3 row m-0 justify-content-start">
       <div class="input-group col-2 align-items-center pr-0">
         <Select
           :title="`Chọn thành phố`"

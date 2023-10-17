@@ -77,7 +77,7 @@ export default {
         <div class="modal-body">
           <!-- nhà trọ -->
 
-          <div class="col-sm-12">
+          <div class="col-sm-12 m-0">
             <room v-if="data.active == 'room'" :_id="_id"></room>
           </div>
         </div>

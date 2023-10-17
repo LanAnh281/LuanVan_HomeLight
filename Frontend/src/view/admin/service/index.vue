@@ -19,21 +19,37 @@ export default {
     const data = reactive({
       item: [],
       setPage: [],
+
+      searchText: "",
+      searchPage: [],
+      setPage: [],
       sizePage: 10,
       currentPage: 1,
       totalPage: 0,
-      lenght: 0,
+      length: 0,
     });
     const isAddServiceModal = ref(false);
     const isEditServiceModal = ref(false);
     let intervalId = null;
-    data.totalPage = computed(() =>
-      data.item ? Math.ceil(data.item.length / data.sizePage) : 0
+    data.length = computed(() => (data.item ? data.searchPage.length : 0));
+    data.searchPage = computed(
+      () => (
+        (data.currentPage = 1),
+        data.item
+          ? data.item.filter((item) =>
+              item.name
+                .toLocaleLowerCase()
+                .includes(data.searchText.toLocaleLowerCase())
+            )
+          : []
+      )
     );
-
+    data.totalPage = computed(() =>
+      data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
+    );
     data.setPage = computed(() =>
-      data.item.length > 0
-        ? data.item.slice(
+      data.searchPage
+        ? data.searchPage.slice(
             (data.currentPage - 1) * data.sizePage,
             data.currentPage * data.sizePage
           )
@@ -72,7 +88,7 @@ export default {
             };
           });
         }
-        data.lenght = data.item.length;
+        // data.length = data.item.length;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -105,7 +121,21 @@ export default {
 </script>
 <template>
   <div class="body">
-    <div class="border-radius my-3 row m-0 justify-content-end">
+    <div class="border-radius mb-3 row m-0 justify-content-start">
+      <div class="col-4 m-0 p-0 row justify-content-start">
+        <input
+          type="search"
+          placeholder="tìm kiếm theo tên dịch vụ"
+          class="p-2 ml-3 mt-2 w-100"
+          style="
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            height: 36px;
+            background-color: var(--background);
+          "
+          v-model="data.searchText"
+        />
+      </div>
       <div class="col-8 m-0 p-0 row justify-content-end">
         <button
           class="col-3 mr-1 btn btn-primary"
@@ -191,7 +221,7 @@ export default {
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
       :size="data.sizePage"
-      :length="data.lenght"
+      :length="data.length"
       @page="(value) => (data.currentPage = value)"
       @previous="
         () => {

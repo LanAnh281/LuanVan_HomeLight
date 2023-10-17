@@ -244,6 +244,7 @@ export default {
                   :title="`Chọn nhà trọ`"
                   :data="data.boarding"
                   @choose="(value) => (data.selectedBoarding = value)"
+                  style="height: 36px"
                 ></Select>
               </div>
               <div class="form-group row m-0 p-0">

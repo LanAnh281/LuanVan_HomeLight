@@ -271,7 +271,7 @@ export default {
 <template>
   <div class="body m-0">
     <!-- Status  and fee-->
-    <div class="border-radius my-3 row m-0 justify-content-start">
+    <div class="border-radius mb-3 row m-0 justify-content-start">
       <div class="input-group col-2 align-items-center pt-0 pr-0 mr-1 mt-1">
         <Select
           :title="`Trạng thái phòng`"

@@ -102,7 +102,7 @@ export default {
       </div>
       <div class="col-12 row justify-content-start p-0 m-0">
         <p class="col-1 mr-5 p-0">Mô tả :</p>
-        <p class="col-8 p-0 m-0">
+        <p class="col-10 p-0 m-0">
           {{ data.item.content }}
         </p>
       </div>
@@ -117,7 +117,7 @@ export default {
       <img
         v-if="value.type == 'image'"
         :src="`http://localhost:3000/static/images/${value.name}`"
-        class="mb-1 col-6"
+        class="mb-1 col-4"
         style="object-fit: contain; width: 50%; height: 160px"
       />
       <div

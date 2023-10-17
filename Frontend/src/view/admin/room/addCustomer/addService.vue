@@ -75,7 +75,7 @@ export default {
     };
 
     const refresh = async () => {
-      const documentService = await serviceService.getAll(); // lấy tất cả dịch vụ
+      const documentService = await serviceService.getAllUser(); // lấy tất cả dịch vụ
       data.item = documentService.message;
       const documentServiceRoom = await service_roomService.get(props._id); // lấy ds dịch vụ của 1 phòng
       data.serviceRoom = documentServiceRoom.message;

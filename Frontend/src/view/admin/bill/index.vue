@@ -50,6 +50,7 @@ export default {
         { _id: false, name: "Đã thanh toán" },
       ],
       selectFee: "1 ₫",
+      actionList: ["visibility", "payments"],
     });
     let intervalId = null;
     const ispayments = ref(false);
@@ -159,7 +160,11 @@ export default {
     const handlefee = async (value) => {
       if (value == "true") {
         data.selectFee = "2 ₫";
-      } else data.selectFee = "0 ₫";
+        data.actionList = ["visibility", "payments"];
+      } else {
+        data.selectFee = "0 ₫";
+        data.actionList = ["visibility"];
+      }
       await refresh();
     };
     onMounted(async () => {
@@ -196,7 +201,7 @@ export default {
 </script>
 <template>
   <div class="body m-0">
-    <div class="border-radius my-3 row m-0 p-0 justify-content-start">
+    <div class="border-radius mb-3 row m-0 p-0 justify-content-start">
       <div class="mt-1 mb-1 ml-3 mr-1">
         <input
           type="date"
@@ -268,7 +273,7 @@ export default {
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
       :action="true"
-      :actionList="['visibility', 'payments']"
+      :actionList="data.actionList"
       :isInput="data.isInput"
       :name="'Bill'"
       @payments="
