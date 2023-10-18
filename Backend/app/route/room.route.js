@@ -33,4 +33,5 @@ router
     authorization.authorization("xóa phòng trọ"),
     room.delete,
   ]);
+router.route("/getAllRoom/:id").get(room.findAllRooms);
 module.exports = router;

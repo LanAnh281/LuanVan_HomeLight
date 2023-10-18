@@ -134,6 +134,20 @@ exports.findOne = async (req, res, next) => {
     res.json({ message: error, status: "faild" });
   }
 };
+exports.findAllRooms = async (req, res, next) => {
+  try {
+    const document = await Rooms.findAll({
+      where: {
+        boardingId: req.params.id,
+      },
+    });
+
+    res.json({ message: document, status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error, status: "faild" });
+  }
+};
 exports.updated = async (req, res, next) => {
   const { name, price, wide, long, content, boardingId, countFiles } = req.body;
   const status = req.body.status == "false" ? false : true;
