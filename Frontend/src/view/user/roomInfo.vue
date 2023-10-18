@@ -153,7 +153,7 @@ export default {
         <div class="row justify-content-start p-0 m-0">
           <p class="col-3 m-0 p-0">Diện tích :</p>
           <p class="col-6 p-0 m-0">
-            {{ data.item.Rooms[0].long }}x {{ data.item.Rooms[0].wide }} m²
+            {{ data.item.Rooms[0].long }} x {{ data.item.Rooms[0].wide }} m²
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">

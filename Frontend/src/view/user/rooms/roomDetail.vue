@@ -278,7 +278,7 @@ export default {
 
     <!-- Rooms -->
     <hr />
-    <h6 class="my-3 title">Nhà trọ tương tự</h6>
+    <h6 class="my-3 title">Phòng trọ tương tự</h6>
     <div class="row m-2">
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"
@@ -298,7 +298,7 @@ export default {
         />
 
         <div class="card-body m-0 p-0">
-          <p class="card-text">Phòng: {{ value.name }}</p>
+          <p class="card-text">Phòng {{ value.name }}</p>
           <p class="card-text">
             Diện tích: {{ value.long }} x {{ value.wide }} m²
           </p>

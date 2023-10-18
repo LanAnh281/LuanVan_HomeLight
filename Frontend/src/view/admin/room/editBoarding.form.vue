@@ -4,6 +4,8 @@ import axios from "axios";
 
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
+import roomService from "../../../service/room.service";
+
 //component
 import Select from "../../../components/select/selectdependent.vue";
 
@@ -12,7 +14,7 @@ import {
   checkStringAndNumber,
   checkAddress,
 } from "../../../assets/js/checkInput.common";
-import { successAd, warning } from "../../../assets/js/common.alert";
+import { successAd, warning, deleted } from "../../../assets/js/common.alert";
 import { city, district, ward } from "../../../assets/js/dependent.common";
 export default {
   components: { Select },
@@ -183,7 +185,43 @@ export default {
         }
       }
     };
-
+    const handleDelete = async () => {
+      try {
+        console.log(props.boardingId);
+        const rooms = await roomService.getAllRoom(props.boardingId);
+        console.log(":", rooms);
+        data.flag = false;
+        for (let value of rooms.message) {
+          if (value.status == true) {
+            warning("Cảnh báo", `Phòng trọ vẫn còn khách trọ`);
+            data.flag = true;
+            break;
+          }
+        }
+        console.log(data.flag);
+        if (data.flag) return;
+        const isDelete = await deleted(
+          `Xóa nhà trọ ${data.item.name}`,
+          `Bạn sẽ xóa tất cả phòng trọ thuộc nhà trọ ${data.item.name}`
+        );
+        if (isDelete) {
+          const document = await boardinghouseService.delete(props.boardingId);
+          document.status == "success"
+            ? successAd(`Xóa thành công nhà trọ ${data.item.name} `)
+            : warning("Xóa thất bại", `Xóa thất bại nhà trọ ${data.item.name}`);
+          await refresh();
+          emit("edit");
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     onBeforeMount(async () => {
       await refresh();
       $("#editBoardingModal").on("show.bs.modal", openModal); //lắng nghe mở modal
@@ -193,6 +231,7 @@ export default {
     return {
       data,
       save,
+      handleDelete,
       checkStringAndNumber,
       checkAddress,
       // 3 cấp
@@ -216,7 +255,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title title" id="exampleModalLabel">
-            Chỉnh sửa nhà trọ
+            Thông tin nhà trọ
           </h5>
           <button
             type="button"
@@ -227,12 +266,9 @@ export default {
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        <!--   @submit.prevent="save" -->
         <div class="modal-body">
-          <form
-            @submit.prevent="save"
-            enctype="multipart/form-data"
-            class="container mt-3"
-          >
+          <form enctype="multipart/form-data" class="container mt-3">
             <div class="form-group row">
               <label for="inputname" class="col-sm-3 col-form-label p-0"
                 >Tên nhà trọ :</label
@@ -312,9 +348,21 @@ export default {
               </div>
             </div>
 
-            <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-3">
+            <div class="form-group row justify-content-start mb-0">
+              <div class="col-sm-3"></div>
+              <button
+                type="submit"
+                class="btn btn-warning text-light col-sm-3 mx-3 title"
+                @click.prevent="save"
+              >
                 Cập nhật
+              </button>
+              <button
+                type="submit"
+                class="btn btn-danger col-sm-2 title text-light"
+                @click.prevent="handleDelete"
+              >
+                xóa
               </button>
             </div>
           </form>

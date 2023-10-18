@@ -376,7 +376,7 @@ export default {
         <div class="mr-1">
           <button
             class="btn btn-warning"
-            style="width: 118px; height: 36px; margin-top: 6px"
+            style="width: 100px; height: 36px; margin-top: 6px"
             data-toggle="modal"
             data-target="#editBoardingModal"
             @click="
@@ -392,9 +392,7 @@ export default {
               >
                 edit
               </span>
-              <span style="color: var(--white); font-size: 16px"
-                >Sửa nhà trọ</span
-              >
+              <span style="color: var(--white); font-size: 16px">Nhà trọ</span>
             </div>
           </button>
           <!-- :dataProps="data.boradingItem" -->

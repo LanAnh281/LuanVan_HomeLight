@@ -361,8 +361,7 @@ export default {
         ></Select>
       </div>
       <div class="border-radius my-3 row m-0 justify-content-start">
-        <div class="col-12"></div>
-        <div class="col-6 border-radius">
+        <div class="col-md-6 col-12 border-radius">
           <h6 class="text-center title">Biểu đồ thể hiện trạng thái phòng</h6>
           <apexchart
             :options="roomStatus"
@@ -382,7 +381,7 @@ export default {
           bulk of the card's content.
         </p>
       </div> -->
-        <div class="col-6 border-radius">
+        <div class="col-md-6 col-12 border-radius">
           <h6 class="text-center title">
             Biểu đồ thể hiện doanh thu và chi phí của nhà trọ tháng
             {{ data.selectDate.getMonth() + 1 }}/{{

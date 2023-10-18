@@ -87,8 +87,8 @@ export default {
 </template>
 <style scoped>
 .modal-content {
-  width: 120%;
-  margin-left: -4%;
+  width: 160%;
+  margin-left: -16%;
 }
 ul {
   list-style: none;

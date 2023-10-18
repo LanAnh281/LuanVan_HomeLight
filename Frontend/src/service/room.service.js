@@ -20,6 +20,10 @@ class roomService {
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
   }
+  async getAllRoom(id) {
+    return (await this.api.get(`/getAllRoom/${id}`)).data;
+  }
+
   async update(id, data) {
     return (
       await this.api.put(`/${id}`, data, {
