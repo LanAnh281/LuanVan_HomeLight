@@ -260,15 +260,16 @@ export default {
 };
 </script>
 <template>
+  <!-- display: grid; grid-template-columns: repeat(6, 1fr) -->
   <div>
-    <div style="display: grid; grid-template-columns: repeat(6, 1fr)">
+    <div class="row m-0 p-0">
       <div
         class="card p-0 row justify-content-between mr-4"
         v-for="(value, index) in data.setPage"
         style="border-radius: 5px"
         :key="index"
       >
-        <div class="card-item col-12 p-0">
+        <div class="card-item p-0">
           <!-- image -->
           <!-- <img
             class="card-img-top"
@@ -343,7 +344,7 @@ export default {
               data-toggle="modal"
               data-target="#addCustomerModal"
               @click="$emit('addCutomer', value._id)"
-              style="font-size: 0.8rem; width: 50%"
+              style="font-size: 0.8rem; width: 100%"
             >
               Thêm khách
             </button>

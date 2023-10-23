@@ -55,16 +55,25 @@ export default {
 
 <template>
   <div>
+    <!-- Login page -->
     <template v-if="isLoginPath">
       <router-view></router-view>
     </template>
-
+    <!-- Else -->
     <div v-if="isLoginPath == false">
-      <template v-if="position == 'admin' || position == 'super-admin'">
+      <!-- Super Admin -->
+      <template v-if="position == 'super-admin'">
         <Header></Header>
         <SideBar class="col-2"></SideBar>
         <router-view class="col-10"></router-view>
       </template>
+      <!-- Admin -->
+      <template v-if="position == 'admin'">
+        <Header></Header>
+        <SideBar class="col-2"></SideBar>
+        <router-view class="col-10"></router-view>
+      </template>
+      <!-- user -->
       <template v-else>
         <Header></Header>
         <router-view></router-view>

@@ -59,6 +59,7 @@
     min-height: calc( 100vh - var(--header) - var(--footer) );
     right: calc(  83.3333% - 100% );
     background-color: var(--light);
+    width: 100%;
     display: inline-block;
     flex: 1;
     
@@ -160,3 +161,21 @@
     background-color: #6053ed;
     text-shadow: 0 0 5px #fff;
 }
+
+@media (max-width: 768px) {
+    .header{
+        width: 100%;
+    }
+    .sidebar{ 
+        display:none;  
+        width: 0%;
+    }
+    .body{
+        position: relative;
+        width:100%;
+        left: 0px;
+  
+    }
+  }
+
+  /*   right: calc(  83.3333% - 100% ); */

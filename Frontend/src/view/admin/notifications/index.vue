@@ -149,7 +149,7 @@ export default {
   <div class="body m-0">
     <div class="border-radius mb-3 row m-0 justify-content-start">
       <div
-        class="input-group col-2 align-items-center ml-2 m-0 pr-0"
+        class="input-group col-1 align-items-center mx-2 m-0 pr-0"
         style="width: 135px"
       >
         <input
@@ -159,7 +159,7 @@ export default {
           style="height: 36px"
         />
       </div>
-      <div class="input-group col-3 m-0 p-0 align-items-center">
+      <div class="input-group col-3 mx-4 p-0 align-items-center">
         <input
           type="search"
           v-model="data.searchText"

@@ -152,6 +152,7 @@ export default {
       try {
         const documentRoom = await roomService.getAll();
         data.items = documentRoom.message;
+        console.log(data.items);
         data.items = data.items.filter((item) => item.status == false);
         if (data.address != "") {
           data.items = data.items.filter((item) =>
@@ -313,6 +314,7 @@ export default {
         />
 
         <div class="card-body m-0 p-0">
+          <h6>Nhà trọ : {{ value.BoardingHouse.name }}</h6>
           <p class="card-text">Phòng {{ value.name }}</p>
           <p class="card-text">
             Diện tích: {{ value.long }} x {{ value.wide }} m²

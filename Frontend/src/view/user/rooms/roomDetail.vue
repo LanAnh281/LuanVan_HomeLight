@@ -238,7 +238,7 @@ export default {
         <h6>Liên hệ</h6>
         <p>Địa chỉ: {{ data.item.BoardingHouse.address }}</p>
         <p>
-          SĐT:
+          Điện thoại:
           <span class="text-info"> {{ data.item.BoardingHouse.phone }}</span>
         </p>
         <button

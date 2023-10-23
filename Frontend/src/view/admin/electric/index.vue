@@ -348,6 +348,7 @@ export default {
       @save="handleCreate"
     ></Table>
     <Pagination
+      class="mt-2"
       :currentPage="data.currentPage"
       :totalPage="data.totalPage"
       :size="data.sizePage"

@@ -86,7 +86,7 @@ export default {
     };
     const handlePay = async () => {
       try {
-        console.log("Thanh toán", data.item.Rooms[0].Bills[0].debt);
+        // console.log("Thanh toán", data.item.Rooms[0].Bills[0].debt);
         const documentPay = await payService.create({
           boardingId: data.item.Rooms[0].boardingId,
           _id: data.item.Rooms[0].Bills[0]._id,
@@ -262,7 +262,7 @@ export default {
           Nhà trọ: {{ data.item.Rooms[0].BoardingHouse.name }}
         </div>
         <div class="col-12">
-          SĐT: {{ data.item.Rooms[0].BoardingHouse.phone }}
+          Điện thoại: {{ data.item.Rooms[0].BoardingHouse.phone }}
         </div>
         <div class="col-12">
           Địa chỉ: {{ data.item.Rooms[0].BoardingHouse.address }}
@@ -293,11 +293,11 @@ export default {
         </button>
       </div>
       <div class="col-12 text-center m-0 p-0">
-        <h4 class="title" style="color: black">
-          Hóa đơn tiền trọ Tháng {{ now.getMonth() + 1 }}/{{
-            now.getFullYear()
+        <h5 class="title" style="color: black">
+          Hóa đơn tiền trọ Tháng {{ data.selectDate.getMonth() + 1 }}/{{
+            data.selectDate.getFullYear()
           }}
-        </h4>
+        </h5>
         <!-- <p>Tháng {{ now.getMonth() + 1 }} / {{ now.getFullYear() }}</p> -->
       </div>
       <div class="col-12 row mx-1 m-0 px-1 p-0">

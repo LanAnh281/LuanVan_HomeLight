@@ -25,7 +25,7 @@ export default {
           active: "homepage",
         },
         {
-          name: "Phòng trọ",
+          name: "Nhà trọ",
           active: "rooms",
         },
         // {
@@ -70,13 +70,11 @@ export default {
 
     const handleUpdate = async (value) => {
       try {
-        console.log("update");
         // update user_not
         const documentUserNoti = await user_notificationService.update(value, {
           isRead: true,
           isDelete: false,
         });
-        console.log(documentUserNoti);
         await refresh();
         //value là của notiId
       } catch (error) {
@@ -125,29 +123,31 @@ export default {
           const documentUserNoti = await user_notificationService.getAllUser();
           data.items = documentUserNoti.message;
           const now = new Date();
-          data.items = data.items.Notifications.map((item) => {
-            const time =
-              now.getTime() -
-              new Date(item.User_Notification.createdAt).getTime();
-            let previousTime = "";
-            const minutes = Math.ceil(time / (60 * 1000));
-            const hours = Math.ceil(time / (60 * 60 * 1000));
-            const days = Math.ceil(time / (24 * 60 * 60 * 1000));
-            if (minutes < 60) {
-              previousTime = `${minutes} phút trước`;
-            } else if (hours < 24) {
-              previousTime = `${hours} giờ trước`;
-            } else {
-              previousTime = ` ${days} ngày trước`;
-            }
-            if (item.User_Notification.isRead == false) {
-              data.noti++;
-            }
-            return {
-              ...item,
-              time: previousTime,
-            };
-          });
+          if (data.items.Notifications) {
+            data.items = data.items.Notifications.map((item) => {
+              const time =
+                now.getTime() -
+                new Date(item.User_Notification.createdAt).getTime();
+              let previousTime = "";
+              const minutes = Math.ceil(time / (60 * 1000));
+              const hours = Math.ceil(time / (60 * 60 * 1000));
+              const days = Math.ceil(time / (24 * 60 * 60 * 1000));
+              if (minutes < 60) {
+                previousTime = `${minutes} phút trước`;
+              } else if (hours < 24) {
+                previousTime = `${hours} giờ trước`;
+              } else {
+                previousTime = ` ${days} ngày trước`;
+              }
+              if (item.User_Notification.isRead == false) {
+                data.noti++;
+              }
+              return {
+                ...item,
+                time: previousTime,
+              };
+            });
+          }
         }
       } catch (error) {
         if (error.response) {
@@ -167,12 +167,17 @@ export default {
     );
     onMounted(async () => {
       try {
-        let name = localStorage.getItem("userName");
-        name = name.split(" ");
-        if (name.length >= 2) {
-          data.userName = `${name[name.length - 2]} ${name[name.length - 1]}`;
-        } else data.userName = name[0];
         position.value = localStorage.getItem("position");
+        if (position.value == "super-admin") {
+          data.userName = "Quản trị viên";
+        } else {
+          let name = localStorage.getItem("userName");
+          name = name.split(" ");
+          if (name.length >= 2) {
+            data.userName = `${name[name.length - 2]} ${name[name.length - 1]}`;
+          } else data.userName = name[0];
+        }
+
         // data.active = "homepage";
 
         await refresh();

@@ -45,10 +45,19 @@ export default {
               document["expiresIn"]
             );
             const allowedPositions = ["admin", "super-admin"];
-            const routeName = allowedPositions.includes(document["position"])
-              ? "dashboard"
-              : "homepage";
-            router.push({ name: routeName });
+            // 2 người dùng
+            // const routeName = allowedPositions.includes(document["position"])
+            //   ? "dashboard"
+            //   : "homepage";
+            // router.push({ name: routeName });
+            //3 người dùng
+            if (document["position"] == "admin") {
+              router.push({ name: "dashboard" });
+            } else if (document["position"] == "super-admin") {
+              router.push({ name: "account" });
+            } else {
+              router.push({ name: "homepage" });
+            }
           } else {
             warning("Thất bại", "Kiểm tra tên đăng nhập và mật khẩu");
           }

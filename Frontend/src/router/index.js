@@ -41,12 +41,15 @@ const routes = [
     name: "changePassword",
     component: () => import("../view/common/changePassword.vue"),
   },
-  //Admin
+  //superAdmin
+  //account
   {
-    path: "/admin/account",
+    path: "/superadmin/account",
     name: "account",
-    component: () => import("../view/admin/account/index.vue"),
+    component: () => import("../view/superadmin/account/index.vue"),
   },
+  //Admin
+
   //dashboard
   {
     path: "/admin/dashboard",

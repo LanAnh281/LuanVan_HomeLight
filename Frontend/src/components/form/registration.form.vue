@@ -55,6 +55,7 @@ export default {
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
       flag: true,
+      submit: "Đăng ký",
     });
     // const isPay = ref(false);
     const isModalOpen = ref(false);
@@ -125,7 +126,7 @@ export default {
     };
     const save = async () => {
       try {
-        console.log(data.item);
+        // console.log(data.item);
         for (const key in data.error) {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
@@ -141,9 +142,10 @@ export default {
 
           // sử dụng axios có headers :{"Content-Type": "multipart/form-data",}
           //Kết nối với backend
-          setTimeout(() => {
-            load();
-          }, 1000);
+          // setTimeout(() => {
+          //   load();
+          // }, 1000);
+          data.submit = "Đang đăng ký";
           const documents = await axios.post(
             `http://localhost:3000/api/users`,
             formData,
@@ -164,15 +166,22 @@ export default {
             _.forEach(formFields, (field) => {
               data.item[field] = "";
             });
+            data.submit = "Đăng ký";
           }
         }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
+          warning("Cảnh báo", "Email đã được đăng ký");
+          data.submit = "Đăng ký";
         } else if (error.request) {
           console.log("Client-side errors", error.request);
+          warning("Cảnh báo", "Email đã được đăng ký");
+          data.submit = "Đăng ký";
         } else {
           console.log("Errors:", error.message);
+          warning("Cảnh báo", "Email đã được đăng ký");
+          data.submit = "Đăng ký";
         }
       }
     };
@@ -248,6 +257,8 @@ export default {
             </button>
           </div>
           <div class="modal-body">
+            <span class="text-danger">(*)</span>
+            <span> Đăng ký dành cho chủ nhà trọ</span>
             <form
               @submit.prevent="save"
               enctype="multipart/form-data"
@@ -529,8 +540,12 @@ export default {
               <!-- BTN submit -->
 
               <div class="form-group row justify-content-around mb-0">
-                <button type="submit" class="btn btn-login col-sm-2">
-                  Đăng ký
+                <button
+                  type="submit"
+                  class="btn btn-login col-sm-3"
+                  :disabled="data.submit == 'Đang đăng ký'"
+                >
+                  {{ data.submit }}
                 </button>
               </div>
             </form>

@@ -479,6 +479,7 @@ export default {
 .body {
   min-height: 200vh;
 }
+
 .select {
   background-color: var(--background);
 }

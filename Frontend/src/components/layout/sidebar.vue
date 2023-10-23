@@ -53,6 +53,42 @@ export default {
       ],
       active: "dashboard",
       userName: "",
+      position: "",
+      itemSuper: [
+        { name: "Thống kê", icon: "bar_chart_4_bars", active: "dashboard" },
+        { name: "Nhà trọ", icon: "person", active: "customer" },
+        {
+          name: "Dịch vụ",
+          icon: "energy_program_time_used",
+          active: "service",
+        },
+        {
+          name: "Chi phí",
+          icon: "monetization_on",
+          active: "spending",
+        },
+        {
+          name: "Hóa đơn",
+          icon: "payments",
+          active: "bill",
+        },
+        {
+          name: "Thông báo",
+          icon: "notifications",
+          active: "notifications",
+        },
+        {
+          name: "Báo cáo",
+          icon: "text_snippet",
+          active: "report",
+        },
+
+        {
+          name: "Tài khoản",
+          icon: "manage_accounts",
+          active: "account",
+        },
+      ],
     });
     const logout = async () => {
       localStorage.removeItem("accessToken");
@@ -71,6 +107,7 @@ export default {
 
     onMounted(async () => {
       data.userName = localStorage.getItem("userName");
+      data.position = localStorage.getItem("position");
     });
     return { data, router, logout };
   },
@@ -117,7 +154,7 @@ export default {
     <!-- Sử dụng inline styles để tùy chỉnh dòng gạch ngang -->
     <hr style="border-color: rgb(230, 221, 221)" class="m-0" width="" />
     <div class="list mx-2">
-      <ul>
+      <ul v-if="data.position == 'admin'">
         <li
           v-for="(value, index) in data.item"
           :key="index"
@@ -129,6 +166,32 @@ export default {
                 logout();
                 return;
               }
+              data.active = value.active;
+              router.push({ name: data.active });
+            }
+          "
+        >
+          <div>
+            <span
+              class="material-symbols-outlined mr-2"
+              style="font-size: 16px"
+            >
+              {{ value.icon }}
+            </span>
+            <p class="mb-0" style="font-size: 16px">{{ value.name }}</p>
+          </div>
+        </li>
+      </ul>
+
+      <!--  -->
+      <ul v-if="data.position == 'super-admin'">
+        <li
+          v-for="(value, index) in data.itemSuper"
+          :key="index"
+          class="pl-2 my-3 w-100"
+          :class="data.active == value.active ? 'isActive' : ''"
+          @click="
+            () => {
               data.active = value.active;
               router.push({ name: data.active });
             }
