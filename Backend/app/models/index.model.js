@@ -39,13 +39,14 @@ const Roles_Positions = sequelize.define("Roles_Positions", {});
 const Accounts = sequelize.define("Accounts", {
   _id: setPrimary,
   userName: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {
       notEmpty: {
         msg: "Tên tài khoản  không được bỏ trống.",
       },
     },
+    unique: true,
   },
   password: {
     type: DataTypes.TEXT,
@@ -86,13 +87,14 @@ const Users = sequelize.define("Users", {
     type: DataTypes.TEXT,
   },
   email: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {
       notEmpty: {
         msg: "Email người dùng không được bỏ trống.",
       },
     },
+    unique: true, // email unique
   },
   phone: {
     type: DataTypes.STRING,

@@ -111,11 +111,11 @@ exports.create = async () => {
         date: now,
         content: `Thông báo hóa đơn ${now.getMonth() + 1}/${now.getFullYear()}`,
       });
-      console.log("Thông báo:", documentNoti);
+      // console.log("Thông báo:", documentNoti);
       const documentUser_Room = await User_Room.findAll({
         where: { RoomId: room._id },
       });
-      console.log("user_room:", documentUser_Room);
+      // console.log("user_room:", documentUser_Room);
       for (let user of documentUser_Room) {
         const documentUser_Noti = await User_Notification.create({
           UserId: user.UserId,
