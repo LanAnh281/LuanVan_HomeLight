@@ -121,6 +121,9 @@ const BorardingHouse = sequelize.define("BoardingHouse", {
   address: {
     type: DataTypes.TEXT,
   },
+  image: {
+    type: DataTypes.STRING,
+  },
   isDelete: {
     type: DataTypes.BOOLEAN,
   },

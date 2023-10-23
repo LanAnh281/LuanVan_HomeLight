@@ -503,9 +503,11 @@ export default {
                     id="inputIsPay"
                     placeholder="Nhập mã kết nối do cổng thanh toán cung cấp"
                     v-model="data.item.isPay"
-                  /><span class="text-info"
-                    >Tích hợp thanh toán điện tử Paypal</span
-                  >
+                  /><span class="text-info">Tích hợp thanh toán </span>
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/1280px-PayPal_logo.svg.png"
+                    class="w-25 h-75 m-0 p-0"
+                  />
                 </div>
               </div>
               <div class="form-group row" v-if="data.item.isPay">

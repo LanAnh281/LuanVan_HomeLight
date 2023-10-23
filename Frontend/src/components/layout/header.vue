@@ -358,7 +358,7 @@ export default {
               <div
                 v-if="position"
                 class="dropdown col-6 m-0 p-0"
-                style="position: relative; z-index: 1"
+                style="position: relative; z-index: 2"
               >
                 <a
                   class="btn dropdown-toggle"

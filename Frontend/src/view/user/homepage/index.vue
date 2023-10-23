@@ -1,34 +1,60 @@
+<script>
+import { reactive } from "vue";
+
+export default {
+  setup() {
+    const data = reactive({
+      images: [
+        {
+          src: "../../../assets/image/homepage1.avif",
+          alt: "Ảnh giới thiệu",
+        },
+
+        {
+          src: "../../../assets/image/homepage6.jpg",
+          alt: "Ảnh giới thiệu",
+        },
+
+        {
+          src: "../../../assets/image/homepage7.jpg",
+          alt: "Ảnh giới thiệu",
+        },
+        {
+          src: "../../../assets/image/homepage4.jpg",
+          alt: "Ảnh giới thiệu",
+        },
+      ],
+    });
+    const imageSrc = (url) => {
+      return new URL(url, import.meta.url);
+    };
+    return {
+      data,
+      imageSrc,
+    };
+  },
+};
+</script>
 <template>
   <div class="body container-fluid m-0 p-0 row justify-content-between">
     <div
       id="carouselExampleControls"
-      class="carousel slide col-8 m-auto"
+      class="carousel slide col-12 m-auto"
       data-ride="carousel"
-      style="height: 620px"
+      style="height: 600px"
     >
       <div class="carousel-inner">
-        <div class="carousel-item active">
+        <div
+          class="carousel-item"
+          v-for="(image, index) in data.images"
+          :key="index"
+          :class="{ active: index === 0 }"
+        >
           <img
             class="d-block w-100"
-            src="../../../assets/image/homepag5.jpg"
-            alt="First slide"
-            style="object-fit: contain; height: 580px"
-          />
-        </div>
-        <div class="carousel-item">
-          <img
-            class="d-block w-100"
-            src="../../../assets/image/homepage.png"
-            alt="Second slide"
-            style="object-fit: contain; height: 580px"
-          />
-        </div>
-        <div class="carousel-item">
-          <img
-            class="d-block w-100"
-            src="../../../assets/image/homepage1.webp"
-            alt="Third slide"
-            style="object-fit: contain; height: 580px"
+            :src="imageSrc(image.src)"
+            :alt="image.alt"
+            style="object-fit: cover; height: 580px; width: 100wh"
           />
         </div>
       </div>
@@ -52,15 +78,23 @@
       </a>
     </div>
     <div class="text-center mx-5 px-5">
-      <h5 class="title m-0 p-0">Chúng tôi là ai?</h5>
+      <h5 class="title m-0 my-2 p-0">Chúng tôi là ai?</h5>
+      <p class="font-bold-itali">
+        Sống Dễ Dàng - Tìm Nhà Trọ - Quản Lý Thuận Tiện
+      </p>
       <p>
         <span class="material-symbols-outlined"> line_end_circle </span>
         <span class="material-symbols-outlined"> line_start_circle </span>
       </p>
+
       <p class="font-bold-itali">
-        Sống Dễ Dàng - Tìm Nhà Trọ - Quản Lý Thuận Tiện
+        Nơi chúng tôi sẽ mang lại trải nghiệm độc đáo cho cả chủ trọ và khách
+        thuê.
       </p>
 
+      <p class="font-bold-itali">
+        Chúng tôi tạo điều kiện thuận lợi cho tất cả người dùng.
+      </p>
       <p>
         Hệ thống của chúng tôi giúp bạn dễ dàng tìm kiếm các căn nhà trọ lý
         tưởng và cũng cung cấp cho chủ trọ một cách thuận tiện để quản lý nhà
@@ -74,18 +108,54 @@
         <strong>QUYỀN LỢI</strong> cho người thuê phòng và cả cộng đồng.
       </p>
     </div>
-    <!-- <div class="text-center">
-      <h5 class="title">Tin tức</h5>
-      <p>
-        <span class="material-symbols-outlined"> line_end_circle </span>
-        <span class="material-symbols-outlined"> line_start_circle </span>
-      </p>
-    </div> -->
+
+    <div class="text-center my-5">
+      <div class="row mx-1 justify-content-between">
+        <div class="col card mx-2 p-2">
+          <img
+            src="../../../assets/image/homepage8.jpg"
+            alt="thông tin quản lý nhà trọ"
+            class="w-100 homepageImg m-0 p-0"
+          />
+          <div class="card-body">
+            <p class="card-text">
+              Đối với người tìm trọ, bạn có thể tìm kiếm căn trọ một cách dễ
+              dàng.
+            </p>
+          </div>
+        </div>
+        <div class="col card mx-2 p-2">
+          <img
+            src="../../../assets/image/homepage3.jpg"
+            alt="thông tin quản lý nhà trọ"
+            class="w-100 homepageImg m-0 p-0"
+          />
+          <div class="card-body">
+            <p class="card-text">
+              Đối với khách thuê, bạn có thể dễ dàng thực hiện thanh toán và
+              theo dõi thông tin về phòng trọ của mình.
+            </p>
+          </div>
+        </div>
+        <div class="col card m-0 p-2 mx-2">
+          <img
+            src="../../../assets/image/homepage2.webp"
+            alt="thông tin quản lý nhà trọ"
+            class="w-100 homepageImg m-0 p-0"
+          />
+          <div class="card-body">
+            <p class="card-text">
+              Dành cho chủ nhà trọ, bạn có thể quản lý nhà trọ của mình.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <style scoped>
 .body {
-  height: 130vh;
+  height: 240vh;
 }
 #carouselExampleControls {
   /* left: 0;
@@ -101,5 +171,18 @@ p {
 .font-bold-itali {
   font-weight: bold; /* Độ đậm vừa */
   font-style: italic; /* Nghiêng */
+}
+
+.carousel-item {
+  transition: transform 0.4s ease-in-out;
+}
+.homepageImg {
+  width: 100%;
+  height: 360px;
+}
+.homepageImg:hover {
+  scale: 1.02;
+  transition: 0.5s ease-in-out;
+  border-radius: 4px;
 }
 </style>

@@ -2,6 +2,8 @@ const express = require("express");
 const BorardingHouse = require("../controller/boardinghouse.controller");
 const authorization = require("../middeware/authorization.middeware");
 const request = require("../middeware/request.midderware");
+const upload = require("../middeware/upload.middeware");
+const FormatImg = require("../middeware/formatImg");
 
 const router = express.Router();
 router
@@ -10,6 +12,8 @@ router
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,
+    upload.uploadStatic.array("files"),
+
     authorization.authorization("thêm nhà trọ"),
     BorardingHouse.create,
   ]);

@@ -109,44 +109,46 @@ export default {
         const documentBoarding = await boardinghouseService.get(
           props.boardingId
         );
+
         data.item = documentBoarding.message;
+        if (data.item) {
+          const address = data.item.address.split(" - ");
+          //number
+          data.item.number = address[0];
+          //city
+          const response = await axios.get(
+            `https://provinces.open-api.vn/api/?depth=1`
+          );
+          data.city = response;
+          data.levels.city = response;
+          data.levels.city = data.levels.city.data.filter(
+            (item) => item.name == address[3]
+          );
+          data.levels.city = data.levels.city[0];
+          data.item.city = data.levels.city;
+          //district
+          const document = await city(data.levels.city.code);
+          data.levels.district = document.district;
+          data.district = document.district;
+          data.levels.district = data.levels.district.data.districts.filter(
+            (item) => item.name == address[2]
+          );
+          data.levels.district = data.levels.district[0];
+          data.item.district = data.levels.district;
 
-        const address = data.item.address.split(" - ");
-        //number
-        data.item.number = address[0];
-        //city
-        const response = await axios.get(
-          `https://provinces.open-api.vn/api/?depth=1`
-        );
-        data.city = response;
-        data.levels.city = response;
-        data.levels.city = data.levels.city.data.filter(
-          (item) => item.name == address[3]
-        );
-        data.levels.city = data.levels.city[0];
-        data.item.city = data.levels.city;
-        //district
-        const document = await city(data.levels.city.code);
-        data.levels.district = document.district;
-        data.district = document.district;
-        data.levels.district = data.levels.district.data.districts.filter(
-          (item) => item.name == address[2]
-        );
-        data.levels.district = data.levels.district[0];
-        data.item.district = data.levels.district;
-
-        //ward
-        const ward = await axios.get(
-          `https://provinces.open-api.vn/api/d/${data.levels.district.code}?depth=2`,
-          {}
-        );
-        data.levels.ward = ward;
-        data.ward = ward;
-        data.levels.ward = ward.data.wards.filter(
-          (item) => item.name == address[1]
-        );
-        data.levels.ward = data.levels.ward[0];
-        data.item.ward = data.levels.ward;
+          //ward
+          const ward = await axios.get(
+            `https://provinces.open-api.vn/api/d/${data.levels.district.code}?depth=2`,
+            {}
+          );
+          data.levels.ward = ward;
+          data.ward = ward;
+          data.levels.ward = ward.data.wards.filter(
+            (item) => item.name == address[1]
+          );
+          data.levels.ward = data.levels.ward[0];
+          data.item.ward = data.levels.ward;
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -187,9 +189,8 @@ export default {
     };
     const handleDelete = async () => {
       try {
-        console.log(props.boardingId);
         const rooms = await roomService.getAllRoom(props.boardingId);
-        console.log(":", rooms);
+
         data.flag = false;
         for (let value of rooms.message) {
           if (value.status == true) {
@@ -198,7 +199,7 @@ export default {
             break;
           }
         }
-        console.log(data.flag);
+        // console.log(data.flag);
         if (data.flag) return;
         const isDelete = await deleted(
           `Xóa nhà trọ ${data.item.name}`,
@@ -209,7 +210,20 @@ export default {
           document.status == "success"
             ? successAd(`Xóa thành công nhà trọ ${data.item.name} `)
             : warning("Xóa thất bại", `Xóa thất bại nhà trọ ${data.item.name}`);
-          await refresh();
+          data.item = {
+            name: "",
+            phone: "",
+            address: "",
+            rules: "",
+            isDelete: false,
+            city: { code: "", name: "" },
+            district: { code: "", name: "" },
+            ward: { code: "", name: "" },
+            number: "",
+          };
+          // data.levels.city = "";
+          // data.levels.district = "";
+          // data.levels.ward = "";
           emit("edit");
         }
       } catch (error) {

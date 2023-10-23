@@ -11,9 +11,9 @@ router
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,
-    upload.uploadStatic.array("files"),
-
     authorization.authorization("thêm phòng trọ"),
+    upload.uploadStatic.array("files"),
+    FormatImg.format,
     room.create,
   ]);
 router
