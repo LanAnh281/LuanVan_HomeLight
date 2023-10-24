@@ -6,7 +6,7 @@ export default {
     const data = reactive({
       images: [
         {
-          src: "../../../assets/image/homepage1.avif",
+          src: "../../../assets/image/homepage5.jpg",
           alt: "Ảnh giới thiệu",
         },
 

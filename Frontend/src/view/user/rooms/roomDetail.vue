@@ -13,13 +13,14 @@ import "leaflet/dist/leaflet.css"; // Import CSS của Leaflet
 import L from "leaflet";
 //service
 import roomService from "../../../service/room.service";
-
+import serviceService from "../../../service/room.service";
 //js
 import { formatCurrency } from "../../../assets/js/format.common";
 
 //component
 import paginationVue from "../../../components/pagination/pagination.vue";
 import Message from "./message.vue";
+import service_roomService from "../../../service/service_room.service";
 
 export default {
   components: { paginationVue, Message },
@@ -39,6 +40,7 @@ export default {
           url: "",
         },
       ],
+      services: [{ name: "", price: "" }],
       city: {},
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
@@ -87,6 +89,13 @@ export default {
             );
           });
         }
+        // const documentService = await serviceService.getAll();
+        // data.services = documentService.message;
+
+        // data.services = data.services.filter((item) => {
+        //   return item.BoardingHouse.userId == data.item.BoardingHouse.userId;
+        // });
+        // console.log(data.services);
         //gg map
         data.item.url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyCqNLriKAssr6bSDriqJg2YdfwqdBAYy30&q=${data.item.BoardingHouse.address}`;
         // //Map
@@ -235,21 +244,42 @@ export default {
         <p v-for="(value, index) in data.item.content" :key="index">
           {{ value }}
         </p>
+        <h6>Dịch vụ</h6>
+        <div v-for="(value, index) in data.services" :key="index">
+          {{ value }}
+        </div>
         <h6>Liên hệ</h6>
         <p>Địa chỉ: {{ data.item.BoardingHouse.address }}</p>
         <p>
           Điện thoại:
           <span class="text-info"> {{ data.item.BoardingHouse.phone }}</span>
+          <!-- <img :src="data.item.qrCodeUrl" alt="QR" class="mx-2" /> -->
         </p>
-        <button
-          class="btn btn-login"
-          data-toggle="modal"
-          data-target="#messageModal"
-          @click="isMessage = !isMessage"
-        >
-          Nhắn tin cho chủ trọ
-        </button>
-        <img :src="data.item.qrCodeUrl" alt="QR" class="mx-2" />
+        <div class="row">
+          <button
+            class="btn btn-login col-4 mx-2"
+            style="height: 40px"
+            data-toggle="modal"
+            data-target="#messageModal"
+            @click="isMessage = !isMessage"
+          >
+            Nhắn tin cho chủ trọ
+          </button>
+          <span>Hoặc</span>
+          <div class="col-3 card mx-2 p-0 text-center">
+            <img
+              :src="data.item.qrCodeUrl"
+              alt="QR"
+              class="mx-auto p-0"
+              style="width: 120px"
+            />
+            <div class="card-body m-0 p-0 pb-2">
+              <p class="card-text">Liên hệ qua số điện thoại</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- <img :src="data.item.qrCodeUrl" alt="QR" class="mx-2" /> -->
 
         <!-- component -->
         <Message
