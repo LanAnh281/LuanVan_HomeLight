@@ -217,6 +217,12 @@ const PAYMENTHISTORY = sequelize.define("PAYMENTHISTORY", {
   money: { type: DataTypes.STRING },
   method: { type: DataTypes.STRING },
 });
+const Amenities = sequelize.define("Amenities", {
+  _id: setPrimary,
+  name: { type: DataTypes.STRING },
+  userId: { type: DataTypes.STRING },
+});
+const Amenitie_Room = sequelize.define("Amenitie_Room", {});
 // checked
 //many-to-many relationship
 Roles.belongsToMany(Positions, {
@@ -430,6 +436,17 @@ Payment.belongsTo(Users, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+//many-to-many
+Amenities.belongsToMany(Rooms, {
+  through: Amenitie_Room,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Rooms.belongsToMany(Amenities, {
+  through: Amenitie_Room,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 // Sync the model with the database
 
 Roles.sync();
@@ -461,6 +478,8 @@ LandlordTenant.sync();
 
 Payment.sync();
 PAYMENTHISTORY.sync();
+Amenities.sync();
+Amenitie_Room.sync();
 module.exports = {
   Roles,
   Positions,
@@ -489,4 +508,6 @@ module.exports = {
 
   Payment,
   PAYMENTHISTORY,
+  Amenities,
+  Amenitie_Room,
 };

@@ -45,7 +45,7 @@ const ruleRouter = require("./app/route/rule.route");
 const mediaRouter = require("./app/route/media.route");
 const UtilityReadingsRouter = require("./app/route/utilityreadings.route");
 const userNotificationRouter = require("./app/route/userNotification.route");
-
+const amenitieRouter = require("./app/route/amenitie.route");
 const routepaypal = require("./app/route/paypal.route");
 //midderware
 // controller
@@ -96,22 +96,23 @@ app.use("/api/rule", ruleRouter);
 app.use("/api/media", mediaRouter);
 app.use("/api/UtilityReadings", UtilityReadingsRouter);
 app.use("/api/usernotification", userNotificationRouter);
+app.use("/api/amenitie", amenitieRouter);
 app.use("/api/paypal", routepaypal);
 const QRCode = require("qrcode");
-app.use("/api/test", (req, res, next) => {
-  const phoneNumber = "0797735289"; // Thay thế bằng số điện thoại thực tế
+// app.use("/api/test", (req, res, next) => {
+//   const phoneNumber = "0797735289"; // Thay thế bằng số điện thoại thực tế
 
-  QRCode.toDataURL(`tel:${phoneNumber}`, (err, url) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
+//   QRCode.toDataURL(`tel:${phoneNumber}`, (err, url) => {
+//     if (err) {
+//       console.error(err);
+//       return;
+//     }
 
-    // Ở đây, bạn có thể gửi URL của mã QR về phía frontend hoặc lưu nó trong cơ sở dữ liệu để sử dụng sau này.
-    console.log(url);
-    res.json({ qrCodeUrl: url });
-  });
-});
+//     // Ở đây, bạn có thể gửi URL của mã QR về phía frontend hoặc lưu nó trong cơ sở dữ liệu để sử dụng sau này.
+//     console.log(url);
+//     res.json({ qrCodeUrl: url });
+//   });
+// });
 
 // check errors
 app.use((req, res, next) => {
