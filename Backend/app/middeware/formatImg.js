@@ -33,7 +33,7 @@ exports.format = async (req, res, next) => {
             const outputPath = `${uploadDir}/F${newestFiles[index]}`;
             sharp(inputPath)
               .resize({ width: 800, height: 800 })
-              .toFile(outputPath, (err, info) => {
+              .toFile(outputPath, async (err, info) => {
                 if (err) {
                   console.error("Lỗi trong quá trình định dạng lại ảnh:", err);
                 } else {
@@ -41,7 +41,15 @@ exports.format = async (req, res, next) => {
                     "Ảnh đã được định dạng lại và lưu tại:",
                     outputPath
                   );
-                  fs.unlinkSync(inputPath);
+
+                  // fs.unlinkSync(inputPath);
+                  fs.unlink(inputPath, (err) => {
+                    if (err) {
+                      console.error("Lỗi trong quá trình xóa tệp:", err);
+                    } else {
+                      console.log("Tệp đã được xóa thành công:", inputPath);
+                    }
+                  });
                 }
               });
           }

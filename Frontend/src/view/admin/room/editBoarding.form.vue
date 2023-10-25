@@ -1,6 +1,7 @@
 <script>
 import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import axios from "axios";
+import _ from "lodash";
 
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
@@ -34,6 +35,7 @@ export default {
         district: { code: "", name: "" },
         ward: { code: "", name: "" },
         number: "",
+        countFiles: 0,
       },
       levels: {
         city: { code: "", name: "" },
@@ -45,8 +47,14 @@ export default {
       city: {},
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
+      media: [],
+      removeMedia: [],
+      mediasCopy: [],
+      uploadFiles: [],
+      files: [],
     });
     const isModalOpen = ref(false);
+    const filesRef = ref(null);
     const openModal = () => {
       isModalOpen.value = true;
       console.log("open modal boarding");
@@ -149,6 +157,10 @@ export default {
           data.levels.ward = data.levels.ward[0];
           data.item.ward = data.levels.ward;
         }
+        data.media = data.item.Media;
+        data.mediasCopy = data.media;
+        data.removeMedia = []; // init remove medias list
+        // console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -162,21 +174,63 @@ export default {
     const save = async () => {
       try {
         data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-        const document = await boardinghouseService.update(props.boardingId, {
-          boardingId: data.item.boardingId,
-          address: data.item.address,
-          name: data.item.name,
-          phone: data.item.phone,
-          isDelete: false,
+        data.item.countFiles = data.uploadFiles.length;
+        console.log(data.uploadFiles.length);
+        const formData = new FormData();
+        _.forEach(formFields, (field) => {
+          console.log(field, ":", data.item[field]);
+          formData.append(field, data.item[field]);
         });
-        if (document["status"] == "success") {
+        _.forEach(data.removeMedia, (media) => {
+          console.log(media);
+          if (media != "") {
+            formData.append("removeMedia", media);
+          }
+        });
+        console.log("remove Media:", data.removeMedia);
+        formData.append("removeMedia", data.removeMedia);
+        _.forEach(data.uploadFiles, (file) => {
+          if (validate(file) === "") {
+            formData.append("files", file);
+          }
+        });
+        const documentUpdate = await boardinghouseService.update(
+          props.boardingId,
+          formData
+        );
+        if (documentUpdate["status"] == "success") {
           successAd(`Đã cập nhật nhà trọ `);
           await refresh();
           emit("edit");
+          const previewImage = document.getElementById("previewImagesEdit");
+          previewImage.innerHTML = "";
+
+          data.files = [];
+          data.uploadFiles = [];
+          filesRef.value = document.getElementById("inputImage"); //Get input
+          filesRef.value.value = "";
+          data.removeMedia = [];
         } else {
           console.log("Thất bại");
           warning("Thất bại", "Bạn không có quyền chỉnh sửa nhà trọ.");
         }
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const handleDeleteMedia = (value) => {
+      try {
+        console.log("xóa ảnh nhà trọ");
+        data.mediasCopy = data.mediasCopy.filter(
+          (item) => item["name"] != value
+        );
+        data.removeMedia.push(value);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -236,8 +290,109 @@ export default {
         }
       }
     };
+    const handleFileUpload = (event) => {
+      // data.uploadFiles = [];
+      const files = event.target.files;
+      data.uploadFiles = [...data.uploadFiles, ...files];
+      const previewImage = document.getElementById("previewImagesEdit");
+      previewImage.innerHTML = "";
+      const rowImages = document.createElement("div");
+      rowImages.classList.add("row");
+      for (const file of data.uploadFiles) {
+        const reader = new FileReader();
+        let invalidMessage = validate(file);
+        if (invalidMessage == "") {
+          reader.onload = function (e) {
+            const colImage = document.createElement("div");
+            colImage.classList.add("justify-content-between");
+            colImage.classList.add("col-6");
+            colImage.id = file.name;
+            const img = document.createElement("img");
+
+            img.src = e.target.result;
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
+            img.style.objectFit = "contain";
+            const deleteicon = document.createElement("span");
+            deleteicon.textContent = "x";
+            deleteicon.classList.add("delete-icon-add");
+            deleteicon.addEventListener("click", () => {
+              // alert(`xóa ${file.name} `);
+              data.uploadFiles = data.uploadFiles.filter(
+                (item) => item != file
+              );
+              const imgRemove = document.getElementById(file.name);
+              imgRemove.remove();
+            });
+            const br = document.createElement("br");
+            colImage.appendChild(img);
+            colImage.appendChild(br);
+
+            const span = document.createElement("span");
+            span.textContent = `${file.name}`;
+            colImage.appendChild(deleteicon);
+            colImage.appendChild(span);
+
+            rowImages.appendChild(colImage);
+            previewImage.appendChild(rowImages);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          const colImage = document.createElement("div");
+          colImage.classList.add("col-6");
+          const span = document.createElement("span");
+          span.textContent = `${file.name}`;
+          span.style.color = "red";
+          colImage.appendChild(span);
+
+          rowImages.appendChild(colImage);
+          previewImage.appendChild(rowImages);
+        }
+      }
+      data.files = [
+        ...data.files,
+        ..._.map(files, (file) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          url: null,
+          invalidMessage: validate(file),
+        })),
+      ];
+    };
+    const validate = (file) => {
+      const MAX_SIZE = 200000;
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      const MAX_SIZE_VIDEO = 100000000; //100Mb
+      const allowedTypesVideo = [
+        "video/mp4",
+        "video/avi",
+        "video/webm",
+        "video/mov",
+      ];
+      if (
+        !allowedTypes.includes(file.type) &&
+        !allowedTypesVideo.includes(file.type)
+      ) {
+        return "not an image and a video";
+      }
+      const maxSize = allowedTypes.includes(file.type)
+        ? MAX_SIZE
+        : MAX_SIZE_VIDEO;
+      if (file.size > maxSize) {
+        return `Max size: ${MAX_SIZE / 1000}kb `;
+      }
+      return "";
+    };
+    const formFields = ["name", "phone", "address", "countFiles"];
     onBeforeMount(async () => {
       await refresh();
+      filesRef.value = document.getElementById("inputImage"); //Get input
       $("#editBoardingModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#editBoardingModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
@@ -252,6 +407,8 @@ export default {
       change,
       changeDistrict,
       changeWard,
+      handleDeleteMedia,
+      handleFileUpload,
     };
   },
 };
@@ -361,7 +518,43 @@ export default {
                 ></textarea>
               </div>
             </div>
+            <!-- Image -->
+            <div class="form-group row">
+              <label
+                for="inputImagePrevious"
+                class="col-sm-3 col-form-label p-0"
+                >Ảnh phòng trọ :</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="file"
+                  ref="files"
+                  multiple
+                  @change="handleFileUpload($event)"
+                  class="form-control"
+                  id="inputImage"
+                />
+              </div>
+              <div id="previewImagesEdit" class="container"></div>
 
+              <div class="row">
+                <div
+                  class="mt-3 imagesDiv col-6"
+                  v-for="(value, index) in data.mediasCopy"
+                  :key="index"
+                >
+                  <img
+                    class="images"
+                    :src="`http://localhost:3000/static/images/${value.name}`"
+                  />
+                  <span
+                    class="delete-icon"
+                    @click="handleDeleteMedia(value.name)"
+                    >x</span
+                  >
+                </div>
+              </div>
+            </div>
             <div class="form-group row justify-content-start mb-0">
               <div class="col-sm-3"></div>
               <button
@@ -385,3 +578,31 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.modal-content {
+  width: 160%;
+  margin-left: -16%;
+}
+.images {
+  max-width: 100%;
+  max-height: 70%px;
+  object-fit: contain;
+}
+.imagesDiv {
+  position: relative;
+}
+.delete-icon {
+  position: absolute;
+  top: -10px;
+  right: -1px;
+  opacity: 1;
+  color: var(--red);
+  line-height: 1;
+  text-align: center;
+}
+.delete-icon:hover {
+  color: red;
+  font-size: 1.1rem;
+  background-color: var(--gray);
+}
+</style>

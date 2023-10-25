@@ -16,26 +16,31 @@ exports.create = async (req, res, next) => {
 
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Amenities.findAll({});
+    const amenitis = await Amenities.findAll({});
+    let documents = JSON.parse(JSON.stringify(amenitis));
+    documents = documents.filter(
+      (item) => item.userId == "" || item.userId == req.user.userId
+    );
+
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });
   }
 };
-exports.findAllUser = async (req, res, next) => {
-  try {
-    const documents = await Amenities.findAll({
-      where: {
-        userId: req.user.userId,
-      },
-    });
-    res.json({ message: documents, status: "success" });
-  } catch (error) {
-    console.log(error);
-    res.json({ message: error, status: "faild" });
-  }
-};
+// exports.findAllUser = async (req, res, next) => {
+//   try {
+//     const documents = await Amenities.findAll({
+//       where: {
+//         userId: req.user.userId || "",
+//       },
+//     });
+//     res.json({ message: documents, status: "success" });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ message: error, status: "faild" });
+//   }
+// };
 exports.findOne = async (req, res, next) => {
   try {
     const document = await Amenities.findAll({

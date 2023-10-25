@@ -1,17 +1,26 @@
-const { BorardingHouse } = require("../models/index.model.js");
+const { BorardingHouse, Media } = require("../models/index.model.js");
 const { deleteBoardingAndRooms } = require("../models/transaction.service");
 const fs = require("fs");
 const uploadDir = "./static/images";
 const path = require("path");
 exports.create = async (req, res, next) => {
   try {
-    const { name, address, phone, image } = req.body;
+    const { name, address, phone, countFiles } = req.body;
+    console.log("countFiles:", countFiles);
+    const document = await BorardingHouse.create({
+      name: name,
+      address: address,
+      phone: phone,
+      userId: req.user.userId,
+      isDelete: false,
+    });
+    console.log(document);
     fs.readdir(uploadDir, async (error, files) => {
       if (error) {
         console.error("Error reading upload directory:", error);
         return;
       }
-
+      let newestFiles = [];
       //sort the file list by time (using mtime)
       // sort in descending order-
       files.sort((file1, file2) => {
@@ -21,15 +30,16 @@ exports.create = async (req, res, next) => {
       });
 
       // Retrieve the two most recent files.
+      newestFiles = files.slice(0, countFiles);
+      console.log(">>ds ảnh:", newestFiles);
 
-      const document = await BorardingHouse.create({
-        name: name,
-        address: address,
-        phone: phone,
-        image: files[0],
-        userId: req.user.userId,
-        isDelete: false,
-      });
+      for (let index = 0; index < countFiles; index++) {
+        console.log(">>>index:", index);
+        let media = await Media.create({
+          name: newestFiles[index],
+          boardingId: document._id,
+        });
+      }
       res.json({ message: document, status: "success" });
     });
   } catch (error) {
@@ -67,6 +77,7 @@ exports.findOne = async (req, res, next) => {
       where: {
         _id: req.params.id,
       },
+      include: [{ model: Media }],
     });
     return res.json({ message: document, status: "success" });
   } catch (error) {
@@ -75,8 +86,10 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, address, phone, isDelete } = req.body;
+  const { name, address, phone, isDelete, countFiles } = req.body;
   console.log("Update BorardingHouse", req.body);
+  let removeMedia = !req.body.removeMedia ? 0 : req.body.removeMedia;
+  if (removeMedia.length > 0) removeMedia.pop();
   try {
     const document = await BorardingHouse.update(
       {
@@ -92,7 +105,58 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
-    res.json({ message: document, status: "success" });
+    console.log("countFiles:", countFiles);
+    console.log("removeList:", removeMedia);
+    if (document && removeMedia.length > 0) {
+      for (let media of removeMedia) {
+        let filePath = `${uploadDir}/${media}`;
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath); //delete file
+          let destroyMedia = await Media.destroy({
+            where: {
+              name: media,
+            },
+          });
+        }
+      }
+    }
+    if (document && countFiles > 0) {
+      fs.readdir(uploadDir, async (error, files) => {
+        if (error) {
+          console.error("Error reading upload directory:", error);
+          return;
+        }
+        let newestFiles = [];
+
+        //sort the file list by time (using mtime)
+        // sort in descending order-
+        files.sort((file1, file2) => {
+          const stat1 = fs.statSync(path.join(uploadDir, file1));
+          const stat2 = fs.statSync(path.join(uploadDir, file2));
+          return stat2.mtime - stat1.mtime;
+        });
+
+        // Retrieve the two most recent files.
+
+        newestFiles = files.slice(0, countFiles);
+        try {
+          for (let index = 0; index < countFiles; index++) {
+            let media = await Media.create({
+              name: newestFiles[index],
+              boardingId: req.params.id,
+            });
+          }
+          return res.json({ message: document, status: "success" });
+        } catch (error) {
+          return res.json({ message: error, status: "fail" });
+        }
+      });
+    } else if (document) {
+      return res.json({ message: document, status: "success" });
+    } else {
+      return res.json({ message: "fail", status: "faild" });
+    }
+    // res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);
     res.json({ message: error, status: "faild" });

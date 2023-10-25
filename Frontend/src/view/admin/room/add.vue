@@ -1,10 +1,11 @@
 <script>
 import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import _ from "lodash";
-
+import Swal from "sweetalert2";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
+import amenitieService from "../../../service/amenitie.service";
 //component
 import Select from "../../../components/select/select.vue";
 //js
@@ -29,6 +30,7 @@ export default {
         status: false,
         countFiles: 0,
       },
+      amenitie: [{ name: "" }],
       error: {
         name: "",
         price: "",
@@ -40,6 +42,7 @@ export default {
       files: [],
       flag: true,
       boarding: {},
+      checkList: [],
     });
     const isModalOpen = ref(false);
     const filesRef = ref(null);
@@ -297,8 +300,53 @@ export default {
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
       console.log("Thêm nhà trọ", props.boarding);
+      const documentAmenitie = await amenitieService.getAll();
+      data.amenitie = documentAmenitie.message;
+      data.amenitie.push({ _id: "other", name: "Khác" });
+      console.log(data.amenitie);
     });
+    const handleCheck = (event) => {
+      try {
+        console.log(event);
+        console.log(event.target.value, event.target.checked);
+        if (event.target.checked == true && event.target.value == "other") {
+          const showSweetAlert = async () => {
+            const { value: CenterName } = await Swal.fire({
+              title: "Thêm mới trung tâm",
+              input: "text",
+              inputLabel: "Tên trung tâm",
+              inputValue: "",
+              showCancelButton: true,
+              inputValidator: (value) => {
+                if (!value) {
+                  return "Tên trung tâm không được bỏ trống";
+                }
+              },
+            });
 
+            if (CenterName) {
+              console.log(CenterName);
+            }
+            return true;
+          };
+          const value = showSweetAlert();
+          console.log("giá trị nhận đc", value);
+        }
+        data.checkList.push(event.target.value);
+        console.log("check list", data.checkList);
+        // if true push vào thêm
+        // if true mà là other thì show 1 alert dể thêm
+        // nếu false tra trên ds và loại bỏ
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     return {
       data,
       save,
@@ -306,6 +354,7 @@ export default {
       checkAddress,
       checkNumber,
       handleFileUpload,
+      handleCheck,
     };
   },
 };
@@ -515,6 +564,25 @@ export default {
                 />
               </div>
               <div id="previewImages" class="container mt-2"></div>
+            </div>
+            <div class="form-group row justify-content-around mb-0">
+              <label for="inputImage" class="col-sm-3 col-form-label p-0"
+                >Tiện nghi :</label
+              >
+              <div class="col-sm-9 row">
+                <div
+                  class="div col-4"
+                  v-for="(value, index) in data.amenitie"
+                  :key="index"
+                >
+                  <input
+                    type="checkbox"
+                    @change="handleCheck"
+                    :value="value._id"
+                  />
+                  {{ value.name }}
+                </div>
+              </div>
             </div>
             <div class="form-group row justify-content-around mb-0">
               <button type="submit" class="btn btn-login col-sm-2">Thêm</button>

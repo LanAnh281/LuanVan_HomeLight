@@ -31,11 +31,10 @@ router
     authorization.authorization("xóa dịch vụ"),
     Amenities.delete
   );
-router
-  .route("/getAll/user")
-  .get(
-    authorization.authentication,
-    authorization.authorization("xem danh sách dịch vụ"),
-    Amenities.findAllUser
-  );
+router.route("/getAll/user");
+// .get(
+//   authorization.authentication,
+//   authorization.authorization("xem danh sách dịch vụ"),
+//   Amenities.findAllUser
+// );
 module.exports = router;

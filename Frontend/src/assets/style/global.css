@@ -131,7 +131,7 @@
 .swal2-html-container{
     overflow: hidden !important;
 }
-
+/* overflow: hidden !important; */
 .border-radius {
     border: 1px solid #eae6e6;
     border-radius: 5px;

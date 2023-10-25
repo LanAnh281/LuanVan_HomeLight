@@ -53,7 +53,7 @@ exports.create = async (req, res, next) => {
         // Retrieve the two most recent files.
 
         newestFiles = files.slice(0, countFiles);
-        console.log("2 ảnh mới nhất:", newestFiles);
+
         try {
           for (let index = 0; index < countFiles; index++) {
             console.log(">>>index:", index);

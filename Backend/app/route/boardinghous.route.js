@@ -12,9 +12,9 @@ router
   .post([
     request.sanitizeDataMiddleware,
     authorization.authentication,
-    upload.uploadStatic.array("files"),
-
     authorization.authorization("thêm nhà trọ"),
+    upload.uploadStatic.array("files"),
+    FormatImg.format,
     BorardingHouse.create,
   ]);
 router
@@ -23,7 +23,10 @@ router
   .put([
     request.sanitizeDataMiddleware,
     authorization.authentication,
+
     authorization.authorization("chỉnh sửa nhà trọ"),
+    upload.uploadStatic.array("files"),
+    FormatImg.format,
     BorardingHouse.updated,
   ])
   .delete([

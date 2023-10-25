@@ -121,9 +121,7 @@ const BorardingHouse = sequelize.define("BoardingHouse", {
   address: {
     type: DataTypes.TEXT,
   },
-  image: {
-    type: DataTypes.STRING,
-  },
+
   isDelete: {
     type: DataTypes.BOOLEAN,
   },
@@ -363,6 +361,16 @@ Rooms.hasMany(Media, {
 });
 Media.belongsTo(Rooms, {
   foreignKey: "roomId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+BorardingHouse.hasMany(Media, {
+  foreignKey: "boardingId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Media.belongsTo(BorardingHouse, {
+  foreignKey: "boardingId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
