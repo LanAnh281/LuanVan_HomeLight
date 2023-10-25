@@ -31,6 +31,7 @@ export default {
         countFiles: 0,
       },
       amenitie: [{ name: "" }],
+      addAmenitie: [{ name: "" }],
       error: {
         name: "",
         price: "",
@@ -303,40 +304,61 @@ export default {
       const documentAmenitie = await amenitieService.getAll();
       data.amenitie = documentAmenitie.message;
       data.amenitie.push({ _id: "other", name: "Khác" });
-      console.log(data.amenitie);
     });
     const handleCheck = (event) => {
       try {
         console.log(event);
         console.log(event.target.value, event.target.checked);
         if (event.target.checked == true && event.target.value == "other") {
-          const showSweetAlert = async () => {
-            const { value: CenterName } = await Swal.fire({
-              title: "Thêm mới trung tâm",
-              input: "text",
-              inputLabel: "Tên trung tâm",
-              inputValue: "",
-              showCancelButton: true,
-              inputValidator: (value) => {
-                if (!value) {
-                  return "Tên trung tâm không được bỏ trống";
-                }
-              },
-            });
+          // const showSweetAlert = async () => {
+          //   const { value: CenterName } = await Swal.fire({
+          //     title: "Thêm mới trung tâm",
+          //     input: "text",
+          //     inputLabel: "Tên trung tâm",
+          //     inputValue: "",
+          //     showCancelButton: true,
+          //     inputValidator: (value) => {
+          //       if (!value) {
+          //         return "Tên trung tâm không được bỏ trống";
+          //       }
+          //     },
+          //   });
 
-            if (CenterName) {
-              console.log(CenterName);
-            }
-            return true;
-          };
-          const value = showSweetAlert();
-          console.log("giá trị nhận đc", value);
+          //   if (CenterName) {
+          //     console.log(CenterName);
+          //   }
+          //   return true;
+          // };
+          // const value = showSweetAlert();
+          // console.log("giá trị nhận đc", value);
+          console.log("khác");
+          data.addAmenitie.push({ name: "" });
         }
         data.checkList.push(event.target.value);
         console.log("check list", data.checkList);
         // if true push vào thêm
         // if true mà là other thì show 1 alert dể thêm
         // nếu false tra trên ds và loại bỏ
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const handleAddAmenitie = async (value) => {
+      try {
+        console.log("Thêm tiện ích", value);
+        const document = await amenitieService.create({
+          name: value,
+        });
+        console.log(document);
+        const documentAmenitie = await amenitieService.getAll();
+        data.amenitie = documentAmenitie.message;
+        data.amenitie.push({ _id: "other", name: "Khác" });
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -354,6 +376,7 @@ export default {
       checkAddress,
       checkNumber,
       handleFileUpload,
+      handleAddAmenitie,
       handleCheck,
     };
   },
@@ -566,9 +589,7 @@ export default {
               <div id="previewImages" class="container mt-2"></div>
             </div>
             <div class="form-group row justify-content-around mb-0">
-              <label for="inputImage" class="col-sm-3 col-form-label p-0"
-                >Tiện nghi :</label
-              >
+              <label class="col-sm-3 col-form-label p-0">Tiện ích :</label>
               <div class="col-sm-9 row">
                 <div
                   class="div col-4"
@@ -584,6 +605,24 @@ export default {
                 </div>
               </div>
             </div>
+            <div
+              class="form-group row justify-content-around mb-0"
+              v-for="(value, index) in data.addAmenitie"
+              :key="index"
+            >
+              <label for="inputAmenitie" class="col-sm-3 col-form-label p-0"
+                >Tên tiện ích : {{ value }}</label
+              >
+              <div class="col-sm-9 row">
+                <input type="text" id="inputAmenitie" v-model="value.name" />
+              </div>
+              <button @click="handleAddAmenitie(value.name)">
+                <span class="material-symbols-outlined text-success">
+                  save
+                </span>
+              </button>
+            </div>
+
             <div class="form-group row justify-content-around mb-0">
               <button type="submit" class="btn btn-login col-sm-2">Thêm</button>
             </div>
@@ -599,3 +638,8 @@ export default {
   margin-left: -12%;
 }
 </style>
+<!-- 
+  còn lại thêm tiện ích
+  loại bỏ nhưng cái đã lưu
+  chia gioa diện thành 3 phần 1. thông tin cơ bản, 2 . tiện ích mô tả, 3. hin a hr
+ -->
