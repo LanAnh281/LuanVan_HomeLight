@@ -4,6 +4,8 @@ const {
   Media,
   BorardingHouse,
   User_Room,
+  Amenities,
+  Amenitie_Room,
 } = require("../models/index.model.js");
 const fs = require("fs");
 const uploadDir = "./static/images";
@@ -21,6 +23,7 @@ exports.create = async (req, res, next) => {
     boardingId,
     countFiles,
     status,
+    amenitie,
   } = req.body;
   console.log(req.body);
   try {
@@ -34,6 +37,17 @@ exports.create = async (req, res, next) => {
       isDelete: isDelete,
       boardingId: boardingId,
     });
+    const amenityList = amenitie ? amenitie : [];
+    console.log("A:", amenitie, amenitie.length);
+    if (amenitie.length > 0 && amenitie.length != 36) {
+      for (let i = 0; i < amenitie.length; i++) {
+        console.log("ID:", amenitie[i]);
+        const documentAmenitie = await Amenitie_Room.create({
+          RoomId: document._id,
+          AmenityId: amenitie[i],
+        });
+      }
+    }
     if (document && countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {
         if (error) {
@@ -112,6 +126,9 @@ exports.findOne = async (req, res, next) => {
         },
         {
           model: BorardingHouse,
+        },
+        {
+          model: Amenities,
         },
       ],
     });

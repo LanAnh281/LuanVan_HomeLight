@@ -5,8 +5,8 @@ const router = express.Router();
 router
   .route("/")
   .get(
-    authorization.authentication,
-    authorization.authorization("xem danh sách dịch vụ"),
+    // authorization.authentication,
+    // authorization.authorization("xem danh sách dịch vụ"),
     service.findAll
   )
   .post([
