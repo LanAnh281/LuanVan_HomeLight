@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.css"; // Import CSS của Leaflet
 import L from "leaflet";
 //service
 import roomService from "../../../service/room.service";
-import serviceService from "../../../service/room.service";
+import serviceService from "../../../service/service.service";
 //js
 import { formatCurrency } from "../../../assets/js/format.common";
 
@@ -89,13 +89,13 @@ export default {
             );
           });
         }
-        // const documentService = await serviceService.getAll();
-        // data.services = documentService.message;
+        const documentService = await serviceService.getAll();
+        data.services = documentService.message;
 
-        // data.services = data.services.filter((item) => {
-        //   return item.BoardingHouse.userId == data.item.BoardingHouse.userId;
-        // });
-        // console.log(data.services);
+        data.services = data.services.filter((item) => {
+          return item.userId == data.item.BoardingHouse.userId;
+        });
+        console.log(data.services);
         //gg map
         data.item.url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyCqNLriKAssr6bSDriqJg2YdfwqdBAYy30&q=${data.item.BoardingHouse.address}`;
         // //Map
@@ -150,8 +150,12 @@ export default {
         await refresh();
       }
     );
+    const capitalizeFirstLetter = (string) => {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    };
     onBeforeMount(async () => {
       await refresh();
+      console.log(data.item);
     });
 
     return {
@@ -159,6 +163,7 @@ export default {
       room,
       formatCurrency,
       isMessage,
+      capitalizeFirstLetter,
     };
   },
 };
@@ -228,33 +233,68 @@ export default {
           >
           - {{ data.item.long * data.item.wide }}m²
         </p>
-        <p class="">
-          <span class="material-symbols-outlined"> home_pin </span>
-          Địa chỉ: {{ data.item.BoardingHouse.address }}
-        </p>
+        <div class="row p-0">
+          <h6 class="m-0 col-12">Mô tả chi tiết</h6>
 
-        <h6>Mô tả chi tiết</h6>
-
-        <p>
-          <span class="mr-3"> Chiều dài: {{ data.item.long }} m</span>
-          <span>Chiều rộng: {{ data.item.wide }} m</span>
-        </p>
-
-        <p>Mô tả:</p>
-        <p v-for="(value, index) in data.item.content" :key="index">
-          {{ value }}
-        </p>
-        <h6>Dịch vụ</h6>
-        <div v-for="(value, index) in data.services" :key="index">
-          {{ value }}
+          <p class="col-12 p-0 ml-2 mb-0">
+            <span class="mr-3"> Chiều dài: {{ data.item.long }} m</span>
+            <span>Chiều rộng: {{ data.item.wide }} m</span>
+          </p>
         </div>
-        <h6>Liên hệ</h6>
-        <p>Địa chỉ: {{ data.item.BoardingHouse.address }}</p>
-        <p>
-          Điện thoại:
-          <span class="text-info"> {{ data.item.BoardingHouse.phone }}</span>
-          <!-- <img :src="data.item.qrCodeUrl" alt="QR" class="mx-2" /> -->
-        </p>
+
+        <div class="row p-0">
+          <h6 v-if="data.item.content != 'undefined'" class="col-12 m-0">
+            Mô tả thêm:
+          </h6>
+          <p
+            v-show="data.item.content != 'undefined'"
+            v-for="(value, index) in data.item.content"
+            :key="index"
+            class="col-12 m-0 py-0"
+          >
+            {{ value }}
+          </p>
+        </div>
+        <div class="row p-0">
+          <h6 class="col-12 m-0">Tiện ích:</h6>
+          <p
+            v-for="(value, index) in data.item.Amenities"
+            :key="index"
+            class="col-3 m-0 pt-0"
+          >
+            - {{ value.name }}
+          </p>
+        </div>
+
+        <div class="row p-0">
+          <h6 class="col-12 m-0">Giá dịch vụ</h6>
+          <div
+            v-for="(value, index) in data.services"
+            :key="index"
+            class="col-3 m-0 pt-0"
+          >
+            {{ capitalizeFirstLetter(value.name) }} :
+            {{ formatCurrency(value.price) }}
+          </div>
+        </div>
+        <div class="row p-0 mb-2">
+          <h6 class="col-12 m-0">Liên hệ</h6>
+          <p class="m-0 p-0 col-12">
+            <span class="material-symbols-outlined text-danger">
+              home_pin
+            </span>
+            Địa chỉ: {{ data.item.BoardingHouse.address }}
+          </p>
+          <p class="m-0 p-0">
+            <span class="material-symbols-outlined m-0 p-0 text-info"
+              >phone
+            </span>
+            Điện thoại:
+            <span class="text-info"> {{ data.item.BoardingHouse.phone }}</span>
+            <!-- <img :src="data.item.qrCodeUrl" alt="QR" class="mx-2" /> -->
+          </p>
+        </div>
+
         <div class="row">
           <button
             class="btn btn-login col-4 mx-2"
@@ -263,7 +303,7 @@ export default {
             data-target="#messageModal"
             @click="isMessage = !isMessage"
           >
-            Nhắn tin cho chủ trọ
+            Nhắn tin với chủ trọ
           </button>
           <span>Hoặc</span>
           <div class="col-3 card mx-2 p-0 text-center">
@@ -274,7 +314,7 @@ export default {
               style="width: 120px"
             />
             <div class="card-body m-0 p-0 pb-2">
-              <p class="card-text">Liên hệ qua số điện thoại</p>
+              <p class="card-text text-info">Liên hệ qua số điện thoại</p>
             </div>
           </div>
         </div>
