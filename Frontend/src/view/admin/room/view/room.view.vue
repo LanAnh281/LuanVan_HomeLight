@@ -38,10 +38,14 @@ export default {
         return "unknown";
       }
     };
-    onMounted(async () => {
+    onBeforeMount(async () => {
       //lấy thông tin phòng hiện tại
       const documentRoom = await roomService.get(props._id);
       data.item = documentRoom.message;
+      console.log(data.item);
+      if (data.item.Amenities.length == 0) {
+        data.item.Amenities[0] = { name: "Chưa thên tiện nghi" };
+      }
       // lấy thông tin về nhà trọ
       const documentBoarding = await boardinghouseService.get(
         data.item.boardingId
@@ -98,6 +102,22 @@ export default {
           <p class="col-6 p-0 m-0">
             {{ !data.item.status ? "Chưa thuê" : "Đang thuê" }}
           </p>
+        </div>
+      </div>
+
+      <div
+        class="col-12 row justify-content-start p-0 m-0"
+        v-if="data.item.Amenities"
+      >
+        <p class="col-1 mr-5 p-0 m-0">Tiện ích:</p>
+        <p class="col-10 m-0 p-0">- {{ data.item.Amenities[0].name }}</p>
+        <div
+          class="row col-10 p-0"
+          v-for="(value, index) in data.item.Amenities"
+          :key="index"
+        >
+          <label class="col-2 m-0 p-0"></label>
+          <p class="m-0 p-0 col-10" v-if="index > 0">- {{ value.name }},</p>
         </div>
       </div>
       <div class="col-12 row justify-content-start p-0 m-0">

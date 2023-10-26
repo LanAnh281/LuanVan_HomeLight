@@ -722,9 +722,9 @@ li {
 }
 </style>
 <!-- 
-  -hiển thị thông tin về các tiện ích ở view
+
   -cập nhật phòng show ra ds tiện ích và cho chỉnh sửa
-  -giao diện người dùng: tiện ích và dịch vụ của nhà trọ cung cấp
+ 
   -show nhà trọ cả đã thuê và chưa thuê
 
  -->

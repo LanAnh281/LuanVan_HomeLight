@@ -223,13 +223,17 @@ export default {
       </div>
       <!-- Infor -->
       <div class="col mx-2">
-        <h5 class="mt-5">
+        <h4 class="">
           Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
           {{ data.item.name }}
-        </h5>
+        </h4>
         <p>
           <span class="text-danger" style="font-size: 16px"
-            >Giá: {{ formatCurrency(data.item.price) }} / tháng</span
+            >Giá thuê:
+
+            {{ formatCurrency(data.item.price) }}
+
+            / tháng</span
           >
           - {{ data.item.long * data.item.wide }}m²
         </p>
@@ -297,7 +301,7 @@ export default {
 
         <div class="row">
           <button
-            class="btn btn-login col-4 mx-2"
+            class="btn btn-login col-3 mr-1"
             style="height: 40px"
             data-toggle="modal"
             data-target="#messageModal"
@@ -305,7 +309,7 @@ export default {
           >
             Nhắn tin với chủ trọ
           </button>
-          <span>Hoặc</span>
+          <strong>Hoặc</strong>
           <div class="col-3 card mx-2 p-0 text-center">
             <img
               :src="data.item.qrCodeUrl"
