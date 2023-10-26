@@ -37,22 +37,23 @@ exports.create = async (req, res, next) => {
       isDelete: isDelete,
       boardingId: boardingId,
     });
+    // danh sách thêm mới
+    console.log("Bắt đầu thêm tiện nghi");
     const amenityList = amenitie ? amenitie : [];
-    console.log("A:", amenitie, amenitie.length);
-    if (amenitie.length > 0) {
-      if (amenitie.length == 36) {
+    console.log("Tiện nghi:", amenityList);
+    if (Array.isArray(amenityList)) {
+      for (let i = 0; i < amenityList.length; i++) {
+        console.log("A:", amenitie[i]);
         const documentAmenitie = await Amenitie_Room.create({
-          RoomId: document._id,
-          AmenityId: amenitie,
+          RoomId: document["_id"],
+          AmenityId: amenitie[i],
         });
-      } else
-        for (let i = 0; i < amenitie.length; i++) {
-          console.log("ID:", amenitie[i]);
-          const documentAmenitie = await Amenitie_Room.create({
-            RoomId: document._id,
-            AmenityId: amenitie[i],
-          });
-        }
+      }
+    } else {
+      const documentAmenitie = await Amenitie_Room.create({
+        RoomId: document["_id"],
+        AmenityId: amenitie,
+      });
     }
     if (document && countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {
@@ -206,37 +207,43 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
-    // loại bỏ ame
+    // loại bỏ ame của 1 phòng
     console.log(req.body);
-    if (removeAmenitie) {
-      // for (let i = 0; i < removeAmenitie.length; i++) {
+    if (Array.isArray(removeAmenitie)) {
+      for (let i = 0; i < removeAmenitie.length; i++) {
+        const documentRemove = await Amenitie_Room.destroy({
+          where: {
+            RoomId: req.params.id,
+            AmenityId: removeAmenitie[i],
+          },
+        });
+      }
+    } else if (removeAmenitie != undefined) {
+      console.log("có giá trị:", removeAmenitie);
       const documentRemove = await Amenitie_Room.destroy({
         where: {
           RoomId: req.params.id,
+          AmenityId: removeAmenitie,
         },
       });
-
-      // }
-      console.log("remove:", documentRemove);
     }
 
     // danh sách thêm mới
     const amenityList = amenitie ? amenitie : [];
-    console.log("---L", amenityList);
-    amenitie.push("");
-    if (amenityList.length > 0) {
-      // if (amenitie.length == 36) {
-      //   const documentAmenitie = await Amenitie_Room.create({
-      //     RoomId: req.params.id,
-      //     AmenityId: amenitie,
-      //   });
-      // } else
-      for (let i = 0; i < amenitie.length - 1; i++) {
+    console.log("---L", amenityList, Array.isArray(amenityList));
+    if (Array.isArray(amenityList)) {
+      for (let i = 0; i < amenityList.length; i++) {
+        console.log("A:", amenitie[i]);
         const documentAmenitie = await Amenitie_Room.create({
           RoomId: req.params.id,
           AmenityId: amenitie[i],
         });
       }
+    } else {
+      const documentAmenitie = await Amenitie_Room.create({
+        RoomId: req.params.id,
+        AmenityId: amenitie,
+      });
     }
     if (document && removeMedia.length > 0) {
       for (let media of removeMedia) {

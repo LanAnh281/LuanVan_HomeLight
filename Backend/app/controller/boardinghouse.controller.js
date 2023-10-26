@@ -1,4 +1,8 @@
-const { BorardingHouse, Media } = require("../models/index.model.js");
+const {
+  BorardingHouse,
+  Media,
+  Amenities,
+} = require("../models/index.model.js");
 const { deleteBoardingAndRooms } = require("../models/transaction.service");
 const fs = require("fs");
 const uploadDir = "./static/images";
@@ -49,7 +53,13 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await BorardingHouse.findAll({});
+    const documents = await BorardingHouse.findAll({
+      include: [
+        {
+          model: Media,
+        },
+      ],
+    });
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
