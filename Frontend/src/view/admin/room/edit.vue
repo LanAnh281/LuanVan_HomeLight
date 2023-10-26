@@ -218,25 +218,29 @@ export default {
           );
           for (let i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
-              console.log(checkboxes[i]);
               data.checkList.push(checkboxes[i].value);
             }
           }
-          console.log("check list", data.checkList);
-          _.forEach(data.checkList, (check) => {
-            formData.append("amenitie", check);
-          });
+
           // Tiện ích bị loại bỏ
           //124 hiện tại
           //123 quá khứ
           //123-124=3 quá khư-hiện tại
-
+          //124-12 =4
           data.removeList = data.checkedList.filter(
-            (item) => !data.checkList.includes(item._id)
+            (item) => !data.checkList.includes(item)
           );
           console.log("remove list:", data.removeList);
           _.forEach(data.removeList, (value) => {
-            formData.append("removeAmenitie", value._id);
+            formData.append("removeAmenitie", value);
+          });
+          //
+          data.checkList = data.checkList.filter(
+            (item) => !data.checkedList.includes(item)
+          );
+          console.log("check new list", data.checkList);
+          _.forEach(data.checkList, (check) => {
+            formData.append("amenitie", check);
           });
           const documentRoom = await roomService.update(props._id, formData);
           console.log(documentRoom);
@@ -346,6 +350,9 @@ export default {
         // danh sách đã chọn ban đầu
         data.checkedList = data.amenitie.filter((item) => {
           return item.checked == true;
+        });
+        data.checkedList = data.checkedList.map((item) => {
+          return item._id;
         });
         console.log("Ban đầu:", data.checkedList);
       } catch (error) {}
@@ -556,46 +563,6 @@ export default {
                     </div>
                   </div>
 
-                  <!-- Image -->
-                  <div class="form-group row">
-                    <label
-                      for="inputImagePrevious"
-                      class="col-sm-2 col-form-label p-0"
-                      >Ảnh phòng trọ :</label
-                    >
-                    <div class="col-sm-10">
-                      <input
-                        type="file"
-                        ref="files"
-                        multiple
-                        @change="handleFileUpload($event)"
-                        class="form-control"
-                        id="inputImage"
-                      />
-                    </div>
-                    <div id="previewImagesEdit" class="container"></div>
-                    <div class="row">
-                      <div
-                        v-show="data.mediasCopy"
-                        class="mt-3 imagesDiv col-6"
-                        v-for="(value, index) in data.mediasCopy"
-                        :key="index"
-                      >
-                        <img
-                          class="images"
-                          :src="`http://localhost:3000/static/images/${value.name}`"
-                        />
-                        <span
-                          class="delete-icon"
-                          @click="handleDeleteMedia(value.name)"
-                          >x</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Tiện ích -->
-                <div v-if="data.active == 'chalet'">
                   <div class="form-group row">
                     <label
                       for="inputContent"
@@ -612,7 +579,9 @@ export default {
                       ></textarea>
                     </div>
                   </div>
-
+                </div>
+                <!-- Tiện ích -->
+                <div v-if="data.active == 'chalet'">
                   <!-- Tiện ích -->
                   <div class="form-group row justify-content-around mb-0">
                     <label class="col-sm-2 col-form-label p-0"
@@ -660,7 +629,7 @@ export default {
 
                       <span
                         class="material-symbols-outlined text-success col-sm-1 border py-1"
-                        @click="handleAddAmenitie"
+                        @click="handleAddAmenitie(value.name)"
                         style="
                           border-radius: 4px;
                           border-top-left-radius: 0;
@@ -672,7 +641,45 @@ export default {
                       </span>
                     </div>
                   </div>
+                  <!-- Image -->
+                  <div class="form-group row">
+                    <label
+                      for="inputImagePrevious"
+                      class="col-sm-2 col-form-label p-0"
+                      >Ảnh phòng trọ :</label
+                    >
+                    <div class="col-sm-10">
+                      <input
+                        type="file"
+                        ref="files"
+                        multiple
+                        @change="handleFileUpload($event)"
+                        class="form-control"
+                        id="inputImage"
+                      />
+                    </div>
+                    <div id="previewImagesEdit" class="container"></div>
+                    <div class="row">
+                      <div
+                        v-show="data.mediasCopy"
+                        class="mt-3 imagesDiv col-6"
+                        v-for="(value, index) in data.mediasCopy"
+                        :key="index"
+                      >
+                        <img
+                          class="images"
+                          :src="`http://localhost:3000/static/images/${value.name}`"
+                        />
+                        <span
+                          class="delete-icon"
+                          @click="handleDeleteMedia(value.name)"
+                          >x</span
+                        >
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <!--   v-if="data.active == 'chalet'" -->
                 <div
                   class="form-group row justify-content-around mt-3 mb-0"
                   v-if="data.active == 'chalet'"

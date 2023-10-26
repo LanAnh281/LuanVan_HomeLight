@@ -262,9 +262,12 @@ export default {
 <template>
   <!-- display: grid; grid-template-columns: repeat(6, 1fr) -->
   <div>
-    <div class="row m-0 p-0">
+    <div
+      class="row m-0 p-0"
+      style="display: grid; grid-template-columns: repeat(6, 1fr)"
+    >
       <div
-        class="card p-0 row justify-content-between mr-4"
+        class="card p-0 row justify-content-between mr-4 mb-2"
         v-for="(value, index) in data.setPage"
         style="border-radius: 5px"
         :key="index"

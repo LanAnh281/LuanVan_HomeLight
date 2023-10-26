@@ -47,11 +47,11 @@ export default {
       categories: [
         { name: "Phòng trọ", icon: "house", active: "room" },
         { name: "Tiện ích", icon: "chalet", active: "chalet" },
-        // {
-        //   name: "Hình ảnh ",
-        //   icon: "image",
-        //   active: "image",
-        // },
+        {
+          name: "Hình ảnh ",
+          icon: "image",
+          active: "image",
+        },
       ],
       active: "room",
     });
@@ -288,6 +288,7 @@ export default {
           const checkboxes = document.querySelectorAll(
             'input[type="checkbox"]'
           );
+          console.log(checkboxes);
           for (let i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
               console.log(checkboxes[i]);
@@ -581,29 +582,6 @@ export default {
                       </div>
                     </div>
                   </div>
-                  <!-- Image -->
-                  <div class="form-group row">
-                    <label for="inputImage" class="col-sm-2 col-form-label p-0"
-                      >Ảnh phòng trọ :</label
-                    >
-                    <div class="col-sm-10">
-                      <input
-                        type="file"
-                        @blur="() => {}"
-                        @input="() => {}"
-                        ref="files"
-                        multiple
-                        @change="handleFileUpload($event)"
-                        class="form-control"
-                        id="inputImage"
-                      />
-                    </div>
-                    <div id="previewImages" class="container mt-2"></div>
-                  </div>
-                </div>
-
-                <!-- Tiện ích -->
-                <div v-if="data.active == 'chalet'">
                   <div class="form-group row">
                     <label
                       for="inputContent"
@@ -620,6 +598,10 @@ export default {
                       ></textarea>
                     </div>
                   </div>
+                </div>
+
+                <!-- Tiện ích -->
+                <div v-if="data.active == 'chalet'">
                   <div class="form-group row justify-content-around mb-0">
                     <label class="col-sm-2 col-form-label p-0"
                       >Tiện ích :</label
@@ -676,9 +658,30 @@ export default {
                       </span>
                     </div>
                   </div>
+                  <!-- Image -->
+                  <div class="form-group row">
+                    <label for="inputImage" class="col-sm-2 col-form-label p-0"
+                      >Ảnh phòng trọ :</label
+                    >
+                    <div class="col-sm-10">
+                      <input
+                        type="file"
+                        @blur="() => {}"
+                        @input="() => {}"
+                        ref="files"
+                        multiple
+                        @change="handleFileUpload($event)"
+                        class="form-control"
+                        id="inputImage"
+                      />
+                      <div id="previewImages" class="container mt-2"></div>
+                    </div>
+                  </div>
                 </div>
+                <div v-if="data.active == 'image'"></div>
               </div>
             </div>
+
             <div
               class="form-group row justify-content-around mb-0"
               v-if="data.active == 'chalet'"
@@ -721,10 +724,3 @@ li {
   font-weight: 500;
 }
 </style>
-<!-- 
-
-  -cập nhật phòng show ra ds tiện ích và cho chỉnh sửa
- 
-  -show nhà trọ cả đã thuê và chưa thuê
-
- -->

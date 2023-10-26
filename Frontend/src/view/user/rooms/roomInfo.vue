@@ -1,21 +1,26 @@
 <script>
 import { ref, reactive, onMounted } from "vue";
-import socket from "../../socket";
+import socket from "../../../socket";
+import { useRoute, useRouter } from "vue-router";
+
 //service
-import billService from "../../service/bill.service";
-import serviceService from "../../service/service.service";
-import service_roomService from "../../service/service_room.service";
-import notificationService from "../../service/notification.service";
-import user_notificationService from "../../service/user_notification.service";
+import billService from "../../../service/bill.service";
+import serviceService from "../../../service/service.service";
+import service_roomService from "../../../service/service_room.service";
+import notificationService from "../../../service/notification.service";
+import user_notificationService from "../../../service/user_notification.service";
 // js
-import { formatCurrency } from "../../assets/js/format.common";
-import { successAd } from "../../assets/js/common.alert";
+import { formatCurrency } from "../../../assets/js/format.common";
+import { successAd } from "../../../assets/js/common.alert";
+import { checkAccessToken } from "../../../assets/js/common.login";
 //component
-import Table from "../../components/table/table.vue";
+import Table from "../../../components/table/table.vue";
 
 export default {
   components: { Table },
   setup() {
+    const router = useRouter();
+    const route = useRoute();
     const data = reactive({
       item: {
         Rooms: [
@@ -100,8 +105,14 @@ export default {
         }
       }
     };
+
     onMounted(async () => {
       try {
+        await checkAccessToken(router); //access token
+        intervalId = setInterval(async () => {
+          await checkAccessToken(router);
+        }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
+        //khởi tạo selectDate là ngày hiện tại
         await refresh();
       } catch (error) {
         if (error.response) {

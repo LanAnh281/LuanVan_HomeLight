@@ -26,7 +26,7 @@ export default {
         },
         {
           name: "Nhà trọ",
-          active: "rooms",
+          active: "boarding",
         },
         // {
         //   name: "Bài viết",

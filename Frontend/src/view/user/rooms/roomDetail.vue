@@ -171,6 +171,12 @@ export default {
 <template>
   <div class="body container-fluid m-0 px-5 pt-3">
     <div class="row" v-if="data.item.BoardingHouse">
+      <!-- <img
+        v-if="data.item.status == true"
+        src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
+        alt="ảnh sold out"
+        style="position: absolute; z-index: 1; margin-left: 36%; width: 12%"
+      /> -->
       <div
         id="carouselExampleCaptions"
         class="carousel slide col-6"
@@ -223,20 +229,33 @@ export default {
       </div>
       <!-- Infor -->
       <div class="col mx-2">
-        <h4 class="">
-          Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
-          {{ data.item.name }}
-        </h4>
-        <p>
-          <span class="text-danger" style="font-size: 16px"
-            >Giá thuê:
+        <div class="row p-0">
+          <div class="col-8">
+            <h4>
+              Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
+              {{ data.item.name }}
+            </h4>
+            <h6 class="col-12">
+              <span class="text-danger" style="font-size: 16px"
+                >Giá thuê:
 
-            {{ formatCurrency(data.item.price) }}
+                {{ formatCurrency(data.item.price) }}
 
-            / tháng</span
-          >
-          - {{ data.item.long * data.item.wide }}m²
-        </p>
+                / tháng</span
+              >
+              - {{ data.item.long * data.item.wide }}m²
+            </h6>
+          </div>
+
+          <img
+            v-if="data.item.status == true"
+            src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
+            alt="ảnh sold out"
+            class="col-3 m-0 p-0"
+            style="width: 18%"
+          />
+        </div>
+
         <div class="row p-0">
           <h6 class="m-0 col-12">Mô tả chi tiết</h6>
 
@@ -301,7 +320,7 @@ export default {
 
         <div class="row">
           <button
-            class="btn btn-login col-3 mr-1"
+            class="btn btn-login col-4 mr-1"
             style="height: 40px"
             data-toggle="modal"
             data-target="#messageModal"
@@ -315,10 +334,10 @@ export default {
               :src="data.item.qrCodeUrl"
               alt="QR"
               class="mx-auto p-0"
-              style="width: 120px"
+              style="width: 100px"
             />
             <div class="card-body m-0 p-0 pb-2">
-              <p class="card-text text-info">Liên hệ qua số điện thoại</p>
+              <p class="card-text text-info">Liên hệ qua SĐT</p>
             </div>
           </div>
         </div>

@@ -112,7 +112,7 @@ export default {
         <p class="col-1 mr-5 p-0 m-0">Tiện ích:</p>
         <p class="col-10 m-0 p-0">- {{ data.item.Amenities[0].name }}</p>
         <div
-          class="row col-10 p-0"
+          class="row col-10 p-0 m-0"
           v-for="(value, index) in data.item.Amenities"
           :key="index"
         >

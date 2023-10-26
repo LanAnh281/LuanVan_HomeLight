@@ -11,7 +11,6 @@ import { useRoute, useRouter } from "vue-router";
 
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
-
 import receiptService from "../../../service/receipt.service";
 import spendingService from "../../../service/spending.service";
 
@@ -283,8 +282,8 @@ export default {
         }
       "
     ></Box> -->
-    <h5 class="text-center title">Báo cáo doanh thu và chi phí</h5>
-    <h6 class="text-center title mb-5">
+    <h5 class="text-center">Báo cáo doanh thu và chi phí</h5>
+    <h6 class="text-center mb-3">
       từ ngày {{ formatDateTime(data.start) }} đến
       {{ formatDateTime(data.end) }}
     </h6>

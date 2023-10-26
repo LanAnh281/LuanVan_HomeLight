@@ -13,7 +13,6 @@ import axios from "axios";
 
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
-import roomService from "../../../service/room.service";
 //component
 import Select from "../../../components/select/selectdependent.vue";
 import selectNormal from "../../../components/select/select.vue";
@@ -27,9 +26,8 @@ export default {
 
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
-      items: [{ name: "", long: "", wide: "" }],
+      items: [{ name: "" }],
       city: {},
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
@@ -49,7 +47,7 @@ export default {
       totalPage: 0,
       currentPage: 1,
       length: 0,
-      sizePage: 5,
+      sizePage: 4,
     });
     let intervalId = null;
     const position = ref("");
@@ -58,11 +56,9 @@ export default {
         (data.currentPage = 1),
         data.items
           ? data.items.filter((item) => {
-              if (item.BoardingHouse && item.BoardingHouse.name) {
-                return item.BoardingHouse.name
-                  .toLowerCase()
-                  .includes(data.searchText.toLocaleLowerCase());
-              }
+              return item.name
+                .toLowerCase()
+                .includes(data.searchText.toLocaleLowerCase());
             })
           : []
       )
@@ -151,16 +147,13 @@ export default {
 
     const refresh = async () => {
       try {
-        const documentRoom = await roomService.getAll();
-        data.items = documentRoom.message;
+        const documentBoarding = await boardinghouseService.getAll();
+        data.items = documentBoarding.message;
+        console.log(data.items);
 
-        // data.items = data.items.filter((item) => item.status == false);
-        data.items = data.items.filter((item) => {
-          return item.BoardingHouse._id == route.query["_id"];
-        });
         if (data.address != "") {
           data.items = data.items.filter((item) =>
-            item.BoardingHouse.address.includes(data.address)
+            item.address.includes(data.address)
           );
         }
         if (data.selectPrice != "") {
@@ -199,13 +192,6 @@ export default {
     onBeforeMount(async () => {
       try {
         position.value = localStorage.getItem("position");
-        // if (position.value != null) {
-        //   checkAccessToken(router);
-        //   intervalId = setInterval(async () => {
-        //     await checkAccessToken(router);
-        //   }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
-        // }
-
         await axios
           .get(`https://provinces.open-api.vn/api/?depth=1`, {})
           .then((response) => {
@@ -245,7 +231,6 @@ export default {
         document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
       });
     };
-    const sliderValue = ref(0);
     return {
       data,
       formatCurrency,
@@ -253,7 +238,6 @@ export default {
       changeDistrict,
       changeWard,
       first,
-      sliderValue,
     };
   },
 };
@@ -283,14 +267,14 @@ export default {
           @choose="(value) => changeWard(value)"
         ></Select>
       </div>
-      <div class="input-group col-2">
+      <!-- <div class="input-group col-2">
         <selectNormal
           :title="`Chọn giá thuê`"
           :data="data.price"
           @choose="(value) => (data.selectPrice = value)"
         ></selectNormal>
-      </div>
-      <!-- <div class="input-group col-3" style="z-index: 0">
+      </div> -->
+      <div class="input-group col-3" style="z-index: 0">
         <input
           type="search"
           v-model="data.searchText"
@@ -298,17 +282,12 @@ export default {
           placeholder="tìm kiếm theo tên nhà trọ"
           style="border: 1px solid #ccc; border-radius: 4px"
         />
-      </div> -->
+      </div>
     </div>
-    <!-- <input type="range" min="0" max="100" v-model="sliderValue" />
-    {{ sliderValue }} -->
-    <router-link :to="{ name: 'boarding' }" class="text-primary"
-      >Trang chủ /
-    </router-link>
-    <span class="text-primary">Phòng</span>
+
     <div class="row m-2">
       <router-link
-        :to="{ name: 'roomDetail', query: { _id: value._id } }"
+        :to="{ name: 'rooms', query: { _id: value._id } }"
         class="card p-2 mb-2 col-3"
         v-for="(value, index) in data.setPage"
         :key="index"
@@ -325,14 +304,14 @@ export default {
         />
 
         <div class="card-body m-0 p-0">
-          <h6>Nhà trọ : {{ value.BoardingHouse.name }}</h6>
-          <p class="card-text">Phòng {{ value.name }}</p>
-          <p class="card-text">
-            Diện tích: {{ value.long }} x {{ value.wide }} m²
+          <h6>Nhà trọ : {{ value.name }}</h6>
+          <p class="card-text m-0 p-0">
+            <strong> SĐT: </strong>
+            {{ value.phone }}
           </p>
-          <p class="card-text">Giá phòng: {{ formatCurrency(value.price) }}</p>
-          <p class="card-text">
-            Trạng thái: {{ value.status ? "Đã thuê" : "Chưa thuê" }}
+          <p class="card-text m-0 p-0">
+            <strong> Địa chỉ:</strong>
+            {{ value.address }}
           </p>
         </div>
       </router-link>
@@ -387,3 +366,6 @@ a:hover {
   font-size: 16px;
 }
 </style>
+<!-- 1.Ảnh nhà trọ
+2. trang homepage
+3. thêm quản trị viên -->

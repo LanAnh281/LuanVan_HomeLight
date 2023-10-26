@@ -113,13 +113,19 @@ const routes = [
   {
     path: "/roomInfo",
     name: "roomInfo",
-    component: () => import("../view/user/roomInfo.vue"),
+    component: () => import("../view/user/rooms/roomInfo.vue"),
   },
   //homepage
   {
     path: "/homepage",
     name: "homepage",
     component: () => import("../view/user/homepage/index.vue"),
+  },
+  //boarding
+  {
+    path: "/boarding",
+    name: "boarding",
+    component: () => import("../view/user/Boarding/index.vue"),
   },
   //rooms
   {
