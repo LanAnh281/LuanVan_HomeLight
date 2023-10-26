@@ -39,14 +39,20 @@ exports.create = async (req, res, next) => {
     });
     const amenityList = amenitie ? amenitie : [];
     console.log("A:", amenitie, amenitie.length);
-    if (amenitie.length > 0 && amenitie.length != 36) {
-      for (let i = 0; i < amenitie.length; i++) {
-        console.log("ID:", amenitie[i]);
+    if (amenitie.length > 0) {
+      if (amenitie.length == 36) {
         const documentAmenitie = await Amenitie_Room.create({
           RoomId: document._id,
-          AmenityId: amenitie[i],
+          AmenityId: amenitie,
         });
-      }
+      } else
+        for (let i = 0; i < amenitie.length; i++) {
+          console.log("ID:", amenitie[i]);
+          const documentAmenitie = await Amenitie_Room.create({
+            RoomId: document._id,
+            AmenityId: amenitie[i],
+          });
+        }
     }
     if (document && countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {
@@ -167,7 +173,18 @@ exports.findAllRooms = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { name, price, wide, long, content, boardingId, countFiles } = req.body;
+  const {
+    name,
+    price,
+    wide,
+    long,
+    content,
+    boardingId,
+    countFiles,
+    // amenitie,
+    removeAmenitie,
+  } = req.body;
+  let amenitie = req.body.amenitie;
   const status = req.body.status == "false" ? false : true;
   let removeMedia = !req.body.removeMedia ? 0 : req.body.removeMedia;
   if (removeMedia.length > 0) removeMedia.pop();
@@ -189,6 +206,38 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
+    // loại bỏ ame
+    console.log(req.body);
+    if (removeAmenitie) {
+      // for (let i = 0; i < removeAmenitie.length; i++) {
+      const documentRemove = await Amenitie_Room.destroy({
+        where: {
+          RoomId: req.params.id,
+        },
+      });
+
+      // }
+      console.log("remove:", documentRemove);
+    }
+
+    // danh sách thêm mới
+    const amenityList = amenitie ? amenitie : [];
+    console.log("---L", amenityList);
+    amenitie.push("");
+    if (amenityList.length > 0) {
+      // if (amenitie.length == 36) {
+      //   const documentAmenitie = await Amenitie_Room.create({
+      //     RoomId: req.params.id,
+      //     AmenityId: amenitie,
+      //   });
+      // } else
+      for (let i = 0; i < amenitie.length - 1; i++) {
+        const documentAmenitie = await Amenitie_Room.create({
+          RoomId: req.params.id,
+          AmenityId: amenitie[i],
+        });
+      }
+    }
     if (document && removeMedia.length > 0) {
       for (let media of removeMedia) {
         let filePath = `${uploadDir}/${media}`;
@@ -230,17 +279,17 @@ exports.updated = async (req, res, next) => {
           }
           return res.json({ message: document, status: "success" });
         } catch (error) {
-          return res.json({ message: error, status: "fail" });
+          return res.json({ message: error, status: "fail1" });
         }
       });
     } else if (document) {
       return res.json({ message: document, status: "success" });
     } else {
-      return res.json({ message: "fail", status: "faild" });
+      return res.json({ message: "fail", status: "faild2" });
     }
   } catch (error) {
     console.log(error);
-    res.json({ message: error, status: "faild" });
+    res.json({ message: error, status: "faild3" });
   }
 };
 
