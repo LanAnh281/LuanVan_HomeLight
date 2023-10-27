@@ -49,7 +49,7 @@ export default {
       totalPage: 0,
       currentPage: 1,
       length: 0,
-      sizePage: 5,
+      sizePage: 10,
     });
     let intervalId = null;
     const position = ref("");
@@ -303,16 +303,22 @@ export default {
     <!-- <input type="range" min="0" max="100" v-model="sliderValue" />
     {{ sliderValue }} -->
     <router-link :to="{ name: 'boarding' }" class="text-primary"
-      >Trang chủ /
+      >Nhà trọ /
     </router-link>
-    <span class="text-primary">Phòng</span>
+    <span class="text-primary">Phòng </span>
     <div class="row m-2">
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"
-        class="card p-2 mb-2 col-3"
+        class="card p-2 mb-2 col-2"
         v-for="(value, index) in data.setPage"
         :key="index"
       >
+        <img
+          v-if="value.status == true"
+          src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
+          alt="ảnh sold out"
+          style="position: absolute; z-index: 1; margin-left: 72%; width: 25%"
+        />
         <img
           class="card-img-top"
           :src="
@@ -321,7 +327,7 @@ export default {
               : `http://localhost:3000/static/images/lightHouse.png`
           "
           alt="ảnh phòng trọ"
-          style="height: 120px; object-fit: contain"
+          style="width: 100%; height: 200px; object-fit: cover"
         />
 
         <div class="card-body m-0 p-0">

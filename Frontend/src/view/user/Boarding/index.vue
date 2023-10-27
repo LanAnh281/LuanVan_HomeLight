@@ -288,22 +288,22 @@ export default {
     <div class="row m-2">
       <router-link
         :to="{ name: 'rooms', query: { _id: value._id } }"
-        class="card p-2 mb-2 col-3"
+        class="card p-2 mb-2 col-2"
         v-for="(value, index) in data.setPage"
         :key="index"
       >
         <img
           class="card-img-top"
           :src="
-            value.Media.length > 0
+            Array.isArray(value.Media) && value.Media.length > 0
               ? `http://localhost:3000/static/images/${value.Media[0].name}`
               : `http://localhost:3000/static/images/lightHouse.png`
           "
           alt="ảnh phòng trọ"
-          style="height: 120px; object-fit: contain"
+          style="object-fit: cover"
         />
 
-        <div class="card-body m-0 p-0">
+        <div class="card-body m-0 p-0 mt-2">
           <h6>Nhà trọ : {{ value.name }}</h6>
           <p class="card-text m-0 p-0">
             <strong> SĐT: </strong>

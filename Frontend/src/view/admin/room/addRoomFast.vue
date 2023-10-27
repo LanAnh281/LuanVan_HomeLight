@@ -5,6 +5,8 @@ import _ from "lodash";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
+import amenitieService from "../../../service/amenitie.service";
+
 //component
 import Select from "../../../components/select/select.vue";
 //js
@@ -31,6 +33,11 @@ export default {
         status: false,
         countFiles: 0,
       },
+      categories: [
+        { name: "Phòng trọ", icon: "house", active: "room" },
+        { name: "Tiện ích", icon: "chalet", active: "chalet" },
+      ],
+      active: "room",
       error: {
         price: "",
         wide: "",
@@ -43,6 +50,8 @@ export default {
       files: [],
       flag: true,
       boarding: {},
+      amenitie: [{ name: "" }],
+      addAmenitie: [],
     });
     const isModalOpen = ref(false);
     const filesRef = ref(null);
@@ -267,7 +276,7 @@ export default {
 
         if (!data.flag) {
           for (let index = data.item.from; index <= data.item.to; index++) {
-            console.log(index);
+            console.log(index, data.uploadFiles.length);
             data.item["countFiles"] = data.uploadFiles.length;
 
             const formData = new FormData();
@@ -282,9 +291,31 @@ export default {
             _.forEach(formFields, (field) => {
               formData.append(field, data.item[field]);
             });
-            console.log(data.item);
+            //Tiện ích
+            const checkboxes = document.querySelectorAll(
+              'input[type="checkbox"]'
+            );
+            data.checkList = [];
+            for (let i = 0; i < checkboxes.length; i++) {
+              if (checkboxes[i].checked) {
+                data.checkList.push(checkboxes[i].value);
+              }
+            }
+            // _.forEach(data.checkList, (check) => {
+            //   formData.append("amenitie", check);
+            // });
+            // console.log(data.item);
             const documentRoom = await roomService.create(formData);
-            console.log(documentRoom);
+            // console.log(documentRoom);
+            for (let value of data.checkList) {
+              const documentAmenitie =
+                await amenitieService.createAmenitiesRoom(
+                  documentRoom.message["_id"],
+                  {
+                    AmenityId: value,
+                  }
+                );
+            }
             emit("add");
           }
 
@@ -300,12 +331,54 @@ export default {
         }
       }
     };
-
+    const handleCheck = (event) => {
+      try {
+        // chia gioa diện thành 3 phần 1. thông tin cơ bản, 2 . tiện ích mô tả, 3. hin a hr
+        if (event.target.checked == true && event.target.value == "other") {
+          console.log("khác");
+          data.addAmenitie.push({ name: "" });
+          return;
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
+    const handleAddAmenitie = async (value) => {
+      try {
+        console.log("Thêm tiện ích", value);
+        const document = await amenitieService.create({
+          name: value,
+        });
+        const documentAmenitie = await amenitieService.getAll();
+        data.amenitie = documentAmenitie.message;
+        data.amenitie.push({ _id: "other", name: "Khác" });
+        // loại bỏ cái vừa thêm ra khỏi danh sách thêm mới
+        data.addAmenitie = data.addAmenitie.filter(
+          (item) => item.name != value
+        );
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     onBeforeMount(async () => {
       filesRef.value = document.getElementById("inputImage"); //Get input
       $("#roomFastModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomFastModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
-      console.log("Thêm nhà trọ", props.boarding);
+      const documentAmenitie = await amenitieService.getAll();
+      data.amenitie = documentAmenitie.message;
+      data.amenitie.push({ _id: "other", name: "Khác" });
     });
 
     return {
@@ -315,6 +388,8 @@ export default {
       checkAddress,
       checkNumber,
       handleFileUpload,
+      handleAddAmenitie,
+      handleCheck,
     };
   },
 };
@@ -350,211 +425,308 @@ export default {
             class="container mt-3"
             style="text-align: start"
           >
-            <!-- nhà trọ -->
             <div class="form-group row">
-              <label for="inputname" class="col-sm-3 col-form-label p-0 m-0">
-                Nhà trọ :</label
-              >
-              <div class="col-sm-9">
-                <Select
-                  :title="'Chọn nhà trọ'"
-                  :data="boarding"
-                  :selected="data.item.boardingId"
-                  @choose="(value) => (data.item.boardingId = value)"
-                  @input="
-                    () => {
-                      data.flag = false;
-                      data.error.boardingId = '';
-                    }
-                  "
-                ></Select>
-                <div v-if="data.error.boardingId" class="invalid-error">
-                  {{ data.error.boardingId }}
-                </div>
-              </div>
-            </div>
+              <ul class="col-sm-2 p-0" style="margin-top: -3%">
+                <li
+                  v-for="(value, index) in data.categories"
+                  :key="index"
+                  @click="data.active = value.active"
+                >
+                  <div class="row ml-2 my-3 list">
+                    <span class="material-symbols-outlined mr-2 py-1 icon">
+                      {{ value.icon }}
+                    </span>
+                    <span
+                      class="mr-2 py-2 name"
+                      :class="value.active == data.active ? 'isActive' : ''"
+                    >
+                      {{ value.name }}</span
+                    >
+                  </div>
+                </li>
+              </ul>
+              <!-- nhà trọ -->
+              <div class="col-sm-10">
+                <div v-if="data.active == 'room'">
+                  <div class="form-group row">
+                    <label
+                      for="inputname"
+                      class="col-sm-3 col-form-label p-0 m-0"
+                    >
+                      Nhà trọ :</label
+                    >
+                    <div class="col-sm-9">
+                      <Select
+                        :title="'Chọn nhà trọ'"
+                        :data="boarding"
+                        :selected="data.item.boardingId"
+                        @choose="(value) => (data.item.boardingId = value)"
+                        @input="
+                          () => {
+                            data.flag = false;
+                            data.error.boardingId = '';
+                          }
+                        "
+                      ></Select>
+                      <div v-if="data.error.boardingId" class="invalid-error">
+                        {{ data.error.boardingId }}
+                      </div>
+                    </div>
+                  </div>
 
-            <!--  -->
-            <div class="form-group row">
-              <label for="inputfromroom" class="col-sm-3 col-form-label p-0"
-                >Từ phòng:</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="inputfromroom"
-                  @blur="
-                    () => {
-                      let isCheck = checkNumber(data.item.from);
-                      if (isCheck) {
-                        data.error.from = 'Tên nhà trọ là số.';
-                        data.flag = true;
-                      }
-                    }
-                  "
-                  @input="
-                    data.error.from = '';
-                    data.flag = false;
-                  "
-                  v-model="data.item.from"
-                />
-                <div v-if="data.error.from" class="invalid-error">
-                  {{ data.error.from }}
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="inputtoroom" class="col-sm-3 col-form-label p-0"
-                >Đến phòng :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="inputtoroom"
-                  @blur="
-                    () => {
-                      let isCheck = checkNumber(data.item.to);
-                      if (isCheck) {
-                        data.error.to = 'Tên nhà trọ là số.';
-                        data.flag = true;
-                      }
-                    }
-                  "
-                  @input="
-                    data.error.to = '';
-                    data.flag = false;
-                  "
-                  v-model="data.item.to"
-                />
-                <div v-if="data.error.to" class="invalid-error">
-                  {{ data.error.to }}
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="inputprice" class="col-sm-3 col-form-label p-0"
-                >Giá phòng :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="inputprice"
-                  @blur="
-                    () => {
-                      let isCheck = checkNumber(data.item.price);
-                      if (isCheck) {
-                        data.error.price = 'Giá phòng là số';
-                        data.flag = true;
-                      }
-                    }
-                  "
-                  @input="
-                    data.error.price = '';
-                    data.flag = false;
-                  "
-                  v-model="data.item.price"
-                />
-                <div v-if="data.error.price" class="invalid-error">
-                  {{ data.error.price }}
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="inputlong" class="col-sm-3 col-form-label p-0"
-                >Chiều dài :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="inputlong"
-                  @blur="
-                    () => {
-                      let isCheck = checkNumber(data.item.long);
-                      if (isCheck) {
-                        data.error.long = 'Chiều dài phòng là số';
-                        data.flag = true;
-                      }
-                    }
-                  "
-                  @input="
-                    data.error.long = '';
-                    data.flag = false;
-                  "
-                  v-model="data.item.long"
-                />
-                <div v-if="data.error.long" class="invalid-error">
-                  {{ data.error.long }}
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="inputwide" class="col-sm-3 col-form-label p-0"
-                >Chiều rộng :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="inputwide"
-                  @blur="
-                    () => {
-                      let isCheck = checkNumber(data.item.wide);
-                      if (isCheck) {
-                        data.error.wide = 'chiều rộng phòng là số';
-                        data.flag = true;
-                      }
-                    }
-                  "
-                  @input="
-                    data.error.wide = '';
-                    data.flag = false;
-                  "
-                  v-model="data.item.wide"
-                />
-                <div v-if="data.error.wide" class="invalid-error">
-                  {{ data.error.wide }}
-                </div>
-              </div>
-            </div>
+                  <!--  -->
+                  <div class="form-group row">
+                    <label
+                      for="inputfromroom"
+                      class="col-sm-3 col-form-label p-0"
+                      >Từ phòng:</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="inputfromroom"
+                        @blur="
+                          () => {
+                            let isCheck = checkNumber(data.item.from);
+                            if (isCheck) {
+                              data.error.from = 'Tên nhà trọ là số.';
+                              data.flag = true;
+                            }
+                          }
+                        "
+                        @input="
+                          data.error.from = '';
+                          data.flag = false;
+                        "
+                        v-model="data.item.from"
+                      />
+                      <div v-if="data.error.from" class="invalid-error">
+                        {{ data.error.from }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="inputtoroom" class="col-sm-3 col-form-label p-0"
+                      >Đến phòng :</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="inputtoroom"
+                        @blur="
+                          () => {
+                            let isCheck = checkNumber(data.item.to);
+                            if (isCheck) {
+                              data.error.to = 'Tên nhà trọ là số.';
+                              data.flag = true;
+                            }
+                          }
+                        "
+                        @input="
+                          data.error.to = '';
+                          data.flag = false;
+                        "
+                        v-model="data.item.to"
+                      />
+                      <div v-if="data.error.to" class="invalid-error">
+                        {{ data.error.to }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="inputprice" class="col-sm-3 col-form-label p-0"
+                      >Giá phòng :</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="inputprice"
+                        @blur="
+                          () => {
+                            let isCheck = checkNumber(data.item.price);
+                            if (isCheck) {
+                              data.error.price = 'Giá phòng là số';
+                              data.flag = true;
+                            }
+                          }
+                        "
+                        @input="
+                          data.error.price = '';
+                          data.flag = false;
+                        "
+                        v-model="data.item.price"
+                      />
+                      <div v-if="data.error.price" class="invalid-error">
+                        {{ data.error.price }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="inputlong" class="col-sm-3 col-form-label p-0"
+                      >Chiều dài :</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="inputlong"
+                        @blur="
+                          () => {
+                            let isCheck = checkNumber(data.item.long);
+                            if (isCheck) {
+                              data.error.long = 'Chiều dài phòng là số';
+                              data.flag = true;
+                            }
+                          }
+                        "
+                        @input="
+                          data.error.long = '';
+                          data.flag = false;
+                        "
+                        v-model="data.item.long"
+                      />
+                      <div v-if="data.error.long" class="invalid-error">
+                        {{ data.error.long }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="inputwide" class="col-sm-3 col-form-label p-0"
+                      >Chiều rộng :</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="inputwide"
+                        @blur="
+                          () => {
+                            let isCheck = checkNumber(data.item.wide);
+                            if (isCheck) {
+                              data.error.wide = 'chiều rộng phòng là số';
+                              data.flag = true;
+                            }
+                          }
+                        "
+                        @input="
+                          data.error.wide = '';
+                          data.flag = false;
+                        "
+                        v-model="data.item.wide"
+                      />
+                      <div v-if="data.error.wide" class="invalid-error">
+                        {{ data.error.wide }}
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="form-group row">
-              <label for="inputContent" class="col-sm-3 col-form-label p-0"
-                >Mô tả thêm :</label
-              >
-              <div class="col-sm-9">
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="inputContent"
-                  v-model="data.item.content"
-                ></textarea>
+                  <div class="form-group row">
+                    <label
+                      for="inputContent"
+                      class="col-sm-3 col-form-label p-0"
+                      >Mô tả thêm :</label
+                    >
+                    <div class="col-sm-9">
+                      <textarea
+                        type="text"
+                        class="form-control"
+                        id="inputContent"
+                        rows="5"
+                        v-model="data.item.content"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="data.active == 'chalet'">
+                  <div class="form-group row justify-content-around mb-0">
+                    <label class="col-sm-2 col-form-label p-0"
+                      >Tiện ích :</label
+                    >
+                    <div class="col-sm-10 row">
+                      <div
+                        class="div col-4"
+                        v-for="(value, index) in data.amenitie"
+                        :key="index"
+                      >
+                        <input
+                          type="checkbox"
+                          @change="handleCheck"
+                          :value="value._id"
+                        />
+                        {{ value.name }}
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="form-group row justify-content-around mb-0"
+                    v-for="(value, index) in data.addAmenitie"
+                    :key="index"
+                  >
+                    <label
+                      for="inputAmenitie"
+                      class="col-sm-2 col-form-label p-0"
+                      >Tên tiện ích :</label
+                    >
+                    <div class="col-sm-10 row m-0 mb-1">
+                      <input
+                        type="text"
+                        id="inputAmenitie"
+                        v-model="value.name"
+                        class="form-control col-11"
+                        style="
+                          border-right: 0px;
+                          border-top-right-radius: 0;
+                          border-bottom-right-radius: 0;
+                        "
+                      />
+
+                      <span
+                        class="material-symbols-outlined text-success col-sm-1 border py-1"
+                        @click="handleAddAmenitie(value.name)"
+                        style="
+                          border-radius: 4px;
+                          border-top-left-radius: 0;
+                          border-bottom-left-radius: 0;
+                          padding-left: 10px;
+                        "
+                      >
+                        save
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Image -->
+                  <div class="form-group row">
+                    <label for="inputImage" class="col-sm-2 col-form-label p-0"
+                      >Ảnh phòng trọ :</label
+                    >
+                    <div class="col-sm-10">
+                      <input
+                        type="file"
+                        @blur="() => {}"
+                        @input="() => {}"
+                        ref="files"
+                        multiple
+                        @change="handleFileUpload($event)"
+                        class="form-control"
+                        id="inputImage"
+                      />
+                    </div>
+                    <div id="previewImages" class="container mt-2"></div>
+                  </div>
+                </div>
+
+                <div
+                  class="form-group row justify-content-around mb-0"
+                  v-if="data.active == 'chalet'"
+                >
+                  <button type="submit" class="btn btn-login col-sm-2">
+                    Thêm
+                  </button>
+                </div>
               </div>
-            </div>
-            <!-- Image -->
-            <div class="form-group row">
-              <label for="inputImage" class="col-sm-3 col-form-label p-0"
-                >Ảnh phòng trọ :</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="file"
-                  @blur="() => {}"
-                  @input="() => {}"
-                  ref="files"
-                  multiple
-                  @change="handleFileUpload($event)"
-                  class="form-control"
-                  id="inputImage"
-                />
-              </div>
-              <div id="previewImages" class="container mt-2"></div>
-            </div>
-            <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-2">Thêm</button>
             </div>
           </form>
         </div>
@@ -564,7 +736,29 @@ export default {
 </template>
 <style scoped>
 .modal-content {
-  width: 120%;
-  margin-left: -12%;
+  width: 160%;
+  margin-left: -16%;
+}
+ul {
+  list-style: none;
+}
+li {
+  display: block;
+}
+.list {
+  text-align: center;
+  line-height: 1;
+}
+.icon {
+  background-color: #7367f0;
+  color: var(--beige);
+  border-radius: 6px;
+  width: 18%;
+  text-align: center;
+}
+.list:hover > .name,
+.isActive {
+  color: #5243f6;
+  font-weight: 500;
 }
 </style>

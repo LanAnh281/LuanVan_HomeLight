@@ -170,6 +170,13 @@ export default {
 </script>
 <template>
   <div class="body container-fluid m-0 px-5 pt-3">
+    <router-link :to="{ name: 'boarding' }" class="text-primary">
+      <span class="" style="font-size: 16px; text-transform: uppercase"
+        >Nhà trọ /
+      </span>
+    </router-link>
+
+    <span class="title" style="font-size: 16px">Phòng </span>
     <div class="row" v-if="data.item.BoardingHouse">
       <!-- <img
         v-if="data.item.status == true"
@@ -177,6 +184,7 @@ export default {
         alt="ảnh sold out"
         style="position: absolute; z-index: 1; margin-left: 36%; width: 12%"
       /> -->
+
       <div
         id="carouselExampleCaptions"
         class="carousel slide col-6"

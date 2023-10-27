@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
 import amenitieService from "../../../service/amenitie.service";
+// import amenitieRoomService from "../../../service/amenitie_room.services";
 //component
 import Select from "../../../components/select/select.vue";
 //js
@@ -47,11 +48,6 @@ export default {
       categories: [
         { name: "Phòng trọ", icon: "house", active: "room" },
         { name: "Tiện ích", icon: "chalet", active: "chalet" },
-        {
-          name: "Hình ảnh ",
-          icon: "image",
-          active: "image",
-        },
       ],
       active: "room",
     });
@@ -288,21 +284,31 @@ export default {
           const checkboxes = document.querySelectorAll(
             'input[type="checkbox"]'
           );
-          console.log(checkboxes);
+
           for (let i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
-              console.log(checkboxes[i]);
               data.checkList.push(checkboxes[i].value);
             }
           }
-          console.log("check list", data.checkList);
-          _.forEach(data.checkList, (check) => {
-            formData.append("amenitie", check);
-          });
+
+          // _.forEach(data.checkList, (check) => {
+          //   formData.append("amenitie", check);
+          // });
           const documentRoom = await roomService.create(formData);
-          console.log(documentRoom);
+
           if (documentRoom["status"] == "success") {
             successAd(`Đã thêm phòng trọ ${documentRoom.message["name"]}`);
+
+            for (let value of data.checkList) {
+              const documentAmenitie =
+                await amenitieService.createAmenitiesRoom(
+                  documentRoom.message["_id"],
+                  {
+                    AmenityId: value,
+                  }
+                );
+            }
+
             emit("add");
             data.checkList = [];
             refresh();
@@ -325,7 +331,7 @@ export default {
       filesRef.value = document.getElementById("inputImage"); //Get input
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#roomModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
-      console.log("Thêm nhà trọ", props.boarding);
+
       const documentAmenitie = await amenitieService.getAll();
       data.amenitie = documentAmenitie.message;
       data.amenitie.push({ _id: "other", name: "Khác" });

@@ -174,7 +174,7 @@ p {
 }
 
 .carousel-item {
-  transition: transform 0.4s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 .homepageImg {
   width: 100%;
@@ -182,7 +182,7 @@ p {
 }
 .homepageImg:hover {
   scale: 1.02;
-  transition: 0.5s ease-in-out;
+  transition: 0.3s ease-in-out;
   border-radius: 4px;
 }
 </style>

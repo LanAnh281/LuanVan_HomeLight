@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
-class amenitieService {
-  constructor(baseUrl = "/api/amenitie") {
+class amenitieRoomService {
+  constructor(baseUrl = "/api/amenitieroom") {
     this.api = createApiClient(baseUrl);
   }
 
@@ -10,9 +10,6 @@ class amenitieService {
   }
   async create(data) {
     return (await this.api.post("/", data)).data;
-  }
-  async createAmenitiesRoom(id, data) {
-    return (await this.api.post(`/${id}`, data)).data;
   }
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
@@ -28,4 +25,4 @@ class amenitieService {
   }
 }
 
-export default new amenitieService();
+export default new amenitieRoomService();

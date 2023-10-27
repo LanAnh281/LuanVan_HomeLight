@@ -50,11 +50,6 @@ export default {
       categories: [
         { name: "Phòng trọ", icon: "house", active: "room" },
         { name: "Tiện ích", icon: "chalet", active: "chalet" },
-        // {
-        //   name: "Hình ảnh ",
-        //   icon: "image",
-        //   active: "image",
-        // },
       ],
       active: "room",
       amenitie: [{ name: "" }],
@@ -231,17 +226,30 @@ export default {
             (item) => !data.checkList.includes(item)
           );
           console.log("remove list:", data.removeList);
-          _.forEach(data.removeList, (value) => {
-            formData.append("removeAmenitie", value);
-          });
+
+          const documentRemove = await amenitieService.delete(props._id);
+          console.log(documentRemove);
+
+          for (let value of data.checkList) {
+            const documentCreate = await amenitieService.createAmenitiesRoom(
+              props._id,
+              {
+                AmenityId: value,
+              }
+            );
+            console.log(documentCreate);
+          }
+          // _.forEach(data.removeList, (value) => {
+          //   formData.append("removeAmenitie", value);
+          // });
           //
-          data.checkList = data.checkList.filter(
-            (item) => !data.checkedList.includes(item)
-          );
-          console.log("check new list", data.checkList);
-          _.forEach(data.checkList, (check) => {
-            formData.append("amenitie", check);
-          });
+          // data.checkList = data.checkList.filter(
+          //   (item) => !data.checkedList.includes(item)
+          // );
+          // console.log("check new list", data.checkList);
+          // _.forEach(data.checkList, (check) => {
+          //   formData.append("amenitie", check);
+          // });
           const documentRoom = await roomService.update(props._id, formData);
           console.log(documentRoom);
           if (documentRoom["status"] == "success") {
@@ -355,6 +363,7 @@ export default {
           return item._id;
         });
         console.log("Ban đầu:", data.checkedList);
+        console.log(data.amenitie);
       } catch (error) {}
     };
     onMounted(async () => {

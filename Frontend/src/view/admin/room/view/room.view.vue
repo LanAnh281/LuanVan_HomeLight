@@ -79,6 +79,15 @@ export default {
           <p class="col-3 m-0 p-0">Địa chỉ:</p>
           <p class="col-8 m-0 p-0">{{ data.boarding.address }}</p>
         </div>
+        <div
+          class="row justify-content-start p-0 m-0"
+          v-if="data.item.Amenities"
+        >
+          <p class="col-3 m-0 p-0">Tiện ích:</p>
+          <p v-for="(value, index) in data.item.Amenities" :key="index">
+            {{ value.name }},
+          </p>
+        </div>
       </div>
       <div class="col p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
@@ -88,7 +97,7 @@ export default {
         <div class="row justify-content-start p-0 m-0">
           <p class="col-3 m-0 p-0">Diện tích :</p>
           <p class="col-6 p-0 m-0">
-            {{ data.item.long }}x {{ data.item.wide }} m²
+            {{ data.item.long }} x {{ data.item.wide }} m²
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
@@ -105,21 +114,6 @@ export default {
         </div>
       </div>
 
-      <div
-        class="col-12 row justify-content-start p-0 m-0"
-        v-if="data.item.Amenities"
-      >
-        <p class="col-1 mr-5 p-0 m-0">Tiện ích:</p>
-        <p class="col-10 m-0 p-0">- {{ data.item.Amenities[0].name }}</p>
-        <div
-          class="row col-10 p-0 m-0"
-          v-for="(value, index) in data.item.Amenities"
-          :key="index"
-        >
-          <label class="col-2 m-0 p-0"></label>
-          <p class="m-0 p-0 col-10" v-if="index > 0">- {{ value.name }},</p>
-        </div>
-      </div>
       <div class="col-12 row justify-content-start p-0 m-0">
         <p class="col-1 mr-5 p-0">Mô tả :</p>
         <p class="col-10 p-0 m-0">
@@ -129,6 +123,7 @@ export default {
     </div>
 
     <hr />
+
     <div
       v-for="(value, index) in data.medias"
       :key="index"
@@ -137,8 +132,8 @@ export default {
       <img
         v-if="value.type == 'image'"
         :src="`http://localhost:3000/static/images/${value.name}`"
-        class="mb-1 col-4"
-        style="object-fit: contain; width: 50%; height: 160px"
+        class="mb-1 col-3"
+        style="object-fit: contain; width: 100%; height: 200px"
       />
       <div
         class="col-12"

@@ -88,7 +88,7 @@ export default {
       currentPage: 1,
       totalPage: 0,
       length: 0,
-      sizePage: 18,
+      sizePage: 10,
       searchText: "",
       flag: false,
     });
@@ -285,6 +285,7 @@ export default {
         <Select
           :title="`Chọn nhà trọ`"
           :data="data.boarding"
+          :selected="data.isActiveBoarding"
           @choose="
             async (value) => {
               data.isActiveBoarding = value;

@@ -1,12 +1,10 @@
 <script>
 import { reactive, ref, onMounted, watch, computed } from "vue";
 import Swal from "sweetalert2";
-import axios from "axios";
 
 //service
 import roomService from "../../../service/room.service";
 import service_roomService from "../../../service/service_room.service";
-import user_roomService from "../../../service/user_room.service";
 
 import userRoomService from "../../../service/user_room.service";
 import UtilityReadingsService from "../../../service/UtilityReadings.service";
@@ -45,7 +43,7 @@ export default {
       bill: { end: "", roomId: "" },
       totalPage: 0,
       length: 0,
-      sizePage: 18,
+      sizePage: 10,
       setPage: [],
       searchPage: [],
     });
@@ -221,6 +219,12 @@ export default {
       () => props.searchText,
       async (newValue, oldValue) => {
         await refresh();
+      }
+    );
+    watch(
+      () => props.currentPage,
+      (newValue, oldValue) => {
+        data.currentPage = props.currentPage;
       }
     );
     const refresh = async () => {
