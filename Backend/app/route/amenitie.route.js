@@ -16,6 +16,11 @@ router
   ]);
 router
   .route("/:id")
+  .post(
+    authorization.authentication,
+    authorization.authorization("xem danh sách dịch vụ"),
+    Amenities.createAmenitiesRoom
+  )
   .get(
     authorization.authentication,
     authorization.authorization("xem danh sách dịch vụ"),

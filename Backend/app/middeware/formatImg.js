@@ -2,6 +2,7 @@ const sharp = require("sharp");
 const fs = require("fs");
 const uploadDir = "./static/images";
 const path = require("path");
+const { count } = require("console");
 exports.format = async (req, res, next) => {
   const { countFiles } = req.body;
   console.log("FormatIMg:", req.body, countFiles > 0);
@@ -26,6 +27,7 @@ exports.format = async (req, res, next) => {
 
         newestFiles = files.slice(0, countFiles);
         try {
+          let count = 0;
           for (let index = 0; index < countFiles; index++) {
             const inputPath = `${uploadDir}/${newestFiles[index]}`;
 
@@ -48,13 +50,16 @@ exports.format = async (req, res, next) => {
                       console.error("Lỗi trong quá trình xóa tệp:", err);
                     } else {
                       console.log("Tệp đã được xóa thành công:", inputPath);
+                      count++;
+                      console.log("xóa thành công", count);
+                      console.log("count:", count, count == Number(countFiles));
+                      if (count == Number(countFiles)) next();
                     }
                   });
                 }
               });
           }
           // return res.json({ message: document, status: "success" });
-          next();
         } catch (error) {
           return res.json({ message: error, status: "fail" });
         }

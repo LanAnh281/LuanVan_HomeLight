@@ -38,23 +38,22 @@ exports.create = async (req, res, next) => {
       boardingId: boardingId,
     });
     // danh sách thêm mới
-    console.log("Bắt đầu thêm tiện nghi");
-    const amenityList = amenitie ? amenitie : [];
-    console.log("Tiện nghi:", amenityList);
-    if (Array.isArray(amenityList)) {
-      for (let i = 0; i < amenityList.length; i++) {
-        console.log("A:", amenitie[i]);
-        const documentAmenitie = await Amenitie_Room.create({
-          RoomId: document["_id"],
-          AmenityId: amenitie[i],
-        });
-      }
-    } else {
-      const documentAmenitie = await Amenitie_Room.create({
-        RoomId: document["_id"],
-        AmenityId: amenitie,
-      });
-    }
+    // console.log("Bắt đầu thêm tiện nghi");
+    // const amenityList = amenitie ? amenitie : [];
+    // if (Array.isArray(amenityList)) {
+    //   for (let i = 0; i < amenityList.length; i++) {
+    //     const documentAmenitie = await Amenitie_Room.create({
+    //       RoomId: document["_id"],
+    //       AmenityId: amenitie[i],
+    //     });
+    //   }
+    // } else {
+    //   const documentAmenitie = await Amenitie_Room.create({
+    //     RoomId: document["_id"],
+    //     AmenityId: amenitie,
+    //   });
+    // }
+    console.log("Bắt đầu thêm hình ảnh");
     if (document && countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {
         if (error) {
@@ -72,30 +71,31 @@ exports.create = async (req, res, next) => {
         });
 
         // Retrieve the two most recent files.
-
+        console.log("Hoàn thành sắp xếp");
         newestFiles = files.slice(0, countFiles);
 
         try {
           for (let index = 0; index < countFiles; index++) {
-            console.log(">>>index:", index);
+            console.log(">>>index:", index, newestFiles[index]);
             let media = await Media.create({
               name: newestFiles[index],
               roomId: document._id,
             });
+            console.log("MEDIA:", media);
           }
           return res.json({ message: document, status: "success" });
         } catch (error) {
-          return res.json({ message: error, status: "fail" });
+          return res.json({ message: error, status: "fail1" });
         }
       });
     } else if (document) {
       return res.json({ message: document, status: "success" });
     } else {
-      return res.json({ message: "fail", status: "faild" });
+      return res.json({ message: "fail", status: "faild2" });
     }
   } catch (error) {
     console.log(error);
-    return res.json({ message: error, status: "faild" });
+    return res.json({ message: error, status: "faild3" });
   }
 };
 exports.findAll = async (req, res, next) => {
@@ -183,7 +183,7 @@ exports.updated = async (req, res, next) => {
     boardingId,
     countFiles,
     // amenitie,
-    removeAmenitie,
+    // removeAmenitie,
   } = req.body;
   let amenitie = req.body.amenitie;
   const status = req.body.status == "false" ? false : true;
@@ -209,42 +209,42 @@ exports.updated = async (req, res, next) => {
     );
     // loại bỏ ame của 1 phòng
     console.log(req.body);
-    if (Array.isArray(removeAmenitie)) {
-      for (let i = 0; i < removeAmenitie.length; i++) {
-        const documentRemove = await Amenitie_Room.destroy({
-          where: {
-            RoomId: req.params.id,
-            AmenityId: removeAmenitie[i],
-          },
-        });
-      }
-    } else if (removeAmenitie != undefined) {
-      console.log("có giá trị:", removeAmenitie);
-      const documentRemove = await Amenitie_Room.destroy({
-        where: {
-          RoomId: req.params.id,
-          AmenityId: removeAmenitie,
-        },
-      });
-    }
+    // if (Array.isArray(removeAmenitie)) {
+    //   for (let i = 0; i < removeAmenitie.length; i++) {
+    //     const documentRemove = await Amenitie_Room.destroy({
+    //       where: {
+    //         RoomId: req.params.id,
+    //         AmenityId: removeAmenitie[i],
+    //       },
+    //     });
+    //   }
+    // } else if (removeAmenitie != undefined) {
+    //   console.log("có giá trị:", removeAmenitie);
+    //   const documentRemove = await Amenitie_Room.destroy({
+    //     where: {
+    //       RoomId: req.params.id,
+    //       AmenityId: removeAmenitie,
+    //     },
+    //   });
+    // }
 
-    // danh sách thêm mới
-    const amenityList = amenitie ? amenitie : [];
-    console.log("---L", amenityList, Array.isArray(amenityList));
-    if (Array.isArray(amenityList)) {
-      for (let i = 0; i < amenityList.length; i++) {
-        console.log("A:", amenitie[i]);
-        const documentAmenitie = await Amenitie_Room.create({
-          RoomId: req.params.id,
-          AmenityId: amenitie[i],
-        });
-      }
-    } else {
-      const documentAmenitie = await Amenitie_Room.create({
-        RoomId: req.params.id,
-        AmenityId: amenitie,
-      });
-    }
+    // // danh sách thêm mới
+    // const amenityList = amenitie ? amenitie : [];
+    // console.log("---L", amenityList, Array.isArray(amenityList));
+    // if (Array.isArray(amenityList)) {
+    //   for (let i = 0; i < amenityList.length; i++) {
+    //     console.log("A:", amenitie[i]);
+    //     const documentAmenitie = await Amenitie_Room.create({
+    //       RoomId: req.params.id,
+    //       AmenityId: amenitie[i],
+    //     });
+    //   }
+    // } else {
+    //   const documentAmenitie = await Amenitie_Room.create({
+    //     RoomId: req.params.id,
+    //     AmenityId: amenitie,
+    //   });
+    // }
     if (document && removeMedia.length > 0) {
       for (let media of removeMedia) {
         let filePath = `${uploadDir}/${media}`;

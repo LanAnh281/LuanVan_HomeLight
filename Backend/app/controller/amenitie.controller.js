@@ -1,4 +1,4 @@
-const { Amenities } = require("../models/index.model.js");
+const { Amenities, Amenitie_Room } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { name } = req.body;
 
@@ -13,7 +13,19 @@ exports.create = async (req, res, next) => {
     res.json({ message: error, status: "faild" });
   }
 };
-
+exports.createAmenitiesRoom = async (req, res, next) => {
+  console.log("AmenityId:", req.body, req.params.id);
+  try {
+    const document = await Amenitie_Room.create({
+      RoomId: req.params.id,
+      AmenityId: req.body.AmenityId,
+    });
+    res.json({ message: document, status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: error, status: "faild" });
+  }
+};
 exports.findAll = async (req, res, next) => {
   try {
     const amenitis = await Amenities.findAll({});
@@ -76,9 +88,9 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await Amenities.destroy({
+    const document = await Amenitie_Room.destroy({
       where: {
-        _id: req.params.id,
+        RoomId: req.params.id,
       },
     });
     res.json({ message: document, status: "success" });
