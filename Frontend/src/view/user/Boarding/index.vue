@@ -293,7 +293,7 @@ export default {
         :key="index"
       >
         <img
-          class="card-img-top"
+          class="card-img-top boarding-img border"
           :src="
             Array.isArray(value.Media) && value.Media.length > 0
               ? `http://localhost:3000/static/images/${value.Media[0].name}`
@@ -364,6 +364,11 @@ a:hover {
   cursor: pointer;
   padding: 15px;
   font-size: 16px;
+}
+.boarding-img:hover {
+  scale: 1.1;
+  transition: 0.3s ease-in-out;
+  border-radius: 4px;
 }
 </style>
 <!-- 1.Ảnh nhà trọ

@@ -1,7 +1,9 @@
 <script>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
+import registration from "../../../components/form/registration.form.vue";
 
 export default {
+  components: { registration },
   setup() {
     const data = reactive({
       images: [
@@ -25,12 +27,28 @@ export default {
         },
       ],
     });
+    const isRegistration = ref(false);
     const imageSrc = (url) => {
       return new URL(url, import.meta.url);
+    };
+    const handleDetail = () => {
+      try {
+        console.log("Chế độ thuê nhà, giá dịch vụ thuê");
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
     };
     return {
       data,
       imageSrc,
+      handleDetail,
+      isRegistration,
     };
   },
 };
@@ -145,11 +163,27 @@ export default {
           />
           <div class="card-body">
             <p class="card-text">
-              Dành cho chủ nhà trọ, bạn có thể quản lý nhà trọ của mình.
+              Dành cho chủ nhà trọ, bạn có thể quản lý nhà trọ của mình. Chỉ
+              bằng cách đăng ký
             </p>
+            <!-- <span @click="handleDetail" class="detail">Xem chi tiết</span> -->
           </div>
         </div>
       </div>
+    </div>
+    <div>
+      <h5 class="title">Bạn là chủ trọ và đây là thông tin dành cho bạn</h5>
+      <p>Chính sách và bảng giá sử dụng</p>
+      <button
+        class="btn btn-login"
+        data-toggle="modal"
+        data-target="#registrationModal"
+        style="font-size: 16px"
+        @click="isRegistration = !isRegistration"
+      >
+        Đăng ký ngay
+      </button>
+      <registration v-if="isRegistration"></registration>
     </div>
   </div>
 </template>
@@ -184,5 +218,9 @@ p {
   scale: 1.02;
   transition: 0.3s ease-in-out;
   border-radius: 4px;
+}
+.detail:hover {
+  text-decoration: underline;
+  color: blue;
 }
 </style>

@@ -56,17 +56,13 @@ export default {
       position: "",
       itemSuper: [
         { name: "Thống kê", icon: "bar_chart_4_bars", active: "dashboard" },
-        { name: "Nhà trọ", icon: "person", active: "customer" },
+        { name: "Chủ trọ", icon: "person", active: "customer" },
         {
           name: "Dịch vụ",
           icon: "energy_program_time_used",
           active: "service",
         },
-        {
-          name: "Chi phí",
-          icon: "monetization_on",
-          active: "spending",
-        },
+
         {
           name: "Hóa đơn",
           icon: "payments",

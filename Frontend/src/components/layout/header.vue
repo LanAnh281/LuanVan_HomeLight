@@ -10,7 +10,6 @@ import loginService from "../../service/login.service";
 import user_notificationService from "../../service/user_notification.service";
 //js
 import { checkAccessToken } from "../../assets/js/common.login";
-import internal from "stream";
 
 export default {
   components: { Select, registration },

@@ -178,12 +178,12 @@ export default {
 
     <span class="title" style="font-size: 16px">Phòng </span>
     <div class="row" v-if="data.item.BoardingHouse">
-      <!-- <img
+      <img
         v-if="data.item.status == true"
         src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
         alt="ảnh sold out"
-        style="position: absolute; z-index: 1; margin-left: 36%; width: 12%"
-      /> -->
+        style="position: absolute; z-index: 1; margin-left: 42%; width: 8%"
+      />
 
       <div
         id="carouselExampleCaptions"
@@ -236,32 +236,22 @@ export default {
         </button>
       </div>
       <!-- Infor -->
-      <div class="col mx-2">
+      <div class="col-4 mx-2">
         <div class="row p-0">
-          <div class="col-8">
-            <h4>
-              Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
-              {{ data.item.name }}
-            </h4>
-            <h6 class="col-12">
-              <span class="text-danger" style="font-size: 16px"
-                >Giá thuê:
+          <h4>
+            Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
+            {{ data.item.name }}
+          </h4>
+          <h6 class="col-12">
+            <span class="text-danger" style="font-size: 16px"
+              >Giá thuê:
 
-                {{ formatCurrency(data.item.price) }}
+              {{ formatCurrency(data.item.price) }}
 
-                / tháng</span
-              >
-              - {{ data.item.long * data.item.wide }}m²
-            </h6>
-          </div>
-
-          <img
-            v-if="data.item.status == true"
-            src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
-            alt="ảnh sold out"
-            class="col-3 m-0 p-0"
-            style="width: 18%"
-          />
+              / tháng</span
+            >
+            - {{ data.item.long * data.item.wide }}m²
+          </h6>
         </div>
 
         <div class="row p-0">
@@ -286,14 +276,15 @@ export default {
             {{ value }}
           </p>
         </div>
+
         <div class="row p-0">
           <h6 class="col-12 m-0">Tiện ích:</h6>
           <p
             v-for="(value, index) in data.item.Amenities"
             :key="index"
-            class="col-3 m-0 pt-0"
+            class="m-0 pt-0"
           >
-            - {{ value.name }}
+            {{ value.name }} ,
           </p>
         </div>
 
@@ -308,6 +299,7 @@ export default {
             {{ formatCurrency(value.price) }}
           </div>
         </div>
+
         <div class="row p-0 mb-2">
           <h6 class="col-12 m-0">Liên hệ</h6>
           <p class="m-0 p-0 col-12">
@@ -359,6 +351,15 @@ export default {
           @closeModal="isMessage = !isMessage"
         ></Message>
       </div>
+      <!-- <div class="col">
+        <img
+          v-if="data.item.status == true"
+          src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
+          alt="ảnh sold out"
+          class="col-3 m-0 p-0"
+          style="width: 100%"
+        />
+      </div> -->
       <!-- <div class="col my-3 m-0 px-3 p-0">
         <h6 class="my-3">Bản đồ</h6>
         <div id="map" style="height: 500px; width: 100%"></div>
@@ -395,7 +396,7 @@ export default {
               : `http://localhost:3000/static/images/lightHouse.png`
           "
           alt="ảnh phòng trọ"
-          style="height: 120px; object-fit: contain"
+          style="width: 100%; height: 200px; object-fit: cover"
         />
 
         <div class="card-body m-0 p-0">

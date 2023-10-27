@@ -302,10 +302,13 @@ export default {
     </div>
     <!-- <input type="range" min="0" max="100" v-model="sliderValue" />
     {{ sliderValue }} -->
-    <router-link :to="{ name: 'boarding' }" class="text-primary"
-      >Nhà trọ /
+    <router-link :to="{ name: 'boarding' }" class="text-primary">
+      <span class="" style="font-size: 16px; text-transform: uppercase"
+        >Nhà trọ /
+      </span>
     </router-link>
-    <span class="text-primary">Phòng </span>
+
+    <span class="title" style="font-size: 16px">Phòng </span>
     <div class="row m-2">
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"
@@ -320,7 +323,7 @@ export default {
           style="position: absolute; z-index: 1; margin-left: 72%; width: 25%"
         />
         <img
-          class="card-img-top"
+          class="card-img-top room-img"
           :src="
             value.Media.length > 0
               ? `http://localhost:3000/static/images/${value.Media[0].name}`
@@ -391,5 +394,10 @@ a:hover {
   cursor: pointer;
   padding: 15px;
   font-size: 16px;
+}
+.room-img:hover {
+  scale: 1.08;
+  transition: 0.3s ease-in-out;
+  border-radius: 4px;
 }
 </style>

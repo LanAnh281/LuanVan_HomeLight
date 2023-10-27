@@ -428,7 +428,7 @@ export default {
                   :key="index"
                   @click="data.active = value.active"
                 >
-                  <div class="row ml-2 my-3 list">
+                  <div class="row my-3 list">
                     <span class="material-symbols-outlined mr-2 py-1 icon">
                       {{ value.icon }}
                     </span>
