@@ -221,6 +221,13 @@ const Amenities = sequelize.define("Amenities", {
   userId: { type: DataTypes.STRING },
 });
 const Amenitie_Room = sequelize.define("Amenitie_Room", {});
+const Bill_User = sequelize.define("Bill_User", {
+  _id: setPrimary,
+  total: {
+    type: DataTypes.INTEGER,
+  },
+  content: { type: DataTypes.TEXT },
+});
 // checked
 //many-to-many relationship
 Roles.belongsToMany(Positions, {
@@ -455,6 +462,18 @@ Rooms.belongsToMany(Amenities, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+//one-to-one relationship
+Users.hasOne(Bill_User, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Bill_User.belongsTo(Users, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+//
 // Sync the model with the database
 
 Roles.sync();
@@ -488,6 +507,7 @@ Payment.sync();
 PAYMENTHISTORY.sync();
 Amenities.sync();
 Amenitie_Room.sync();
+Bill_User.sync();
 module.exports = {
   Roles,
   Positions,
@@ -518,4 +538,27 @@ module.exports = {
   PAYMENTHISTORY,
   Amenities,
   Amenitie_Room,
+  Bill_User,
 };
+/*
+Dựa vào id user với vai trò là super-admin lấy là đc dịch vụ và tính tiền
+dựa vào userId của chủ trọ đếm số phòng đã đăng ký ở websitr
+-dùng giá dịch vụ* số phòng= tiền cần thanh toán
+-Thêm thông báo cho việc trả tiền thuê website 
+    Thêm thông báo mới
+    Người tạo là hệ thống, người nhận là user chủ trọ
+- Thanh toán bên chủ trọ sẽ nằm ở mục header, thanh toán paypal
+- cập nhật lại phiếu thanh toán và lịch sử thanh toán (receipt sẽ dựa vảo createdAt để biết thanh toán lúc nào).
+
+*/
+/*
+-Thống kê hệ thống có bao nhiêu chủ trọ, bao nhiêu nhà trọ, bao nhiêu phòng trọ,khách trọ
+-Biểu đồ thống kê doanh thu theo tháng
+-DS hóa đơn 
+-dịch vụ
+-Thông tin chủ trọ=> nhà trọ => số phòng trọ
+-Tạo thông báo cho chủ trọ
+-Báo cáo doanh thu
+-Tài khoản và vai trò x
+
+*/
