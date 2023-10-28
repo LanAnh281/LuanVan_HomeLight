@@ -45,12 +45,13 @@ export default {
       serviceRoom: [],
       message: { comment: "", content: "" },
     });
+    let intervalId = null;
     const refresh = async () => {
       try {
         const documentBill = await billService.getAllCustomer();
         data.item = documentBill.message;
         //lấy danh sách dịch vụ
-        console.log(data.item);
+
         const documentService = await serviceService.getAll();
         data.services = documentService.message;
         // lấy ds dịch vụ của phòng
@@ -235,8 +236,9 @@ export default {
           </p>
         </div>
       </div>
-      <div class="col-1 m-0 p-0">
+      <div class="col m-0 p-0 card">
         <img :src="data.item.Rooms[0].qrCodeUrl" alt="QR" class="mx-2" />
+        <p class="card-text text-center text-info">Liên hệ qua SĐT</p>
       </div>
     </div>
   </div>

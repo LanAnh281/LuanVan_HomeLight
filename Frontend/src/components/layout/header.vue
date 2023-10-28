@@ -383,6 +383,12 @@ export default {
                     >Hóa đơn</router-link
                   >
                   <router-link
+                    :to="{ name: 'landlord' }"
+                    v-if="position == 'admin'"
+                    class="dropdown-item px-1"
+                    >Hóa đơn</router-link
+                  >
+                  <router-link
                     :to="{ name: 'changePassword' }"
                     class="dropdown-item px-1"
                     >Đổi mật khẩu</router-link

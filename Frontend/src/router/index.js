@@ -48,6 +48,12 @@ const routes = [
     name: "account",
     component: () => import("../view/superadmin/account/index.vue"),
   },
+  // {
+  //   path: "/superadmin/account",
+  //   name: "account",
+  //   component: () => import("../view/superadmin/account/index.vue"),
+  // },
+
   //Admin
 
   //dashboard
@@ -87,7 +93,11 @@ const routes = [
     name: "bill",
     component: () => import("../view/admin/bill/index.vue"),
   },
-
+  {
+    path: "/admin/billLandlord",
+    name: "landlord",
+    component: () => import("../view/admin/bill/landlord.vue"),
+  },
   {
     path: "/admin/notifications",
     name: "notifications",
