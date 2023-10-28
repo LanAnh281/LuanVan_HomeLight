@@ -19,9 +19,9 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <table class="table">
-      <thead class="thead-dark">
+  <div class="m-0 p-0">
+    <table class="table m-0 p-0">
+      <thead class="thead-dark m-0 p-0">
         <tr class="m-0 p-0">
           <!-- <th scope="col">#</th> -->
           <th scope="col" v-for="(filed, index) in fields" :key="index">
@@ -30,7 +30,7 @@ export default {
           <th scope="col" v-if="action"></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="m-0 p-0">
         <tr
           v-for="(value, index) in data"
           :key="index"
@@ -42,7 +42,7 @@ export default {
           <td
             v-for="(title, index1) in titles"
             :key="index1"
-            class="m-0 p-0 px-2"
+            class="m-0 p-0 px-1"
           >
             {{ value[title] }}
           </td>

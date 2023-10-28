@@ -133,7 +133,7 @@ export default {
           <input
             type="search"
             placeholder="tìm kiếm theo tên dịch vụ"
-            class="p-2 w-50"
+            class="p-1 w-50"
             style="border: 1px solid #ccc; border-radius: 6px"
             v-model="data.searchText"
           />
@@ -154,26 +154,26 @@ export default {
                   :key="index"
                   :id="index"
                 >
-                  <th>
+                  <th class="p-0">
                     <input
                       type="text"
-                      class="w-100 p-1"
+                      class="w-100 px-1"
                       v-model="value.name"
                       style="border: 1px solid #ccc"
                     />
                   </th>
-                  <th>
+                  <th class="p-0">
                     <input
                       type="text"
                       v-model="value.price"
-                      class="p-1 w-100"
+                      class="w-100 px-1"
                       style="border: 1px solid #ccc"
                     />
                   </th>
-                  <th>
+                  <th class="p-0">
                     <input
                       type="text"
-                      class="p-1 w-100"
+                      class="w-100 px-1"
                       v-model="value.unit"
                       style="border: 1px solid #ccc"
                     />

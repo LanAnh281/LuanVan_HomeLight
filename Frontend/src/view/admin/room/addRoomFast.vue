@@ -490,7 +490,7 @@ export default {
                           () => {
                             let isCheck = checkNumber(data.item.from);
                             if (isCheck) {
-                              data.error.from = 'Tên nhà trọ là số.';
+                              data.error.from = 'Tên phòng trọ là số.';
                               data.flag = true;
                             }
                           }
@@ -519,7 +519,7 @@ export default {
                           () => {
                             let isCheck = checkNumber(data.item.to);
                             if (isCheck) {
-                              data.error.to = 'Tên nhà trọ là số.';
+                              data.error.to = 'Tên phòng trọ là số.';
                               data.flag = true;
                             }
                           }

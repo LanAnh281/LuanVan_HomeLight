@@ -59,7 +59,7 @@ export default {
       id="carouselExampleControls"
       class="carousel slide col-12 m-auto"
       data-ride="carousel"
-      style="height: 600px"
+      style="height: 700px"
     >
       <div class="carousel-inner">
         <div
@@ -72,7 +72,7 @@ export default {
             class="d-block w-100"
             :src="imageSrc(image.src)"
             :alt="image.alt"
-            style="object-fit: cover; height: 580px; width: 100wh"
+            style="object-fit: cover; height: 690px; width: 100wh"
           />
         </div>
       </div>
@@ -95,83 +95,121 @@ export default {
         <span class="sr-only">Next</span>
       </a>
     </div>
-    <div class="text-center mx-5 px-5">
-      <h5 class="title m-0 my-2 p-0">Chúng tôi là ai?</h5>
-      <p class="font-bold-itali">
-        Sống Dễ Dàng - Tìm Nhà Trọ - Quản Lý Thuận Tiện
-      </p>
-      <p>
-        <span class="material-symbols-outlined"> line_end_circle </span>
-        <span class="material-symbols-outlined"> line_start_circle </span>
-      </p>
-
-      <p class="font-bold-itali">
-        Nơi chúng tôi sẽ mang lại trải nghiệm độc đáo cho cả chủ trọ và khách
-        thuê.
-      </p>
-
-      <p class="font-bold-itali">
-        Chúng tôi tạo điều kiện thuận lợi cho tất cả người dùng.
-      </p>
-      <p>
-        Hệ thống của chúng tôi giúp bạn dễ dàng tìm kiếm các căn nhà trọ lý
-        tưởng và cũng cung cấp cho chủ trọ một cách thuận tiện để quản lý nhà
-        trọ của họ.
-      </p>
-      <p>
-        Chúng tôi luôn sẵn sàng phục vụ nhu cầu "tìm nhà trọ, tìm phòng trọ,
-        chung cư mini, căn hộ mini" cho mọi khách hàng, với mong muốn "Xây dựng
-        những căn phòng <strong>ĐẸP</strong> - Tạo dựng môi trường sống
-        <strong>TỐT</strong> - Đảm bảo sự <strong>MINH BẠCH</strong> " cũng như
-        <strong>QUYỀN LỢI</strong> cho người thuê phòng và cả cộng đồng.
-      </p>
-    </div>
-
-    <div class="text-center my-5">
-      <div class="row mx-1 justify-content-between">
-        <div class="col card mx-2 p-2">
-          <img
-            src="../../../assets/image/homepage8.jpg"
-            alt="thông tin quản lý nhà trọ"
-            class="w-100 homepageImg m-0 p-0"
-          />
-          <div class="card-body">
-            <p class="card-text">
-              Đối với người tìm trọ, bạn có thể tìm kiếm căn trọ một cách dễ
-              dàng.
+    <div class="st__villas mt-3">
+      <div class="st__villas__content">
+        <div class="container">
+          <div class="heading__st__villas text-center">
+            <h3
+              class="title wow fadeInUp animated"
+              data-wow-delay=".3s"
+              style="
+                visibility: visible;
+                animation-delay: 0.3s;
+                animation-name: fadeInUp;
+                font-family: 'Amarillo';
+                font-size: 30px;
+                color: #c89310;
+              "
+            >
+              Chúng tôi là ai
+            </h3>
+            <p
+              class="font-bold-itali my-3"
+              style="font-family: 'Amarillo'; font-size: 26px; color: #c89310"
+            >
+              Sống Dễ Dàng - Tìm Nhà Trọ - Quản Lý Thuận Tiện
             </p>
-          </div>
-        </div>
-        <div class="col card mx-2 p-2">
-          <img
-            src="../../../assets/image/homepage3.jpg"
-            alt="thông tin quản lý nhà trọ"
-            class="w-100 homepageImg m-0 p-0"
-          />
-          <div class="card-body">
-            <p class="card-text">
-              Đối với khách thuê, bạn có thể dễ dàng thực hiện thanh toán và
-              theo dõi thông tin về phòng trọ của mình.
+            <!-- <p>
+              <span class="material-symbols-outlined"> line_end_circle </span>
+              <span class="material-symbols-outlined"> line_start_circle </span>
+            </p> -->
+
+            <!-- <p class="font-bold-itali">
+              Nơi chúng tôi sẽ mang lại trải nghiệm độc đáo cho cả chủ trọ và
+              khách thuê.
+            </p> -->
+
+            <!-- <p class="font-bold-itali">
+              Chúng tôi tạo điều kiện thuận lợi cho tất cả người dùng.
+            </p> -->
+            <p
+              class="text-center wow fadeInUp animated"
+              data-wow-delay=".7s"
+              style="
+                visibility: visible;
+                animation-delay: 0.7s;
+                animation-name: fadeInUp;
+                line-height: 2;
+                font-family: 'Amarillo';
+                font-size: 20px;
+                color: #282827;
+              "
+            >
+              Hệ thống của chúng tôi giúp bạn dễ dàng tìm kiếm các căn nhà trọ
+              lý tưởng và cũng cung cấp cho chủ trọ một cách thuận tiện để quản
+              lý nhà trọ của họ. Chúng tôi luôn sẵn sàng phục vụ nhu cầu "tìm
+              nhà trọ, tìm phòng trọ, chung cư mini, căn hộ mini" cho mọi khách
+              hàng, với mong muốn "Xây dựng những căn phòng ĐẸP- Tạo dựng môi
+              trường sống TỐT - Đảm bảo sự MINH BẠCH " cũng như QUYỀN LỢI cho
+              người thuê phòng và cả cộng đồng.
             </p>
-          </div>
-        </div>
-        <div class="col card m-0 p-2 mx-2">
-          <img
-            src="../../../assets/image/homepage2.webp"
-            alt="thông tin quản lý nhà trọ"
-            class="w-100 homepageImg m-0 p-0"
-          />
-          <div class="card-body">
-            <p class="card-text">
-              Dành cho chủ nhà trọ, bạn có thể quản lý nhà trọ của mình. Chỉ
-              bằng cách đăng ký
-            </p>
-            <!-- <span @click="handleDetail" class="detail">Xem chi tiết</span> -->
           </div>
         </div>
       </div>
     </div>
-    <div>
+
+    <div class="row justify-content-around mx-3">
+      <div class="inner col-4">
+        <div class="box-icon">
+          <img
+            src="../../../assets/image/homepage9.jpg"
+            alt="thông tin quản lý nhà trọ"
+            class="w-100 homepageImg m-0 p-0"
+          />
+        </div>
+        <div class="box-title m-3">
+          <h2>Người tìm trọ</h2>
+        </div>
+        <div class="box-desc mx-3">
+          Đối với người tìm trọ, bạn có thể tìm kiếm căn trọ một cách dễ
+        </div>
+      </div>
+      <!--  -->
+      <div class="inner col-4">
+        <div class="box-icon m-0 p-0">
+          <img
+            src="../../../assets/image/homepage10.jpg"
+            alt="thông tin quản lý nhà trọ"
+            class="w-100 homepageImg m-0 p-0"
+          />
+        </div>
+        <div class="box-title m-3">
+          <h2>Khách trọ</h2>
+        </div>
+        <div class="box-desc mx-2">
+          Đối với khách thuê, bạn có thể dễ dàng thực hiện thanh toán và theo
+          dõi thông tin về phòng trọ của mình.
+        </div>
+      </div>
+      <div class="inner col-4">
+        <div class="box-icon m-0 p-0">
+          <img
+            src="../../../assets/image/homepage13.jpg"
+            alt="thông tin quản lý nhà trọ"
+            class="w-100 homepageImg m-0 p-0"
+          />
+        </div>
+        <div class="box-title m-3">
+          <h2>Chủ trọ</h2>
+        </div>
+        <div class="box-desc mx-3" style="">
+          Dành cho chủ nhà trọ, bạn có thể quản lý nhà trọ của mình. Chỉ bằng
+          cách đăng ký
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-3">
       <h5 class="title">Bạn là chủ trọ và đây là thông tin dành cho bạn</h5>
       <p>Chính sách và bảng giá sử dụng</p>
       <button
@@ -189,7 +227,7 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 240vh;
+  height: 500vh;
 }
 #carouselExampleControls {
   /* left: 0;
@@ -222,5 +260,45 @@ p {
 .detail:hover {
   text-decoration: underline;
   color: blue;
+}
+.card {
+  border: none;
+}
+.inner {
+  position: relative;
+}
+.inner:hover {
+  z-index: 1;
+}
+.inner:hover .box-desc {
+  display: block;
+  word-wrap: break-word;
+}
+.inner:hover .box-title {
+  display: none;
+}
+.inner:hover .box-icon {
+  opacity: 0.8;
+}
+.box-title {
+  display: block;
+  position: absolute;
+  bottom: 0;
+}
+.box-title h2 {
+  color: #fdf2f2;
+  text-transform: uppercase;
+}
+.box-desc {
+  position: absolute;
+  z-index: 1;
+  bottom: 8%;
+  text-align: justify;
+  color: #fff;
+  font-size: 20px;
+}
+
+.box-desc {
+  display: none;
 }
 </style>

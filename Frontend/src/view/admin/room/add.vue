@@ -484,7 +484,7 @@ export default {
                           () => {
                             let isCheck = checkNumber(data.item.name);
                             if (isCheck) {
-                              data.error.name = 'Tên nhà trọ là số.';
+                              data.error.name = 'Tên phòng trọ là số.';
                               data.flag = true;
                             }
                           }

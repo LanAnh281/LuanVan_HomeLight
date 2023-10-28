@@ -98,9 +98,9 @@ export default {
               </li>
             </ul>
             <!-- component Customer -->
-            <div class="col-sm-9 row px-4 pt-1 mt-0">
+            <div class="col-sm-10 row px-4 pt-1 mt-0">
               <addCustomerForm
-                class="col-12"
+                class="col-11 m-0 p-0"
                 v-if="data.active == 'customer' && data.form == 'addNewMember'"
                 :_id="_id"
                 @changeStatus="
@@ -111,7 +111,7 @@ export default {
               ></addCustomerForm>
 
               <!-- Member -->
-              <div class="col-12">
+              <div class="col-11 m-0 p-0">
                 <addMemberForm
                   class="m-0 p-0"
                   v-if="data.active == 'member'"
@@ -126,7 +126,7 @@ export default {
               </div>
 
               <Service
-                class="m-0 p-0 col-12 mt-3"
+                class="m-0 p-0 col-11 mt-3"
                 v-if="data.active == 'service'"
                 :_id="_id"
               ></Service>

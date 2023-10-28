@@ -16,7 +16,7 @@ export default {
 <template>
   <div class="row justify-content-between mx-2">
     <div v-if="totalPage > 0" class="mt-1">
-      Hiển thị bản ghi
+      Hiển thị dữ liệu từ
       {{ (currentPage - 1) * size + 1 }} đến
       <span v-if="currentPage == totalPage">
         <span v-if="currentPage * size == length">
@@ -29,7 +29,7 @@ export default {
       </span>
     </div>
     <div v-if="totalPage == 0" class="text-center mx-auto">
-      Không tồn tại bản ghi
+      Không tồn tại dữ liệu
     </div>
     <nav aria-label="Page navigation example " v-if="totalPage > 0">
       <ul class="pagination">

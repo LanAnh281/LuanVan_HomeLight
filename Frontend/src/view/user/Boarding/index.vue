@@ -285,10 +285,14 @@ export default {
       </div>
     </div>
 
-    <div class="row m-2">
+    <div
+      class="row m-2"
+      style="display: grid; grid-template-columns: repeat(5, 1fr)"
+    >
       <router-link
         :to="{ name: 'rooms', query: { _id: value._id } }"
-        class="card p-2 mb-2 col-2"
+        class="card p-2 mb-2 mx-1"
+        style=""
         v-for="(value, index) in data.setPage"
         :key="index"
       >
@@ -366,7 +370,7 @@ a:hover {
   font-size: 16px;
 }
 .boarding-img:hover {
-  scale: 1.1;
+  scale: 1.05;
   transition: 0.3s ease-in-out;
   border-radius: 4px;
 }

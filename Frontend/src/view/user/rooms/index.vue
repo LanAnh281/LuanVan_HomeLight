@@ -34,14 +34,17 @@ export default {
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
       address: "",
-      price: [
-        {
-          _id: "under 1000",
-          name: "Dưới 1 triệu",
-        },
-        { _id: "from 1000 to 1500", name: "Từ 1 - 1.5 triệu" },
-        { _id: "under 1500", name: "Trên 1.5 triệu" },
-      ],
+      // price: [
+      //   {
+      //     _id: "under 1000",
+      //     name: "Dưới 1 triệu",
+      //   },
+      //   { _id: "from 1000 to 1500", name: "Từ 1 - 1.5 triệu" },
+      //   { _id: "under 1500", name: "Trên 1.5 triệu" },
+      // ],
+      price: 0,
+      max: 0,
+      min: 0,
       selectPrice: "",
       searchText: "",
       setPage: "",
@@ -59,7 +62,7 @@ export default {
         data.items
           ? data.items.filter((item) => {
               if (item.BoardingHouse && item.BoardingHouse.name) {
-                return item.BoardingHouse.name
+                return item.name
                   .toLowerCase()
                   .includes(data.searchText.toLocaleLowerCase());
               }
@@ -143,8 +146,9 @@ export default {
     };
 
     watch(
-      () => data.selectPrice,
+      () => data.price,
       async (newValue, oldValue) => {
+        data.price = newValue;
         await refresh();
       }
     );
@@ -163,29 +167,46 @@ export default {
             item.BoardingHouse.address.includes(data.address)
           );
         }
-        if (data.selectPrice != "") {
-          switch (data.selectPrice) {
-            case "under 1000": {
-              data.items = data.items.filter((item) => item.price < 1000000);
-              break;
-            }
-            case "from 1000 to 1500": {
-              data.items = data.items.filter(
-                (item) => item.price >= 1000000 && item.price <= 1500000
-              );
-
-              break;
-            }
-            case "under 1500": {
-              data.items = data.items.filter((item) => item.price > 1500000);
-
-              break;
-            }
-            default: {
-              console.log("không chọn");
-            }
+        data.max = data.items[0].price;
+        data.min = data.items[0].price;
+        for (let value of data.items) {
+          if (Number(value.price) > data.max) {
+            data.max = value.price;
+          }
+          if (Number(value.price) < data.min) {
+            data.min = value.price;
           }
         }
+        if (data.price == 0) {
+          data.price = data.min;
+        }
+
+        data.items = data.items.filter(
+          (item) => Number(item.price) <= data.price
+        );
+        //   if (data.selectPrice != "") {
+        //     switch (data.selectPrice) {
+        //       case "under 1000": {
+        //         data.items = data.items.filter((item) => item.price < 1000000);
+        //         break;
+        //       }
+        //       case "from 1000 to 1500": {
+        //         data.items = data.items.filter(
+        //           (item) => item.price >= 1000000 && item.price <= 1500000
+        //         );
+
+        //         break;
+        //       }
+        //       case "under 1500": {
+        //         data.items = data.items.filter((item) => item.price > 1500000);
+
+        //         break;
+        //       }
+        //       default: {
+        //         console.log("không chọn");
+        //       }
+        //     }
+        //   }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -196,6 +217,19 @@ export default {
         }
       }
     };
+    // const handleMaxMin = async () => {
+    //   try {
+
+    //   } catch (error) {
+    //     if (error.response) {
+    //       console.log("Server-side errors", error.response.data);
+    //     } else if (error.request) {
+    //       console.log("Client-side errors", error.request);
+    //     } else {
+    //       console.log("Errors:", error.message);
+    //     }
+    //   }
+    // };
     onBeforeMount(async () => {
       try {
         position.value = localStorage.getItem("position");
@@ -260,8 +294,14 @@ export default {
 </script>
 <template>
   <div class="body container-fluid m-0 pr-5" v-if="data.items">
+    <router-link :to="{ name: 'boarding' }" class="text-primary mx-2">
+      <span class="" style="font-size: 16px; text-transform: uppercase"
+        >Nhà trọ /
+      </span>
+      <span class="title" style="font-size: 16px">Phòng </span>
+    </router-link>
     <div class="row m-0 text-center mt-2">
-      <div class="input-group col-2" style="margin-left: 5%">
+      <!-- <div class="input-group col-2" style="margin-left: 5%">
         <Select
           :title="`Chọn thành phố`"
           :data="data.city.data"
@@ -282,37 +322,46 @@ export default {
           :data="data.ward.data.wards"
           @choose="(value) => changeWard(value)"
         ></Select>
-      </div>
-      <div class="input-group col-2">
-        <selectNormal
-          :title="`Chọn giá thuê`"
-          :data="data.price"
-          @choose="(value) => (data.selectPrice = value)"
-        ></selectNormal>
-      </div>
-      <!-- <div class="input-group col-3" style="z-index: 0">
+      </div> -->
+      <div class="input-group col-3" style="z-index: 0">
         <input
           type="search"
           v-model="data.searchText"
           class="w-100 px-2"
-          placeholder="tìm kiếm theo tên nhà trọ"
+          placeholder="tìm kiếm theo tên phòng trọ"
           style="border: 1px solid #ccc; border-radius: 4px"
         />
-      </div> -->
+      </div>
+      <div class="input-group col-4 m-0">
+        <!-- <selectNormal
+          :title="`Chọn giá thuê`"
+          :data="data.price"
+          @choose="(value) => (data.selectPrice = value)"
+        ></selectNormal> -->
+
+        <label for="customRange1" class="form-label">Giá thuê</label>
+        <input
+          type="range"
+          class="form-range"
+          id="customRange1"
+          :min="data.min"
+          :max="data.max"
+          v-model="data.price"
+        />
+
+        {{ formatCurrency(data.price) }} đ
+      </div>
     </div>
     <!-- <input type="range" min="0" max="100" v-model="sliderValue" />
     {{ sliderValue }} -->
-    <router-link :to="{ name: 'boarding' }" class="text-primary">
-      <span class="" style="font-size: 16px; text-transform: uppercase"
-        >Nhà trọ /
-      </span>
-    </router-link>
 
-    <span class="title" style="font-size: 16px">Phòng </span>
-    <div class="row m-2">
+    <div
+      class="row m-1"
+      style="display: grid; grid-template-columns: repeat(5, 1fr)"
+    >
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"
-        class="card p-2 mb-2 col-2"
+        class="card p-2 mb-2 mx-1"
         v-for="(value, index) in data.setPage"
         :key="index"
       >
@@ -396,7 +445,7 @@ a:hover {
   font-size: 16px;
 }
 .room-img:hover {
-  scale: 1.08;
+  scale: 1.02;
   transition: 0.3s ease-in-out;
   border-radius: 4px;
 }

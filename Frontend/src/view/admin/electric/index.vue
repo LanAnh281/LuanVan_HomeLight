@@ -288,6 +288,7 @@ export default {
         <Select
           :title="`Chọn nhà trọ`"
           :data="data.boarding"
+          :selected="data.boardingActice"
           @choose="
             async (value) => {
               data.boardingActice = value;

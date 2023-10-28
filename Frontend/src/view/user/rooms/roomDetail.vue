@@ -236,7 +236,7 @@ export default {
         </button>
       </div>
       <!-- Infor -->
-      <div class="col-4 mx-2">
+      <div class="col mx-2">
         <div class="row p-0">
           <h4>
             Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
@@ -282,7 +282,7 @@ export default {
           <p
             v-for="(value, index) in data.item.Amenities"
             :key="index"
-            class="m-0 pt-0"
+            class="ml-2 m-0 pt-0"
           >
             {{ value.name }} ,
           </p>
@@ -296,7 +296,7 @@ export default {
             class="col-3 m-0 pt-0"
           >
             {{ capitalizeFirstLetter(value.name) }} :
-            {{ formatCurrency(value.price) }}
+            {{ formatCurrency(value.price) }}/ {{ value.unit }}
           </div>
         </div>
 
@@ -318,9 +318,9 @@ export default {
           </p>
         </div>
 
-        <div class="row">
+        <div class="row align-items-center">
           <button
-            class="btn btn-login col-4 mr-1"
+            class="btn btn-login mr-1"
             style="height: 40px"
             data-toggle="modal"
             data-target="#messageModal"
@@ -329,7 +329,7 @@ export default {
             Nhắn tin với chủ trọ
           </button>
           <strong>Hoặc</strong>
-          <div class="col-3 card mx-2 p-0 text-center">
+          <div class="col-2 card mx-2 p-0 text-center">
             <img
               :src="data.item.qrCodeUrl"
               alt="QR"
