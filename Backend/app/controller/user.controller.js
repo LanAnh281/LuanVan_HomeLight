@@ -6,7 +6,6 @@ const {
   User_Room,
   Rooms,
 } = require("../models/index.model");
-const { dateTime } = require("../middeware/datetime.middeware");
 
 const fs = require("fs");
 const uploadDir = "./uploads/images";
@@ -44,6 +43,7 @@ exports.createUserAndAccount = async (req, res) => {
     isPay,
     clientId,
     secretId,
+
     file,
   } = req.body;
   console.log(
@@ -93,6 +93,7 @@ exports.createUserAndAccount = async (req, res) => {
       securityDeposit: securityDeposit,
       password: password,
       isPay: isPay,
+      isUser: true,
       clientId: clientId,
       secretId: secretId,
     };

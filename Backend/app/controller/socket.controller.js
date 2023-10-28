@@ -17,13 +17,18 @@ const job = schedule.scheduleJob("0 0 0 * * *", async () => {
     0
   ).getDate();
   console.log("tạo bill cuối tháng", lastDayOfMonth);
+  // const billUser = await billMiddeware.createBill_user();
+  // console.log("BIll Users:", billUser);
   // const bill = await billMiddeware.create();
+  // io.emit("noti", "Thành công");
   if (currentDate.getDate() === lastDayOfMonth) {
-    console.log("Lệnh đã được thực thi vào ngày cuối của tháng.");
+    console.log("Lệnh đã được thực thi vào ngày cuối của tháng. 30,31");
+    // Bill dành cho khách trọ
     const bill = await billMiddeware.create();
-    console.log(bill);
-    io.emit("billProcessed", bill);
-    // Đặt lệnh bạn muốn thực hiện ở đây 0 0 0 * * *
+    // Bill dành cho chủ trọ
+    const billUser = await billMiddeware.createBill_user();
+    io.emit("noti", "Tạo hóa đơn tự động thành công");
+    // Đặt lệnh bạn muốn thực hiện ở đây 0 0 0 * * *, 1 phút */1 * * * *
   }
 });
 

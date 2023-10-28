@@ -1,3 +1,4 @@
+const { sequelize } = require("../config/index");
 const {
   Bill,
   User_Room,
@@ -8,6 +9,9 @@ const {
   Receipt,
   Notification,
   User_Notification,
+  Positions,
+  Accounts,
+  Bill_User,
 } = require("../models/index.model.js");
 exports.findAll = async (req, res, next) => {
   try {
@@ -29,10 +33,17 @@ exports.findAll = async (req, res, next) => {
 };
 exports.create = async () => {
   try {
+    const now = new Date();
+
     const documentRoom = await Rooms.findAll({
       where: {
         status: true,
       },
+    });
+    // lưu thông báo
+    const documentNoti = await Notification.create({
+      date: now,
+      content: `Thông báo hóa đơn ${now.getMonth() + 1}/${now.getFullYear()}`,
     });
     for (let room of documentRoom) {
       let total = 0;
@@ -98,7 +109,7 @@ exports.create = async () => {
       }
 
       services = services.replace(/,$/, "");
-      const now = new Date();
+
       const document = await Bill.create({
         end: now,
         total: total,
@@ -106,11 +117,11 @@ exports.create = async () => {
         services: services,
         roomId: room._id,
       });
-      // lưu thông báo
-      const documentNoti = await Notification.create({
-        date: now,
-        content: `Thông báo hóa đơn ${now.getMonth() + 1}/${now.getFullYear()}`,
-      });
+      // // lưu thông báo
+      // const documentNoti = await Notification.create({
+      //   date: now,
+      //   content: `Thông báo hóa đơn ${now.getMonth() + 1}/${now.getFullYear()}`,
+      // });
       // console.log("Thông báo:", documentNoti);
       const documentUser_Room = await User_Room.findAll({
         where: { RoomId: room._id },
@@ -121,6 +132,7 @@ exports.create = async () => {
           UserId: user.UserId,
           NotificationId: documentNoti._id,
           isDelete: false,
+          isRead: false,
         });
       }
     }
@@ -130,3 +142,84 @@ exports.create = async () => {
     return { message: error, status: "fail" };
   }
 };
+
+exports.createBill_user = async () => {
+  try {
+    const now = new Date();
+    const documentPosition = await Positions.findOne({
+      where: { name: "super-admin" },
+    });
+    console.log("Vai trò super-admin:", documentPosition);
+    const documentSuperAdmin = await Accounts.findOne({
+      where: { positionId: documentPosition["_id"] },
+    });
+    console.log("Id user:", documentSuperAdmin);
+    // lấy dịch vụ của super admin
+    // dạng ds
+    const documentService = await Services.findAll({
+      where: { userId: documentSuperAdmin["userId"] },
+    });
+    // tổng số phòng của từng chủ trọ
+    const totalRoom = await sequelize.query(
+      `
+        SELECT Users._id, COUNT(Rooms._id) as totalRooms
+        FROM Users
+        LEFT JOIN boardinghouses ON Users._id = boardinghouses.userId
+        LEFT JOIN Rooms ON boardinghouses._id = Rooms.boardingId
+        where Users.isUser=true
+        GROUP BY Users._id
+  `,
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    // tạo thông báo mơi
+    const documentNoti = await Notification.create({
+      date: now,
+      content: `Thông báo hóa đơn quản lý nhà trọ ${
+        now.getMonth() + 1
+      }/${now.getFullYear()}`,
+    });
+
+    for (let value of totalRoom) {
+      let price = 0;
+      for (let val of documentService) {
+        // tính tiền
+        console.log(Number(price), Number(val.price) * value.totalRooms);
+        price = Number(price) + Number(val.price) * value.totalRooms;
+      }
+      // tạo hóa đơn,
+      console.log("Tổng tiền:", price);
+      const documentBillUser = await Bill_User.create({
+        userId: value._id,
+        content: "Hóa đơn quản lý nhà trọ",
+        total: price,
+      });
+      console.log("Hóa đơn:", documentBillUser);
+
+      // truyển thông báo đi
+      const documentNotiUser = await User_Notification.create({
+        UserId: value._id,
+        NotificationId: documentNoti._id,
+        isDelete: false,
+        isRead: false,
+      });
+    }
+
+    return "lập bill chủ trọ";
+  } catch (error) {
+    return { message: error, status: "fail" };
+  }
+};
+
+/*
+Dựa vào id user với vai trò là super-admin lấy là đc dịch vụ và tính tiền
+dựa vào userId của chủ trọ đếm số phòng đã đăng ký ở websitr
+-dùng giá dịch vụ* số phòng= tiền cần thanh toán
+-Thêm thông báo cho việc trả tiền thuê website 
+    Thêm thông báo mới
+    Người tạo là hệ thống, người nhận là user chủ trọ
+- Thanh toán bên chủ trọ sẽ nằm ở mục header, thanh toán paypal
+- cập nhật lại phiếu thanh toán và lịch sử thanh toán (receipt sẽ dựa vảo createdAt để biết thanh toán lúc nào).
+
+*/

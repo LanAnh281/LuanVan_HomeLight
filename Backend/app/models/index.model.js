@@ -107,7 +107,8 @@ const Users = sequelize.define("Users", {
   },
   numberPlate: { type: DataTypes.TEXT },
   securityDeposit: { type: DataTypes.STRING },
-  isPay: { type: DataTypes.BOOLEAN }, // host or not host
+  isPay: { type: DataTypes.BOOLEAN },
+  isUser: { type: DataTypes.BOOLEAN }, // chủ trọ true
 });
 
 const BorardingHouse = sequelize.define("BoardingHouse", {
@@ -540,25 +541,16 @@ module.exports = {
   Amenitie_Room,
   Bill_User,
 };
-/*
-Dựa vào id user với vai trò là super-admin lấy là đc dịch vụ và tính tiền
-dựa vào userId của chủ trọ đếm số phòng đã đăng ký ở websitr
--dùng giá dịch vụ* số phòng= tiền cần thanh toán
--Thêm thông báo cho việc trả tiền thuê website 
-    Thêm thông báo mới
-    Người tạo là hệ thống, người nhận là user chủ trọ
-- Thanh toán bên chủ trọ sẽ nằm ở mục header, thanh toán paypal
-- cập nhật lại phiếu thanh toán và lịch sử thanh toán (receipt sẽ dựa vảo createdAt để biết thanh toán lúc nào).
 
-*/
 /*
 -Thống kê hệ thống có bao nhiêu chủ trọ, bao nhiêu nhà trọ, bao nhiêu phòng trọ,khách trọ
--Biểu đồ thống kê doanh thu theo tháng
--DS hóa đơn 
--dịch vụ
+  Đếm hệ thống có bao nhiêu người có vai trò admin, đếm nhà trọ ở boardingHouse, đếm room, đếm vai trò user
+-Biểu đồ thống kê doanh thu theo quý, (tính tổng doanh thu từ việc thu tiền từ hệ thống mặc định sẽ là quý hiện tại 7 8 9) với 2 select 1 là quý và 1 là năm
+-DS hóa đơn (các hóa đơn đã thu và chưa thu từ việc thuê website quản lý)
+-dịch vụ (dịch vụ ở đây là giá thuê hệ thống quản lý nhà trọ)
 -Thông tin chủ trọ=> nhà trọ => số phòng trọ
 -Tạo thông báo cho chủ trọ
--Báo cáo doanh thu
+-Báo cáo doanh thu (báo cáo danh thu theo tháng)
 -Tài khoản và vai trò x
 
 */
