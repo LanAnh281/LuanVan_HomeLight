@@ -183,16 +183,19 @@ exports.createBill_user = async () => {
 
     for (let value of totalRoom) {
       let price = 0;
+      let content = "";
       for (let val of documentService) {
         // tính tiền
         console.log(Number(price), Number(val.price) * value.totalRooms);
         price = Number(price) + Number(val.price) * value.totalRooms;
+        content += `${val.name} - ${val.price} - ${val.unit} - ${documentSuperAdmin["userId"]},`;
       }
       // tạo hóa đơn,
+      content = content.replace(/,$/, "");
       console.log("Tổng tiền:", price);
       const documentBillUser = await Bill_User.create({
         userId: value._id,
-        content: "Hóa đơn quản lý nhà trọ",
+        content: content,
         total: price,
       });
       console.log("Hóa đơn:", documentBillUser);

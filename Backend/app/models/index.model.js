@@ -464,13 +464,24 @@ Rooms.belongsToMany(Amenities, {
   onUpdate: "CASCADE",
 });
 //one-to-one relationship
-Users.hasOne(Bill_User, {
+Users.hasMany(Bill_User, {
   foreignKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 Bill_User.belongsTo(Users, {
   foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+//one-to-one relationship
+Bill_User.hasOne(Receipt, {
+  foreignKey: "billUserId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Receipt.belongsTo(Bill_User, {
+  foreignKey: "billUserId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });

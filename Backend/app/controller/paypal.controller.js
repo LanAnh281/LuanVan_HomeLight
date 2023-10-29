@@ -6,6 +6,7 @@ const {
   Bill,
   Receipt,
   PAYMENTHISTORY,
+  Positions,
 } = require("../models/index.model");
 exports.hien = (req, res, next) => {
   res.json({ hi: "hello" });
@@ -19,17 +20,28 @@ exports.hien = (req, res, next) => {
 // });
 exports.taopaypal = async (req, res, next) => {
   console.log("Body pay,", req.body._id, req.body.boardingId);
-  const documentLand = await BorardingHouse.findOne({
-    where: {
-      _id: req.body.boardingId,
-    },
-  });
-  console.log("----land:", documentLand);
-  const documentPay = await Payment.findOne({
-    where: {
-      userId: documentLand.userId,
-    },
-  });
+  let documentPay = "";
+  let isSuperAdmin = false;
+  if (req.body.boardingId) {
+    const documentLand = await BorardingHouse.findOne({
+      where: {
+        _id: req.body.boardingId,
+      },
+    });
+    console.log("----land:", documentLand);
+    documentPay = await Payment.findOne({
+      where: {
+        userId: documentLand.userId,
+      },
+    });
+  } else if (req.body.userId) {
+    documentPay = await Payment.findOne({
+      where: {
+        userId: req.body.userId,
+      },
+    });
+    isSuperAdmin = true;
+  }
   console.log("-----PPPPay", documentPay);
   paypal.configure({
     mode: "sandbox", //sandbox or live
@@ -46,7 +58,7 @@ exports.taopaypal = async (req, res, next) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: `http://localhost:3000/api/paypal/success?received=${req.body.total}&_id=${req.body._id}&clientId=${documentPay.clientId}&secretId=${documentPay.secretId}`,
+      return_url: `http://localhost:3000/api/paypal/success?received=${req.body.total}&_id=${req.body._id}&clientId=${documentPay.clientId}&secretId=${documentPay.secretId}&isSuperAdmin=${isSuperAdmin}`,
       cancel_url: "http://localhost:3000/api/paypal/cancel",
     },
     transactions: [
@@ -124,67 +136,85 @@ exports.thanhcong = (req, res) => {
         // res.send('Success (Mua hàng thành công)');
 
         // tìm hóa đơn
-        const documentBill = await Bill.findOne({
-          where: { _id: req.query._id },
-        });
-        console.log("--Bill:", documentBill);
-        // cập nhật lại hóa đơn sau khi thanh toán
-        const updateBill = await Bill.update(
-          {
-            debt:
-              Number(documentBill.debt) -
-              Number(payment.transactions[0].amount.total),
-          },
-          { where: { _id: req.query._id } }
-        );
-        console.log("--update:", updateBill);
-        //tạo hoặc update
-        const documentReceipt = await Receipt.findOne({
-          where: {
-            billId: req.query._id,
-          },
-        });
-        console.log("---Receipt:", documentReceipt);
-        if (documentReceipt != null) {
-          //update
-          const updateReceipt = await Receipt.update(
+        console.log("Thanh toán cho super-admin", req.query.isSuperAdmin);
+        if (req.query.isSuperAdmin == "false") {
+          const documentBill = await Bill.findOne({
+            where: { _id: req.query._id },
+          });
+          console.log("--Bill:", documentBill);
+          // cập nhật lại hóa đơn sau khi thanh toán
+          const updateBill = await Bill.update(
             {
-              receive:
-                Number(documentReceipt.receive) +
-                Number(payment.transactions[0].amount.total),
               debt:
-                Number(documentReceipt.debt) -
+                Number(documentBill.debt) -
                 Number(payment.transactions[0].amount.total),
             },
-            {
-              where: {
-                _id: documentReceipt._id,
-              },
-            }
+            { where: { _id: req.query._id } }
           );
-          console.log("---Update receipt:", updateReceipt);
-        } else {
-          //create
-          const createReceipt = await Receipt.create({
-            receive: payment.transactions[0].amount.total,
-            debt:
-              Number(documentBill.total) -
-              Number(payment.transactions[0].amount.total),
+          console.log("--update:", updateBill);
+          //tạo hoặc update
+          const documentReceipt = await Receipt.findOne({
+            where: {
+              billId: req.query._id,
+            },
+          });
+          console.log("---Receipt:", documentReceipt);
+          if (documentReceipt != null) {
+            //update
+            const updateReceipt = await Receipt.update(
+              {
+                receive:
+                  Number(documentReceipt.receive) +
+                  Number(payment.transactions[0].amount.total),
+                debt:
+                  Number(documentReceipt.debt) -
+                  Number(payment.transactions[0].amount.total),
+              },
+              {
+                where: {
+                  _id: documentReceipt._id,
+                },
+              }
+            );
+            console.log("---Update receipt:", updateReceipt);
+          } else {
+            //create
+            const createReceipt = await Receipt.create({
+              receive: payment.transactions[0].amount.total,
+              debt:
+                Number(documentBill.total) -
+                Number(payment.transactions[0].amount.total),
+              billId: req.query._id,
+            });
+            console.log("---create receipt:", createReceipt);
+          }
+          const documentPayHistory = await PAYMENTHISTORY.create({
+            money: payment.transactions[0].amount.total,
+            method: "thanh toán PayPal",
             billId: req.query._id,
           });
-          console.log("---create receipt:", createReceipt);
+          res.writeHead(302, {
+            Location: `http://localhost:3001/billCustomer?status=1`,
+            //add other headers here...
+          });
+        } else if (req.query.isSuperAdmin == "true") {
+          console.log("thanh toán cho super admin, tạo phiếu thu");
+          const createReceipt = await Receipt.create({
+            receive: payment.transactions[0].amount.total,
+            debt: 0,
+            billUserId: req.query._id,
+          });
+          res.writeHead(302, {
+            Location: `http://localhost:3001/admin/billLandlord?status=1`,
+            //add other headers here...
+          });
         }
-        const documentPayHistory = await PAYMENTHISTORY.create({
-          money: payment.transactions[0].amount.total,
-          method: "thanh toán PayPal",
-          billId: req.query._id,
-        });
       }
 
-      res.writeHead(302, {
-        Location: `http://localhost:3001/billCustomer?status=1`,
-        //add other headers here...
-      });
+      // res.writeHead(302, {
+      //   Location: `http://localhost:3001/billCustomer?status=1`,
+      //   //add other headers here...
+      // });
       res.end();
     }
   );
