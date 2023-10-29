@@ -552,16 +552,3 @@ module.exports = {
   Amenitie_Room,
   Bill_User,
 };
-
-/*
--Thống kê hệ thống có bao nhiêu chủ trọ, bao nhiêu nhà trọ, bao nhiêu phòng trọ,khách trọ
-  Đếm hệ thống có bao nhiêu người có vai trò admin, đếm nhà trọ ở boardingHouse, đếm room, đếm vai trò user
--Biểu đồ thống kê doanh thu theo quý, (tính tổng doanh thu từ việc thu tiền từ hệ thống mặc định sẽ là quý hiện tại 7 8 9) với 2 select 1 là quý và 1 là năm
--DS hóa đơn (các hóa đơn đã thu và chưa thu từ việc thuê website quản lý)
--dịch vụ (dịch vụ ở đây là giá thuê hệ thống quản lý nhà trọ)
--Thông tin chủ trọ=> nhà trọ => số phòng trọ
--Tạo thông báo cho chủ trọ
--Báo cáo doanh thu (báo cáo danh thu theo tháng)
--Tài khoản và vai trò x
-
-*/
