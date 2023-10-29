@@ -55,7 +55,11 @@ export default {
       userName: "",
       position: "",
       itemSuper: [
-        { name: "Thống kê", icon: "bar_chart_4_bars", active: "dashboard" },
+        {
+          name: "Thống kê",
+          icon: "bar_chart_4_bars",
+          active: "dashboardSuperAdmin",
+        },
         { name: "Chủ trọ", icon: "person", active: "customer" },
         {
           name: "Dịch vụ",
@@ -66,7 +70,7 @@ export default {
         {
           name: "Hóa đơn",
           icon: "payments",
-          active: "bill",
+          active: "billSuperAdmin",
         },
         {
           name: "Thông báo",
@@ -82,7 +86,7 @@ export default {
         {
           name: "Tài khoản",
           icon: "manage_accounts",
-          active: "account",
+          active: "accountSuperAdmin",
         },
       ],
     });

@@ -161,18 +161,7 @@ export default {
         }
       }
     };
-    const handleReceipt = async () => {
-      try {
-      } catch (error) {
-        if (error.response) {
-          console.log("Server-side errors", error.response.data);
-        } else if (error.request) {
-          console.log("Client-side errors", error.request);
-        } else {
-          console.log("Errors:", error.message);
-        }
-      }
-    };
+
     onBeforeMount(async () => {
       try {
         data.selectDate = new Date();
@@ -194,7 +183,6 @@ export default {
       formatDateTime,
       numberToWords,
       handlePay,
-      handleReceipt,
     };
   },
 };

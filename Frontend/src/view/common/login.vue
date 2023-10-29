@@ -36,7 +36,6 @@ export default {
         }
         if (!data.flag) {
           const document = await Login.login(data.item);
-
           if (document.status == "success") {
             setLocalStrorage(
               document["token"],
@@ -54,7 +53,7 @@ export default {
             if (document["position"] == "admin") {
               router.push({ name: "dashboard" });
             } else if (document["position"] == "super-admin") {
-              router.push({ name: "account" });
+              router.push({ name: "billSuperAdmin" });
             } else {
               router.push({ name: "homepage" });
             }

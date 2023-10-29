@@ -44,15 +44,16 @@ const routes = [
   //superAdmin
   //account
   {
-    path: "/superadmin/account",
-    name: "account",
-    component: () => import("../view/superadmin/account/index.vue"),
+    path: "/superAdmin/account",
+    name: "accountSuperAdmin",
+    component: () => import("../view/superAdmin/account/index.vue"),
   },
-  // {
-  //   path: "/superadmin/account",
-  //   name: "account",
-  //   component: () => import("../view/superadmin/account/index.vue"),
-  // },
+
+  {
+    path: "/superAdmin/billSuperAdmin",
+    name: "billSuperAdmin",
+    component: () => import("../view/superAdmin/bill/index.vue"),
+  },
 
   //Admin
 
