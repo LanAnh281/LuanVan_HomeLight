@@ -1,5 +1,5 @@
-const { Bill_User, Receipt } = require("../models/index.model.js");
-
+const { Bill_User, Receipt, Users } = require("../models/index.model.js");
+const { sequelize } = require("../config/index");
 exports.findAll = async (req, res, next) => {
   try {
     const documents = await Bill_User.findAll({});
@@ -11,13 +11,20 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findAllUser = async (req, res, next) => {
   try {
-    const documents = await Bill_User.findAll({
-      where: {
-        userId: req.user.userId,
-      },
-
-      include: [{ model: Receipt }],
-    });
+    console.log("req.user.userId:", req.user.userId);
+    const documents = await sequelize.query(
+      `
+      SELECT Users._id, bill_users.total, receipts.receive,receipts.createdAt
+      FROM Users
+    left JOIN bill_users ON Users._id = bill_users.userId
+    left JOIN receipts ON bill_users._id = receipts.billUserId
+    where Users._id= '${req.user.userId}'
+    ORDER BY receipts.createdAt DESC
+  `,
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
 
     res.json({ message: documents, status: "success" });
   } catch (error) {
