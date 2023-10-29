@@ -99,6 +99,11 @@ const routes = [
     component: () => import("../view/admin/bill/landlord.vue"),
   },
   {
+    path: "/admin/histories",
+    name: "histories",
+    component: () => import("../view/admin/bill/histories.vue"),
+  },
+  {
     path: "/admin/notifications",
     name: "notifications",
     component: () => import("../view/admin/notifications/index.vue"),

@@ -13,6 +13,7 @@ export default {
     const data = reactive({
       item: [],
       selectDate: new Date(),
+      active: "billUser",
     });
     const now = new Date();
     const refresh = async () => {
@@ -20,8 +21,8 @@ export default {
         console.log("refresh");
         const document = await bill_userService.getAllUser();
         data.item = document.message;
-        console.log(data.item);
-        data.item = data.item.filter((item) => {
+        console.log(data.item[0].Bill_Users);
+        data.item[0].Bill_Users = data.item[0].Bill_Users.filter((item) => {
           const date = new Date(item.createdAt);
           return (
             date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
@@ -29,7 +30,7 @@ export default {
           );
         });
 
-        data.item = data.item.map((item) => {
+        data.item[0].Bill_Users = data.item[0].Bill_Users.map((item) => {
           const content = item.content.split(" - ");
 
           return {
@@ -42,7 +43,7 @@ export default {
             isPaied: item.Receipt ? true : false,
           };
         });
-        console.log(data.item);
+        console.log(data.item[0].Bill_Users);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -58,7 +59,7 @@ export default {
         data.selectDate = new Date(value.target.value);
         console.log("Ngày đã chọn", value.target.value);
         await refresh();
-        console.log(data.item);
+        console.log(data.item[0].Bill_Users);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -138,12 +139,12 @@ export default {
     };
     const handlePay = async () => {
       try {
-        console.log("Thanh toán", data.item[0].total);
+        console.log("Thanh toán", data.item[0].Bill_Users[0].total);
 
         const documentPay = await payService.create({
-          userId: data.item[0].userId,
-          _id: data.item[0]._id,
-          total: data.item[0].total,
+          userId: data.item[0].Bill_Users[0].userId,
+          _id: data.item[0].Bill_Users[0]._id,
+          total: data.item[0].Bill_Users[0].total,
         });
         console.log(documentPay);
         // var url=await paypalService.taoTT(thanhtoan);
@@ -209,27 +210,43 @@ export default {
           style="background-color: var(--background); border: 1px solid #ebebeb"
         />
       </div>
-      <div class="input-group col-2">
-        <button class="btn btn-primary" @click="handleReceipt">
+      <!-- <div class="input-group col-2">
+        <button
+          class="btn btn-primary"
+          @click="
+            () => {
+              data.active = 'histories';
+            }
+          "
+        >
           Lịch sử thanh toán
         </button>
-      </div>
+      </div> -->
     </div>
-    <div class="row justify-content-between mx-2" v-if="data.item.length > 0">
+    <div
+      class="row justify-content-between mx-2"
+      v-if="data.item[0].Bill_Users.length > 0 && data.active == 'billUser'"
+    >
       <div class="col-9 row">
         <div class="col-12"></div>
         <div class="col-12"></div>
         <div class="col-12"></div>
       </div>
       <div class="col-3">
-        <p>Ngày lập: {{ formatDateTime(data.item[0].createdAt) }}</p>
+        <p>
+          Ngày lập: {{ formatDateTime(data.item[0].Bill_Users[0].createdAt) }}
+        </p>
         <button
           class="btn"
-          :class="data.item[0].isPaied ? 'btn-success' : 'btn-primary'"
-          :disabled="data.item[0].isPaied"
+          :class="
+            data.item[0].Bill_Users[0].isPaied ? 'btn-success' : 'btn-primary'
+          "
+          :disabled="data.item[0].Bill_Users[0].isPaied"
           @click="handlePay"
         >
-          {{ data.item[0].isPaied ? "Đã thanh toán" : "Thanh toán" }}
+          {{
+            data.item[0].Bill_Users[0].isPaied ? "Đã thanh toán" : "Thanh toán"
+          }}
         </button>
       </div>
       <div class="col-12 text-center m-0 p-0">
@@ -256,28 +273,38 @@ export default {
         <tbody>
           <tr>
             <td>Tiền quản lý nhà trọ</td>
-            <td class="text-center">{{ data.item[0].count }}</td>
+            <td class="text-center">{{ data.item[0].Bill_Users[0].count }}</td>
             <td class="text-center">
-              {{ formatCurrency(data.item[0].servicePrice) }}
+              {{ formatCurrency(data.item[0].Bill_Users[0].servicePrice) }}
             </td>
             <td class="text-center">
-              {{ formatCurrency(data.item[0].total) }}
+              {{ formatCurrency(data.item[0].Bill_Users[0].total) }}
             </td>
           </tr>
           <tr>
             <th>Thành tiền</th>
             <td colspan="2"></td>
             <td class="text-center">
-              {{ formatCurrency(data.item[0].total) }}
+              {{ formatCurrency(data.item[0].Bill_Users[0].total) }}
             </td>
           </tr>
         </tbody>
       </table>
       <strong class="mx-2 text-center"
-        >Thành tiền bằng chữ: {{ numberToWords(data.item[0].total) }}</strong
+        >Thành tiền bằng chữ:
+        {{ numberToWords(data.item[0].Bill_Users[0].total) }}</strong
       >
+      <div class="text-center" v-if="data.item[0].Bill_Users.length == 0">
+        Không có hóa đơn
+      </div>
     </div>
-    <div class="text-center" v-if="data.item.length == 0">Không có hóa đơn</div>
+
+    <div
+      v-if="data.active == 'histories'"
+      class="row justify-content-between mx-2"
+    >
+      lịch sử thanh toán
+    </div>
   </div>
 </template>
 <style scoped>

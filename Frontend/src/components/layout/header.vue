@@ -389,6 +389,12 @@ export default {
                     >Hóa đơn</router-link
                   >
                   <router-link
+                    :to="{ name: 'histories' }"
+                    v-if="position == 'admin'"
+                    class="dropdown-item px-1"
+                    >Lịch sử</router-link
+                  >
+                  <router-link
                     :to="{ name: 'changePassword' }"
                     class="dropdown-item px-1"
                     >Đổi mật khẩu</router-link
