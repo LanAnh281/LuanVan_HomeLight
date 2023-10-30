@@ -40,4 +40,11 @@ router
     authorization.authorization("xem thông tin khách trọ"),
     user.findAllTenant
   );
+router
+  .route("/findAllLandlord/landlord")
+  .get(
+    authorization.authentication,
+    authorization.authorization("xem thông tin khách trọ"),
+    user.findAllLandlord
+  );
 module.exports = router;

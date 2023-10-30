@@ -253,6 +253,27 @@ exports.findAll = async (req, res, next) => {
     res.json({ message: error, status: "fail" });
   }
 };
+exports.findAllLandlord = async (req, res, next) => {
+  try {
+    const users = await Users.findAll({
+      where: { isUser: true },
+      include: [
+        {
+          model: Accounts,
+        },
+        { model: BorardingHouse, include: [{ model: Rooms }] },
+      ],
+    });
+    const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */
+    for (let i in documents) {
+      documents[i].isActive = documents[i].Account.isActive;
+    }
+
+    res.json({ message: documents, status: "success" });
+  } catch (error) {
+    res.json({ message: error, status: "fail" });
+  }
+};
 exports.findAllTenant = async (req, res, next) => {
   try {
     // lấy đc danh sách khách trọ của 1 người chủ
