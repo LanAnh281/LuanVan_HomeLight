@@ -60,7 +60,7 @@ export default {
           icon: "bar_chart_4_bars",
           active: "dashboardSuperAdmin",
         },
-        { name: "Chủ trọ", icon: "person", active: "customer" },
+        { name: "Chủ trọ", icon: "person", active: "customerSuperAdmin" },
         {
           name: "Dịch vụ",
           icon: "energy_program_time_used",
@@ -75,7 +75,7 @@ export default {
         {
           name: "Thông báo",
           icon: "notifications",
-          active: "notifications",
+          active: "notificationsSuperAdmin",
         },
         {
           name: "Báo cáo",

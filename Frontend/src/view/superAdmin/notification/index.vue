@@ -16,7 +16,7 @@ export default {
   components: { Add, Table, View, paginationVue },
   setup() {
     const data = reactive({
-      item: [],
+      item: [{ content: "" }],
       setPage: [],
       searchPage: [],
       searchText: "",
@@ -91,6 +91,7 @@ export default {
           year: date.getFullYear(),
         };
         await refresh();
+
         console.log(data.selectDate);
       } catch (error) {
         if (error.response) {
@@ -106,8 +107,9 @@ export default {
       try {
         const documentNoti = await NotificationService.getAllUser();
         data.item = documentNoti.message;
+
         data.item = data.item.filter((item) => {
-          const date = new Date(item.date);
+          const date = new Date(item.createdAt);
           return (
             date.getMonth() + 1 == data.selectDate.month &&
             date.getFullYear() == data.selectDate.year
@@ -116,7 +118,7 @@ export default {
         data.item = data.item.map((item) => {
           return {
             ...item,
-            date: formatDateTime(item.date),
+            createdAt: formatDateTime(item.createdAt),
           };
         });
       } catch (error) {
@@ -207,7 +209,7 @@ export default {
           style="line-height: 2"
         >
           <td class="m-0 px-1 py-0" style="width: 10%">
-            {{ value.date }}
+            {{ value.createdAt }}
           </td>
 
           <td

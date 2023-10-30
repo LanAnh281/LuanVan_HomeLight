@@ -74,7 +74,7 @@ export default {
         <router-view class="col-10"></router-view>
       </template>
       <!-- user -->
-      <template v-else>
+      <template v-if="position != 'admin' && position != 'super-admin'">
         <Header></Header>
         <router-view></router-view>
       </template>

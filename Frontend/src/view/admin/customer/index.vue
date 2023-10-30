@@ -31,7 +31,7 @@ import Select from "../../../components/select/selectdependent.vue";
 import SelectNormal from "../../../components/select/select.vue";
 import View from "./view.vue";
 import Edit from "./edit.vue";
-import Mail from "./mail.vue";
+import Mail from "../../../components/form/mail.vue";
 export default {
   components: { paginationVue, Table, Select, SelectNormal, View, Edit, Mail },
   setup() {
