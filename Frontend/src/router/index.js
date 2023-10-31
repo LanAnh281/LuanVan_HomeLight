@@ -65,6 +65,16 @@ const routes = [
     name: "notificationsSuperAdmin",
     component: () => import("../view/superAdmin/notification/index.vue"),
   },
+  {
+    path: "/superAdmin/dashboardSuperAdmin",
+    name: "dashboardSuperAdmin",
+    component: () => import("../view/superAdmin/dashboard/index.vue"),
+  },
+  {
+    path: "/superAdmin/reportSuperAdmin",
+    name: "reportSuperAdmin",
+    component: () => import("../view/superAdmin/report/index.vue"),
+  },
   //Admin
 
   //dashboard

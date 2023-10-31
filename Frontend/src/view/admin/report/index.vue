@@ -80,7 +80,7 @@ export default {
       let expense = 0;
       const documentSpending = await spendingService.getAll();
       const spending = documentSpending.message.filter((item) => {
-        let date = new Date(item.date);
+        let date = new Date(item.updatedAt);
         if (
           date >= data.start &&
           date <= data.end &&
@@ -100,12 +100,14 @@ export default {
         if (
           date >= data.start &&
           date <= data.end &&
+          item.Bill != null &&
           item.Bill.Room.boardingId == boardingId
         ) {
           receipt += Number(item.receive);
           return item;
         }
       });
+
       return receipt;
     };
     const refresh = async () => {
@@ -118,7 +120,7 @@ export default {
           const expense = await handleSpending(data.selectBoarding["_id"]);
           //DOANH THU
           const receipt = await handleReceipt(data.selectBoarding["_id"]);
-
+          console.log(receipt);
           data.item[0] = {
             receipt: receipt,
             expense: expense,

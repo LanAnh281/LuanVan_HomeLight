@@ -96,7 +96,7 @@ export default {
         data.customerList = data.customerList.message;
         data.customer.total = data.customerList.length;
         for (let value of data.customerList) {
-          const date = new Date(value.createdAt);
+          const date = new Date(value.updatedAt);
           if (
             date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
             date.getFullYear() == data.selectDate.getFullYear()
@@ -144,8 +144,9 @@ export default {
         chartSeriesProfit.data = [{}];
         //chi
         let documentSpending = await spendingService.getAll();
+
         documentSpending = documentSpending.message.filter((item) => {
-          const date = new Date(item.date);
+          const date = new Date(item.updatedAt);
           //Thời gian đã chọn == tgian trong csdl
           if (
             data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
@@ -160,23 +161,26 @@ export default {
             item.boardingId == data.selectBoarding
           );
         });
+
         // thu
         let documentReceipt = await receiptService.getAll();
         documentReceipt = documentReceipt.message.filter((item) => {
           const date = new Date(item.updatedAt);
-          if (
-            item.Bill.Room.boardingId == data.selectBoarding &&
-            data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
-            data.selectDate.getFullYear() == date.getFullYear()
-          ) {
-            data.profit.receipt =
-              Number(data.profit.receipt) + Number(item.receive);
+          if (item.Bill) {
+            if (
+              item.Bill.Room.boardingId == data.selectBoarding &&
+              data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+              data.selectDate.getFullYear() == date.getFullYear()
+            ) {
+              data.profit.receipt =
+                Number(data.profit.receipt) + Number(item.receive);
+            }
+            return (
+              item.Bill.Room.boardingId == data.selectBoarding &&
+              data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+              data.selectDate.getFullYear() == date.getFullYear()
+            );
           }
-          return (
-            item.Bill.Room.boardingId == data.selectBoarding &&
-            data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
-            data.selectDate.getFullYear() == date.getFullYear()
-          );
         });
         chartSeriesProfit.data[0] = {
           name: "Thu (đ)",

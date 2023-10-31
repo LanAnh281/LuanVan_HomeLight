@@ -53,7 +53,7 @@ export default {
             if (document["position"] == "admin") {
               router.push({ name: "dashboard" });
             } else if (document["position"] == "super-admin") {
-              router.push({ name: "billSuperAdmin" });
+              router.push({ name: "dashboardSuperAdmin" });
             } else {
               router.push({ name: "homepage" });
             }

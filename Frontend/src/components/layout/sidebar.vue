@@ -80,7 +80,7 @@ export default {
         {
           name: "Báo cáo",
           icon: "text_snippet",
-          active: "report",
+          active: "reportSuperAdmin",
         },
 
         {

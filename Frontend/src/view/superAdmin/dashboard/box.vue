@@ -1,18 +1,10 @@
-<script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
+<!-- -Thống kê hệ thống có bao nhiêu chủ trọ, bao nhiêu nhà trọ, bao nhiêu phòng
+trọ,khách trọ -->
 
+<script>
+import { reactive, onMounted } from "vue";
 //service
-import boardinghouseService from "../../../service/boardinghouse.service";
-import roomService from "../../../service/room.service";
 import userService from "../../../service/user.service";
-//asset/js
 //component
 
 export default {
@@ -20,6 +12,7 @@ export default {
   props: {},
   setup(props, { emit }) {
     const data = reactive({
+      item: [],
       boardings: 0,
       customers: 0,
       rooms: 0,
@@ -27,27 +20,30 @@ export default {
     });
     onMounted(async () => {
       try {
-        //số nhà trọ
-        const documentBoarding = await boardinghouseService.getAllUser();
-        data.boardings = documentBoarding.message.length;
-        // số phòng
+        // tất cả người dùng
+        const document = await userService.getAll();
+        data.item = document.message;
+        let totalLandlord = 0; // tổng chủ trọ
+        let totalTenant = 0; // tổng khách trọ
+        let totalBoarding = 0;
         let totalRoom = 0;
-        let totalUnRoom = 0;
-        for (let value of documentBoarding.message) {
-          let documentRoom = await roomService.getAll();
-          documentRoom = documentRoom.message.filter((item) => {
-            if (item.boardingId == value._id && item.status == false) {
-              totalUnRoom = totalUnRoom + 1;
+        data.item = data.item.map((item) => {
+          if (item.isUser == true) {
+            totalLandlord++;
+            totalBoarding = totalBoarding + item.BoardingHouses.length;
+            for (let value of item.BoardingHouses) {
+              totalRoom = totalRoom + value.Rooms.length;
             }
-            return item.boardingId == value._id;
-          });
-          totalRoom = totalRoom + documentRoom.length;
-        }
-        data.rooms = totalRoom;
-        data.unRooms = totalUnRoom;
-        // khách trọ
-        const documentCustomer = await userService.getAllTenant("Landloard");
-        data.customers = documentCustomer.message.length;
+          } else totalTenant++;
+          return {
+            ...item,
+          };
+        });
+
+        data.item.totalLandloard = totalLandlord;
+        data.item.totalTenant = totalTenant - 1;
+        data.item.totalBoarding = totalBoarding;
+        data.item.totalRoom = totalRoom;
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -70,16 +66,14 @@ export default {
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="font-weight-bold text-white text-uppercase mb-1">
-                Số nhà trọ
+                chủ trọ
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">
-                {{ data.boardings }}
+                {{ data.item.totalLandloard }}
               </div>
             </div>
             <div class="col-auto">
-              <span class="material-symbols-outlined text-white"
-                >domain_add</span
-              >
+              <span class="material-symbols-outlined text-white">person</span>
             </div>
           </div>
         </div>
@@ -92,10 +86,10 @@ export default {
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="font-weight-bold text-uppercase mb-1 text-white">
-                phòng trọ
+                nhà trọ
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">
-                {{ data.rooms }}
+                {{ data.item.totalBoarding }}
               </div>
             </div>
             <div class="col-auto">
@@ -114,14 +108,14 @@ export default {
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="font-weight-bold text-uppercase mb-1 text-white">
-                Khách trọ
+                phòng trọ
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">
-                {{ data.customers }}
+                {{ data.item.totalRoom }}
               </div>
             </div>
             <div class="col-auto">
-              <span class="material-symbols-outlined text-white">groups</span>
+              <span class="material-symbols-outlined text-white">house</span>
             </div>
           </div>
         </div>
@@ -133,16 +127,14 @@ export default {
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="font-weight-bold text-uppercase mb-1 text-white">
-                phòng trống
+                khách trọ
               </div>
               <div class="h5 mb-0 font-weight-bold text-white">
-                {{ data.unRooms }}
+                {{ data.item.totalTenant }}
               </div>
             </div>
             <div class="col-auto">
-              <span class="material-symbols-outlined text-white">
-                holiday_village</span
-              >
+              <span class="material-symbols-outlined text-white"> people</span>
             </div>
           </div>
         </div>
