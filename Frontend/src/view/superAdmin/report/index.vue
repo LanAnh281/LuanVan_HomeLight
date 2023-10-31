@@ -4,7 +4,7 @@ import { reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 //service
-import boardinghouseService from "../../../service/boardinghouse.service";
+import reportService from "../../../service/report.service";
 import receiptService from "../../../service/receipt.service";
 import spendingService from "../../../service/spending.service";
 
@@ -74,16 +74,12 @@ export default {
       });
       return expense;
     };
-    const handleReceipt = async (boardingId) => {
+    const handleReceipt = async () => {
       let receipt = 0;
       let documentReceipt = await receiptService.getAll();
       documentReceipt = documentReceipt.message.filter((item) => {
         const date = new Date(item.updatedAt);
-        if (
-          date >= data.start &&
-          date <= data.end &&
-          item.Bill.Room.boardingId == boardingId
-        ) {
+        if (date >= data.start && date <= data.end) {
           receipt += Number(item.receive);
           return item;
         }
@@ -95,33 +91,53 @@ export default {
         data.item = [];
         let total = 0;
         //DOANH THU
-        const documentReceipt = await receiptService.getAll();
-        console.log(documentReceipt);
-        const receipt = documentReceipt.message.filter((item) => {
-          const date = new Date(item.createdAt);
+        const documentReceipt = await reportService.getAll();
+        console.log(documentReceipt.message);
+        data.item = documentReceipt.message;
+        let i = 0;
+        for (let value of data.item) {
+          // tìm trong ds hóa đơn có phiếu thu không ? và có hóa đơn nằm trong khoảng thời gian đang tìm kiếm
+          const Bill_Users = value.Bill_Users.filter((item) => {
+            total = 0;
+            const date = new Date(item.createdAt);
 
-          if (date >= data.start && date <= data.end && item.billUserId) {
-            total = Number(total) + Number(item.receive);
-            return item;
-          }
-        });
-        console.log(receipt);
-        data.item[0] = {
-          receipt: total,
-          name: "a",
-        };
+            if (
+              date >= data.start &&
+              date <= data.end &&
+              item.Receipt != null
+            ) {
+              total = Number(total) + Number(item.Receipt.receive);
+              console.log("lợi nhuận", total);
+              item.profit = total;
+              return item;
+            }
+          });
+          console.log(Bill_Users, Bill_Users["profit"]);
+          // if (total > 0) {
+          data.item[i].Bill_Users.profit = Bill_Users.profit;
+          // data.item[i].Bill_Users.profit=0;
+          // }
 
-        data.item[1] = {
-          receipt: total,
-          name: "Tổng",
-        };
+          i++;
+        }
 
-        data.item = data.item.map((item) => {
-          return {
-            ...item,
-            receipt: formatCurrency(item.receipt),
-          };
-        });
+        console.log(data.item);
+        // data.item[0] = {
+        //   receipt: total,
+        //   name: "a",
+        // };
+
+        // data.item[1] = {
+        //   receipt: total,
+        //   name: "Tổng",
+        // };
+
+        // data.item = data.item.map((item) => {
+        //   return {
+        //     ...item,
+        //     receipt: formatCurrency(item.receipt),
+        //   };
+        // });
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -146,16 +162,8 @@ export default {
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
-      const documnetBoarding = await boardinghouseService.getAllUser();
-      data.boarding = documnetBoarding.message;
+
       data.start = data.end = now;
-      if (data.boarding.length > 0) {
-        data.selectBoarding = {
-          _id: data.boarding[0]._id,
-          name: data.boarding[0].name,
-        };
-        data.boarding.push({ _id: "all", name: "Tất cả" });
-      }
 
       await refresh();
     });
@@ -240,3 +248,9 @@ export default {
   background-color: var(--background);
 }
 </style>
+<!-- 
+  Thông kê doanh thu của hệ thống
+  - Thông kê doanh thu qua bảng phiếu thu 1 phiếu thu của 1 người, k tốt
+  - Thông kê ds phiếu thu của 1 người từ ngày đến ngày , thực hiện controller user, thống kê doanh thu
+  
+ -->
