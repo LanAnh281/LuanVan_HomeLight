@@ -241,6 +241,14 @@ exports.findAll = async (req, res, next) => {
         {
           model: Accounts,
         },
+        {
+          model: BorardingHouse,
+          include: [
+            {
+              model: Rooms,
+            },
+          ],
+        },
       ],
     });
     const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */

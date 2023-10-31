@@ -3,10 +3,12 @@ const {
   Bill,
   Rooms,
   PAYMENTHISTORY,
+  Bill_User,
+  BorardingHouse,
+  Users,
 } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { receive, debt, billId, method } = req.body;
-  console.log("Receipt Body:", req.body);
   try {
     const document = await Receipt.create({
       receive: receive,
@@ -36,6 +38,10 @@ exports.findAll = async (req, res, next) => {
               model: Rooms,
             },
           ],
+        },
+        {
+          model: Bill_User,
+          include: [{ model: Users }],
         },
       ],
     });
