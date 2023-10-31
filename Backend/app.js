@@ -47,6 +47,7 @@ const UtilityReadingsRouter = require("./app/route/utilityreadings.route");
 const userNotificationRouter = require("./app/route/userNotification.route");
 const amenitieRouter = require("./app/route/amenitie.route");
 const billUserRoute = require("./app/route/bill_user.route");
+const reportRoute = require("./app/route/report.route");
 const routepaypal = require("./app/route/paypal.route");
 //midderware
 // controller
@@ -100,6 +101,7 @@ app.use("/api/usernotification", userNotificationRouter);
 app.use("/api/amenitie", amenitieRouter);
 app.use("/api/paypal", routepaypal);
 app.use("/api/billUser", billUserRoute);
+app.use("/api/report", reportRoute);
 // const QRCode = require("qrcode");
 // app.use("/api/test", (req, res, next) => {
 //   const phoneNumber = "0797735289"; // Thay thế bằng số điện thoại thực tế
