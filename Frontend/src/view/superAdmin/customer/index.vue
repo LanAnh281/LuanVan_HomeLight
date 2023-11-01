@@ -33,6 +33,7 @@ import SelectNormal from "../../../components/select/select.vue";
 import View from "./view.vue";
 import Edit from "./edit.vue";
 import Mail from "../../../components/form/mail.vue";
+import { formatDateTime } from "../../../assets/js/format.common";
 export default {
   components: { paginationVue, Table, Select, SelectNormal, View, Edit, Mail },
   setup() {
@@ -103,6 +104,7 @@ export default {
 
           return {
             ...item,
+            birthday: item.birthday ? formatDateTime(item.birthday) : "",
             sex: item.sex ? "Nữ" : "Nam",
             checked: false,
             totalRooms: total,

@@ -1,5 +1,5 @@
 <script>
-import { ref, reactive, watch, onMounted, onBeforeMount } from "vue";
+import { reactive, onMounted, onBeforeMount } from "vue";
 // services
 import bill_userService from "../../../service/bill_user.service";
 import payService from "../../../service/pay.service";
@@ -21,29 +21,36 @@ export default {
         console.log("refresh");
         const document = await bill_userService.getAllUser();
         data.item = document.message;
-        console.log(data.item[0].Bill_Users);
-        data.item[0].Bill_Users = data.item[0].Bill_Users.filter((item) => {
-          const date = new Date(item.createdAt);
-          return (
-            date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
-            date.getFullYear() == data.selectDate.getFullYear()
-          );
-        });
+        console.log(data.item);
+        if (data.item) {
+          //   console.log(data.item[0]);
+          data.item = data.item.filter((item) => {
+            const date = new Date(item.createdAt);
 
-        data.item[0].Bill_Users = data.item[0].Bill_Users.map((item) => {
-          const content = item.content.split(" - ");
+            return (
+              date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+              date.getFullYear() == data.selectDate.getFullYear()
+            );
+          });
+          console.log(data.item);
+          // Mỗi tháng chỉ có 1 hóa đơn quản lý
+          data.item = data.item.map((item) => {
+            const content = item.content.split(" - ");
 
-          return {
-            ...item,
-            serviceName: content[0],
-            servicePrice: Number(content[1]),
-            serviceUnit: content[2],
-            userId: content[3], // id của super-admin
-            count: item.total / Number(content[1]),
-            isPaied: item.Receipt ? true : false,
-          };
-        });
-        console.log(data.item[0].Bill_Users);
+            return {
+              ...item,
+              serviceName: content[0],
+              servicePrice: Number(content[1]),
+              serviceUnit: content[2],
+              userId: content[3], // id của super-admin
+              count: item.total / Number(content[1]),
+              isPaied: item.receive ? true : false,
+            };
+          });
+          console.log(data.item);
+        } else {
+          data.item = [];
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -59,7 +66,7 @@ export default {
         data.selectDate = new Date(value.target.value);
         console.log("Ngày đã chọn", value.target.value);
         await refresh();
-        console.log(data.item[0].Bill_Users);
+        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -139,12 +146,12 @@ export default {
     };
     const handlePay = async () => {
       try {
-        console.log("Thanh toán", data.item[0].Bill_Users[0].total);
+        console.log("Thanh toán", data.item[0].total);
 
         const documentPay = await payService.create({
-          userId: data.item[0].Bill_Users[0].userId,
-          _id: data.item[0].Bill_Users[0]._id,
-          total: data.item[0].Bill_Users[0].total,
+          userId: data.item[0].userId,
+          _id: data.item[0]._id,
+          total: data.item[0].total,
         });
         console.log(documentPay);
         // var url=await paypalService.taoTT(thanhtoan);
@@ -164,8 +171,9 @@ export default {
 
     onBeforeMount(async () => {
       try {
-        data.selectDate = new Date();
+        data.selectDate = now;
         await refresh();
+        console.log(data.item.length == 0);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -211,88 +219,78 @@ export default {
         </button>
       </div> -->
     </div>
-    <div
-      class="row justify-content-between mx-2"
-      v-if="data.item[0].Bill_Users.length > 0 && data.active == 'billUser'"
-    >
-      <div class="col-9 row">
-        <div class="col-12"></div>
-        <div class="col-12"></div>
-        <div class="col-12"></div>
-      </div>
-      <div class="col-3">
-        <p>
-          Ngày lập: {{ formatDateTime(data.item[0].Bill_Users[0].createdAt) }}
-        </p>
-        <button
-          class="btn"
-          :class="
-            data.item[0].Bill_Users[0].isPaied ? 'btn-success' : 'btn-primary'
-          "
-          :disabled="data.item[0].Bill_Users[0].isPaied"
-          @click="handlePay"
+
+    <div v-if="data.item.length > 0">
+      <div class="row justify-content-between mx-2">
+        <div class="col-9 row">
+          <div class="col-12">{{ data.item[0].isPaied }}</div>
+          <div class="col-12"></div>
+          <div class="col-12"></div>
+        </div>
+        <div class="col-3">
+          <p>Ngày lập: {{ formatDateTime(data.item[0].createdAt) }}</p>
+          <button
+            class="btn"
+            :class="data.item[0].isPaied ? 'btn-success' : 'btn-primary'"
+            :disabled="data.item[0].isPaied"
+            @click="handlePay"
+          >
+            {{ data.item[0].isPaied ? "Đã thanh toán" : "Thanh toán" }}
+          </button>
+        </div>
+        <div class="col-12 text-center m-0 p-0">
+          <h5 class="title" style="color: black">
+            Hóa đơn quản lý nhà trọ Tháng
+            {{ data.selectDate.getMonth() + 1 }}/{{
+              data.selectDate.getFullYear()
+            }}
+          </h5>
+        </div>
+
+        <table class="table mt-2 mx-2">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Nội dung</th>
+              <th scope="col">Số lượng phòng</th>
+              <th scope="col">Đơn giá (₫)</th>
+              <th scope="col">Thành tiền (₫)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tiền quản lý nhà trọ</td>
+              <td class="text-center">
+                {{ data.item[0].count }}
+              </td>
+              <td class="text-center">
+                {{ formatCurrency(data.item[0].servicePrice) }}
+              </td>
+              <td class="text-center">
+                {{ formatCurrency(data.item[0].total) }}
+              </td>
+            </tr>
+            <tr>
+              <th>Thành tiền</th>
+              <td colspan="2"></td>
+              <td class="text-center">
+                {{ formatCurrency(data.item[0].total) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <strong class="mx-2 text-center"
+          >Thành tiền bằng chữ: {{ numberToWords(data.item[0].total) }}</strong
         >
-          {{
-            data.item[0].Bill_Users[0].isPaied ? "Đã thanh toán" : "Thanh toán"
-          }}
-        </button>
-      </div>
-      <div class="col-12 text-center m-0 p-0">
-        <h5 class="title" style="color: black">
-          Hóa đơn quản lý nhà trọ Tháng {{ data.selectDate.getMonth() + 1 }}/{{
-            data.selectDate.getFullYear()
-          }}
-        </h5>
-      </div>
-      <div class="col-12 row mx-1 m-0 px-1 p-0">
-        <p class="col-1 m-0 p-0"></p>
-        <p class="col-10 m-0 p-0"></p>
       </div>
 
-      <table class="table mt-2 mx-2">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Nội dung</th>
-            <th scope="col">Số lượng phòng</th>
-            <th scope="col">Đơn giá (₫)</th>
-            <th scope="col">Thành tiền (₫)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Tiền quản lý nhà trọ</td>
-            <td class="text-center">{{ data.item[0].Bill_Users[0].count }}</td>
-            <td class="text-center">
-              {{ formatCurrency(data.item[0].Bill_Users[0].servicePrice) }}
-            </td>
-            <td class="text-center">
-              {{ formatCurrency(data.item[0].Bill_Users[0].total) }}
-            </td>
-          </tr>
-          <tr>
-            <th>Thành tiền</th>
-            <td colspan="2"></td>
-            <td class="text-center">
-              {{ formatCurrency(data.item[0].Bill_Users[0].total) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <strong class="mx-2 text-center"
-        >Thành tiền bằng chữ:
-        {{ numberToWords(data.item[0].Bill_Users[0].total) }}</strong
+      <div
+        v-if="data.active == 'histories'"
+        class="row justify-content-between mx-2"
       >
-      <div class="text-center" v-if="data.item[0].Bill_Users.length == 0">
-        Không có hóa đơn
+        lịch sử thanh toán
       </div>
     </div>
-
-    <div
-      v-if="data.active == 'histories'"
-      class="row justify-content-between mx-2"
-    >
-      lịch sử thanh toán
-    </div>
+    <div class="text-center" v-if="data.item.length == 0">Không có hóa đơn</div>
   </div>
 </template>
 <style scoped>

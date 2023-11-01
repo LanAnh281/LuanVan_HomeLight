@@ -166,13 +166,16 @@ export default {
         );
         // console.log("PropsId:", props._id, props.dataProp);
         data.boarding = props.dataProp.BoardingHouses;
-
+        let total = 0;
         data.boarding = data.boarding.map((item) => {
+          total = total + Number(item.Rooms.length);
           return {
             ...item,
             count: item.Rooms.length,
           };
         });
+        props.dataProp.totalRooms = total;
+        console.log(props.dataProp);
       } catch (error) {
         console.log(error);
       }
@@ -223,7 +226,9 @@ export default {
 
               <div class="row justify-content-start p-0 m-0">
                 <label class="pr-2">Ngày sinh:</label>
-                <label class="">{{ formatDateTime(dataProp.birthday) }}</label>
+                <label class="">{{
+                  dataProp.birthday ? formatDateTime(dataProp.birthday) : ""
+                }}</label>
               </div>
 
               <div class="row justify-content-start p-0 m-0">
@@ -231,7 +236,7 @@ export default {
                 <label class="">{{ data.boarding.length }} nhà</label>
               </div>
               <div class="row justify-content-start p-0 m-0">
-                <label class="pr-2">Tổng phòng trọ:</label>
+                <label class="pr-2">Tổng phòng trọ: </label>
                 <label class="">{{ dataProp.totalRooms }} phòng</label>
               </div>
             </div>

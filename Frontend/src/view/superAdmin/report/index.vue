@@ -1,12 +1,17 @@
 <!-- -Báo cáo doanh thu (báo cáo danh thu theo tháng) -->
 <script>
-import { reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import {
+  reactive,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+  watch,
+  onBeforeMount,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 //service
 import reportService from "../../../service/report.service";
-import receiptService from "../../../service/receipt.service";
-import spendingService from "../../../service/spending.service";
 
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
@@ -25,8 +30,9 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const data = reactive({
-      start: "",
-      end: "",
+      // start: "",
+      // end: "",
+      selectDate: new Date(),
       item: [
         {
           receipt: 0,
@@ -56,88 +62,93 @@ export default {
           )
         : [];
     });
-
-    const handleSpending = async (boardingId) => {
-      // CHI
-      let expense = 0;
-      const documentSpending = await spendingService.getAll();
-      const spending = documentSpending.message.filter((item) => {
-        let date = new Date(item.date);
+    const handleProfit = async (billUser) => {
+      // lặp trong danh sách bill, lấy ra  những bill trong khoảng thời gian
+      // kiểm tra đã có phiếu thu của bill chưa?
+      // có ++
+      // Lưu ý 1 tháng chỉ có 1 hóa đơn, nên chỉ có thể tìm duy nhất 1 hóa đơn và 1 bill
+      // đầu vào sẽ là ds hóa đơn của 1 người dùng
+      // đầu ra là số tiền ng đó đã chi trả => doanh thu
+      console.log(billUser);
+      const profit = billUser.filter((value) => {
+        const date = new Date(value.createdAt);
         if (
-          date >= data.start &&
-          date <= data.end &&
-          item.boardingId == boardingId
+          data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+          data.selectDate.getFullYear() == date.getFullYear() &&
+          value.Receipt != null
         ) {
-          expense = expense + Number(item.price);
-          return item;
+          console.log(value);
+          return value;
         }
       });
-      return expense;
-    };
-    const handleReceipt = async () => {
-      let receipt = 0;
-      let documentReceipt = await receiptService.getAll();
-      documentReceipt = documentReceipt.message.filter((item) => {
-        const date = new Date(item.updatedAt);
-        if (date >= data.start && date <= data.end) {
-          receipt += Number(item.receive);
-          return item;
-        }
-      });
-      return receipt;
+      // trả về sẽ là hóa đơn có phiếu thu
+      console.log("Những hóa đơn đang lọc và có phiếu thu", profit);
+      return profit;
     };
     const refresh = async () => {
       try {
         data.item = [];
-        let total = 0;
+
         //DOANH THU
         const documentReceipt = await reportService.getAll();
-        console.log(documentReceipt.message);
+
         data.item = documentReceipt.message;
+
         let i = 0;
         for (let value of data.item) {
+          console.log(value.Bill_Users);
+          const profit = await handleProfit(value.Bill_Users);
           // tìm trong ds hóa đơn có phiếu thu không ? và có hóa đơn nằm trong khoảng thời gian đang tìm kiếm
-          const Bill_Users = value.Bill_Users.filter((item) => {
-            total = 0;
-            const date = new Date(item.createdAt);
+          // const Bill_Users = value.Bill_Users.filter((item) => {
+          //   total = 0;
+          //   const date = new Date(item.createdAt);
 
-            if (
-              date >= data.start &&
-              date <= data.end &&
-              item.Receipt != null
-            ) {
-              total = Number(total) + Number(item.Receipt.receive);
-              console.log("lợi nhuận", total);
-              item.profit = total;
-              return item;
-            }
-          });
-          console.log(Bill_Users, Bill_Users["profit"]);
-          // if (total > 0) {
-          data.item[i].Bill_Users.profit = Bill_Users.profit;
-          // data.item[i].Bill_Users.profit=0;
-          // }
+          //   if (
+          //     // date >= data.start &&
+          //     // date <= data.end &&
+          //     data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
+          //     data.selectDate.getFullYear() == date.getFullYear() &&
+          //     item.Receipt != null
+          //   ) {
+          //     total = Number(total) + Number(item.Receipt.receive);
+          //     console.log("lợi nhuận", total);
+          //     item.profit = total;
+          //     return item;
+          //   }
+          // });
+          // console.log(Bill_Users, Bill_Users["profit"]);
+          // // if (total > 0) {
+          // data.item[i].Bill_Users.profit = Bill_Users.profit;
+          // // data.item[i].Bill_Users.profit=0;
+          // // }
+          if (profit.length == 1) {
+            console.log("Lợi nhuận:", profit[0], profit.length);
 
+            data.item[i].profit = profit[0].Receipt.receive;
+          }
           i++;
         }
-
+        let total = 0;
+        data.item = data.item.filter((item) => {
+          if (item.profit) total = total + Number(item.profit);
+          return item.profit;
+        });
         console.log(data.item);
         // data.item[0] = {
         //   receipt: total,
         //   name: "a",
         // };
-
-        // data.item[1] = {
-        //   receipt: total,
-        //   name: "Tổng",
-        // };
-
-        // data.item = data.item.map((item) => {
-        //   return {
-        //     ...item,
-        //     receipt: formatCurrency(item.receipt),
-        //   };
-        // });
+        data.item[data.item.length] = {
+          profit: total,
+          userName: "Tổng",
+        };
+        data.item = data.item.map((item) => {
+          return {
+            ...item,
+            profit: formatCurrency(item.profit),
+            name: item.userName,
+          };
+        });
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -148,22 +159,27 @@ export default {
         }
       }
     };
-    const handleStart = async (value) => {
-      data.start = new Date(value.target.value);
+    // const handleStart = async (value) => {
+    //   data.start = new Date(value.target.value);
+    //   await refresh();
+    // };
+    // const handleEnd = async (value) => {
+    //   data.end = new Date(value.target.value);
+    //   await refresh();
+    // };
+    const handleDate = async (value) => {
+      data.selectDate = new Date(value.target.value);
+      console.log(data.selectDate);
       await refresh();
     };
-    const handleEnd = async (value) => {
-      data.end = new Date(value.target.value);
-      await refresh();
-    };
-
     onMounted(async () => {
       await checkAccessToken(router); //access token
       intervalId = setInterval(async () => {
         await checkAccessToken(router);
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
 
-      data.start = data.end = now;
+      // data.start = data.end = now;
+      data.selectDate = now;
 
       await refresh();
     });
@@ -172,9 +188,10 @@ export default {
     });
     return {
       data,
-      handleStart,
-      handleEnd,
+      // handleStart,
+      // handleEnd,
       formatDateTime,
+      handleDate,
     };
   },
 };
@@ -182,18 +199,18 @@ export default {
 <template>
   <div class="body m-0">
     <div class="border-radius mb-3 row m-0 justify-content-start">
-      <label
+      <!-- <label
         class="py-1 text-center mt-2 ml-3"
         style="height: 33px; background-color: var(--background)"
-        >Từ
-      </label>
+      >
+      </label> -->
       <input
-        type="date"
-        class="border rounded py-1 text-center col-1 mt-2 ml-1"
+        type="month"
+        class="border rounded py-1 text-center col-2 mt-2 ml-1 mx-3"
         style="height: 33px; background-color: var(--background)"
-        @input="handleStart"
+        @input="handleDate"
       />
-      <label
+      <!-- <label
         class="py-1 text-center mt-2 mx-1"
         style="height: 33px; background-color: var(--background)"
         >đến</label
@@ -203,18 +220,21 @@ export default {
         class="border rounded py-1 text-center col-1 mt-2 mr-1"
         style="height: 33px; background-color: var(--background)"
         @input="handleEnd"
-      />
+      />-->
     </div>
 
-    <h5 class="text-center">Báo cáo doanh thu</h5>
-    <h6 class="text-center mb-3">
+    <h5 class="text-center">
+      Báo cáo doanh thu tháng
+      {{ data.selectDate.getMonth() + 1 }}/{{ data.selectDate.getFullYear() }}
+    </h5>
+    <!-- <h6 class="text-center mb-3">
       từ ngày {{ formatDateTime(data.start) }} đến
       {{ formatDateTime(data.end) }}
-    </h6>
+    </h6> -->
     <Table
       :data="data.setPage"
       :fields="['Tên chủ trọ', 'Doanh thu(₫)']"
-      :titles="['name', 'receipt']"
+      :titles="['name', 'profit']"
     >
     </Table>
     <paginationVue

@@ -85,14 +85,11 @@ export default {
     const handleDate = async (value) => {
       try {
         const date = new Date(value.target.value);
-        console.log(value);
         data.selectDate = {
           month: date.getMonth() + 1,
           year: date.getFullYear(),
         };
         await refresh();
-
-        console.log(data.selectDate);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -151,23 +148,20 @@ export default {
 <template>
   <div class="body m-0">
     <div class="border-radius mb-3 row m-0 justify-content-start">
-      <div
-        class="input-group col-1 align-items-center mx-2 m-0 pr-0"
-        style="width: 135px"
-      >
+      <div class="input-group col-2 align-items-center ml-2">
         <input
-          type="date"
+          type="month"
           @input="handleDate"
-          class="select border rounded p-1 m-0 p-0"
+          class="select border rounded p-1 w-100"
           style="height: 36px"
         />
       </div>
-      <div class="input-group col-3 mx-4 p-0 align-items-center">
+      <div class="input-group col-3 p-0 align-items-center">
         <input
           type="search"
           v-model="data.searchText"
           placeholder="Tìm kiếm theo nội dung"
-          class="select border rounded p-1 w-100 m-0 p-0"
+          class="select border rounded p-1 w-100"
           style="height: 36px"
         />
       </div>

@@ -153,7 +153,7 @@ export default {
         style="width: 135px"
       >
         <input
-          type="date"
+          type="month"
           @input="handleDate"
           class="select border rounded p-1 m-0 p-0"
           style="height: 36px"
