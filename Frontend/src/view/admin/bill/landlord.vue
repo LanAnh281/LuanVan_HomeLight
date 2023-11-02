@@ -18,12 +18,10 @@ export default {
     const now = new Date();
     const refresh = async () => {
       try {
-        console.log("refresh");
         const document = await bill_userService.getAllUser();
         data.item = document.message;
-        console.log(data.item);
+
         if (data.item) {
-          //   console.log(data.item[0]);
           data.item = data.item.filter((item) => {
             const date = new Date(item.createdAt);
 
@@ -32,7 +30,6 @@ export default {
               date.getFullYear() == data.selectDate.getFullYear()
             );
           });
-          console.log(data.item);
           // Mỗi tháng chỉ có 1 hóa đơn quản lý
           data.item = data.item.map((item) => {
             const content = item.content.split(" - ");
@@ -44,10 +41,10 @@ export default {
               serviceUnit: content[2],
               userId: content[3], // id của super-admin
               count: item.total / Number(content[1]),
-              isPaied: item.receive ? true : false,
+              isPaied:
+                Number(item.receive) == Number(item.total) ? true : false,
             };
           });
-          console.log(data.item);
         } else {
           data.item = [];
         }
@@ -64,7 +61,6 @@ export default {
     const handleDate = async (value) => {
       try {
         data.selectDate = new Date(value.target.value);
-        console.log("Ngày đã chọn", value.target.value);
         await refresh();
         console.log(data.item);
       } catch (error) {
@@ -173,7 +169,6 @@ export default {
       try {
         data.selectDate = now;
         await refresh();
-        console.log(data.item.length == 0);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -223,7 +218,7 @@ export default {
     <div v-if="data.item.length > 0">
       <div class="row justify-content-between mx-2">
         <div class="col-9 row">
-          <div class="col-12">{{ data.item[0].isPaied }}</div>
+          <div class="col-12"></div>
           <div class="col-12"></div>
           <div class="col-12"></div>
         </div>

@@ -180,7 +180,7 @@ export default {
   <div class="body m-0">
     <div class="border-radius mb-3 row m-0 justify-content-start">
       <input
-        type="date"
+        type="month"
         @input="handleDate"
         class="border rounded ml-3 mr-2 text-center col-1 p-0"
       />

@@ -51,10 +51,10 @@ export default {
 
     const openModal = () => {
       isModalOpen.value = true;
-      console.log("open modal add room");
+      console.log("open modal view bill");
     };
     const closeModal = () => {
-      console.log("close modal add room");
+      console.log("close modal view bill");
 
       emit("closeModal");
     };
@@ -128,7 +128,6 @@ export default {
     onBeforeMount(async () => {
       const documentBill = await billService.get(props._id);
       data.item = documentBill.message;
-      console.log(data.item, data.item.services);
       data.item.PAYMENTHISTORies = data.item.PAYMENTHISTORies.map((item) => {
         return {
           ...item,
@@ -173,7 +172,7 @@ export default {
       data.item.day = data.item.createdAt.getDate();
       data.item.month = data.item.createdAt.getMonth() + 1;
       data.item.year = data.item.createdAt.getFullYear();
-
+      data.item.content = data.item.Receipts[0].content;
       $("#visibilityBillModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#visibilityBillModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
@@ -354,12 +353,12 @@ export default {
               <Table
                 :data="data.item.PAYMENTHISTORies"
                 :fields="[
-                  'Mã hóa đơn',
+                  'Người trả',
                   'Số tiền',
                   'Phương thức',
                   'Ngày thanh toán',
                 ]"
-                :titles="['billId', 'money', 'method', 'createdAt']"
+                :titles="['content', 'money', 'method', 'createdAt']"
               ></Table>
             </div>
           </div>

@@ -278,7 +278,7 @@ export default {
     <div class="border-radius mb-3 row m-0 p-0 justify-content-start">
       <div class="mt-1 mb-1 ml-3 mr-1">
         <input
-          type="date"
+          type="month"
           @input="handleDate"
           class="border rounded py-1 text-center select"
           style="height: 39px"
