@@ -117,6 +117,13 @@ exports.create = async () => {
         services: services,
         roomId: room._id,
       });
+      // tạo phiếu thu kèm theo hóa đơn
+      const documentReceipt = await Receipt.create({
+        receive: 0,
+        debt: total,
+        billId: document._id,
+        content: "",
+      });
       // // lưu thông báo
       // const documentNoti = await Notification.create({
       //   date: now,
@@ -199,7 +206,13 @@ exports.createBill_user = async () => {
         total: price,
       });
       console.log("Hóa đơn:", documentBillUser);
-
+      // tạo phiếu thu kèm theo hóa đơn
+      const documentReceipt = await Receipt.create({
+        receive: 0,
+        debt: price,
+        billUserId: documentBillUser._id,
+        content: "",
+      });
       // truyển thông báo đi
       const documentNotiUser = await User_Notification.create({
         UserId: value._id,

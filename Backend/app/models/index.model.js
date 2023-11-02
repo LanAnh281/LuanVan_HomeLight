@@ -164,6 +164,7 @@ const Receipt = sequelize.define("Receipt", {
   _id: setPrimary,
   receive: { type: DataTypes.STRING },
   debt: { type: DataTypes.STRING },
+  content: { type: DataTypes.TEXT },
 });
 const UtilityReadings = sequelize.define("UtilityReadings", {
   _id: setPrimary,
@@ -215,6 +216,7 @@ const PAYMENTHISTORY = sequelize.define("PAYMENTHISTORY", {
   _id: setPrimary,
   money: { type: DataTypes.STRING },
   method: { type: DataTypes.STRING },
+  content: { type: DataTypes.TEXT },
 });
 const Amenities = sequelize.define("Amenities", {
   _id: setPrimary,

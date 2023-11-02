@@ -23,6 +23,7 @@ exports.taopaypal = async (req, res, next) => {
   let documentPay = "";
   let isSuperAdmin = false;
   if (req.body.boardingId) {
+    // khách hàng thanh toán cho chủ trọ
     const documentLand = await BorardingHouse.findOne({
       where: {
         _id: req.body.boardingId,
@@ -35,6 +36,7 @@ exports.taopaypal = async (req, res, next) => {
       },
     });
   } else if (req.body.userId) {
+    // chủ trọ thanh toán cho quản trị viên
     documentPay = await Payment.findOne({
       where: {
         userId: req.body.userId,
@@ -43,6 +45,15 @@ exports.taopaypal = async (req, res, next) => {
     isSuperAdmin = true;
   }
   console.log("-----PPPPay", documentPay);
+  const documentUser = await Users.findOne({
+    where: {
+      _id: req.user.userId,
+    },
+  });
+  console.log(
+    "Thông tin người đăng nhập thanh toán:",
+    documentUser["userName"]
+  );
   paypal.configure({
     mode: "sandbox", //sandbox or live
     // client_id:
@@ -52,13 +63,14 @@ exports.taopaypal = async (req, res, next) => {
     client_id: documentPay.clientId,
     client_secret: documentPay.secretId,
   });
+  const userName = encodeURIComponent(documentUser["userName"]);
   const create_payment_json = {
     intent: "sale",
     payer: {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: `http://localhost:3000/api/paypal/success?received=${req.body.total}&_id=${req.body._id}&clientId=${documentPay.clientId}&secretId=${documentPay.secretId}&isSuperAdmin=${isSuperAdmin}`,
+      return_url: `http://localhost:3000/api/paypal/success?received=${req.body.total}&_id=${req.body._id}&clientId=${documentPay.clientId}&secretId=${documentPay.secretId}&isSuperAdmin=${isSuperAdmin}&userName=${userName}&phone=${documentUser.phone}`,
       cancel_url: "http://localhost:3000/api/paypal/cancel",
     },
     transactions: [
@@ -110,7 +122,9 @@ exports.thanhcong = (req, res) => {
   });
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
-
+  const content = `${decodeURIComponent(req.query.userName)} - ${
+    req.query.phone
+  }`;
   const execute_payment_json = {
     payer_id: payerId,
     transactions: [
@@ -169,6 +183,7 @@ exports.thanhcong = (req, res) => {
                 debt:
                   Number(documentReceipt.debt) -
                   Number(payment.transactions[0].amount.total),
+                content: content,
               },
               {
                 where: {
@@ -185,6 +200,7 @@ exports.thanhcong = (req, res) => {
                 Number(documentBill.total) -
                 Number(payment.transactions[0].amount.total),
               billId: req.query._id,
+              content: content,
             });
             console.log("---create receipt:", createReceipt);
           }
@@ -192,6 +208,7 @@ exports.thanhcong = (req, res) => {
             money: payment.transactions[0].amount.total,
             method: "thanh toán PayPal",
             billId: req.query._id,
+            content: content,
           });
           res.writeHead(302, {
             Location: `http://localhost:3001/billCustomer?status=1`,
@@ -199,13 +216,21 @@ exports.thanhcong = (req, res) => {
           });
         } else if (req.query.isSuperAdmin == "true") {
           console.log("thanh toán cho super admin, tạo phiếu thu");
-          const createReceipt = await Receipt.create({
-            receive: payment.transactions[0].amount.total,
-            debt: 0,
-            billUserId: req.query._id,
-          });
+          const createReceipt = await Receipt.update(
+            {
+              receive: payment.transactions[0].amount.total,
+              debt: 0,
+              billUserId: req.query._id,
+              content: content,
+            },
+            {
+              where: {
+                billUserId: req.query._id,
+              },
+            }
+          );
           res.writeHead(302, {
-            Location: `http://localhost:3001/admin/billLandlord?status=1`,
+            Location: `http://localhost:3001/admin/billLandlord?status=1&billId=${req.query._id}`,
             //add other headers here...
           });
         }
