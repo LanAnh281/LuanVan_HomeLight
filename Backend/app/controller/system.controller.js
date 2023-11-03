@@ -1,9 +1,9 @@
-const { Note } = require("../models/index.model.js");
+const { System } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { content } = req.body;
-  console.log("Note Body:", req.body);
+  console.log("System Body:", req.body);
   try {
-    const document = await Note.create({
+    const document = await System.create({
       content: content,
     });
     res.json({ message: document, status: "success" });
@@ -14,7 +14,7 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
-    const documents = await Note.findAll({});
+    const documents = await System.findAll({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
@@ -23,7 +23,7 @@ exports.findAll = async (req, res, next) => {
 };
 exports.findOne = async (req, res, next) => {
   try {
-    const document = await Note.findAll({
+    const document = await System.findAll({
       where: {
         _id: req.params.id,
       },
@@ -36,9 +36,9 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { content } = req.body;
-  console.log("Note Body:", req.body);
+  console.log("System Body:", req.body);
   try {
-    const document = await Note.update(
+    const document = await System.update(
       {
         content: content,
       },
@@ -56,7 +56,7 @@ exports.updated = async (req, res, next) => {
 };
 exports.delete = async (req, res, next) => {
   try {
-    const document = await Note.destroy({
+    const document = await System.destroy({
       where: {
         _id: req.params.id,
       },
@@ -69,7 +69,7 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    const documents = await Note.destroy({});
+    const documents = await System.destroy({});
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

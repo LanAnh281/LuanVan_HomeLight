@@ -188,7 +188,7 @@ const Services = sequelize.define("Service", {
   price: { type: DataTypes.STRING },
   unit: { type: DataTypes.STRING },
 });
-const Note = sequelize.define("Note", {
+const System = sequelize.define("System", {
   _id: setPrimary,
   content: { type: DataTypes.TEXT },
 });
@@ -508,7 +508,7 @@ Equipment.sync();
 Count.sync();
 Services.sync();
 Service_Room.sync();
-Note.sync();
+System.sync();
 Notification.sync();
 User_Notification.sync();
 ResetPassword.sync();
@@ -540,7 +540,7 @@ module.exports = {
   Count,
   Services,
   Service_Room,
-  Note,
+  System,
   Notification,
   User_Notification,
   ResetPassword,

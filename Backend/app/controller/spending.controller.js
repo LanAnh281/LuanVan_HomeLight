@@ -2,7 +2,6 @@ const { Spending, BorardingHouse } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
   let { date, reason, price, isProfit, boardingId } = req.body;
-  console.log("Spending Body:", req.body);
   date = date == null ? null : dateTime(date);
   try {
     const document = await Spending.create({
@@ -33,6 +32,7 @@ exports.findAll = async (req, res, next) => {
     res.json({ message: error, status: "faild" });
   }
 };
+
 exports.findOne = async (req, res, next) => {
   try {
     const document = await Spending.findOne({
