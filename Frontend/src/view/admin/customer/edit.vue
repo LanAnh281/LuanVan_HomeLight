@@ -291,7 +291,6 @@ export default {
 
     const save = async () => {
       data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
-      console.log(data.item.address);
       try {
         if (data.removeList.length == 2) {
           if (data.uploadFiles.length != 2) {
@@ -303,7 +302,6 @@ export default {
           if (data.uploadFiles.length != 1) {
             data.error["image"] = "Thiếu 1 ảnh cccd.";
             data.flag = true;
-            console.log("key:image");
           }
         }
 
@@ -315,7 +313,6 @@ export default {
         //     console.log("key:", key, data.item[key]);
         //   }
         // }
-        console.log(data.flag);
         // if (!data.flag) {
         data.btnSubmit = "Đang lưu";
         const formData = new FormData();
@@ -332,7 +329,6 @@ export default {
           formData.append("removeImages", JSON.stringify(image));
         });
         formData.append("removeImages", "");
-        console.log("data.removeList", data.removeList);
         setTimeout(() => {
           load();
         }, 0);
@@ -340,7 +336,6 @@ export default {
           props._id,
           formData
         );
-        console.log(documentUpdateUser);
         if (documentUpdateUser["status"] == "success") {
           successAd("Thành công");
           await refresh();
@@ -380,7 +375,6 @@ export default {
       );
       data.levels.city = data.levels.city[0];
       data.item.city = data.levels.city;
-      console.log(">>>city:", data.levels.city);
       // //district
       const documentDistrict = await city(data.levels.city.code);
       data.levels.district = documentDistrict.district;
@@ -390,7 +384,6 @@ export default {
       );
       data.levels.district = data.levels.district[0];
       data.item.district = data.levels.district;
-      console.log(">>>district:", data.levels.district);
 
       //ward
       const ward = await axios.get(
@@ -398,14 +391,12 @@ export default {
         {}
       );
       data.levels.ward = ward;
-      console.log(">>>ward:", ward.data.wards.length, address[1]);
       data.ward = ward;
       data.levels.ward = ward.data.wards.filter(
         (item) => item.name == address[1]
       );
       data.levels.ward = data.levels.ward[0];
       data.item.ward = data.levels.ward;
-      console.log("ward:", data.levels.ward);
 
       data.flag = true;
       const previewImages = document.getElementById("previewImages");

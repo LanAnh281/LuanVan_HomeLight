@@ -33,9 +33,19 @@ import SelectNormal from "../../../components/select/select.vue";
 import View from "./view.vue";
 import Edit from "./edit.vue";
 import Mail from "../../../components/form/mail.vue";
+import Service from "./service.vue";
 import { formatDateTime } from "../../../assets/js/format.common";
 export default {
-  components: { paginationVue, Table, Select, SelectNormal, View, Edit, Mail },
+  components: {
+    paginationVue,
+    Table,
+    Select,
+    SelectNormal,
+    View,
+    Edit,
+    Mail,
+    Service,
+  },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -61,11 +71,11 @@ export default {
       isInfoUserModal: false,
       isEditUserModal: false,
       isMail: false,
-
+      isService: false,
       checkedList: [],
-
       active: {},
     });
+
     let intervalId = null;
     data.totalPage = computed(() =>
       data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
@@ -110,7 +120,6 @@ export default {
             totalRooms: total,
           };
         });
-        console.log("dữ liệu:", data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -347,7 +356,7 @@ export default {
         <input
           type="search"
           placeholder="tìm kiếm theo tên khách hàng"
-          class="p-2 border rounded"
+          class="p-2 border rounded col-4"
           style="
             background-color: var(--background);
             width: 30%;
@@ -355,9 +364,31 @@ export default {
           "
           v-model="data.searchText"
         />
-        <div class="row justify-content-end mr-1">
+        <div class="row col-8 justify-content-end mr-1">
           <button
-            class="btn btn-warning p-0 mt-0"
+            class="btn btn-primary p-0 m-0 col-3"
+            style="height: 40px"
+            data-toggle="modal"
+            data-target="#serviceModal"
+            @click="() => (data.isService = !data.isService)"
+          >
+            <div class="row justify-content-center plus">
+              <span
+                class="material-symbols-outlined"
+                style="color: var(--white)"
+              >
+                email
+              </span>
+              <span style="color: var(--white); font-size: 16px"
+                >Dịch vụ thuê</span
+              >
+            </div>
+          </button>
+
+          <!-- component dịch vụ thuê -->
+          <Service v-if="data.isService"> </Service>
+          <button
+            class="btn btn-warning p-0 mt-0 mx-2 col-6"
             style="width: 100px; height: 40px"
             data-toggle="modal"
             data-target="#mailModal"
@@ -384,6 +415,7 @@ export default {
     </div>
 
     <!-- Table -->
+    <h5 class="title text-center my-3">Danh sách chủ trọ</h5>
     <Table
       :data="data.setPage"
       :name="'User'"

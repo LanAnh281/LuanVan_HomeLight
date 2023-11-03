@@ -1,12 +1,5 @@
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
+import { reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 //service
@@ -22,12 +15,11 @@ import {
 } from "../../../assets/js/format.common";
 //component
 import Select from "../../../components/select/select.vue";
-import Box from "./box.vue";
 import Table from "../../../components/table/table.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
 
 export default {
-  components: { Select, Box, Table, paginationVue },
+  components: { Select, Table, paginationVue },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -45,6 +37,7 @@ export default {
       //
       start: "",
       end: "",
+      selectDate: new Date(),
       item: [
         {
           receipt: 0,
@@ -82,8 +75,10 @@ export default {
       const spending = documentSpending.message.filter((item) => {
         let date = new Date(item.updatedAt);
         if (
-          date >= data.start &&
-          date <= data.end &&
+          // date >= data.start &&
+          // date <= data.end &&
+          date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+          date.getFullYear() == data.selectDate.getFullYear() &&
           item.boardingId == boardingId
         ) {
           expense = expense + Number(item.price);
@@ -96,10 +91,12 @@ export default {
       let receipt = 0;
       let documentReceipt = await receiptService.getAll();
       documentReceipt = documentReceipt.message.filter((item) => {
-        const date = new Date(item.updatedAt);
+        const date = new Date(item.createdAt);
         if (
-          date >= data.start &&
-          date <= data.end &&
+          // date >= data.start &&
+          // date <= data.end &&
+          date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+          date.getFullYear() == data.selectDate.getFullYear() &&
           item.Bill != null &&
           item.Bill.Room.boardingId == boardingId
         ) {
@@ -120,7 +117,6 @@ export default {
           const expense = await handleSpending(data.selectBoarding["_id"]);
           //DOANH THU
           const receipt = await handleReceipt(data.selectBoarding["_id"]);
-          console.log(receipt);
           data.item[0] = {
             receipt: receipt,
             expense: expense,
@@ -135,7 +131,7 @@ export default {
             name: "Tổng",
           };
         } else {
-          console.log("Tất cả");
+          // console.log("Tất cả");
           for (let value of data.boarding) {
             if (value._id == "all") continue;
             const receipt = await handleReceipt(value._id);
@@ -179,12 +175,16 @@ export default {
         }
       }
     };
-    const handleStart = async (value) => {
-      data.start = new Date(value.target.value);
-      await refresh();
-    };
-    const handleEnd = async (value) => {
-      data.end = new Date(value.target.value);
+    // const handleStart = async (value) => {
+    //   data.start = new Date(value.target.value);
+    //   await refresh();
+    // };
+    // const handleEnd = async (value) => {
+    //   data.end = new Date(value.target.value);
+    //   await refresh();
+    // };
+    const handleDate = async (value) => {
+      data.selectDate = new Date(value.target.value);
       await refresh();
     };
     const handleBoarding = (value) => {
@@ -211,7 +211,8 @@ export default {
       }, 180 * 60 * 1001); // 60000 milliseconds = 1 minutes
       const documnetBoarding = await boardinghouseService.getAllUser();
       data.boarding = documnetBoarding.message;
-      data.start = data.end = now;
+      // data.start = data.end = now;
+      data.selectDate = now;
       if (data.boarding.length > 0) {
         data.selectBoarding = {
           _id: data.boarding[0]._id,
@@ -228,8 +229,9 @@ export default {
     });
     return {
       data,
-      handleStart,
-      handleEnd,
+      // handleStart,
+      // handleEnd,
+      handleDate,
       handleBoarding,
       formatDateTime,
     };
@@ -244,18 +246,18 @@ export default {
 <template>
   <div class="body m-0">
     <div class="border-radius mb-3 row m-0 justify-content-start">
-      <label
+      <!-- <label
         class="py-1 text-center mt-2 ml-3"
         style="height: 33px; background-color: var(--background)"
         >Từ
-      </label>
+      </label> -->
       <input
-        type="date"
+        type="month"
         class="border rounded py-1 text-center col-1 mt-2 ml-1"
         style="height: 33px; background-color: var(--background)"
-        @input="handleStart"
+        @input="handleDate"
       />
-      <label
+      <!-- <label
         class="py-1 text-center mt-2 mx-1"
         style="height: 33px; background-color: var(--background)"
         >đến</label
@@ -265,7 +267,7 @@ export default {
         class="border rounded py-1 text-center col-1 mt-2 mr-1"
         style="height: 33px; background-color: var(--background)"
         @input="handleEnd"
-      />
+      /> -->
       <Select
         class="col-1 mt-2 select"
         :title="'Chọn nhà trọ'"
@@ -275,20 +277,14 @@ export default {
       ></Select>
     </div>
 
-    <!-- <Box
-      :data="data.choose"
-      :selected="data.selected"
-      @selected="
-        (value) => {
-          data.selected = value;
-        }
-      "
-    ></Box> -->
-    <h5 class="text-center">Báo cáo doanh thu và chi phí</h5>
-    <h6 class="text-center mb-3">
+    <h5 class="text-center title">
+      Báo cáo doanh thu và chi phí tháng {{ data.selectDate.getMonth() + 1 }}/
+      {{ data.selectDate.getFullYear() }}
+    </h5>
+    <!-- <h6 class="text-center mb-3 title">
       từ ngày {{ formatDateTime(data.start) }} đến
       {{ formatDateTime(data.end) }}
-    </h6>
+    </h6> -->
     <Table
       :data="data.setPage"
       :fields="['Tên nhà trọ', 'Doanh thu(₫)', 'Chi phi(₫)', 'Lãi(₫)']"

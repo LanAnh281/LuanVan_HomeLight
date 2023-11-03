@@ -319,6 +319,7 @@ export default {
         </button>
       </div>
     </div> -->
+    <h5 class="title text-center my-3">Danh sách điện - nước tiêu thụ</h5>
     <span>
       <span class="text-primary">(*)</span> Trước khi thực hiện lọc cần lưu giá
       trị điện nước trước.</span

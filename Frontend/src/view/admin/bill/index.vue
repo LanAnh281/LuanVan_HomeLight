@@ -264,7 +264,10 @@ export default {
        :class="value._id == data.boardingActice ? 'isActiveBoarding' : ''"
       </div>
     </div> -->
-
+    <h5 class="title text-center my-3">
+      Danh sách hóa đơn tháng {{ data.selectDate.month }}/
+      {{ data.selectDate.year }}
+    </h5>
     <Table
       class="text-center mt-2"
       :data="data.setPage"

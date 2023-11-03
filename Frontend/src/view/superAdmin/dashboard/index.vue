@@ -1,22 +1,10 @@
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import VueApexCharts from "vue3-apexcharts";
 
 //service
-import roomService from "../../../service/room.service";
-
-import userService from "../../../service/user.service";
 import receiptService from "../../../service/receipt.service";
-import spendingService from "../../../service/spending.service";
-import UtilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 //component
@@ -26,20 +14,13 @@ export default {
   components: { apexchart: VueApexCharts, Select, Box },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       selectDate: new Date(),
-
-      //3
       profit: { receipt: 0, expense: 0 },
     });
-    // const now = new Date();
-
     let intervalId = null;
     //   Đếm hệ thống có bao nhiêu người có vai trò admin, đếm nhà trọ ở boardingHouse, đếm room, đếm vai trò user
     // -Biểu đồ thống kê doanh thu theo quý, (tính tổng doanh thu từ việc thu tiền từ hệ thống mặc định sẽ là quý hiện tại 7 8 9) với 2 select 1 là quý và 1 là năm
-
-    //Biểu đồ 3
     const chartOptionsProfit = reactive({
       chart: {
         id: "basic-bar",

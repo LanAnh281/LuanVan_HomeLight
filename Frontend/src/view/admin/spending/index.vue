@@ -182,7 +182,7 @@ export default {
       <input
         type="month"
         @input="handleDate"
-        class="border rounded ml-3 mr-2 text-center col-1 p-0"
+        class="border rounded ml-3 mr-2 text-center col-2 p-0"
       />
       <Select
         :title="`Chọn nhà trọ`"
@@ -227,6 +227,10 @@ export default {
         @closeModal="isSpending = !isSpending"
       ></Add>
     </div>
+    <h5 class="title text-center my-3">
+      Danh sách chi phí tháng {{ data.selectDate.month }}/
+      {{ data.selectDate.year }}
+    </h5>
 
     <Table
       :data="data.setPage"

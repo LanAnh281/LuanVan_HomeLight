@@ -223,7 +223,7 @@ export default {
       />-->
     </div>
 
-    <h5 class="text-center">
+    <h5 class="text-center title my-3">
       Báo cáo doanh thu tháng
       {{ data.selectDate.getMonth() + 1 }}/{{ data.selectDate.getFullYear() }}
     </h5>

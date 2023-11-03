@@ -171,6 +171,11 @@ export default {
       </div>
     </div>
     <div>
+      <h5 class="my-3 title text-center">
+        Danh sách hóa đơn quản lý tháng {{ data.selectDate.month }}/{{
+          data.selectDate.year
+        }}
+      </h5>
       <Table
         class="text-center mt-2"
         :data="data.setPage"

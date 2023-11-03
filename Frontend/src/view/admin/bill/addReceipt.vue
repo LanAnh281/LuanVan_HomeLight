@@ -8,13 +8,9 @@ import receiptService from "../../../service/receipt.service";
 //component
 import Select from "../../../components/select/select.vue";
 //js
-import {
-  checkStringAndNumber,
-  checkAddress,
-  checkNumber,
-} from "../../../assets/js/checkInput.common";
+
 import { formatCurrency } from "../../../assets/js/format.common";
-import { successAd, warning } from "../../../assets/js/common.alert";
+import { successAd } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
   props: { _id: { type: String, default: "" } },
@@ -41,7 +37,6 @@ export default {
           const documentReceipt = await receiptService.create(data.item);
           if (documentReceipt["status"] == "success") {
             successAd("Thành công thanh toán");
-            console.log(documentReceipt);
             const documentBill = await billService.update(props._id, {
               debt: data.item.debt,
             });
@@ -106,7 +101,6 @@ export default {
           : 0;
         data.item.received = formatCurrency(receipt);
         data.item.debt = Number(data.item.total) - receipt;
-        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -119,7 +113,6 @@ export default {
     };
     onBeforeMount(async () => {
       await refresh();
-
       // nếu như tồn tại recet thì sẽ show dữ liệu receive và debt => update receipt
       //nếu không tồn tại sẽ => create receipt
       $("#paymentsBillModal").on("show.bs.modal", openModal); //lắng nghe mở modal

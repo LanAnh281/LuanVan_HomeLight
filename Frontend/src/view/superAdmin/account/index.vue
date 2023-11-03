@@ -233,6 +233,10 @@ export default {
       </div>
     </div>
     <!-- componment -->
+    <h5 v-if="component.tablePosition_role" class="title text-center my-3">
+      Danh sách quyền và vai trò
+    </h5>
+
     <tablePosition_role
       v-if="component.tablePosition_role"
       :data="data.rolePosition"
@@ -250,6 +254,9 @@ export default {
         }
       "
     ></tablePosition_role>
+    <h5 v-if="component.table" class="title text-center my-3">
+      Danh sách tài khoản
+    </h5>
     <Table
       v-if="component.table"
       :data="data.pageAccounts"

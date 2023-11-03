@@ -142,18 +142,17 @@ export default {
       try {
         data.profit = { receipt: 0, expense: 0 }; // thu và chi
         chartSeriesProfit.data = [{}];
-        //chi
-        let documentSpending = await spendingService.getAll();
-
+        // tính khoảng chi của 1 nhà trọ đã chọn
+        let documentSpending = await spendingService.getAll(); // lấy danh sách phiếu thu
         documentSpending = documentSpending.message.filter((item) => {
           const date = new Date(item.updatedAt);
-          //Thời gian đã chọn == tgian trong csdl
+          //Thời gian đã chọn == tgian trong csdl và đúng nhà trọ đang chọn
           if (
             data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
             data.selectDate.getFullYear() == date.getFullYear() &&
             item.boardingId == data.selectBoarding
           ) {
-            data.profit.expense += Number(item.price);
+            data.profit.expense += Number(item.price); // tính tổng chi phí đã chi
           }
           return (
             data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
@@ -163,9 +162,11 @@ export default {
         });
 
         // thu
-        let documentReceipt = await receiptService.getAll();
+        let documentReceipt = await receiptService.getAll(); // lấy danh sách phiếu thu
         documentReceipt = documentReceipt.message.filter((item) => {
-          const date = new Date(item.updatedAt);
+          const date = new Date(item.createdAt);
+          // lọc lấy danh sách những phiếu thu đã tạo trong tháng,
+          // do khi tạo hóa đơn cũng đồng thời tạo 1 phiếu thu với receive là 0đ
           if (item.Bill) {
             if (
               item.Bill.Room.boardingId == data.selectBoarding &&

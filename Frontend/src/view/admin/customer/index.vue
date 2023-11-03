@@ -122,7 +122,14 @@ export default {
     watch(
       () => data.boardingActice,
       async (newValue, oldValue) => {
+        if (newValue == "") return;
+        console.log("boardingActive:", data.boardingActice);
         await refresh();
+        if (data.choose != "") {
+          data.item = data.item.filter((item) =>
+            item.user.address.includes(data.choose.name)
+          );
+        }
       }
     );
     const changeCity = async (value) => {
@@ -244,10 +251,8 @@ export default {
     };
     const handleEdit = async (value) => {
       try {
-        console.log("edit:", value);
         data.isEditUserModal = !data.isEditUserModal;
         data.user = value;
-        console.log(data.user);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -409,13 +414,21 @@ export default {
     </div>
 
     <!-- Table -->
+    <!-- 'cancel' -->
+    <!--  @cancel="
+        (value) => {
+          console.log('cancel:', value);
+          handleDelete(value);
+        }
+      " -->
+    <h5 class="title text-center my-3">Danh sách khách trọ</h5>
     <Table
       :data="data.setPage"
       :name="'User'"
       :fields="['Họ tên', 'GT', 'SĐT', 'Email', 'Địa chỉ']"
       :titles="['userName', 'sex', 'phone', 'email', 'address']"
       :action="true"
-      :actionList="['visibility', 'edit', 'cancel']"
+      :actionList="['visibility', 'edit']"
       :isInputChecked="true"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
@@ -428,12 +441,6 @@ export default {
       @edit="
         (value) => {
           handleEdit(value);
-        }
-      "
-      @cancel="
-        (value) => {
-          console.log('cancel:', value);
-          handleDelete(value);
         }
       "
     ></Table>

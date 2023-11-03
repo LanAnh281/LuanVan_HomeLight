@@ -196,6 +196,7 @@ export default {
       </div>
     </div>
     <!-- component Table -->
+    <h5 class="title text-center my-3">Danh sách dịch vụ</h5>
     <Table
       class="text-center"
       :data="data.setPage"

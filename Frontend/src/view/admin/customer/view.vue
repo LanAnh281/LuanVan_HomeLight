@@ -28,10 +28,8 @@ export default {
       emit("closeModal");
     };
     onMounted(async () => {
-      console.log("PropsId:", props._id);
       const documentUser = await userService.get(props._id);
       data.item = documentUser.message;
-      console.log(data.item);
       $("#visibilityUserModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#visibilityUserModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
@@ -73,7 +71,7 @@ export default {
                 }}</label>
               </div>
               <div class="row justify-content-start p-0 mt-2 m-0">
-                <label class="pr-2">Phòng trọ :</label>
+                <label class="pr-2">Phòng :</label>
                 <label class="">{{ data.item.Rooms[0].name }}</label>
               </div>
               <div class="row justify-content-start p-0 m-0">
@@ -83,7 +81,9 @@ export default {
 
               <div class="row justify-content-start p-0 m-0">
                 <label class="pr-2">Ngày sinh:</label>
-                <label class="">{{ formatDateTime(data.item.birthday) }}</label>
+                <label class="">{{
+                  data.item.birthday ? formatDateTime(data.item.birthday) : ""
+                }}</label>
               </div>
 
               <div class="row justify-content-start p-0 m-0">
@@ -105,12 +105,12 @@ export default {
                 <label class="">{{ data.item.phone }}</label>
               </div>
               <div class="row justify-content-start p-0 m-0">
-                <label class="pr-2">Biển số xe:</label>
-                <label class="">{{ data.item.numberPlate }}</label>
-              </div>
-              <div class="row justify-content-start p-0 m-0">
                 <label class="col-2 p-0 m-0">Địa chỉ:</label>
                 <label class="col-10 p-0 m-0">{{ data.item.address }}</label>
+              </div>
+              <div class="row justify-content-start p-0 m-0">
+                <label class="pr-2">Biển số xe:</label>
+                <label class="">{{ data.item.numberPlate }}</label>
               </div>
             </div>
             <div class="col-12 m-0 p-0">
