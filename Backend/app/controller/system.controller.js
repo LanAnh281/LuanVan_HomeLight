@@ -1,10 +1,13 @@
 const { System } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
-  const { content } = req.body;
+  const { content, email, phone, service } = req.body;
   console.log("System Body:", req.body);
   try {
     const document = await System.create({
       content: content,
+      email: email,
+      phone: phone,
+      service: service,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
@@ -35,12 +38,15 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { content } = req.body;
+  const { content, email, phone, service } = req.body;
   console.log("System Body:", req.body);
   try {
     const document = await System.update(
       {
         content: content,
+        email: email,
+        phone: phone,
+        service: service,
       },
       {
         where: {

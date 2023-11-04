@@ -191,6 +191,9 @@ const Services = sequelize.define("Service", {
 const System = sequelize.define("System", {
   _id: setPrimary,
   content: { type: DataTypes.TEXT },
+  email: { type: DataTypes.STRING },
+  phone: { type: DataTypes.STRING },
+  service: { type: DataTypes.TEXT },
 });
 const Notification = sequelize.define("Notification", {
   _id: setPrimary,
