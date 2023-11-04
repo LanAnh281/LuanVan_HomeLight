@@ -18,7 +18,7 @@ exports.findAll = async (req, res, next) => {
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);
-    res.json({ message: error, status: "faild" });
+    res.json({ message: error, status: "fail" });
   }
 };
 exports.findOne = async (req, res, next) => {

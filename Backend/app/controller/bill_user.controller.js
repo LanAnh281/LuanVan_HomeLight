@@ -26,7 +26,7 @@ exports.findAllUser = async (req, res, next) => {
   try {
     const documents = await sequelize.query(
       `
-      SELECT Users._id as userId, Users.userName,bill_users._id ,bill_users.total, bill_users.content, bill_users.createdAt, receipts.receive
+      SELECT Users._id as userId, Users.userName,bill_users._id ,bill_users.total, bill_users.content, bill_users.createdAt, receipts.receive, receipts.updatedAt 
       FROM Users
       left JOIN bill_users ON Users._id = bill_users.userId
       left JOIN receipts ON bill_users._id = receipts.billUserId
@@ -55,7 +55,7 @@ exports.findOne = async (req, res, next) => {
       `
       SELECT Users._id as userId,users.username,bill_users._id, bill_users.total, 
       bill_users.content,bill_users.createdAt,
-      receipts.receive,receipts.createdAt as receiptedAt
+      receipts.receive,receipts.updatedAt as receiptedAt
       FROM Users
     left JOIN bill_users ON Users._id = bill_users.userId
     left JOIN receipts ON bill_users._id = receipts.billUserId

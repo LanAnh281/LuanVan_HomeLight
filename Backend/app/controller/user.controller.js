@@ -282,6 +282,7 @@ exports.findAllLandlord = async (req, res, next) => {
     res.json({ message: error, status: "fail" });
   }
 };
+// DS KHÁCH TRỌ
 exports.findAllTenant = async (req, res, next) => {
   try {
     // lấy đc danh sách khách trọ của 1 người chủ
@@ -296,10 +297,12 @@ exports.findAllTenant = async (req, res, next) => {
 
       const documents = JSON.parse(JSON.stringify(users)); //** gán thêm thuộc tính  */
       for (let i in documents) {
+        // lấy thông tin 1 khách trọ
         const user = await Users.findOne({
           where: { _id: documents[i].tenantId },
         });
 
+        // lấy thông tin phòng trọ
         const user_room = await User_Room.findOne({
           where: {
             UserId: user._id,
@@ -310,8 +313,11 @@ exports.findAllTenant = async (req, res, next) => {
             _id: user_room.RoomId,
           }, // lấy đc boarding
         });
+
         const item = JSON.parse(JSON.stringify(user));
         item.boardingId = room.boardingId;
+        const roomInfo = JSON.parse(JSON.stringify(room));
+        documents[i].room = roomInfo;
         documents[i].user = item;
       }
       return res.json({ message: documents, status: "success" });
