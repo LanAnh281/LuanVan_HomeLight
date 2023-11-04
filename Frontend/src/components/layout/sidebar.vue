@@ -61,11 +61,6 @@ export default {
           active: "dashboardSuperAdmin",
         },
         { name: "Chủ trọ", icon: "person", active: "customerSuperAdmin" },
-        {
-          name: "Dịch vụ",
-          icon: "energy_program_time_used",
-          active: "service",
-        },
 
         {
           name: "Hóa đơn",

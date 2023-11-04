@@ -69,15 +69,14 @@ export default {
       // Lưu ý 1 tháng chỉ có 1 hóa đơn, nên chỉ có thể tìm duy nhất 1 hóa đơn và 1 bill
       // đầu vào sẽ là ds hóa đơn của 1 người dùng
       // đầu ra là số tiền ng đó đã chi trả => doanh thu
-      console.log(billUser);
       const profit = billUser.filter((value) => {
+        // lấy những bill trong tháng đang chọn
         const date = new Date(value.createdAt);
         if (
           data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
           data.selectDate.getFullYear() == date.getFullYear() &&
           value.Receipt != null
         ) {
-          console.log(value);
           return value;
         }
       });
@@ -93,34 +92,15 @@ export default {
         const documentReceipt = await reportService.getAll();
 
         data.item = documentReceipt.message;
-
+        console.log(
+          "DS người dùng kèm theo ds hóa đơn và phiếu thu của chủ trọ:",
+          data.item
+        );
+        // lọc danh sách người dùng
         let i = 0;
         for (let value of data.item) {
           console.log(value.Bill_Users);
           const profit = await handleProfit(value.Bill_Users);
-          // tìm trong ds hóa đơn có phiếu thu không ? và có hóa đơn nằm trong khoảng thời gian đang tìm kiếm
-          // const Bill_Users = value.Bill_Users.filter((item) => {
-          //   total = 0;
-          //   const date = new Date(item.createdAt);
-
-          //   if (
-          //     // date >= data.start &&
-          //     // date <= data.end &&
-          //     data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
-          //     data.selectDate.getFullYear() == date.getFullYear() &&
-          //     item.Receipt != null
-          //   ) {
-          //     total = Number(total) + Number(item.Receipt.receive);
-          //     console.log("lợi nhuận", total);
-          //     item.profit = total;
-          //     return item;
-          //   }
-          // });
-          // console.log(Bill_Users, Bill_Users["profit"]);
-          // // if (total > 0) {
-          // data.item[i].Bill_Users.profit = Bill_Users.profit;
-          // // data.item[i].Bill_Users.profit=0;
-          // // }
           if (profit.length == 1) {
             console.log("Lợi nhuận:", profit[0], profit.length);
 

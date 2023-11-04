@@ -11,6 +11,7 @@ import {
   checkStringAndNumber,
   sanitizeInput,
 } from "../../../assets/js/checkInput.common";
+import { successAd } from "../../../assets/js/common.alert";
 
 // view
 export default {
@@ -18,8 +19,8 @@ export default {
   props: {},
   setup(props, { emit }) {
     const data = reactive({
-      item: { content: "" },
-      service: [],
+      item: [{ content: "" }],
+      service: [{ name: "", price: 0, unit: "" }],
     });
 
     const isModalOpen = ref(false);
@@ -35,9 +36,13 @@ export default {
 
     const refresh = async () => {
       try {
+        // thông tin hệ thống
+        data.item = await systemService.getAll();
+        data.item = data.item.message;
+
+        // danh sách dịch vụ của người đang đăng nhập
         data.service = await serviceService.getAllUser();
         data.service = data.service.message;
-        console.log(data.service);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -51,11 +56,20 @@ export default {
 
     const save = async () => {
       try {
-        const documentUpdateSystem = await systemService.update(data.item); //
+        const documentUpdateSystem = await systemService.update(
+          data.item[0]._id,
+          data.item[0]
+        ); //
         const documentUpdateService = await serviceService.update(
           data.service[0]._id,
-          data.service
+          data.service[0]
         );
+        if (
+          documentUpdateService["status"] == "success" &&
+          documentUpdateSystem["status"] == "success"
+        ) {
+          successAd("Cập nhật thành công");
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -69,10 +83,10 @@ export default {
 
     onMounted(async () => {
       try {
-        await refresh();
-        // *******
         $("#serviceModal").on("show.bs.modal", openModal); //lắng nghe mở modal
         $("#serviceModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
+        await refresh();
+        // *******
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -115,14 +129,14 @@ export default {
           </button>
         </div>
         <div class="modal-body mx-3">
-          <form @submit="save">
+          <form @submit.prevent="save">
             <div class="form-group">
               <label for="content">Mô tả hệ thống : </label>
               <textarea
                 class="form-control"
                 id="content"
                 placeholder="Mô tả hệ thống"
-                v-model="data.item.content"
+                v-model="data.item[0].content"
                 cols="30"
                 rows="5"
               />

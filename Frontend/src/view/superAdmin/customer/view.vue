@@ -7,7 +7,7 @@ import axios from "axios";
 //js
 import { formatDateTime } from "../../../assets/js/format.common";
 import { city, district, ward } from "../../../assets/js/dependent.common";
-
+import { warning, deleted } from "../../../assets/js/common.alert";
 // view
 import Table from "../../../components/table/table.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
@@ -156,6 +156,24 @@ export default {
         }
       }
     };
+    const handleDelete = async () => {
+      try {
+        console.log("handle Delete");
+        const isDeleted = await deleted(
+          "Xóa chủ trọ",
+          "Tất cả các thông tin về tài khoản chủ trọ, khách trọ, phòng trọ, dịch vụ của chủ trọ, điện nươc, chi phí, hóa đơn, thông báo sẽ bị xóa bỏ khỏi hệ thống"
+        );
+        console.log(isDeleted);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     onMounted(async () => {
       try {
         $("#visibilityUserModal").on("show.bs.modal", openModal); //lắng nghe mở modal
@@ -186,6 +204,7 @@ export default {
       changeCity,
       changeDistrict,
       changeWard,
+      handleDelete,
     };
   },
 };
@@ -332,6 +351,14 @@ export default {
               }
             "
           ></paginationVue>
+        </div>
+        <div class="row justify-content-around my-3">
+          <!-- <button class="btn btn-primary" @click="handleActive">
+            Ngừng hoạt động
+          </button> -->
+          <button class="btn btn-danger" @click="handleDelete">
+            Xóa chủ trọ
+          </button>
         </div>
       </div>
     </div>

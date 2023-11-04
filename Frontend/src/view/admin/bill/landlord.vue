@@ -62,7 +62,6 @@ export default {
       try {
         data.selectDate = new Date(value.target.value);
         await refresh();
-        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

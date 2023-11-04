@@ -89,6 +89,7 @@ export default {
         data.users = [];
         //***. Chú ý danh sách show ra để checkbox phải là người trọ thuộc nhà trọ của ng đăng nhập
         const documentUsers = await userService.getAllTenant("Tenant");
+
         for (let value of documentUsers.message) {
           data.users.push(value.user);
         }

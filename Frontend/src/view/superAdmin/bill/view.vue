@@ -54,10 +54,10 @@ export default {
             userId: content[3], // id của super-admin
             count: item.total / Number(content[1]),
             total: item.total,
-            receiptedAt: item.receiptedAt
-              ? formatDateTime(new Date(item.receiptedAt))
-              : "Chưa thanh toán",
-            isPaied: item.Receipt ? "true" : "false",
+            // receiptedAt: item.receiptedAt
+            //   ? formatDateTime(new Date(item.receiptedAt))
+            //   : "Chưa thanh toán",
+            isPaied: Number(item.receive) == Number(item.total) ? true : false, // true :chưa thanh toán,  false: đã thanh toán
             createdAt: new Date(item.createdAt),
           };
         });
@@ -202,15 +202,16 @@ export default {
               <div class="btn border border-danger w-75">
                 <p class="m-0 text-danger">
                   {{
-                    data.item[0].receiptedAt != "Chưa thanh toán"
+                    data.item[0].isPaied == true
                       ? "Đã thanh toán"
                       : "Chưa thanh toán"
                   }}
                 </p>
+                {{ data.item.isPaied }}
                 <span
                   class="m-0 text-danger"
-                  v-if="data.item[0].receiptedAt != 'Chưa thanh toán'"
-                  >{{ data.item[0].receiptedAt }}</span
+                  v-if="data.item[0].isPaied == true"
+                  >{{ formatDateTime(data.item[0].receiptedAt) }}</span
                 >
               </div>
             </div>

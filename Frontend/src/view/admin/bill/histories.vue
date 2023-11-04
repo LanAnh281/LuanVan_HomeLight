@@ -47,22 +47,23 @@ export default {
       try {
         const document = await bill_userService.getAllUser();
         data.item = document.message;
-        // data.item = data.item.filter((item) => {
-        //   const date = new Date(item.createdAt);
-        //   return (
-        //     date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
-        //     date.getFullYear() == data.selectDate.getFullYear()
-        //   );
-        // });
-
+        data.item = data.item.filter((item) => {
+          const date = new Date(item.updatedAt);
+          return (
+            date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+            date.getFullYear() == data.selectDate.getFullYear()
+          );
+        });
+        data.item = data.item.sort(
+          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+        );
         data.item = data.item.map((item) => {
           return {
             ...item,
-            createdAt: formatDateTime(item.createdAt),
+            createdAt: formatDateTime(item.updatedAt),
             receive: formatCurrency(item.receive),
           };
         });
-        // console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -76,7 +77,6 @@ export default {
     const handleDate = async (value) => {
       try {
         data.selectDate = new Date(value.target.value);
-        console.log("Ngày đã chọn", value.target.value);
         await refresh();
       } catch (error) {
         if (error.response) {
@@ -183,7 +183,7 @@ export default {
 
 <template>
   <div class="body container-fluid m-0 pr-5">
-    <!-- <div class="row m-0 text-center mt-2">
+    <div class="row m-0 text-center mt-2">
       <div class="input-group col-2">
         <input
           type="month"
@@ -192,11 +192,11 @@ export default {
           style="background-color: var(--background); border: 1px solid #ebebeb"
         />
       </div>
-    </div> -->
-    <h4 class="text-center title my-3">Lịch sử thanh toán</h4>
+    </div>
+    <h5 class="text-center title mb-3">Lịch sử thanh toán</h5>
     <Table
       :data="data.setPage"
-      :fields="['Mã phiếu thu', 'Ngày thu', 'Số tiền']"
+      :fields="['Mã phiếu thu', 'Ngày thanh toán', 'Số tiền']"
       :titles="['_id', 'createdAt', 'receive']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"

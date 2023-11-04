@@ -73,7 +73,11 @@ export default {
             }
           }
         });
-        if (data.roomStatusList["notRentedRooms"] == 0) {
+        console.log(data.roomStatusList);
+        if (
+          data.roomStatusList["notRentedRooms"] == 0 &&
+          data.roomStatusList["rentedRooms"] == 0
+        ) {
           roomStatusSeries.value[0] = 1;
         } else {
           roomStatusSeries.value[0] = data.roomStatusList["notRentedRooms"];

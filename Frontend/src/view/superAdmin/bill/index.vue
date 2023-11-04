@@ -93,16 +93,18 @@ export default {
             count: item.total / Number(content[1]),
             total: formatCurrency(item.total),
 
-            isPaied: item.receive == null ? "true" : "false", // true :chưa thanh toán,  false: đã thanh toán
+            isPaied:
+              Number(item.receive) == Number(item.total) ? "true" : "false", // true :chưa thanh toán,  false: đã thanh toán
           };
         });
+
         data.item = data.item.filter((value) => {
           const date = new Date(value.createdAt);
 
           return (
             data.selectDate.month == date.getMonth() + 1 &&
             data.selectDate.year == date.getFullYear() &&
-            selectFee.value == value.isPaied
+            selectFee.value != value.isPaied
           );
         });
       } catch (error) {

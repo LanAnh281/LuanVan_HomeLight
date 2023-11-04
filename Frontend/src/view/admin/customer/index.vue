@@ -94,6 +94,7 @@ export default {
       try {
         const documentUser = await userService.getAllTenant("Landloard");
         data.item = documentUser.message;
+        console.log(data.item);
         data.item = documentUser.message.filter(
           (item) => item.user.boardingId == data.boardingActice
         );
@@ -109,6 +110,7 @@ export default {
             checked: false,
           };
         });
+        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -366,12 +368,13 @@ export default {
             }
           "
           class="select"
-          style="height: 36px"
+          style="height: 34px"
         ></SelectNormal>
       </div>
     </div>
     <!-- Search -->
-    <div class="border-radius my-3">
+
+    <div class="border-radius m-0">
       <!-- Search -->
       <div class="my-2 mx-3 row justify-content-between">
         <input
@@ -382,6 +385,7 @@ export default {
             background-color: var(--background);
             width: 30%;
             font-size: 0.9rem;
+            height: 34px;
           "
           v-model="data.searchText"
         />

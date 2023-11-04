@@ -392,8 +392,8 @@ export default {
                     :to="{ name: 'histories' }"
                     v-if="position == 'admin'"
                     class="dropdown-item px-1"
-                    >Lịch sử</router-link
-                  >
+                    >Lịch sử
+                  </router-link>
                   <router-link
                     :to="{ name: 'changePassword' }"
                     class="dropdown-item px-1"
