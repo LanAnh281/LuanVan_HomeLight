@@ -19,7 +19,7 @@ export default {
   props: {},
   setup(props, { emit }) {
     const data = reactive({
-      item: [{ content: "" }],
+      item: [{ content: "", service: "", email: "", phone: "" }],
       service: [{ name: "", price: 0, unit: "" }],
     });
 
@@ -56,6 +56,7 @@ export default {
 
     const save = async () => {
       try {
+        data.item[0].service = `${data.service[0].name} - ${data.service[0].price} - ${data.service[0].unit}`;
         const documentUpdateSystem = await systemService.update(
           data.item[0]._id,
           data.item[0]
@@ -117,7 +118,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title title" id="exampleModalLabel">
-            Thông tin dịch vụ thuê hệ thống
+            Thông tin thuê hệ thống
           </h5>
           <button
             type="button"
@@ -130,6 +131,26 @@ export default {
         </div>
         <div class="modal-body mx-3">
           <form @submit.prevent="save">
+            <div class="form-group">
+              <label for="email">Email : </label>
+              <input
+                class="form-control"
+                id="email"
+                type="email"
+                placeholder="địa chỉ email liên hệ"
+                v-model="data.item[0].email"
+              />
+            </div>
+            <div class="form-group">
+              <label for="phone">Số điện thoại : </label>
+              <input
+                class="form-control"
+                id="phone"
+                type="phone"
+                placeholder="số điện thoại  liên hệ"
+                v-model="data.item[0].phone"
+              />
+            </div>
             <div class="form-group">
               <label for="content">Mô tả hệ thống : </label>
               <textarea

@@ -1,7 +1,10 @@
 <script>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import registration from "../../../components/form/registration.form.vue";
-
+import systemService from "../../../service/system.service";
+import serviceService from "../../../service/service.service";
+//js
+import { formatCurrency } from "../../../assets/js/format.common";
 export default {
   components: { registration },
   setup() {
@@ -26,14 +29,27 @@ export default {
           alt: "Ảnh giới thiệu",
         },
       ],
+      systems: [{ content: "" }],
+      services: [{ name: "", price: "", unit: "" }],
     });
     const isRegistration = ref(false);
     const imageSrc = (url) => {
       return new URL(url, import.meta.url);
     };
-    const handleDetail = () => {
+
+    onMounted(async () => {
       try {
-        console.log("Chế độ thuê nhà, giá dịch vụ thuê");
+        data.systems = await systemService.getAll();
+        data.systems = data.systems.message;
+        data.systems = data.systems.map((item) => {
+          const service = item.service.split(" - ");
+          return {
+            ...item,
+            serviceName: service[0],
+            servicePrice: service[1],
+            serviceUnit: service[2],
+          };
+        });
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -43,12 +59,12 @@ export default {
           console.log("Errors:", error.message);
         }
       }
-    };
+    });
     return {
       data,
       imageSrc,
-      handleDetail,
       isRegistration,
+      formatCurrency,
     };
   },
 };
@@ -171,7 +187,7 @@ export default {
           <h2>Người tìm trọ</h2>
         </div>
         <div class="box-desc mx-3">
-          Đối với người tìm trọ, bạn có thể tìm kiếm căn trọ một cách dễ
+          Đối với người tìm trọ, bạn có thể tìm kiếm căn trọ một cách dễ dàng
         </div>
       </div>
       <!--  -->
@@ -211,9 +227,38 @@ export default {
 
     <div class="mx-3">
       <h5 class="title">Bạn là chủ trọ và đây là thông tin dành cho bạn</h5>
-      <p>Chính sách và bảng giá sử dụng</p>
+      <p
+        style="
+          line-height: 2;
+          font-family: 'Amarillo';
+          font-size: 20px;
+          color: #282827;
+        "
+      >
+        {{ data.systems[0].content }}
+      </p>
+      <h6
+        style="
+          line-height: 2;
+          font-family: 'Amarillo';
+          font-size: 20px;
+          color: #282827;
+        "
+      >
+        Đơn giá :{{ formatCurrency(data.systems[0].servicePrice) }}/{{
+          data.systems[0].serviceUnit
+        }}
+      </h6>
+      <!-- <div class="row">
+        <h6 class="col-3">Thông tin liên hệ :</h6>
+        <div class="col-6 m-0 p-0">
+          <p class="m-0 p-0">Email: {{ data.systems[0].email }}</p>
+          <p>Số điện thoại: {{ data.systems[0].phone }}</p>
+        </div>
+      </div> -->
+
       <button
-        class="btn btn-login"
+        class="btn btn-login blink-button"
         data-toggle="modal"
         data-target="#registrationModal"
         style="font-size: 16px"
@@ -227,7 +272,7 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 500vh;
+  height: 240vh;
 }
 #carouselExampleControls {
   /* left: 0;
@@ -300,5 +345,25 @@ p {
 
 .box-desc {
   display: none;
+}
+.blink-button {
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  animation: blink 1.5s infinite; /* Sử dụng animation 'blink' */
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

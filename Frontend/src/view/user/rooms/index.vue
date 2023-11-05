@@ -207,6 +207,7 @@ export default {
         //       }
         //     }
         //   }
+        data.items = data.items.sort((a, b) => a.status - b.status);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -217,19 +218,7 @@ export default {
         }
       }
     };
-    // const handleMaxMin = async () => {
-    //   try {
 
-    //   } catch (error) {
-    //     if (error.response) {
-    //       console.log("Server-side errors", error.response.data);
-    //     } else if (error.request) {
-    //       console.log("Client-side errors", error.request);
-    //     } else {
-    //       console.log("Errors:", error.message);
-    //     }
-    //   }
-    // };
     onBeforeMount(async () => {
       try {
         position.value = localStorage.getItem("position");
@@ -389,9 +378,9 @@ export default {
             Diện tích: {{ value.long }} x {{ value.wide }} m²
           </p>
           <p class="card-text">Giá phòng: {{ formatCurrency(value.price) }}</p>
-          <p class="card-text">
+          <!-- <p class="card-text">
             Trạng thái: {{ value.status ? "Đã thuê" : "Chưa thuê" }}
-          </p>
+          </p> -->
         </div>
       </router-link>
     </div>

@@ -139,37 +139,47 @@ export default {
     <div class="row mx-2">
       <div class="col-6 m-0 mr-1 p-0">
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Tên nhà trọ:</p>
+          <p class="col-2 m-0 p-0">Tên nhà trọ:</p>
           <p class="col-8 m-0 p-0">
             {{ data.item.Rooms[0].BoardingHouse.name }}
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Địa chỉ:</p>
+          <p class="col-2 m-0 p-0">Địa chỉ:</p>
           <p class="col-8 m-0 p-0">
             {{ data.item.Rooms[0].BoardingHouse.address }}
           </p>
         </div>
         <div class="col-12 row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Mô tả :</p>
+          <p class="col-2 m-0 p-0">Mô tả :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].content }}
+          </p>
+        </div>
+        <div class="col-12 row justify-content-start p-0 m-0">
+          <p class="col-2 m-0 p-0">Tiện ích :</p>
+          <p
+            class="p-0 m-0"
+            v-for="(value, index) in data.item.Rooms[0].Amenities"
+            :key="index"
+          >
+            {{ value.name }},
           </p>
         </div>
       </div>
       <div class="col-4 p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Tên phòng :</p>
+          <p class="col-2 m-0 p-0">Tên phòng :</p>
           <p class="col-6 p-0 m-0">{{ data.item.Rooms[0].name }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Diện tích :</p>
+          <p class="col-2 m-0 p-0">Diện tích :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].long }} x {{ data.item.Rooms[0].wide }} m²
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Đơn giá :</p>
+          <p class="col-2 m-0 p-0">Đơn giá :</p>
           <p class="col-6 p-0 m-0">
             {{ formatCurrency(data.item.Rooms[0].price) }}
           </p>
@@ -197,7 +207,7 @@ export default {
                 type="text"
                 class="form-control"
                 id="inputContent"
-                rows="4"
+                rows="5"
                 v-model="data.message.comment"
               ></textarea>
             </div>
@@ -211,26 +221,26 @@ export default {
       </div>
       <div class="col-4 m-0 ml-2 p-0">
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Tên chủ trọ :</p>
+          <p class="col-2 m-0 p-0">Tên chủ trọ :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.userName }}
           </p>
         </div>
 
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Điện thoại :</p>
+          <p class="col-2 m-0 p-0">Điện thoại :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.phone }}
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Email :</p>
+          <p class="col-2 m-0 p-0">Email :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.email }}
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Địa chỉ :</p>
+          <p class="col-2 m-0 p-0">Địa chỉ :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.address }}
           </p>
@@ -245,6 +255,6 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 120vh;
+  height: 150vh;
 }
 </style>

@@ -140,12 +140,7 @@ const routes = [
     component: () => import("../view/admin/report/index.vue"),
   },
   //User
-  // {
-  //   path: "/",
-  //   name: "user",
-  //   component: () => import("../view/user/index.vue"),
-  // },
-  // userInfo
+
   {
     path: "/roomInfo",
     name: "roomInfo",
@@ -191,28 +186,22 @@ const routes = [
     component: () => import("../view/user/Bill/index.vue"),
   },
 ];
-
-// router.beforeEach((to, from, next) => {
-//   // Đây là nơi bạn thực hiện kiểm tra người dùng
-//   // Ví dụ: kiểm tra xác thực, vai trò, quyền truy cập, ...
-//   try {
-
-//     if (nguoiDungDaXacThuc) {
-//     // Nếu người dùng đã xác thực, cho phép truy cập
-//     next()
-//   } else {
-//     // Nếu người dùng chưa xác thực, điều hướng đến trang đăng nhập
-//     next({name:'login'})
-//   }
-//   } catch (error) {
-
-//   }
-
-// })
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
+// router.beforeEach((to, from, next) => {
+//   // Đây là nơi bạn thực hiện kiểm tra người dùng
+//   // Ví dụ: kiểm tra xác thực, vai trò, quyền truy cập, ...
+//   try {
+//     if (nguoiDungDaXacThuc) {
+//       // Nếu người dùng đã xác thực, cho phép truy cập
+//       next();
+//     } else {
+//       // Nếu người dùng chưa xác thực, điều hướng đến trang đăng nhập
+//       next({ name: "login" });
+//     }
+//   } catch (error) {}
+// });
 
 export default router;

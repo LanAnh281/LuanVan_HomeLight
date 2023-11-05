@@ -400,6 +400,7 @@ export default {
         />
 
         <div class="card-body m-0 p-0">
+          <h6>Nhà trọ : {{ value.BoardingHouse.name }}</h6>
           <p class="card-text">Phòng {{ value.name }}</p>
           <p class="card-text">
             Diện tích: {{ value.long }} x {{ value.wide }} m²
