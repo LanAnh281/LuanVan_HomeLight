@@ -178,10 +178,7 @@ const Media = sequelize.define("Media", {
   _id: setPrimary,
   name: { type: DataTypes.STRING },
 });
-const Equipment = sequelize.define("Equipment", {
-  _id: setPrimary,
-  name: { type: DataTypes.STRING },
-});
+
 const Services = sequelize.define("Service", {
   _id: setPrimary,
   name: { type: DataTypes.TEXT },
@@ -387,19 +384,7 @@ Media.belongsTo(BorardingHouse, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-const Count = sequelize.define("Count", {
-  count: { type: DataTypes.INTEGER },
-});
-Equipment.belongsToMany(Rooms, {
-  through: Count,
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Rooms.belongsToMany(Equipment, {
-  through: Count,
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
+
 const Service_Room = sequelize.define("Service_Room", {
   start: { type: DataTypes.DATE },
   end: { type: DataTypes.DATE },
@@ -507,8 +492,7 @@ User_Room.sync();
 Receipt.sync();
 
 Media.sync();
-Equipment.sync();
-Count.sync();
+
 Services.sync();
 Service_Room.sync();
 System.sync();
@@ -539,8 +523,7 @@ module.exports = {
   Receipt,
 
   Media,
-  Equipment,
-  Count,
+
   Services,
   Service_Room,
   System,
