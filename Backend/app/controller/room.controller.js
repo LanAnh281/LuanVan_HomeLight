@@ -165,6 +165,11 @@ exports.findAllRooms = async (req, res, next) => {
       where: {
         boardingId: req.params.id,
       },
+      include: [
+        {
+          model: Media,
+        },
+      ],
     });
 
     res.json({ message: document, status: "success" });

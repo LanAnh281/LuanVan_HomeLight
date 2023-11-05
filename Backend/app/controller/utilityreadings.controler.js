@@ -1,4 +1,9 @@
-const { Rooms, UtilityReadings } = require("../models/index.model.js");
+const {
+  Rooms,
+  UtilityReadings,
+  Users,
+  BorardingHouse,
+} = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const {
     previousElectric,
@@ -26,6 +31,21 @@ exports.create = async (req, res, next) => {
 };
 exports.findAll = async (req, res, next) => {
   try {
+    // const user = await Users.findOne({
+    //   where: {
+    //     _id: req.user.userId,
+    //   },
+    // });
+    // console.log("**Đang đăng nhập:", user);
+    // const boarding = await BorardingHouse.findAll({
+    //   where: {
+    //     userId: user["_id"],
+    //   },
+    // });
+    // console.log("Ds nhà trọ :", boarding);
+    // for (let value in boarding) {
+    //   console.log("Nhà trọ", value);
+    // }
     const utis = await UtilityReadings.findAll({
       include: {
         model: Rooms,
