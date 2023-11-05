@@ -94,7 +94,6 @@ export default {
       try {
         const documentUser = await userService.getAllTenant("Landloard");
         data.item = documentUser.message;
-        console.log(data.item);
         data.item = documentUser.message.filter(
           (item) => item.user.boardingId == data.boardingActice
         );
@@ -110,7 +109,6 @@ export default {
             checked: false,
           };
         });
-        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
