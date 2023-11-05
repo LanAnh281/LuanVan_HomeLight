@@ -6,11 +6,7 @@ const routes = [
     name: "simple",
     component: () => import("../view/user/simple.vue"),
   },
-  {
-    path: "/prime",
-    name: "prime",
-    component: () => import("../view/user/prime.vue"),
-  },
+
   {
     path: "/boot",
     name: "boot",
@@ -99,11 +95,7 @@ const routes = [
     name: "electric",
     component: () => import("../view/admin/electric/index.vue"),
   },
-  {
-    path: "/admin/water",
-    name: "water",
-    component: () => import("../view/admin/water/index.vue"),
-  },
+
   {
     path: "/admin/service",
     name: "service",
@@ -170,16 +162,7 @@ const routes = [
     component: () => import("../view/user/rooms/roomDetail.vue"),
   },
   //
-  {
-    path: "/post",
-    name: "post",
-    component: () => import("../view/user/post.vue"),
-  },
-  {
-    path: "/contact",
-    name: "contact",
-    component: () => import("../view/user/contact.vue"),
-  },
+
   {
     path: "/billCustomer",
     name: "billCustomer",

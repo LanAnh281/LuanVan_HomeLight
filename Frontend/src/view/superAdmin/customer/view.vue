@@ -4,6 +4,7 @@ import _ from "lodash";
 import axios from "axios";
 
 //service
+import userService from "../../../service/user.service";
 //js
 import { formatDateTime } from "../../../assets/js/format.common";
 import { city, district, ward } from "../../../assets/js/dependent.common";
@@ -164,6 +165,10 @@ export default {
           "Tất cả các thông tin về tài khoản chủ trọ, khách trọ, phòng trọ, dịch vụ của chủ trọ, điện nươc, chi phí, hóa đơn, thông báo sẽ bị xóa bỏ khỏi hệ thống"
         );
         console.log(isDeleted);
+        if (isDeleted == true) {
+          const document = await userService.delete(props._id);
+          console.log("Xóa chủ trọ:", document);
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

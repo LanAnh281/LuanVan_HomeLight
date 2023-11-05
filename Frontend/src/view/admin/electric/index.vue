@@ -1,14 +1,6 @@
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeMount,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { useRouter } from "vue-router";
 
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
@@ -16,7 +8,6 @@ import roomService from "../../../service/room.service";
 import utilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
-import { warning, deleted, successAd } from "../../../assets/js/common.alert";
 //component
 import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/input.table.vue";
@@ -25,7 +16,6 @@ export default {
   components: { Select, Table, Pagination },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       item: [], //list
       totalPage: 0,
@@ -90,7 +80,6 @@ export default {
             item.Room.boardingId == data.boardingActice
           );
         });
-        // await refresh();
         data.isInput = false;
       }
     };
@@ -101,7 +90,7 @@ export default {
     const refresh = async () => {
       try {
         // room
-        const documentRoom = await roomService.getAll();
+        const documentRoom = await roomService.getAllRoom(data.boardingActice);
         data.item = documentRoom.message;
 
         data.item = await Promise.all(
@@ -185,33 +174,20 @@ export default {
       () => data.boardingActice,
       async (newValue, oldValue) => {
         if (oldValue == "") return;
-        // console.log(newValue);
-        // const documentRoom = await roomService.getAll();
         const current = new Date();
         // thời gian hiện tại== thời gian đã chọn
-
         if (
           current.getMonth() + 1 == data.selectDate.month &&
           current.getFullYear() == data.selectDate.year
         ) {
-          // console.log("hiện tại nhà trọ");
           // đùng thời gian hiện tại
           await refresh();
         } else {
           //quá khứ hoặc tương lai
-          // console.log("Quá khứ or tương lai nhà trọ");
           const documentUti = await utilityReadingsService.getAll();
           data.item = documentUti.message;
           data.item = data.item.filter((item) => {
             let date = new Date(item.date);
-            // console.log(item);
-            // console.log("Thời gian csdl:", date.getMonth() + 1);
-            // console.log("Thời gian đã chọn:", data.selectDate.month);
-            // console.log(
-            //   date.getMonth() + 1 == data.selectDate.month &&
-            //     date.getFullYear() == data.selectDate.year &&
-            //     item.Room.boardingId == data.boardingActice
-            // );
             return (
               date.getMonth() + 1 == data.selectDate.month &&
               date.getFullYear() == data.selectDate.year &&
@@ -219,7 +195,6 @@ export default {
             );
           });
           data.isInput = false;
-          // console.log(data.item);
         }
         data.length = data.item.length;
       }
@@ -230,7 +205,7 @@ export default {
         value.date = new Date();
         value.roomId = value._id;
         const documentUti = await utilityReadingsService.create(value);
-        console.log(documentUti);
+
         if (documentUti["status"] == "success") {
           successAd("Thêm điện nước thành công");
         }

@@ -73,7 +73,7 @@ export default {
             }
           }
         });
-        console.log(data.roomStatusList);
+
         if (
           data.roomStatusList["notRentedRooms"] == 0 &&
           data.roomStatusList["rentedRooms"] == 0
@@ -149,7 +149,7 @@ export default {
         // tính khoảng chi của 1 nhà trọ đã chọn
         let documentSpending = await spendingService.getAll(); // lấy danh sách phiếu thu
         documentSpending = documentSpending.message.filter((item) => {
-          const date = new Date(item.updatedAt);
+          const date = new Date(item.date);
           //Thời gian đã chọn == tgian trong csdl và đúng nhà trọ đang chọn
           if (
             data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&

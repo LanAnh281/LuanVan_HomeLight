@@ -283,8 +283,6 @@ export default {
       data.flag = true;
     };
     const save = async () => {
-      console.log("save");
-
       const keys = ["name", "number", "phone", "city", "district", "ward"];
       try {
         for (const key of keys) {
@@ -312,7 +310,6 @@ export default {
           _.forEach(formFields, (field) => {
             formData.append(field, data.item[field]);
           });
-          console.log(data.uploadFiles.length);
 
           if (data.item.countFiles > 0) {
             _.forEach(data.uploadFiles, (file) => {

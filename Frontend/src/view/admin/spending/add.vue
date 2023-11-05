@@ -51,7 +51,6 @@ export default {
     const save = async () => {
       try {
         for (let key in data.item) {
-          console.log(key);
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin";
             data.flag = true;

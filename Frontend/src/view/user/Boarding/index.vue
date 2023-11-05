@@ -149,7 +149,6 @@ export default {
       try {
         const documentBoarding = await boardinghouseService.getAll();
         data.items = documentBoarding.message;
-        console.log(data.items);
 
         if (data.address != "") {
           data.items = data.items.filter((item) =>
@@ -250,6 +249,7 @@ export default {
           :title="`Chọn thành phố`"
           :data="data.city.data"
           @choose="(value) => change(value)"
+          style="height: 38px"
         ></Select>
       </div>
       <div class="input-group col-2">
@@ -257,6 +257,7 @@ export default {
           :title="`Chọn quận huyện`"
           :data="data.district.data.districts"
           @choose="(value) => changeDistrict(value)"
+          style="height: 38px"
         ></Select>
       </div>
 
@@ -265,6 +266,7 @@ export default {
           :title="`Chọn phường xã`"
           :data="data.ward.data.wards"
           @choose="(value) => changeWard(value)"
+          style="height: 38px"
         ></Select>
       </div>
       <!-- <div class="input-group col-2">
@@ -280,7 +282,7 @@ export default {
           v-model="data.searchText"
           class="w-100 px-2"
           placeholder="tìm kiếm theo tên nhà trọ"
-          style="border: 1px solid #ccc; border-radius: 4px"
+          style="border: 1px solid #ccc; border-radius: 4px; height: 38px"
         />
       </div>
     </div>

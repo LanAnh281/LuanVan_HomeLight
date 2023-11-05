@@ -2,7 +2,6 @@
 import {
   ref,
   reactive,
-  onMounted,
   onBeforeMount,
   onBeforeUnmount,
   computed,
@@ -12,7 +11,6 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 
 //service
-import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
 //component
 import Select from "../../../components/select/selectdependent.vue";
@@ -20,7 +18,6 @@ import selectNormal from "../../../components/select/select.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
 
 //asset/js
-import { checkAccessToken } from "../../../assets/js/common.login";
 import { formatCurrency } from "../../../assets/js/format.common";
 export default {
   components: { Select, selectNormal, paginationVue },
@@ -29,19 +26,11 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const data = reactive({
-      items: [{ name: "", long: "", wide: "" }],
+      items: [{ name: "", long: "", wide: "", Media: [{ name: "" }] }],
       city: {},
       district: { data: { districts: [] } },
       ward: { data: { wards: [] } },
       address: "",
-      // price: [
-      //   {
-      //     _id: "under 1000",
-      //     name: "Dưới 1 triệu",
-      //   },
-      //   { _id: "from 1000 to 1500", name: "Từ 1 - 1.5 triệu" },
-      //   { _id: "under 1500", name: "Trên 1.5 triệu" },
-      // ],
       price: 0,
       max: 0,
       min: 0,
@@ -56,23 +45,25 @@ export default {
     });
     let intervalId = null;
     const position = ref("");
-    data.searchPage = computed(
-      () => (
+    data.searchPage = computed(() => {
+      return (
         (data.currentPage = 1),
         data.items
           ? data.items.filter((item) => {
-              if (item.BoardingHouse && item.BoardingHouse.name) {
+              if (item && item.name) {
                 return item.name
                   .toLowerCase()
                   .includes(data.searchText.toLocaleLowerCase());
               }
             })
           : []
-      )
-    );
-    data.totalPage = computed(() =>
-      data.searchPage ? Math.ceil(data.searchPage.length / data.sizePage) : 0
-    );
+      );
+    });
+    data.totalPage = computed(() => {
+      return data.searchPage
+        ? Math.ceil(data.searchPage.length / data.sizePage)
+        : 0;
+    });
     data.length = computed(() =>
       data.searchPage ? data.searchPage.length : 0
     );
@@ -155,18 +146,14 @@ export default {
 
     const refresh = async () => {
       try {
-        const documentRoom = await roomService.getAll();
+        const documentRoom = await roomService.getAllRoom(route.query["_id"]);
         data.items = documentRoom.message;
-
-        // data.items = data.items.filter((item) => item.status == false);
-        data.items = data.items.filter((item) => {
-          return item.BoardingHouse._id == route.query["_id"];
-        });
         if (data.address != "") {
           data.items = data.items.filter((item) =>
             item.BoardingHouse.address.includes(data.address)
           );
         }
+
         data.max = data.items[0].price;
         data.min = data.items[0].price;
         for (let value of data.items) {
@@ -184,29 +171,7 @@ export default {
         data.items = data.items.filter(
           (item) => Number(item.price) <= data.price
         );
-        //   if (data.selectPrice != "") {
-        //     switch (data.selectPrice) {
-        //       case "under 1000": {
-        //         data.items = data.items.filter((item) => item.price < 1000000);
-        //         break;
-        //       }
-        //       case "from 1000 to 1500": {
-        //         data.items = data.items.filter(
-        //           (item) => item.price >= 1000000 && item.price <= 1500000
-        //         );
 
-        //         break;
-        //       }
-        //       case "under 1500": {
-        //         data.items = data.items.filter((item) => item.price > 1500000);
-
-        //         break;
-        //       }
-        //       default: {
-        //         console.log("không chọn");
-        //       }
-        //     }
-        //   }
         data.items = data.items.sort((a, b) => a.status - b.status);
       } catch (error) {
         if (error.response) {
@@ -318,7 +283,7 @@ export default {
           v-model="data.searchText"
           class="w-100 px-2"
           placeholder="tìm kiếm theo tên phòng trọ"
-          style="border: 1px solid #ccc; border-radius: 4px"
+          style="border: 1px solid #ccc; border-radius: 4px; height: 38px"
         />
       </div>
       <div class="input-group col-4 m-0">
@@ -372,7 +337,6 @@ export default {
         />
 
         <div class="card-body m-0 p-0">
-          <h6>Nhà trọ : {{ value.BoardingHouse.name }}</h6>
           <p class="card-text">Phòng {{ value.name }}</p>
           <p class="card-text">
             Diện tích: {{ value.long }} x {{ value.wide }} m²

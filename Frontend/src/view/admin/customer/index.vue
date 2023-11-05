@@ -123,7 +123,6 @@ export default {
       () => data.boardingActice,
       async (newValue, oldValue) => {
         if (newValue == "") return;
-        console.log("boardingActive:", data.boardingActice);
         await refresh();
         if (data.choose != "") {
           data.item = data.item.filter((item) =>

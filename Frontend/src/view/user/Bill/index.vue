@@ -382,10 +382,10 @@ export default {
           </tr>
         </tbody>
       </table>
-      <strong class="mx-2 text-center"
+      <!-- <strong class="mx-2 text-center"
         >Thành tiền bằng chữ:
         {{ numberToWords(data.item.Rooms[0].Bills[0].total) }}</strong
-      >
+      > -->
     </div>
     <div v-else class="text-center">Không có hóa đơn</div>
   </div>

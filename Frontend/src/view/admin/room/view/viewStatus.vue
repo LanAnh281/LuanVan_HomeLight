@@ -39,7 +39,6 @@ export default {
     };
     onMounted(async () => {
       //get all boarding house
-      console.log("PropsId:", props._id);
       const documentRoom = await roomService.get(props._id);
       data.room = documentRoom.message;
 

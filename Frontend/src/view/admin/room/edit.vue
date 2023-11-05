@@ -362,8 +362,6 @@ export default {
         data.checkedList = data.checkedList.map((item) => {
           return item._id;
         });
-        console.log("Ban đầu:", data.checkedList);
-        console.log(data.amenitie);
       } catch (error) {}
     };
     onMounted(async () => {

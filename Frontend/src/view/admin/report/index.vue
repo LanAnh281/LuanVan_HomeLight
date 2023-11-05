@@ -73,7 +73,7 @@ export default {
       let expense = 0;
       const documentSpending = await spendingService.getAll();
       const spending = documentSpending.message.filter((item) => {
-        let date = new Date(item.updatedAt);
+        let date = new Date(item.date);
         if (
           // date >= data.start &&
           // date <= data.end &&

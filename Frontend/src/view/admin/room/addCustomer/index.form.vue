@@ -42,7 +42,6 @@ export default {
       // location.reload();
     };
     onMounted(async () => {
-      console.log("PropsId room:", props._id);
       data.active = "customer";
       $("#addCustomerModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#addCustomerModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal

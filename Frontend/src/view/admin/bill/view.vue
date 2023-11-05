@@ -342,10 +342,10 @@ export default {
                     </tr>
                   </tbody>
                 </table>
-                <strong class="mx-2 text-center"
+                <!-- <strong class="mx-2 text-center"
                   >Thành tiền bằng chữ:
                   {{ numberToWords(data.item.total) }}</strong
-                >
+                > -->
               </div>
             </div>
             <div class="col-sm-9" v-else>

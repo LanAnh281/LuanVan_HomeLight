@@ -169,17 +169,17 @@ export default {
       </div>
       <div class="col-4 p-0 m-0">
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Tên phòng :</p>
+          <p class="col-3 m-0 p-0">Tên phòng :</p>
           <p class="col-6 p-0 m-0">{{ data.item.Rooms[0].name }}</p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Diện tích :</p>
+          <p class="col-3 m-0 p-0">Diện tích:</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].long }} x {{ data.item.Rooms[0].wide }} m²
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Đơn giá :</p>
+          <p class="col-3 m-0 p-0">Đơn giá :</p>
           <p class="col-6 p-0 m-0">
             {{ formatCurrency(data.item.Rooms[0].price) }}
           </p>
@@ -199,7 +199,7 @@ export default {
       <div class="col-6">
         <form @submit.prevent="save" class="col m-0 p-0 ml-2">
           <div class="form-group row">
-            <label for="inputroom" class="col-sm-1 m-0 col-form-label p-0"
+            <label for="inputroom" class="col-sm-2 m-0 col-form-label p-0"
               >Vấn đề :</label
             >
             <div class="col-sm-10">
@@ -221,26 +221,26 @@ export default {
       </div>
       <div class="col-4 m-0 ml-2 p-0">
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Tên chủ trọ :</p>
+          <p class="col-3 m-0 p-0">Tên chủ trọ :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.userName }}
           </p>
         </div>
 
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Điện thoại :</p>
+          <p class="col-3 m-0 p-0">Điện thoại :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.phone }}
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Email :</p>
+          <p class="col-3 m-0 p-0">Email :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.email }}
           </p>
         </div>
         <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Địa chỉ :</p>
+          <p class="col-3 m-0 p-0">Địa chỉ :</p>
           <p class="col-6 p-0 m-0">
             {{ data.item.Rooms[0].BoardingHouse.User.address }}
           </p>

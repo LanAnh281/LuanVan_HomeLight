@@ -42,7 +42,7 @@ export default {
       //lấy thông tin phòng hiện tại
       const documentRoom = await roomService.get(props._id);
       data.item = documentRoom.message;
-      console.log(data.item);
+
       if (data.item.Amenities.length == 0) {
         data.item.Amenities[0] = { name: "Chưa thên tiện nghi" };
       }

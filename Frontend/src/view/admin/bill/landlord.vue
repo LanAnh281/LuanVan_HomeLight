@@ -229,7 +229,7 @@ export default {
             :disabled="data.item[0].isPaied"
             @click="handlePay"
           >
-            {{ data.item[0].isPaied ? "Đã thanh toán" : "Thanh toán" }}
+            {{ data.item[0].isPaied ? "Đã thanh toán" : "Thanh toán PayPal" }}
           </button>
         </div>
         <div class="col-12 text-center m-0 p-0">
@@ -272,9 +272,9 @@ export default {
             </tr>
           </tbody>
         </table>
-        <strong class="mx-2 text-center"
+        <!-- <strong class="mx-2 text-center"
           >Thành tiền bằng chữ: {{ numberToWords(data.item[0].total) }}</strong
-        >
+        > -->
       </div>
 
       <div

@@ -276,7 +276,6 @@ export default {
 
         if (!data.flag) {
           for (let index = data.item.from; index <= data.item.to; index++) {
-            console.log(index, data.uploadFiles.length);
             data.item["countFiles"] = data.uploadFiles.length;
 
             const formData = new FormData();
