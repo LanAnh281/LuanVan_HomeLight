@@ -49,15 +49,13 @@ export default {
         chartSeriesProfit.data = [{}];
         // thu
         let documentReceipt = await receiptService.getAll();
-        console.log(documentReceipt.message);
         documentReceipt = documentReceipt.message.filter((item) => {
-          const date = new Date(item.updatedAt);
+          const date = new Date(item.createdAt);
           if (item.billUserId) {
             if (
               data.selectDate.getMonth() + 1 == date.getMonth() + 1 &&
               data.selectDate.getFullYear() == date.getFullYear()
             ) {
-              console.log(item, data.profit.receipt);
               data.profit.receipt =
                 Number(data.profit.receipt) + Number(item.receive);
             }
@@ -67,7 +65,6 @@ export default {
             );
           }
         });
-        console.log(data.profit.receipt);
         chartSeriesProfit.data[0] = {
           name: "Thu (đ)",
           data: [data.profit.receipt],

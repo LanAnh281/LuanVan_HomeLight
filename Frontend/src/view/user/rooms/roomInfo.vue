@@ -1,5 +1,5 @@
 <script>
-import { ref, reactive, onMounted } from "vue";
+import { reactive, onMounted } from "vue";
 import socket from "../../../socket";
 import { useRoute, useRouter } from "vue-router";
 

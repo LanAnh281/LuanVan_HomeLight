@@ -1,12 +1,5 @@
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import VueApexCharts from "vue3-apexcharts";
 
@@ -27,7 +20,6 @@ export default {
   components: { apexchart: VueApexCharts, Select, Box },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       boarding: [],
       selectBoarding: "",

@@ -1,5 +1,5 @@
 <script>
-import { reactive, ref, onMounted, watch, computed } from "vue";
+import { reactive, onMounted, watch, computed } from "vue";
 import Swal from "sweetalert2";
 
 //service
@@ -10,12 +10,7 @@ import userRoomService from "../../../service/user_room.service";
 import UtilityReadingsService from "../../../service/UtilityReadings.service";
 import billService from "../../../service/bill.service";
 //asset  js
-import {
-  successAd,
-  success,
-  deleted,
-  warning,
-} from "../../../assets/js/common.alert";
+import { success, deleted, warning } from "../../../assets/js/common.alert";
 //component
 import Edit from "./edit.vue";
 import userService from "../../../service/user.service";
@@ -108,7 +103,6 @@ export default {
 
         // Gọi hàm showSweetAlert khi bạn muốn hiển thị SweetAlert
         const formValues = await showSweetAlert();
-        console.log(formValues);
         // trả phòng
         if (formValues) {
           // create chỉ số điện nước

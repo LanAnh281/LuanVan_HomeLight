@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, computed, watch } from "vue";
+import { reactive, onMounted, ref, computed } from "vue";
 import socket from "../../../socket";
 //service
 import userService from "../../../service/user.service";
@@ -14,7 +14,6 @@ import {
   checkStringAndNumber,
   sanitizeInput,
 } from "../../../assets/js/checkInput.common";
-import { successAd } from "../../../assets/js/common.alert";
 export default {
   components: { Select, Table, paginationVue },
   setup(props, { emit }) {
@@ -27,7 +26,7 @@ export default {
       searchPage: [],
       searchText: "",
       currentPage: 0,
-      sizePage: 1,
+      sizePage: 5,
       length: 0,
       totalPage: 0,
 
@@ -79,7 +78,6 @@ export default {
             checked: false,
           };
         });
-        console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -96,7 +94,6 @@ export default {
         data.checkedList = data.item.filter((item) => {
           return item.checked == true;
         });
-        console.log("ds checked:", data.checkedList);
         for (let key in data.item) {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin";
@@ -110,7 +107,6 @@ export default {
             content: data.item.content,
             date: new Date(),
           });
-          console.log(data.item);
           for (let value of data.checkedList) {
             const data = {
               NotificationId: documentNoti.message["_id"],

@@ -71,7 +71,6 @@ export default {
       }
     };
     onMounted(async () => {
-      console.log("userId:", props.userId);
       $("#messageModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#messageModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });

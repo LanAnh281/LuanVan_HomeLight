@@ -1,18 +1,9 @@
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeMount,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { reactive, onBeforeMount, onBeforeUnmount } from "vue";
+import { useRoute } from "vue-router";
 
 //service
 import billService from "../../../service/bill.service";
-import receiptService from "../../../service/receipt.service";
 import payService from "../../../service/pay.service";
 //component
 import Select from "../../../components/select/selectdependent.vue";
@@ -86,7 +77,6 @@ export default {
     };
     const handlePay = async () => {
       try {
-        // console.log("Thanh toán", data.item.Rooms[0].Bills[0].debt);
         const documentPay = await payService.create({
           boardingId: data.item.Rooms[0].boardingId,
           _id: data.item.Rooms[0].Bills[0]._id,
@@ -94,7 +84,6 @@ export default {
         });
         console.log(documentPay);
         // var url=await paypalService.taoTT(thanhtoan);
-        //  console.log(url)
         window.location = documentPay;
         // window.open(documentPay, '_blank');
       } catch (error) {

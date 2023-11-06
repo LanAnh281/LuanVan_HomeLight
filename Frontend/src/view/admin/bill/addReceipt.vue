@@ -16,7 +16,13 @@ export default {
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {
     const data = reactive({
-      item: { receive: "", Room: { name: "" }, billId: "", method: "tiền mặt" },
+      item: {
+        receive: "",
+        Room: { name: "" },
+        billId: "",
+        method: "tiền mặt",
+        content: "",
+      },
     });
     const isModalOpen = ref(false);
 
@@ -32,51 +38,30 @@ export default {
       try {
         data.item.debt = data.item.total - data.item.receive;
         data.item.billId = props._id;
-        // chưa trả ==0 đ
-        if (data.item["received"] == "0 ₫") {
-          const documentReceipt = await receiptService.create(data.item);
-          if (documentReceipt["status"] == "success") {
-            successAd("Thành công thanh toán");
-            const documentBill = await billService.update(props._id, {
-              debt: data.item.debt,
-            });
-          }
-        }
 
-        // đã trả
-        else if (data.item["received"] != "0 ₫") {
-          //đã có thanh toàn trc đó
-          const receipt = data.item.Receipts[0]
-            ? data.item.Receipts[0].receive
-            : 0;
-          console.log(receipt, Number(data.item.receive) + Number(receipt));
-          const dataUpdate = {
-            receive: Number(data.item.receive) + Number(receipt),
+        const receipt = data.item.Receipts[0]
+          ? data.item.Receipts[0].receive
+          : 0;
+        const dataUpdate = {
+          receive: Number(data.item.receive) + Number(receipt),
+          debt:
+            Number(data.item.total) -
+            (Number(data.item.receive) + Number(receipt)),
+          method: "tiền mặt",
+          billId: props._id,
+          content: data.item.content,
+        };
+        const documentReceipt = await receiptService.update(
+          data.item.Receipts[0]._id,
+          dataUpdate
+        );
+        if (documentReceipt["status"] == "success") {
+          successAd("Thành công thanh toán");
+          const documentBill = await billService.update(props._id, {
             debt:
               Number(data.item.total) -
               (Number(data.item.receive) + Number(receipt)),
-            method: "tiền mặt",
-            billId: props._id,
-          };
-          const documentReceipt = await receiptService.update(
-            data.item.Receipts[0]._id,
-            dataUpdate
-          );
-          console.log(documentReceipt);
-          if (documentReceipt["status"] == "success") {
-            successAd("Thành công thanh toán");
-            const documentBill = await billService.update(props._id, {
-              debt:
-                Number(data.item.total) -
-                (Number(data.item.receive) + Number(receipt)),
-            });
-            console.log(
-              "Debt:",
-              Number(data.item.total) -
-                (Number(data.item.receive) + Number(receipt)),
-              documentBill
-            );
-          }
+          });
         }
 
         await refresh();
@@ -224,12 +209,21 @@ export default {
                   id="inputreceive"
                   v-model="data.item.receive"
                 />
-                <!-- <div v-if="data.error.name" class="invalid-error">
-                  {{ data.error.name }}
-                </div> -->
               </div>
             </div>
-
+            <div class="form-group row">
+              <label for="inputreceive" class="col-sm-3 col-form-label p-0"
+                >Người thanh toán:</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="inputreceive"
+                  v-model="data.item.content"
+                />
+              </div>
+            </div>
             <div class="form-group row justify-content-around mb-0">
               <button type="submit" class="btn btn-login col-sm-3">
                 Xác nhận

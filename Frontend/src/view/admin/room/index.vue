@@ -1,13 +1,6 @@
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
@@ -15,12 +8,7 @@ import roomService from "../../../service/room.service";
 
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
-import {
-  successAd,
-  deleted,
-  success,
-  warning,
-} from "../../../assets/js/common.alert";
+import { successAd, deleted, warning } from "../../../assets/js/common.alert";
 
 //components
 import Select from "../../../components/select/select.vue";
@@ -115,9 +103,6 @@ export default {
       );
       data.isStatus = data.isStatus[0];
     };
-    const handlefee = (value) => {
-      console.log("Status:", value);
-    };
 
     const refreshBoarding = async () => {
       const document = await boardinghouseService.getAllUser();
@@ -144,7 +129,6 @@ export default {
     };
     const handleDeleteClick = async (id, name) => {
       try {
-        console.log(data.items);
         data.flag = false;
         for (let value of data.items) {
           if (value.status == true) {
@@ -250,7 +234,6 @@ export default {
       refreshBoarding,
 
       handleStatus,
-      handlefee,
       handleDeleteClick,
       handleEditBoardingClick,
       handleEdit,

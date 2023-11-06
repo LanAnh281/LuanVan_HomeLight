@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, onBeforeMount } from "vue";
+import { reactive, onBeforeMount } from "vue";
 // services
 import bill_userService from "../../../service/bill_user.service";
 import payService from "../../../service/pay.service";

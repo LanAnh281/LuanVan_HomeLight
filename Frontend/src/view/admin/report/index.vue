@@ -131,7 +131,6 @@ export default {
             name: "Tổng",
           };
         } else {
-          // console.log("Tất cả");
           for (let value of data.boarding) {
             if (value._id == "all") continue;
             const receipt = await handleReceipt(value._id);

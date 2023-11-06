@@ -296,7 +296,6 @@ export default {
             data.flag = true;
           } else if (key == "city" || key == "district" || key == "ward") {
             if (data.item[key].name == "") {
-              console.log(key, ":", data.item[key].name);
               data.error[key] = "Chưa nhập thông tin.";
               data.flag = true;
             }
@@ -325,7 +324,6 @@ export default {
             refresh();
             emit("add");
           } else {
-            console.log("Thất bại");
             warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
           }
         }

@@ -1,9 +1,8 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount, computed } from "vue";
+import { reactive, onMounted, ref, computed } from "vue";
 import _ from "lodash";
 
 //service
-import notificationService from "../../../service/notification.service";
 import user_notificationService from "../../../service/user_notification.service";
 //component
 import Table from "../../../components/table/table.vue";

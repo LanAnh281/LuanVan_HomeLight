@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //component
@@ -32,12 +32,10 @@ export default {
       emit("closeModal");
     };
     const add = () => {
-      console.log("add");
       data.item.push({ name: "", price: "", unit: "" });
     };
     const remove = () => {
       data.item.pop();
-      console.log("remove");
     };
     const handleDelete = (value) => {
       data.item = data.item.filter((item, index) => index != value);

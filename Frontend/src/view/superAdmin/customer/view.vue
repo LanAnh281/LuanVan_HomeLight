@@ -187,7 +187,6 @@ export default {
           `https://provinces.open-api.vn/api/?depth=1`,
           {}
         );
-        // console.log("PropsId:", props._id, props.dataProp);
         data.boarding = props.dataProp.BoardingHouses;
         let total = 0;
         data.boarding = data.boarding.map((item) => {
@@ -198,7 +197,6 @@ export default {
           };
         });
         props.dataProp.totalRooms = total;
-        console.log(props.dataProp);
       } catch (error) {
         console.log(error);
       }

@@ -62,7 +62,7 @@ export default {
     watch(
       () => data.active,
       (newValue, oldValue) => {
-        console.log(newValue, oldValue);
+        // console.log(newValue, oldValue);
         // socket.emit("message", "abc");
       }
     );
@@ -88,12 +88,10 @@ export default {
     };
     const handleDelete = async (value) => {
       try {
-        console.log("xóa thông báo", value);
         const documentUserNoti = await user_notificationService.update(value, {
           isRead: true,
           isDelete: true,
         });
-        console.log(documentUserNoti);
         await refresh();
       } catch (error) {
         if (error.response) {

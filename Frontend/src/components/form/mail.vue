@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, onMounted, ref } from "vue";
 
 //service
 import mailService from "../../service/mail.service";
@@ -35,7 +35,6 @@ export default {
             data.flag = true;
           }
         }
-        console.log(data.flag);
         if (!data.flag) {
           data.item.btnSubmit = "Đang gửi...";
           for (let index in props.checkedList) {
@@ -59,8 +58,6 @@ export default {
       }
     };
     onMounted(async () => {
-      console.log("PropsId:", props.checkedList);
-
       $("#mailModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#mailModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });

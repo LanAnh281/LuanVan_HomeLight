@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount, computed } from "vue";
+import { reactive, ref, onBeforeMount, computed } from "vue";
 import _ from "lodash";
 
 //service

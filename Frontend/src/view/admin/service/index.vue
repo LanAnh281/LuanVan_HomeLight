@@ -1,6 +1,6 @@
 <script>
-import { ref, reactive, onMounted, watch, computed, onBeforeMount } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, reactive, computed, onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
 //service
 import serviceService from "../../../service/service.service";
 //js
@@ -59,7 +59,6 @@ export default {
       try {
         const removeList = data.item.filter((item) => item.checked == true);
         removeList.forEach(async (value) => {
-          console.log(value);
           //API xóa
         });
         await refresh();

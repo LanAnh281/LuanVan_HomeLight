@@ -31,7 +31,6 @@ export default {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
-            console.log(key);
           }
         }
         if (!data.flag) {

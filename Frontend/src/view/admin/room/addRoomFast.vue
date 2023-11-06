@@ -1,9 +1,8 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
-import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
 import amenitieService from "../../../service/amenitie.service";
 
@@ -15,7 +14,6 @@ import {
   checkAddress,
   checkNumber,
 } from "../../../assets/js/checkInput.common";
-import { successAd, warning } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
   props: { boarding: { type: Array, default: [] } },
@@ -268,7 +266,6 @@ export default {
       try {
         for (const key in data.error) {
           if (data.item[key] == "" && key != "name") {
-            console.log(key, ":", data.item[key]);
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
           }
@@ -303,9 +300,7 @@ export default {
             // _.forEach(data.checkList, (check) => {
             //   formData.append("amenitie", check);
             // });
-            // console.log(data.item);
             const documentRoom = await roomService.create(formData);
-            // console.log(documentRoom);
             for (let value of data.checkList) {
               const documentAmenitie =
                 await amenitieService.createAmenitiesRoom(
@@ -334,7 +329,6 @@ export default {
       try {
         // chia gioa diện thành 3 phần 1. thông tin cơ bản, 2 . tiện ích mô tả, 3. hin a hr
         if (event.target.checked == true && event.target.value == "other") {
-          console.log("khác");
           data.addAmenitie.push({ name: "" });
           return;
         }
@@ -350,7 +344,6 @@ export default {
     };
     const handleAddAmenitie = async (value) => {
       try {
-        console.log("Thêm tiện ích", value);
         const document = await amenitieService.create({
           name: value,
         });

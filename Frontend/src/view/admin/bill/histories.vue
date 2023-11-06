@@ -58,10 +58,12 @@ export default {
           (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
         );
         data.item = data.item.map((item) => {
+          const content = item.content.split(" - ");
           return {
             ...item,
             createdAt: formatDateTime(item.updatedAt),
             receive: formatCurrency(item.receive),
+            reason: content[0],
           };
         });
       } catch (error) {
@@ -193,11 +195,15 @@ export default {
         />
       </div>
     </div>
-    <h5 class="text-center title mb-3">Lịch sử thanh toán</h5>
+    <h5 class="text-center title mb-3">
+      Lịch sử thanh toán tháng {{ data.selectDate.getMonth() + 1 }}/{{
+        data.selectDate.getFullYear()
+      }}
+    </h5>
     <Table
       :data="data.setPage"
-      :fields="['Mã phiếu thu', 'Ngày thanh toán', 'Số tiền']"
-      :titles="['_id', 'createdAt', 'receive']"
+      :fields="['Mã phiếu thu', 'Lý do', 'Ngày thanh toán', 'Số tiền']"
+      :titles="['_id', 'reason', 'createdAt', 'receive']"
       :currentPage="data.currentPage"
       :sizePage="data.sizePage"
       :action="false"

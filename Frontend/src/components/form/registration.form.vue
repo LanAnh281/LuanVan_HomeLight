@@ -1,6 +1,6 @@
 <script>
 import { reactive, ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import _ from "lodash";
 //service
@@ -12,7 +12,7 @@ import {
   checkPhone,
   checkMail,
 } from "../../assets/js/checkInput.common";
-import { success, warning, load } from "../../assets/js/common.alert";
+import { success, warning } from "../../assets/js/common.alert";
 import { city, district, ward } from "../../assets/js/dependent.common";
 //componment
 import Select from "../../components/select/selectdependent.vue";
@@ -126,7 +126,6 @@ export default {
     };
     const save = async () => {
       try {
-        // console.log(data.item);
         for (const key in data.error) {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";

@@ -1,7 +1,6 @@
 <script>
 import { reactive, onMounted, ref } from "vue";
 //service
-import boardinghouseService from "../../../service/boardinghouse.service";
 //component
 import Select from "../../../components/select/selectdependent.vue";
 
@@ -10,7 +9,6 @@ import {
   checkStringAndNumber,
   checkAddress,
 } from "../../../assets/js/checkInput.common";
-import { successAd } from "../../../assets/js/common.alert";
 export default {
   components: { Select },
   setup(props, { emit }) {
@@ -38,18 +36,14 @@ export default {
       data.flag = true;
     };
     const save = async () => {
-      console.log("save");
       try {
         for (const key of data.error) {
-          console.log("key", data.item[key]);
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
           }
         }
-        console.log("data.flag:", data.flag);
         if (!data.flag) {
-          console.log("Data.item:", data.item);
           refresh();
           emit("submit");
         }

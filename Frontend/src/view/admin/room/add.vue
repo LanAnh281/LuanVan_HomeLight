@@ -1,9 +1,8 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 import Swal from "sweetalert2";
 //service
-import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
 import amenitieService from "../../../service/amenitie.service";
 // import amenitieRoomService from "../../../service/amenitie_room.services";
@@ -340,7 +339,6 @@ export default {
       try {
         // chia gioa diện thành 3 phần 1. thông tin cơ bản, 2 . tiện ích mô tả, 3. hin a hr
         if (event.target.checked == true && event.target.value == "other") {
-          console.log("khác");
           data.addAmenitie.push({ name: "" });
           return;
         }
@@ -356,7 +354,6 @@ export default {
     };
     const handleAddAmenitie = async (value) => {
       try {
-        console.log("Thêm tiện ích", value);
         const document = await amenitieService.create({
           name: value,
         });

@@ -81,7 +81,6 @@ export default {
         }
       });
       // trả về sẽ là hóa đơn có phiếu thu
-      console.log("Những hóa đơn đang lọc và có phiếu thu", profit);
       return profit;
     };
     const refresh = async () => {
@@ -92,18 +91,11 @@ export default {
         const documentReceipt = await reportService.getAll();
 
         data.item = documentReceipt.message;
-        console.log(
-          "DS người dùng kèm theo ds hóa đơn và phiếu thu của chủ trọ:",
-          data.item
-        );
         // lọc danh sách người dùng
         let i = 0;
         for (let value of data.item) {
-          console.log(value.Bill_Users);
           const profit = await handleProfit(value.Bill_Users);
           if (profit.length == 1) {
-            console.log("Lợi nhuận:", profit[0], profit.length);
-
             data.item[i].profit = profit[0].Receipt.receive;
           }
           i++;
@@ -113,11 +105,7 @@ export default {
           if (item.profit) total = total + Number(item.profit);
           return item.profit;
         });
-        console.log(data.item);
-        // data.item[0] = {
-        //   receipt: total,
-        //   name: "a",
-        // };
+
         data.item[data.item.length] = {
           profit: total,
           userName: "Tổng",
@@ -149,7 +137,6 @@ export default {
     // };
     const handleDate = async (value) => {
       data.selectDate = new Date(value.target.value);
-      console.log(data.selectDate);
       await refresh();
     };
     onMounted(async () => {

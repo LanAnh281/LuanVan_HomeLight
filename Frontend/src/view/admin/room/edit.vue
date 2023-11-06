@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, onMounted, ref } from "vue";
 import _ from "lodash";
 
 //service
@@ -185,7 +185,6 @@ export default {
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
-            console.log("key:", key);
           }
         }
 
@@ -225,10 +224,8 @@ export default {
           data.removeList = data.checkedList.filter(
             (item) => !data.checkList.includes(item)
           );
-          console.log("remove list:", data.removeList);
 
           const documentRemove = await amenitieService.delete(props._id);
-          console.log(documentRemove);
 
           for (let value of data.checkList) {
             const documentCreate = await amenitieService.createAmenitiesRoom(
@@ -237,7 +234,6 @@ export default {
                 AmenityId: value,
               }
             );
-            console.log(documentCreate);
           }
           // _.forEach(data.removeList, (value) => {
           //   formData.append("removeAmenitie", value);
@@ -251,7 +247,6 @@ export default {
           //   formData.append("amenitie", check);
           // });
           const documentRoom = await roomService.update(props._id, formData);
-          console.log(documentRoom);
           if (documentRoom["status"] == "success") {
             successAd(`Đã chỉnh sửa phòng trọ `);
             emit("edit");
@@ -286,7 +281,6 @@ export default {
       try {
         // chia gioa diện thành 3 phần 1. thông tin cơ bản, 2 . tiện ích mô tả, 3. hin a hr
         if (event.target.checked == true && event.target.value == "other") {
-          console.log("khác");
           data.addAmenitie.push({ name: "" });
           return;
         }
@@ -302,7 +296,6 @@ export default {
     };
     const handleAddAmenitie = async (value) => {
       try {
-        console.log("Thêm tiện ích", value);
         const document = await amenitieService.create({
           name: value,
         });

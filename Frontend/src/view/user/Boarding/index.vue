@@ -2,13 +2,12 @@
 import {
   ref,
   reactive,
-  onMounted,
   onBeforeMount,
   onBeforeUnmount,
   computed,
   watch,
 } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import axios from "axios";
 
 //service
@@ -138,13 +137,6 @@ export default {
       }
     };
 
-    watch(
-      () => data.selectPrice,
-      async (newValue, oldValue) => {
-        await refresh();
-      }
-    );
-
     const refresh = async () => {
       try {
         const documentBoarding = await boardinghouseService.getAll();
@@ -154,29 +146,6 @@ export default {
           data.items = data.items.filter((item) =>
             item.address.includes(data.address)
           );
-        }
-        if (data.selectPrice != "") {
-          switch (data.selectPrice) {
-            case "under 1000": {
-              data.items = data.items.filter((item) => item.price < 1000000);
-              break;
-            }
-            case "from 1000 to 1500": {
-              data.items = data.items.filter(
-                (item) => item.price >= 1000000 && item.price <= 1500000
-              );
-
-              break;
-            }
-            case "under 1500": {
-              data.items = data.items.filter((item) => item.price > 1500000);
-
-              break;
-            }
-            default: {
-              console.log("không chọn");
-            }
-          }
         }
       } catch (error) {
         if (error.response) {
@@ -211,7 +180,6 @@ export default {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
     const first = () => {
-      console.log("first");
       const scrollToTopButton = document.getElementById("scrollToTopButton");
 
       window.onscroll = () => {

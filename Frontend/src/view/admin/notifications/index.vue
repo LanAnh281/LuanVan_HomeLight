@@ -1,6 +1,5 @@
 <script>
-import { ref, onMounted, reactive, watch, computed } from "vue";
-import socket from "../../../socket";
+import { ref, onMounted, reactive, computed } from "vue";
 
 //service
 import NotificationService from "../../../service/notification.service";

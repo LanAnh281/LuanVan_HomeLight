@@ -84,8 +84,13 @@ export default {
         emit("add");
         successAd("Đã áp dụng các quyền");
       } catch (error) {
-        console.error(">>Error:", error);
-        warning("Thất bại", "");
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
       }
     };
     const refresh = async () => {

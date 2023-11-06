@@ -3,15 +3,13 @@ import { reactive, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 //js
 import { success, warning } from "../../assets/js/common.alert";
-import { checkMail, sanitizeInput } from "../../assets/js/checkInput.common";
+import { sanitizeInput } from "../../assets/js/checkInput.common";
 
 //service
 import accountService from "../../service/account.service";
 export default {
   components: {},
   setup() {
-    const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       item: { passwordOld: "", password: "", confirmPassword: "" },
       error: { passwordOld: "", password: "", confirmPassword: "" },
@@ -25,7 +23,6 @@ export default {
       data.item = { passwordOld: "", password: "", confirmPassword: "" };
       data.error = { passwordOld: "", password: "", confirmPassword: "" };
       data.position = localStorage.getItem("position");
-      console.log(data.position);
     };
     const changePassword = async () => {
       try {

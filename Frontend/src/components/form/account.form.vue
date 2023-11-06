@@ -5,7 +5,7 @@ import accountService from "../../service/account.service";
 import positionService from "../../service/position.service";
 //js
 import { checkMail } from "../../assets/js/checkInput.common";
-import { successAd, warning, load } from "../../assets/js/common.alert";
+import { successAd, warning } from "../../assets/js/common.alert";
 export default {
   components: {},
   setup(props, { emit }) {
@@ -41,10 +41,13 @@ export default {
           }
         }
       } catch (error) {
-        if (error) {
-          warning("Thất bại", "Bạn không có quyền.");
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
         }
-        console.log(error);
       }
     };
     onMounted(async () => {

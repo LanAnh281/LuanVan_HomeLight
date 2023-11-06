@@ -7,7 +7,7 @@ import {
   onMounted,
   onBeforeUnmount,
 } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 //service
 import roleService from "../../../service/role.service";
 import positionService from "../../../service/position.service";

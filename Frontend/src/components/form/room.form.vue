@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, watch, onBeforeMount } from "vue";
+import { reactive, ref, watch, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
@@ -161,17 +161,13 @@ export default {
       "countFiles",
     ];
     const save = async () => {
-      console.log("save");
       try {
         for (const key in data.error) {
-          console.log("key", key, data.item[key]);
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin.";
             data.flag = true;
-            console.log("1", key);
           }
         }
-        console.log("data.flag:", data.flag);
         if (!data.flag) {
           data.item["countFiles"] = data.uploadFiles.length;
 
@@ -185,41 +181,34 @@ export default {
             }
           });
 
-          console.log("data.otems:", formData);
           const document = await roomService.create(formData);
 
-          console.log("doc", document);
           if (document["status"] == "success") {
             successAd(`Đã thêm phòng trọ ${document.message["name"]}`);
             refresh();
             emit("add");
           } else {
-            console.log("Thất bại");
             warning("Thất bại", "Bạn không có quyền thêm phòng trọ.");
           }
         }
       } catch (error) {
-        if (error) {
-          warning("Thất bại", "Bạn không có quyền thêm nhà trọ.");
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
         }
-        console.log(error);
       }
     };
-    watch(
-      (props.isUpdate,
-      (newValue, oldValue) => {
-        console.log("isUp:", newValue);
-      })
-    );
+    watch((props.isUpdate, (newValue, oldValue) => {}));
     onBeforeMount(async () => {
-      console.log("1");
       const documentBoarding = await boardinghouseService.getAll();
       data.boarding = documentBoarding.message;
       if (props.isUpdate) {
         const documentRoom = await roomService.get(props.id);
         data.item = documentRoom.message;
       }
-      console.log("data.itemt room:", data.item, props.id, props.isUpdate);
       filesRef.value = document.getElementById("inputImage"); //Get input
 
       $("#roomModal").on("show.bs.modal", openModal); //lắng nghe mở modal

@@ -1,17 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 
 const routes = [
-  //test params
-  {
-    path: "/test",
-    name: "test",
-    component: () => import("../view/user/test.vue"),
-  },
-  {
-    path: "/testParams/:_id",
-    name: "testParams",
-    component: () => import("../view/user/testParams.vue"),
-  },
   //
   {
     path: "/simple",

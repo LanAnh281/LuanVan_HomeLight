@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, ref, onBeforeMount } from "vue";
 import axios from "axios";
 import _ from "lodash";
 
@@ -160,7 +160,6 @@ export default {
         data.media = data.item.Media;
         data.mediasCopy = data.media;
         data.removeMedia = []; // init remove medias list
-        // console.log(data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -175,19 +174,15 @@ export default {
       try {
         data.item.address = `${data.item.number} - ${data.item.ward.name} - ${data.item.district.name} - ${data.item.city.name}`;
         data.item.countFiles = data.uploadFiles.length;
-        console.log(data.uploadFiles.length);
         const formData = new FormData();
         _.forEach(formFields, (field) => {
-          console.log(field, ":", data.item[field]);
           formData.append(field, data.item[field]);
         });
         _.forEach(data.removeMedia, (media) => {
-          console.log(media);
           if (media != "") {
             formData.append("removeMedia", media);
           }
         });
-        console.log("remove Media:", data.removeMedia);
         formData.append("removeMedia", data.removeMedia);
         _.forEach(data.uploadFiles, (file) => {
           if (validate(file) === "") {
@@ -211,7 +206,6 @@ export default {
           filesRef.value.value = "";
           data.removeMedia = [];
         } else {
-          console.log("Thất bại");
           warning("Thất bại", "Bạn không có quyền chỉnh sửa nhà trọ.");
         }
       } catch (error) {
@@ -226,7 +220,6 @@ export default {
     };
     const handleDeleteMedia = (value) => {
       try {
-        console.log("xóa ảnh nhà trọ");
         data.mediasCopy = data.mediasCopy.filter(
           (item) => item["name"] != value
         );
@@ -253,7 +246,6 @@ export default {
             break;
           }
         }
-        // console.log(data.flag);
         if (data.flag) return;
         const isDelete = await deleted(
           `Xóa nhà trọ ${data.item.name}`,

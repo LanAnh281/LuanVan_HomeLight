@@ -2,7 +2,6 @@
 import { onMounted, reactive, ref } from "vue";
 import registration from "../../../components/form/registration.form.vue";
 import systemService from "../../../service/system.service";
-import serviceService from "../../../service/service.service";
 //js
 import { formatCurrency } from "../../../assets/js/format.common";
 export default {

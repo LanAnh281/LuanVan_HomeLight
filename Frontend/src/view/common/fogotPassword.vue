@@ -1,6 +1,6 @@
 <script>
 import { reactive } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 //alert
 import { warning, success, load } from "../../assets/js/common.alert";

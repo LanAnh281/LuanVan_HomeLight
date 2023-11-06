@@ -12,8 +12,6 @@ import { useRoute, useRouter } from "vue-router";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import billService from "../../../service/bill.service";
-import roomService from "../../../service/room.service";
-import utilityReadingsService from "../../../service/UtilityReadings.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import { formatCurrency } from "../../../assets/js/format.common";
@@ -27,7 +25,6 @@ export default {
   components: { Select, Table, Pagination, Payment, View },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       item: [], //list
       totalPage: 0,
@@ -75,7 +72,6 @@ export default {
     });
     data.length = computed(() => data.searchPage.length);
     data.setPage = computed(() => {
-      // console.log(data.searchPage);
       return data.searchPage
         ? data.searchPage.slice(
             (data.currentPage - 1) * data.sizePage,
@@ -149,7 +145,6 @@ export default {
         if (oldValue == "") return;
         else if (newValue == "0") {
           data.boardingActice = oldValue;
-          console.log("new:", newValue);
           await refresh();
         } else {
           await refresh();

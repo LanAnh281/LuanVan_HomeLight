@@ -1,5 +1,5 @@
 <script>
-import { reactive, ref, onMounted, onBeforeMount, computed } from "vue";
+import { reactive, onMounted, computed } from "vue";
 import moment from "moment";
 //service
 import serviceService from "../../../../service/service.service";

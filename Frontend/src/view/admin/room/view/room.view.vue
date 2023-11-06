@@ -1,5 +1,5 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
@@ -9,7 +9,6 @@ import mediaService from "../../../../service/media.service";
 //js
 import { formatCurrency } from "../../../../assets/js/format.common";
 // view
-import room from "./room.view.vue";
 export default {
   props: { _id: { type: String, default: "" } },
   setup(props, { emit }) {

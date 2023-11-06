@@ -1,6 +1,6 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount, defineComponent } from "vue";
-import axios, { all } from "axios";
+import { reactive, onMounted, ref } from "vue";
+import axios from "axios";
 import moment from "moment";
 import _ from "lodash";
 //component
@@ -8,7 +8,6 @@ import Select from "../../../../components/select/selectdependent.vue";
 import SelectNormal from "../../../../components/select/select.vue";
 //service
 import userService from "../../../../service/user.service";
-import roomService from "../../../../service/room.service";
 //js
 import { city, district, ward } from "../../../../assets/js/dependent.common";
 import { load, successAd, warning } from "../../../../assets/js/common.alert";
@@ -298,14 +297,12 @@ export default {
         if (data.uploadFiles.length != 2) {
           data.error["image"] = "Chưa tải ảnh cccd.";
           data.flag = true;
-          console.log("key:image");
         }
         for (let key in data.error) {
           if (key == "sex") continue;
           if (data.item[key] == "") {
             data.error[key] = "Chưa nhập thông tin";
             data.flag = true;
-            console.log("key:", key, data.item[key]);
           }
         }
         if (!data.flag) {

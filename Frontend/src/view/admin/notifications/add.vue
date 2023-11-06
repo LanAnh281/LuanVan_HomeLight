@@ -14,7 +14,6 @@ import {
   checkStringAndNumber,
   sanitizeInput,
 } from "../../../assets/js/checkInput.common";
-import { successAd } from "../../../assets/js/common.alert";
 import boardinghouseService from "../../../service/boardinghouse.service";
 export default {
   components: { Select, Table, paginationVue },
@@ -77,7 +76,6 @@ export default {
     watch(
       () => data.selectedBoarding,
       async (newValue, oldValue) => {
-        console.log(newValue, ":", oldValue);
         await refresh();
         if (newValue == "all" || newValue == "''") return;
         data.users = data.users.filter((item) => item.boardingId == newValue);

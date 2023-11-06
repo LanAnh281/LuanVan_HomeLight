@@ -1,11 +1,8 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, onMounted, ref } from "vue";
 import _ from "lodash";
 
 //service
-import boardinghouseService from "../../../../service/boardinghouse.service";
-import roomService from "../../../../service/room.service";
-import mediaService from "../../../../service/media.service";
 //Form
 import addCustomerForm from "./addCustomer.form.vue";
 import addOldMemberForm from "./addOldMember.form.vue";
@@ -117,7 +114,6 @@ export default {
                   :_id="_id"
                   @changeStatus="
                     (value) => {
-                      console.log('>>Trang index.form', value);
                       $emit('changeStatus');
                     }
                   "

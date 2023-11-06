@@ -78,11 +78,11 @@ export default {
           active: "reportSuperAdmin",
         },
 
-        {
-          name: "Tài khoản",
-          icon: "manage_accounts",
-          active: "accountSuperAdmin",
-        },
+        // {
+        //   name: "Tài khoản",
+        //   icon: "manage_accounts",
+        //   active: "accountSuperAdmin",
+        // },
       ],
     });
     const logout = async () => {
@@ -96,7 +96,7 @@ export default {
       () => route.fullPath,
       (newPath, oldPath) => {
         data.active = newPath.substring(newPath.lastIndexOf("/") + 1);
-        console.log("Path:", data.active);
+        // console.log("Path:", data.active);
       }
     );
 

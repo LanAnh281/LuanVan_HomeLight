@@ -1,6 +1,6 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount, defineComponent } from "vue";
-import axios, { all } from "axios";
+import { reactive, onMounted, ref } from "vue";
+import axios from "axios";
 import _ from "lodash";
 //component
 import Select from "../../../components/select/selectdependent.vue";
@@ -296,7 +296,6 @@ export default {
           if (data.uploadFiles.length != 2) {
             data.error["image"] = "Chưa tải đủ ảnh cccd.";
             data.flag = true;
-            console.log("key:image");
           }
         } else if (data.removeList.length == 1) {
           if (data.uploadFiles.length != 1) {

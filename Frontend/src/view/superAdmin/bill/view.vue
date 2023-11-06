@@ -259,10 +259,10 @@ export default {
                 </tr>
               </tbody>
             </table>
-            <strong class="mx-2 text-center"
+            <!-- <strong class="mx-2 text-center"
               >Thành tiền bằng chữ:
               {{ numberToWords(data.item[0].total) }}</strong
-            >
+            > -->
           </div>
         </div>
       </div>

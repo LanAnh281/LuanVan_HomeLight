@@ -214,7 +214,6 @@ export default {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
     const first = () => {
-      console.log("first");
       const scrollToTopButton = document.getElementById("scrollToTopButton");
 
       window.onscroll = () => {

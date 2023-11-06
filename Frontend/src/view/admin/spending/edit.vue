@@ -54,7 +54,6 @@ export default {
     };
     const save = async () => {
       try {
-        console.log(data.item);
         const documentSpending = await spendingService.update(
           props._id,
           data.item

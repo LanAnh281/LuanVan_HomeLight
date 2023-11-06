@@ -1,14 +1,6 @@
 <script>
-import {
-  ref,
-  reactive,
-  watch,
-  computed,
-  onMounted,
-  onBeforeMount,
-  onBeforeUnmount,
-} from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, reactive, watch, computed, onBeforeMount } from "vue";
+import { useRoute } from "vue-router";
 import "leaflet/dist/leaflet.css"; // Import CSS của Leaflet
 import L from "leaflet";
 //service
@@ -20,7 +12,6 @@ import { formatCurrency } from "../../../assets/js/format.common";
 //component
 import paginationVue from "../../../components/pagination/pagination.vue";
 import Message from "./message.vue";
-import service_roomService from "../../../service/service_room.service";
 
 export default {
   components: { paginationVue, Message },
@@ -95,7 +86,6 @@ export default {
         data.services = data.services.filter((item) => {
           return item.userId == data.item.BoardingHouse.userId;
         });
-        console.log(data.services);
         //gg map
         data.item.url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyCqNLriKAssr6bSDriqJg2YdfwqdBAYy30&q=${data.item.BoardingHouse.address}`;
         // //Map
@@ -146,7 +136,7 @@ export default {
     watch(
       () => route.fullPath,
       async (newValue, oldValue) => {
-        console.log("path:", newValue);
+        // console.log("path:", newValue);
         await refresh();
       }
     );
@@ -155,7 +145,6 @@ export default {
     };
     onBeforeMount(async () => {
       await refresh();
-      console.log(data.item);
     });
 
     return {

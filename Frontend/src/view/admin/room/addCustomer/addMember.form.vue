@@ -1,6 +1,5 @@
 <script>
-import { reactive, ref, onMounted, onBeforeMount, computed } from "vue";
-import Swal from "sweetalert2";
+import { reactive, ref, onMounted, computed } from "vue";
 
 //service
 import userRoomService from "../../../../service/user_room.service";

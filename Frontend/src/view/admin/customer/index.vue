@@ -1,12 +1,5 @@
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
+import { reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import axios from "axios";
 
 import { useRoute, useRouter } from "vue-router";
@@ -18,12 +11,7 @@ import boardinghouseService from "../../../service/boardinghouse.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import { city, district, ward } from "../../../assets/js/dependent.common";
-import {
-  deleted,
-  success,
-  successAd,
-  warning,
-} from "../../../assets/js/common.alert";
+import { deleted, success, warning } from "../../../assets/js/common.alert";
 //component
 import paginationVue from "../../../components/pagination/pagination.vue";
 import Table from "../../../components/table/tableChecked.table.vue";
@@ -36,7 +24,6 @@ export default {
   components: { paginationVue, Table, Select, SelectNormal, View, Edit, Mail },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       item: [{ userName: "" }], //list
       setPage: [],
@@ -263,10 +250,8 @@ export default {
       }
     };
     const handleInfo = (value) => {
-      console.log("info:", value);
       data.isInfoUserModal = !data.isInfoUserModal;
       data.user = value;
-      console.log(data.user);
     };
     const sendMail = async () => {
       try {
@@ -435,7 +420,6 @@ export default {
       :sizePage="data.sizePage"
       @visibility="
         (value) => {
-          console.log(value);
           handleInfo(value);
         }
       "

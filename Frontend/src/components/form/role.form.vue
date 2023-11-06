@@ -35,7 +35,6 @@ export default {
       data.flag = true;
     };
     const add = () => {
-      console.log("add");
       data.item.push({ name: "" });
       data.error.push({ name: "" });
     };
@@ -61,10 +60,13 @@ export default {
           emit("add");
         }
       } catch (error) {
-        if (error) {
-          warning("Thất bại", "Bạn không có quyền.");
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
         }
-        console.log(error);
       }
     };
     onMounted(async () => {
