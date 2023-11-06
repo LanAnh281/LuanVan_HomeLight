@@ -51,7 +51,7 @@ export default {
       totalPage: 0,
       currentPage: 1,
       length: 0,
-      sizePage: 6,
+      sizePage: 10,
     });
     let intervalId = null;
     const isMessage = ref(false);
@@ -80,7 +80,7 @@ export default {
 
         const documentRooms = await roomService.getAll();
         room.items = documentRooms.message;
-        room.items = room.items.filter((item) => item.status == false);
+        // room.items = room.items.filter((item) => item.status == false);
         if (room.address != "") {
           room.items = room.items.filter((item) => {
             return (
@@ -389,6 +389,12 @@ export default {
         :key="index"
       >
         <img
+          v-if="value.status == true"
+          src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
+          alt="ảnh sold out"
+          style="position: absolute; z-index: 1; margin-left: 72%; width: 25%"
+        />
+        <img
           class="card-img-top"
           :src="
             value.Media.length > 0
@@ -435,7 +441,7 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 280vh;
+  height: 300vh;
 }
 .address:hover {
   text-decoration: underline;

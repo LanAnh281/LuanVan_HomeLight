@@ -1,6 +1,18 @@
 import { createWebHistory, createRouter } from "vue-router";
 
 const routes = [
+  //test params
+  {
+    path: "/test",
+    name: "test",
+    component: () => import("../view/user/test.vue"),
+  },
+  {
+    path: "/testParams/:_id",
+    name: "testParams",
+    component: () => import("../view/user/testParams.vue"),
+  },
+  //
   {
     path: "/simple",
     name: "simple",
@@ -173,18 +185,35 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
-// router.beforeEach((to, from, next) => {
-//   // Đây là nơi bạn thực hiện kiểm tra người dùng
-//   // Ví dụ: kiểm tra xác thực, vai trò, quyền truy cập, ...
-//   try {
-//     if (nguoiDungDaXacThuc) {
-//       // Nếu người dùng đã xác thực, cho phép truy cập
-//       next();
-//     } else {
-//       // Nếu người dùng chưa xác thực, điều hướng đến trang đăng nhập
-//       next({ name: "login" });
-//     }
-//   } catch (error) {}
-// });
+router.beforeEach((to, from, next) => {
+  // Đây là nơi bạn thực hiện kiểm tra người dùng
+  // Ví dụ: kiểm tra xác thực, vai trò, quyền truy cập, ...
+  try {
+    // console.log(to.name);
+    if (to.name == "homepage") {
+      if (localStorage.getItem("position") != "user") {
+        localStorage.setItem("position", "user");
+        console.log(localStorage.getItem("position"));
+        // xóa token của admin và super-admin
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("position");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("expiresIn");
+        next();
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+    // if (nguoiDungDaXacThuc) {
+    //   // Nếu người dùng đã xác thực, cho phép truy cập
+    //   next();
+    // } else {
+    //   // Nếu người dùng chưa xác thực, điều hướng đến trang đăng nhập
+    //   next({ name: "login" });
+    // }
+  } catch (error) {}
+});
 
 export default router;

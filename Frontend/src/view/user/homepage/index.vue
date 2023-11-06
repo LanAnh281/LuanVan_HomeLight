@@ -11,7 +11,7 @@ export default {
     const data = reactive({
       images: [
         {
-          src: "../../../assets/image/homepage5.jpg",
+          src: "../../../assets/image/homepage14.jpg",
           alt: "Ảnh giới thiệu",
         },
 
@@ -25,7 +25,7 @@ export default {
           alt: "Ảnh giới thiệu",
         },
         {
-          src: "../../../assets/image/homepage4.jpg",
+          src: "../../../assets/image/homepage15.jpg",
           alt: "Ảnh giới thiệu",
         },
       ],
@@ -75,7 +75,7 @@ export default {
       id="carouselExampleControls"
       class="carousel slide col-12 m-auto"
       data-ride="carousel"
-      style="height: 700px"
+      style="height: 640px"
     >
       <div class="carousel-inner">
         <div
@@ -88,7 +88,7 @@ export default {
             class="d-block w-100"
             :src="imageSrc(image.src)"
             :alt="image.alt"
-            style="object-fit: cover; height: 690px; width: 100wh"
+            style="object-fit: cover; height: 620px; width: 100wh"
           />
         </div>
       </div>

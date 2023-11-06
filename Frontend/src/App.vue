@@ -61,23 +61,24 @@ export default {
     </template>
     <!-- Else -->
     <div v-if="isLoginPath == false">
-      <!-- Super Admin -->
-      <template v-if="position == 'super-admin'">
-        <Header></Header>
-        <SideBar class="col-2"></SideBar>
-        <router-view class="col-10"></router-view>
-      </template>
-      <!-- Admin -->
-      <template v-if="position == 'admin'">
-        <Header></Header>
-        <SideBar class="col-2"></SideBar>
-        <router-view class="col-10"></router-view>
-      </template>
       <!-- user -->
       <template v-if="position != 'admin' && position != 'super-admin'">
         <Header></Header>
         <router-view></router-view>
       </template>
+      <!-- Super Admin -->
+      <template v-else-if="position == 'super-admin'">
+        <Header></Header>
+        <SideBar class="col-2"></SideBar>
+        <router-view class="col-10"></router-view>
+      </template>
+      <!-- Admin -->
+      <template v-else-if="position == 'admin'">
+        <Header></Header>
+        <SideBar class="col-2"></SideBar>
+        <router-view class="col-10"></router-view>
+      </template>
+
       <Footer></Footer>
     </div>
   </div>
@@ -87,23 +88,3 @@ export default {
   display: none;
 }
 </style>
-<!-- .isHeader {
-  height: calc(100vh - - var(--header) - var(--footer));
-} -->
-<!-- 
-     <Header v-if="position == 'user' || position == null"></Header>
-     <NavBar></NavBar> 
-      <div class="fluid-container">
-        <div
-          class="row m-0 p-0"
-          :class="[position != 'user' ? 'isHeader' : '']"
-        >
-          <SideBar class="col-2" v-if="position != 'user'"></SideBar>
-         <span class="mr-2" v-if="position != 'user'"></span> 
-          <router-view
-            :class="position == 'user' ? 'col-12' : 'col-10'"
-          ></router-view>
-        </div>
-        <Footer></Footer>
-      </div>
- -->
