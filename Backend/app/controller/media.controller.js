@@ -5,7 +5,6 @@ const path = require("path");
 
 exports.create = async (req, res, next) => {
   let {} = req.body;
-  console.log("Body:", req.body);
 
   try {
     // Access the 'uploads' directory directly and retrieve the name of the saved file.
@@ -15,7 +14,6 @@ exports.create = async (req, res, next) => {
         return;
       }
       let newestFiles = [];
-      console.log("files[0]", files[0] == "");
       if (files[0] != "") {
         //sort the file list by time (using mtime)
         // sort in descending order-
@@ -30,7 +28,6 @@ exports.create = async (req, res, next) => {
       } else {
         newestFiles = [...file];
       }
-      console.log("New:", newestFiles);
       const documents = await Media.create({
         userName: userName,
         identification: identification,
@@ -122,7 +119,6 @@ exports.update = async (req, res, next) => {
         newestFiles = files.slice(0, 2);
         imagePrevious = newestFiles[0];
         imageAfter = newestFiles[1];
-        console.log("2", imageAfter, imagePrevious);
 
         const documents = await Media.update(
           {

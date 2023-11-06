@@ -10,7 +10,6 @@ const path = require("path");
 exports.create = async (req, res, next) => {
   try {
     const { name, address, phone, countFiles } = req.body;
-    console.log("countFiles:", countFiles);
     const document = await BorardingHouse.create({
       name: name,
       address: address,
@@ -18,7 +17,6 @@ exports.create = async (req, res, next) => {
       userId: req.user.userId,
       isDelete: false,
     });
-    console.log(document);
     fs.readdir(uploadDir, async (error, files) => {
       if (error) {
         console.error("Error reading upload directory:", error);
@@ -35,10 +33,8 @@ exports.create = async (req, res, next) => {
 
       // Retrieve the two most recent files.
       newestFiles = files.slice(0, countFiles);
-      console.log(">>ds ảnh:", newestFiles);
 
       for (let index = 0; index < countFiles; index++) {
-        console.log(">>>index:", index);
         let media = await Media.create({
           name: newestFiles[index],
           boardingId: document._id,
@@ -97,7 +93,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { name, address, phone, isDelete, countFiles } = req.body;
-  console.log("Update BorardingHouse", req.body);
   let removeMedia = !req.body.removeMedia ? 0 : req.body.removeMedia;
   if (removeMedia.length > 0) removeMedia.pop();
   try {
@@ -115,8 +110,6 @@ exports.updated = async (req, res, next) => {
         },
       }
     );
-    console.log("countFiles:", countFiles);
-    console.log("removeList:", removeMedia);
     if (document && removeMedia.length > 0) {
       for (let media of removeMedia) {
         let filePath = `${uploadDir}/${media}`;
@@ -183,7 +176,6 @@ exports.delete = async (req, res, next) => {
     //   _id: req.params.id,
     // };
     // const document = await deleteBoardingAndRooms(data);
-    // console.log(">>>doc:", document);
     return res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);

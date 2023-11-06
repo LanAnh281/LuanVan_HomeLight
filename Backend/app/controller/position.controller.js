@@ -1,7 +1,6 @@
 const { Positions, Roles } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { name } = req.body;
-  console.log("Positions Body:", req.body);
   try {
     const document = await Positions.create({
       name: name,
@@ -45,7 +44,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { name } = req.body;
-  console.log("Update Positions", req.body);
   try {
     const document = await Positions.update(
       {

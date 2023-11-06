@@ -3,7 +3,6 @@ const {
   Users,
   Accounts,
   Positions,
-  Roles_Positions,
   Rooms,
   User_Room,
   LandlordTenant,
@@ -48,7 +47,6 @@ exports.createUserAndAccount = async (userData) => {
           transaction,
         }
       );
-      console.log(">>Pay:", documentPayment);
     }
     await transaction.commit();
     return { message: "success", status: "success" };
@@ -71,7 +69,6 @@ exports.createUserAccountAndUpdateRoom = async (userData) => {
       },
     });
     userData.isPay = landlord.isPay;
-    console.log("USER DATA:", userData);
     const newUser = await Users.create(userData, { transaction });
     if (userData.landlordId && newUser._id) {
       const documentLandlordTenant = await LandlordTenant.create(
@@ -147,7 +144,6 @@ exports.deleteBoardingAndRooms = async (data) => {
       },
     });
     for (let value of documentRooms) {
-      console.log(value);
       const deleteRoom = await Rooms.update(
         {
           isDelete: true,

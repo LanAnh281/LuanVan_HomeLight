@@ -13,7 +13,6 @@ exports.create = async (req, res, next) => {
     date,
     roomId,
   } = req.body;
-  console.log("UtilityReadings Body:", req.body);
   try {
     const document = await UtilityReadings.create({
       previousElectric: previousElectric,
@@ -88,7 +87,6 @@ exports.updated = async (req, res, next) => {
     currentWater,
     date,
   } = req.body;
-  console.log("UtilityReadings Body:", req.body);
   try {
     const document = await UtilityReadings.update(
       {

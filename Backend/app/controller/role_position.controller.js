@@ -37,7 +37,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { RoleId } = req.body;
-  console.log("Update Roles_Positions", req.body);
   try {
     const document = await Roles_Positions.update(
       {

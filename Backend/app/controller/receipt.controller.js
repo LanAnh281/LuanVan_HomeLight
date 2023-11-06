@@ -66,8 +66,7 @@ exports.findOne = async (req, res, next) => {
   }
 };
 exports.updated = async (req, res, next) => {
-  const { receive, debt, billId, method } = req.body;
-  console.log("Receipt Body:", req.body);
+  const { receive, debt, billId, method, content } = req.body;
   try {
     const document = await Receipt.update(
       {
@@ -85,6 +84,7 @@ exports.updated = async (req, res, next) => {
       money: receive,
       method: method,
       billId: billId,
+      content: content,
     });
     res.json({ message: document, status: "success" });
   } catch (error) {

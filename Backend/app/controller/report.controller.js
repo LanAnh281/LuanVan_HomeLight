@@ -1,13 +1,4 @@
-const {
-  Users,
-  Accounts,
-  LandlordTenant,
-  BorardingHouse,
-  User_Room,
-  Rooms,
-  Bill_User,
-  Receipt,
-} = require("../models/index.model");
+const { Users, Bill_User, Receipt } = require("../models/index.model");
 
 exports.profitSuperAdmin = async (req, res, next) => {
   try {

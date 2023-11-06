@@ -2,9 +2,7 @@ const fs = require("fs");
 const uploadDir = "./uploads/images";
 const path = require("path");
 
-exports.wel = (req, res, next) => {
-  console.log("we");
-};
+exports.wel = (req, res, next) => {};
 exports.create = async (req, res, next) => {
   try {
     fs.readdir(uploadDir, async (err, files) => {
@@ -13,7 +11,6 @@ exports.create = async (req, res, next) => {
         return;
       }
       let newestFiles = "";
-      console.log("files[0]", files[0] == "");
       if (files[0] != "") {
         //sort the file list by time (using mtime)
         // sort in descending order-

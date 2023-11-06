@@ -76,7 +76,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   let { isDelete, isRead } = req.body;
-  console.log("User_Notification Body:", req.body);
   try {
     const document = await User_Notification.update(
       {

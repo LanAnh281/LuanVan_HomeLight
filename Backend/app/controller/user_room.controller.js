@@ -2,7 +2,6 @@ const { User_Room, Rooms, Users } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
   let { start, end, UserId, RoomId } = req.body;
-  console.log("User_Room Body:", req.body);
   start = dateTime(start);
   end = end == null ? null : dateTime(end);
   try {
@@ -64,7 +63,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   let { end, UserId, RoomId } = req.body;
-  console.log(">>>User_Room Body:", req.body);
 
   end = end == null ? null : dateTime(end);
 

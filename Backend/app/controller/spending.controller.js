@@ -49,8 +49,6 @@ exports.findOne = async (req, res, next) => {
 exports.updated = async (req, res, next) => {
   let { date, reason, price, isProfit, boardingId } = req.body;
   date = date == null ? null : dateTime(date);
-
-  console.log("Spending Body:", req.body);
   try {
     const document = await Spending.update(
       {

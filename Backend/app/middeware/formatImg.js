@@ -5,7 +5,6 @@ const path = require("path");
 const { count } = require("console");
 exports.format = async (req, res, next) => {
   const { countFiles } = req.body;
-  console.log("FormatIMg:", req.body, countFiles > 0);
   try {
     if (countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {

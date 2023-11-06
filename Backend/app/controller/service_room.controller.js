@@ -2,7 +2,6 @@ const { Service_Room } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 exports.create = async (req, res, next) => {
   let { start, end, ServiceId, RoomId } = req.body;
-  console.log("Service_Room Body:", req.body);
   start = dateTime(start);
   end = end == null ? null : dateTime(end);
   try {
@@ -42,7 +41,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   let { start, end, serviceId, roomId } = req.body;
-  console.log("Service_Room Body:", req.body);
   start = dateTime(start);
   end = end == null ? null : dateTime(end);
 
@@ -85,13 +83,11 @@ exports.delete = async (req, res, next) => {
 };
 exports.deleteAll = async (req, res, next) => {
   try {
-    console.log(">>>p:", req.params.id);
     const documents = await Service_Room.destroy({
       where: {
         RoomId: req.params.id,
       },
     });
-    console.log(">>>d:", documents);
     res.json({ message: documents, status: "success" });
   } catch (error) {
     console.log(error);

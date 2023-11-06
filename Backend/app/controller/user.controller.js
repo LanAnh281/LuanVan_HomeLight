@@ -46,15 +46,7 @@ exports.createUserAndAccount = async (req, res) => {
 
     file,
   } = req.body;
-  console.log(
-    "ISPAY:",
-    "...",
-    isPay,
-    isPay == false,
-    isPay == true,
-    isPay == "true",
-    isPay == "false"
-  );
+
   const password = setPassword();
   end = end === "" ? null : end;
   start = start === "" ? null : start;

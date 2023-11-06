@@ -129,11 +129,9 @@ exports.create = async () => {
       //   date: now,
       //   content: `Thông báo hóa đơn ${now.getMonth() + 1}/${now.getFullYear()}`,
       // });
-      // console.log("Thông báo:", documentNoti);
       const documentUser_Room = await User_Room.findAll({
         where: { RoomId: room._id },
       });
-      // console.log("user_room:", documentUser_Room);
       for (let user of documentUser_Room) {
         const documentUser_Noti = await User_Notification.create({
           UserId: user.UserId,
@@ -156,11 +154,9 @@ exports.createBill_user = async () => {
     const documentPosition = await Positions.findOne({
       where: { name: "super-admin" },
     });
-    console.log("Vai trò super-admin:", documentPosition);
     const documentSuperAdmin = await Accounts.findOne({
       where: { positionId: documentPosition["_id"] },
     });
-    console.log("Id user:", documentSuperAdmin);
     // lấy dịch vụ của super admin
     // dạng ds
     const documentService = await Services.findAll({
@@ -193,19 +189,16 @@ exports.createBill_user = async () => {
       let content = "";
       for (let val of documentService) {
         // tính tiền
-        console.log(Number(price), Number(val.price) * value.totalRooms);
         price = Number(price) + Number(val.price) * value.totalRooms;
         content += `${val.name} - ${val.price} - ${val.unit} - ${documentSuperAdmin["userId"]},`;
       }
       // tạo hóa đơn,
       content = content.replace(/,$/, "");
-      console.log("Tổng tiền:", price);
       const documentBillUser = await Bill_User.create({
         userId: value._id,
         content: content,
         total: price,
       });
-      console.log("Hóa đơn:", documentBillUser);
       // tạo phiếu thu kèm theo hóa đơn
       const documentReceipt = await Receipt.create({
         receive: 0,

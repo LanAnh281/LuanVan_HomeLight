@@ -22,7 +22,6 @@ exports.findAll = async (req, res, next) => {
 };
 exports.update = async (req, res, next) => {
   const { accountId, notificationId, isdelete } = req.body;
-  console.log("account noti:", req.body);
   try {
     const document = await Account_Notification.update(
       {

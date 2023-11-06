@@ -16,8 +16,6 @@ const getDecrypt = (name) => {
     let decrypted = decipher.update(name, "hex", "utf8");
     decrypted += decipher.final("utf8");
     return decrypted;
-  } else {
-    console.log(">>>E");
   }
 };
 const setPassword = () => {
@@ -42,7 +40,6 @@ exports.create = async (req, res, next) => {
       userId: userId,
       positionId: positionId,
     });
-    console.log(getDecrypt(password));
     if (document) {
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -106,10 +103,8 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const _id = req.user._id;
-  console.log(">>req.data:", req.user._id);
   let { userName, passwordOld, password, userId, positionId, isActive } =
     req.body;
-  console.log(">>>body:", req.body);
   try {
     const account = await Accounts.findOne({ where: { _id: _id } });
     if (account && getDecrypt(account["password"]) === passwordOld) {

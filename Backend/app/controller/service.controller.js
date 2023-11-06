@@ -1,7 +1,6 @@
 const { Services } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { name, price, unit } = req.body;
-  console.log("Services Body:", req.body, req.user.userId);
   try {
     const document = await Services.create({
       name: name,
@@ -52,7 +51,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { name, price, unit } = req.body;
-  console.log("Services Body:", req.body);
   try {
     const document = await Services.update(
       {

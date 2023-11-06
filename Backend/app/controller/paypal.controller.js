@@ -19,7 +19,6 @@ exports.hien = (req, res, next) => {
 //     "EJMEPqAIH2Goh-iXFt79S18RSpvkH6lkNdF4YD9ClBYn7un_TRsn_47ZdybtHPTS9YnT5gpbsb6_E8la",
 // });
 exports.taopaypal = async (req, res, next) => {
-  console.log("Body pay,", req.body._id, req.body.boardingId);
   let documentPay = "";
   let isSuperAdmin = false;
   if (req.body.boardingId) {
@@ -29,7 +28,6 @@ exports.taopaypal = async (req, res, next) => {
         _id: req.body.boardingId,
       },
     });
-    console.log("----land:", documentLand);
     documentPay = await Payment.findOne({
       where: {
         userId: documentLand.userId,
@@ -44,16 +42,12 @@ exports.taopaypal = async (req, res, next) => {
     });
     isSuperAdmin = true;
   }
-  console.log("-----PPPPay", documentPay);
   const documentUser = await Users.findOne({
     where: {
       _id: req.user.userId,
     },
   });
-  console.log(
-    "Thông tin người đăng nhập thanh toán:",
-    documentUser["userName"]
-  );
+
   paypal.configure({
     mode: "sandbox", //sandbox or live
     // client_id:
@@ -110,7 +104,6 @@ exports.taopaypal = async (req, res, next) => {
   });
 };
 exports.thanhcong = (req, res) => {
-  console.log(req.query.received);
   paypal.configure({
     mode: "sandbox", //sandbox or live
     // client_id:
@@ -150,12 +143,12 @@ exports.thanhcong = (req, res) => {
         // res.send('Success (Mua hàng thành công)');
 
         // tìm hóa đơn
-        console.log("Thanh toán cho super-admin", req.query.isSuperAdmin);
+        // console.log("Thanh toán cho super-admin", req.query.isSuperAdmin);
         if (req.query.isSuperAdmin == "false") {
           const documentBill = await Bill.findOne({
             where: { _id: req.query._id },
           });
-          console.log("--Bill:", documentBill);
+
           // cập nhật lại hóa đơn sau khi thanh toán
           const updateBill = await Bill.update(
             {
@@ -165,14 +158,12 @@ exports.thanhcong = (req, res) => {
             },
             { where: { _id: req.query._id } }
           );
-          console.log("--update:", updateBill);
           //tạo hoặc update
           const documentReceipt = await Receipt.findOne({
             where: {
               billId: req.query._id,
             },
           });
-          console.log("---Receipt:", documentReceipt);
           if (documentReceipt != null) {
             //update
             const updateReceipt = await Receipt.update(
@@ -191,7 +182,6 @@ exports.thanhcong = (req, res) => {
                 },
               }
             );
-            console.log("---Update receipt:", updateReceipt);
           } else {
             //create
             const createReceipt = await Receipt.create({
@@ -202,7 +192,6 @@ exports.thanhcong = (req, res) => {
               billId: req.query._id,
               content: content,
             });
-            console.log("---create receipt:", createReceipt);
           }
           const documentPayHistory = await PAYMENTHISTORY.create({
             money: payment.transactions[0].amount.total,
@@ -215,7 +204,7 @@ exports.thanhcong = (req, res) => {
             //add other headers here...
           });
         } else if (req.query.isSuperAdmin == "true") {
-          console.log("thanh toán cho super admin, tạo phiếu thu");
+          // console.log("thanh toán cho super admin, tạo phiếu thu");
           const createReceipt = await Receipt.update(
             {
               receive: payment.transactions[0].amount.total,

@@ -3,7 +3,6 @@ const { dateTime } = require("../middeware/datetime.middeware");
 
 exports.create = async (req, res, next) => {
   let { date, content } = req.body;
-  console.log("Notification Body:", req.body);
   date = date == null ? null : dateTime(date);
   try {
     const document = await Notification.create({
@@ -25,7 +24,6 @@ exports.create = async (req, res, next) => {
 };
 exports.createCustomer = async (req, res, next) => {
   let { date, content } = req.body;
-  console.log("Notification Body:", req.body);
   date = date == null ? null : dateTime(date);
   try {
     const document = await Notification.create({

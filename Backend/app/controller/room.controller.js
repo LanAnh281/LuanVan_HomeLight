@@ -25,7 +25,6 @@ exports.create = async (req, res, next) => {
     status,
     amenitie,
   } = req.body;
-  console.log(req.body);
   try {
     const document = await Rooms.create({
       name: name,
@@ -53,7 +52,6 @@ exports.create = async (req, res, next) => {
     //     AmenityId: amenitie,
     //   });
     // }
-    console.log("Bắt đầu thêm hình ảnh");
     if (document && countFiles > 0) {
       fs.readdir(uploadDir, async (error, files) => {
         if (error) {
@@ -71,17 +69,14 @@ exports.create = async (req, res, next) => {
         });
 
         // Retrieve the two most recent files.
-        console.log("Hoàn thành sắp xếp");
         newestFiles = files.slice(0, countFiles);
 
         try {
           for (let index = 0; index < countFiles; index++) {
-            console.log(">>>index:", index, newestFiles[index]);
             let media = await Media.create({
               name: newestFiles[index],
               roomId: document._id,
             });
-            console.log("MEDIA:", media);
           }
           return res.json({ message: document, status: "success" });
         } catch (error) {
@@ -149,7 +144,6 @@ exports.findOne = async (req, res, next) => {
       }
 
       // Ở đây, bạn có thể gửi URL của mã QR về phía frontend hoặc lưu nó trong cơ sở dữ liệu để sử dụng sau này.
-      console.log("URL::::", url);
       // res.json({ qrCodeUrl: url });
       document["qrCodeUrl"] = url;
       res.json({ message: document, status: "success" });
@@ -213,7 +207,6 @@ exports.updated = async (req, res, next) => {
       }
     );
     // loại bỏ ame của 1 phòng
-    console.log(req.body);
     // if (Array.isArray(removeAmenitie)) {
     //   for (let i = 0; i < removeAmenitie.length; i++) {
     //     const documentRemove = await Amenitie_Room.destroy({

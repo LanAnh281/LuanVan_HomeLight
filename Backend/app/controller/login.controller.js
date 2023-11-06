@@ -27,11 +27,9 @@ const getDecrypt = (name) => {
 
 exports.login = async (req, res, next) => {
   let { userName, password } = req.body;
-  console.log(userName, password);
   if (password != undefined) {
     password = setEncrypt(password);
   }
-  console.log("***req,body:", req.body);
   try {
     const document = await Accounts.findOne({
       where: {
@@ -103,7 +101,6 @@ exports.login = async (req, res, next) => {
 };
 exports.refreshAccessToken = async (req, res, next) => {
   const refreshToken = req.cookies["refreshToken"];
-  console.log(">>> refreshToken:", refreshToken);
   try {
     const document = await Accounts.findOne({
       where: {

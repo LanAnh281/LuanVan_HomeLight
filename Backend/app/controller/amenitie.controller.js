@@ -14,7 +14,6 @@ exports.create = async (req, res, next) => {
   }
 };
 exports.createAmenitiesRoom = async (req, res, next) => {
-  console.log("AmenityId:", req.body, req.params.id);
   try {
     const document = await Amenitie_Room.create({
       RoomId: req.params.id,
@@ -68,7 +67,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { name } = req.body;
-  console.log("Amenities Body:", req.body);
   try {
     const document = await Amenities.update(
       {

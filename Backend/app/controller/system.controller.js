@@ -1,7 +1,6 @@
 const { System } = require("../models/index.model.js");
 exports.create = async (req, res, next) => {
   const { content, email, phone, service } = req.body;
-  console.log("System Body:", req.body);
   try {
     const document = await System.create({
       content: content,
@@ -39,7 +38,6 @@ exports.findOne = async (req, res, next) => {
 };
 exports.updated = async (req, res, next) => {
   const { content, email, phone, service } = req.body;
-  console.log("System Body:", req.body);
   try {
     const document = await System.update(
       {

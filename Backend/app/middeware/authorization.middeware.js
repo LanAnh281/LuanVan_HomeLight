@@ -18,7 +18,7 @@ exports.authentication = (req, res, next) => {
           .json({ message: "Invalid token", status: "fail" });
       }
       req.user = decoded;
-      console.log(">>>req.user:", req.user);
+
       next();
     });
   } catch (error) {

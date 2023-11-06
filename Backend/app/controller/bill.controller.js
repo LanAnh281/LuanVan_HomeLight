@@ -214,7 +214,6 @@ exports.updated = async (req, res, next) => {
     // total,
     // roomId,
   } = req.body;
-  console.log("Bill Body:", req.body);
   try {
     const document = await Bill.update(
       {
