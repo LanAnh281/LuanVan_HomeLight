@@ -92,7 +92,7 @@ export default {
           </div>
           <h4
             class="text-center mt-0 ml-3 col-12"
-            style="color: var(--chocolate)"
+            style="color: var(--chocolate); text-transform: uppercase"
           >
             Đăng nhập
           </h4>
@@ -206,7 +206,8 @@ export default {
 <style scoped>
 .forgot:hover {
   color: var(--chocolate);
-  text-shadow: 0 0 2px rgba(245, 234, 111, 0.8);
+  text-shadow: 0 0 10px rgba(245, 234, 111, 0.8);
+  scale: calc(1.05);
 }
 .title {
   text-transform: none;

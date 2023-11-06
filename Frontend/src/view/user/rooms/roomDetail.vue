@@ -169,7 +169,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 px-5 pt-3">
+  <div class="body container-fluid m-0 mb-5 px-5 pt-3">
     <router-link :to="{ name: 'boarding' }" class="text-primary">
       <span class="" style="font-size: 16px; text-transform: uppercase"
         >Nhà trọ /
@@ -366,7 +366,7 @@ export default {
       </div> -->
     </div>
     <hr />
-    <h6 class="my-3 title">Bản đồ</h6>
+    <h5 class="my-5 title">Bản đồ</h5>
     <!-- <div id="map" style="height: 400px; width: 100%"></div> -->
 
     <iframe
@@ -380,7 +380,7 @@ export default {
 
     <!-- Rooms -->
     <hr />
-    <h6 class="my-3 title">Phòng trọ tương tự</h6>
+    <h5 class="my-5 title">Phòng trọ tương tự</h5>
     <div class="row m-2">
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"
@@ -441,7 +441,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 300vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .address:hover {
   text-decoration: underline;

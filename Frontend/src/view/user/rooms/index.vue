@@ -41,7 +41,7 @@ export default {
       totalPage: 0,
       currentPage: 1,
       length: 0,
-      sizePage: 10,
+      sizePage: 20,
     });
     let intervalId = null;
     const position = ref("");
@@ -247,7 +247,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 pr-5" v-if="data.items">
+  <div class="body container-fluid m-0 mb-5 pr-5" v-if="data.items">
     <router-link :to="{ name: 'boarding' }" class="text-primary mx-2">
       <span class="" style="font-size: 16px; text-transform: uppercase"
         >Nhà trọ /
@@ -377,7 +377,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 160vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 a:hover {
   text-decoration: none;

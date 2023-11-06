@@ -70,7 +70,9 @@ export default {
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 p-0 row justify-content-between">
+  <div
+    class="body container-fluid m-0 pb-5 mb-3 p-0 row justify-content-between"
+  >
     <div
       id="carouselExampleControls"
       class="carousel slide col-12 m-auto"
@@ -111,7 +113,7 @@ export default {
         <span class="sr-only">Next</span>
       </a>
     </div>
-    <div class="st__villas mt-3">
+    <div class="st__villas my-5">
       <div class="st__villas__content">
         <div class="container">
           <div class="heading__st__villas text-center">
@@ -174,7 +176,7 @@ export default {
       </div>
     </div>
 
-    <div class="row justify-content-around mx-3">
+    <div class="row justify-content-around mx-3 my-5">
       <div class="inner col-4">
         <div class="box-icon">
           <img
@@ -225,30 +227,52 @@ export default {
       </div>
     </div>
 
-    <div class="mx-3">
-      <h5 class="title">Bạn là chủ trọ và đây là thông tin dành cho bạn</h5>
-      <p
-        style="
-          line-height: 2;
-          font-family: 'Amarillo';
-          font-size: 20px;
-          color: #282827;
-        "
-      >
-        {{ data.systems[0].content }}
-      </p>
-      <h6
-        style="
-          line-height: 2;
-          font-family: 'Amarillo';
-          font-size: 20px;
-          color: #282827;
-        "
-      >
-        Đơn giá :{{ formatCurrency(data.systems[0].servicePrice) }}/{{
-          data.systems[0].serviceUnit
-        }}
-      </h6>
+    <div class="mx-3 row">
+      <div class="col-4">
+        <img
+          src="../../../assets/image/homepage16.jpg"
+          class="w-100"
+          style=""
+        />
+      </div>
+      <div class="col">
+        <h5 class="title">Bạn là chủ trọ và đây là thông tin dành cho bạn</h5>
+        <span class="material-symbols-outlined" style="color: var(--chocolate)">
+          horizontal_rule
+        </span>
+        <p
+          style="
+            line-height: 2;
+            font-family: 'Amarillo';
+            font-size: 20px;
+            color: #282827;
+          "
+        >
+          {{ data.systems[0].content }}
+        </p>
+        <h6
+          style="
+            line-height: 2;
+            font-family: 'Amarillo';
+            font-size: 20px;
+            color: #282827;
+          "
+        >
+          Đơn giá :{{ formatCurrency(data.systems[0].servicePrice) }}/{{
+            data.systems[0].serviceUnit
+          }}
+        </h6>
+        <button
+          class="btn btn-login blink-button"
+          data-toggle="modal"
+          data-target="#registrationModal"
+          style="font-size: 16px"
+          @click="isRegistration = !isRegistration"
+        >
+          Đăng ký ngay
+        </button>
+      </div>
+
       <!-- <div class="row">
         <h6 class="col-3">Thông tin liên hệ :</h6>
         <div class="col-6 m-0 p-0">
@@ -257,22 +281,14 @@ export default {
         </div>
       </div> -->
 
-      <button
-        class="btn btn-login blink-button"
-        data-toggle="modal"
-        data-target="#registrationModal"
-        style="font-size: 16px"
-        @click="isRegistration = !isRegistration"
-      >
-        Đăng ký ngay
-      </button>
       <registration v-if="isRegistration"></registration>
     </div>
   </div>
 </template>
 <style scoped>
 .body {
-  height: 240vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 #carouselExampleControls {
   /* left: 0;

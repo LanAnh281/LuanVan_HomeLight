@@ -135,7 +135,7 @@ export default {
 </script>
 <template>
   <div class="body m-0 container-fluid">
-    <h6 class="title text-center my-3">Thông tin phòng trọ</h6>
+    <h5 class="title text-center my-3">Thông tin phòng trọ</h5>
     <div class="row mx-2">
       <div class="col-6 m-0 mr-1 p-0">
         <div class="row justify-content-start p-0 m-0">
@@ -187,74 +187,82 @@ export default {
       </div>
     </div>
     <hr />
-    <h6 class="title text-center my-3">Dịch vụ</h6>
+    <h5 class="title text-center my-5">Dịch vụ</h5>
     <Table
       :data="data.services"
       :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
       :titles="['name', 'price', 'unit']"
     ></Table>
     <hr />
-    <div class="row m-0 p-0 mr-5">
-      <h6 class="title text-center col-12">Hỗ trợ</h6>
-      <div class="col-6">
+    <div class="row m-0 p-0 mr-5 my-5">
+      <h5 class="title text-center col-12">Hỗ trợ</h5>
+      <div class="col-4">
+        <img src="../../../assets/image/roominfo.jpg" class="w-100 h-75" />
+      </div>
+      <div class="col">
+        <!--  -->
+        <div class="row">
+          <div class="col-9 m-0 ml-3 p-0">
+            <div class="row justify-content-start p-0 m-0">
+              <p class="col-2 m-0">Tên chủ trọ :</p>
+              <p class="col-6 m-0">
+                {{ data.item.Rooms[0].BoardingHouse.User.userName }}
+              </p>
+            </div>
+
+            <div class="row justify-content-start p-0 m-0">
+              <p class="col-2 m-0">Điện thoại :</p>
+              <p class="col-6 m-0">
+                {{ data.item.Rooms[0].BoardingHouse.User.phone }}
+              </p>
+            </div>
+            <div class="row justify-content-start p-0 m-0">
+              <p class="col-2 m-0">Email :</p>
+              <p class="col-6 m-0">
+                {{ data.item.Rooms[0].BoardingHouse.User.email }}
+              </p>
+            </div>
+            <div class="row justify-content-start p-0 m-0">
+              <p class="col-2 m-0">Địa chỉ :</p>
+              <p class="col-6 m-0">
+                {{ data.item.Rooms[0].BoardingHouse.User.address }}
+              </p>
+            </div>
+          </div>
+          <div class="col-2 m-0 p-0 card mb-5">
+            <img :src="data.item.Rooms[0].qrCodeUrl" alt="QR" class="mx-2" />
+            <p class="card-text text-center text-info">Liên hệ qua SĐT</p>
+          </div>
+        </div>
+        <!--  -->
         <form @submit.prevent="save" class="col m-0 p-0 ml-2">
           <div class="form-group row">
-            <label for="inputroom" class="col-sm-2 m-0 col-form-label p-0"
+            <label for="inputroom" class="col-sm-1 m-0 col-form-label"
               >Vấn đề :</label
             >
-            <div class="col-sm-10">
+            <div class="col-sm-11">
               <textarea
                 type="text"
                 class="form-control"
                 id="inputContent"
-                rows="5"
+                rows="10"
                 v-model="data.message.comment"
               ></textarea>
             </div>
           </div>
           <div class="form-group text-center justify-content-around mb-0 ml-3">
-            <button type="submit" class="btn btn-login col-sm-2 text-center">
+            <button type="submit" class="btn btn-login col-sm-1 text-center">
               Gửi
             </button>
           </div>
         </form>
-      </div>
-      <div class="col-4 m-0 ml-2 p-0">
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Tên chủ trọ :</p>
-          <p class="col-6 p-0 m-0">
-            {{ data.item.Rooms[0].BoardingHouse.User.userName }}
-          </p>
-        </div>
-
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Điện thoại :</p>
-          <p class="col-6 p-0 m-0">
-            {{ data.item.Rooms[0].BoardingHouse.User.phone }}
-          </p>
-        </div>
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Email :</p>
-          <p class="col-6 p-0 m-0">
-            {{ data.item.Rooms[0].BoardingHouse.User.email }}
-          </p>
-        </div>
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Địa chỉ :</p>
-          <p class="col-6 p-0 m-0">
-            {{ data.item.Rooms[0].BoardingHouse.User.address }}
-          </p>
-        </div>
-      </div>
-      <div class="col m-0 p-0 card">
-        <img :src="data.item.Rooms[0].qrCodeUrl" alt="QR" class="mx-2" />
-        <p class="card-text text-center text-info">Liên hệ qua SĐT</p>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
 .body {
-  height: 150vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 </style>

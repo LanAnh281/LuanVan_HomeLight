@@ -351,7 +351,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  height: 160vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 a:hover {
   text-decoration: none;

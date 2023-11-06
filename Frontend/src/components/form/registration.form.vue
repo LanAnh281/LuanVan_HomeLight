@@ -539,6 +539,15 @@ export default {
                   />
                 </div>
               </div>
+              <div class="form-group row" v-if="data.item.isPay">
+                <label for="" class="col-form-label px-2 p-0"
+                  >Hướng dẫn lấy secretId và clientId trên tài khoản PayPal
+                </label>
+                <a href=" https://www.youtube.com/watch?v=6r17Wj3UlNE"
+                  >Tại đây</a
+                >
+              </div>
+
               <!-- BTN submit -->
 
               <div class="form-group row justify-content-around mb-0">
