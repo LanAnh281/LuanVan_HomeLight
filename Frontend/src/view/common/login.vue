@@ -89,12 +89,12 @@ export default {
               style="width: 100%; height: 100%"
             />
           </div>
-          <h4
+          <h5
             class="text-center mt-0 ml-3 col-12"
             style="color: var(--chocolate); text-transform: uppercase"
           >
             Đăng nhập
-          </h4>
+          </h5>
         </div>
         <form @submit.prevent="login" class="container mt-1">
           <div class="form-group row">
@@ -202,7 +202,12 @@ export default {
     </div>
   </div>
 </template>
+
 <style scoped>
+.body {
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
+}
 .forgot:hover {
   color: var(--chocolate);
   text-shadow: 0 0 10px rgba(245, 234, 111, 0.8);

@@ -1,10 +1,9 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, onMounted, ref } from "vue";
 import _ from "lodash";
 
 //service
 import roomService from "../../../../service/room.service";
-import mediaService from "../../../../service/media.service";
 // view
 import room from "./room.view.vue";
 import customerView from "./customer.view.vue";

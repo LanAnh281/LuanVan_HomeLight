@@ -1,5 +1,4 @@
 <script>
-import { ref, reactive } from "vue";
 export default {
   components: {},
   props: {
@@ -34,25 +33,16 @@ export default {
       </thead>
 
       <tbody>
-        <tr
-          v-for="(value, index) in data"
-          :key="index"
-          class="m-0 p-0"
-          style="line-height: 2"
-        >
-          <td scope="col" class="text-center m-0 p-0" v-if="isInputChecked">
+        <tr v-for="(value, index) in data" :key="index">
+          <td scope="col" class="text-center p-1" v-if="isInputChecked">
             <input type="checkbox" v-model="value.checked" />
           </td>
 
-          <td
-            v-for="(title, index1) in titles"
-            :key="index1"
-            class="m-0 px-1 py-0"
-          >
+          <td v-for="(title, index1) in titles" :key="index1" class="px-1 py-0">
             {{ value[title] }}
           </td>
           <!-- action -->
-          <td v-if="action" class="ml-2 text-center">
+          <td v-if="action" class="ml-2 text-center p-1">
             <span
               v-for="(value2, index2) in actionList"
               :key="index2"

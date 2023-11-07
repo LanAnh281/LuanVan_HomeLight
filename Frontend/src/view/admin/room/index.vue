@@ -1,7 +1,6 @@
 <script>
 import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import roomService from "../../../service/room.service";
@@ -15,7 +14,6 @@ import Select from "../../../components/select/select.vue";
 import EditBoardingForm from "./editBoarding.form.vue";
 import AddBoardingForm from "./addBoarding.vue";
 
-import Rule from "./addRules.form.vue";
 import Box from "./box.vue";
 
 //
@@ -34,7 +32,6 @@ export default {
     roomForm,
     roomFast,
     Box,
-    Rule,
     Edit,
     EditBoardingForm,
     View,
@@ -76,14 +73,12 @@ export default {
       currentPage: 1,
       totalPage: 0,
       length: 0,
-      sizePage: 10,
+      sizePage: 20,
       searchText: "",
       flag: false,
     });
     const component = reactive({
       isBoardingModal: false,
-
-      isRuleModal: false,
       isEditRoomModal: false,
     });
     let intervalId = null;
@@ -252,7 +247,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body m-0">
+  <div class="body m-0 pl-3">
     <!-- Status  and fee-->
     <div class="border-radius mb-3 row m-0 justify-content-start">
       <div class="input-group col-2 align-items-center pt-0 pr-0 mr-1 mt-1">
@@ -537,7 +532,8 @@ export default {
 </template>
 <style scope>
 .body {
-  min-height: 240vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .border-radius {
   border: 1px solid #eae6e6;

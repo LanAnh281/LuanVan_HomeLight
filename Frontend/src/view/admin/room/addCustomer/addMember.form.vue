@@ -23,7 +23,7 @@ export default {
       item: [{ Users: [] }],
       setPage: [],
       currentPage: 1,
-      sizePage: 3,
+      sizePage: 5,
       totalPage: 0,
       length: 0,
     });
@@ -142,22 +142,7 @@ export default {
     ></paginationVue>
   </div>
 </template>
-<style scope>
-table {
-  width: 100%;
-}
-th {
-  padding: 0px;
-  text-align: center;
-  line-height: 3;
-}
-th,
-td {
-  padding: 10px;
-  border: 1px solid #ccc;
-  word-wrap: break-word;
-}
-</style>
+<style scope></style>
 <!-- td:nth-child(2) {
   width: 25%;
 }
@@ -176,5 +161,19 @@ td:nth-child(5) {
 }
 td:nth-child(6) {
   width: 5%;
+}
+table {
+  width: 100%;
+}
+th {
+  padding: 0px;
+  text-align: center;
+  line-height: 3;
+}
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  word-wrap: break-word;
 }
  -->

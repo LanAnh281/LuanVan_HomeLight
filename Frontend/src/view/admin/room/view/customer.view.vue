@@ -15,7 +15,7 @@ export default {
       item: [{ Users: [] }],
       setPage: [],
       currentPage: 1,
-      sizePage: 3,
+      sizePage: 5,
       totalPage: 0,
       length: 0,
     });
@@ -87,7 +87,20 @@ export default {
   </div>
 </template>
 <style scope>
-table {
+.close-icon {
+  background-color: red;
+  color: rgb(242, 244, 245);
+  font-size: 1.6rem !important;
+  margin-right: 3px;
+}
+.close-icon:hover {
+  color: white;
+  background-color: red;
+  box-shadow: 0 0 10px #e1ff00;
+}
+</style>
+<!-- 
+  table {
   width: 100%;
 }
 th {
@@ -101,16 +114,4 @@ td {
   border: 1px solid #ccc;
   word-wrap: break-word;
 }
-
-.close-icon {
-  background-color: red;
-  color: rgb(242, 244, 245);
-  font-size: 1.6rem !important;
-  margin-right: 3px;
-}
-.close-icon:hover {
-  color: white;
-  background-color: red;
-  box-shadow: 0 0 10px #e1ff00;
-}
-</style>
+ -->

@@ -29,14 +29,13 @@ export default {
   components: { Select, Table, Pagination, Add, Edit },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       item: [], //list
       setPage: [],
       searchPage: [],
       currentPage: 1,
       totalPage: 1,
-      sizePage: 10,
+      sizePage: 20,
       length: 0,
       searchText: "",
       selectDate: { month: "", year: "" },
@@ -82,8 +81,8 @@ export default {
     const handleDelete = async (value) => {
       try {
         const isDelete = await deleted(
-          "Xóa phát sinh",
-          "Bạn có chắc chắn xóa phát sinh này."
+          "Xóa chi phí",
+          "Bạn có chắc chắn xóa chi phí này."
         );
         if (isDelete) {
           const documentDelete = await spendingService.delete(value);
@@ -177,7 +176,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body m-0">
+  <div class="body m-0 px-3">
     <div class="border-radius mb-3 row m-0 justify-content-start">
       <input
         type="month"
@@ -205,7 +204,7 @@ export default {
       <div class="col row justify-content-end p-0">
         <button
           class="btn btn-primary p-0 mr-5 col-2"
-          style="width: 12%; height: 36px; margin-top: 6px; margin-right: -9%"
+          style="width: 12%; height: 36px; margin-top: 6px"
         >
           <div
             class="row justify-content-center plus"
@@ -216,7 +215,9 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white); font-size: 16px">Chi phí</span>
+            <span style="color: var(--white); font-size: 16px" class="mr-2"
+              >Chi phí</span
+            >
           </div>
         </button>
       </div>
@@ -284,7 +285,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 input {
   background-color: var(--background);

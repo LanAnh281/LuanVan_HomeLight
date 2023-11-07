@@ -7,7 +7,7 @@ import {
   onMounted,
   onBeforeUnmount,
 } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 //service
 import roleService from "../../../service/role.service";
 import positionService from "../../../service/position.service";
@@ -310,7 +310,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .plus:hover > * {
   text-shadow: 0 0 2px #ffff;

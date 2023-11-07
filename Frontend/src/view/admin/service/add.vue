@@ -120,13 +120,13 @@ export default {
           </div>
           <form @submit.prevent="handleCreate" class="container mt-3">
             <!--Table  -->
-            <table class="table text-center">
+            <table class="table">
               <thead class="thead-dark m-0 p-0">
                 <tr>
                   <th scope="col">Tên dịch vụ</th>
                   <th scope="col">Đơn giá</th>
                   <th scope="col">Đơn vị tính</th>
-                  <th scope="col">Hành động</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody class="text-center m-0 p-0">
@@ -138,8 +138,8 @@ export default {
                   <th>
                     <input
                       type="text"
-                      class="px-1 py-0 m-0 w-100"
-                      style="height: 30px"
+                      class="p-1 py-0 m-0 w-100"
+                      style="height: 30px; border: solid 1px #efecec"
                       v-model="value.name"
                     />
                   </th>
@@ -147,16 +147,16 @@ export default {
                     <input
                       type="number"
                       v-model="value.price"
-                      class="px-1 py-0 m-0 w-100"
-                      style="height: 30px"
+                      class="p-1 py-0 m-0 w-100"
+                      style="height: 30px; border: solid 1px #efecec"
                     />
                   </th>
                   <th class="">
                     <input
                       type="text"
                       v-model="value.unit"
-                      class="px-1 py-0 m-0 w-100"
-                      style="height: 30px"
+                      class="p-1 py-0 m-0 w-100"
+                      style="height: 30px; border: solid 1px #efecec"
                     />
                   </th>
                   <th class="text-center">

@@ -85,8 +85,7 @@ export default {
             class="col-3 text-center"
             style="width: 100%; height: 100%"
           />
-
-          <h4 class="text-center mt-3 ml-3 col-12 title">Đổi mật khẩu</h4>
+          <h5 class="text-center mt-3 ml-3 col-12 title">Đổi mật khẩu</h5>
         </div>
         <form @submit.prevent="changePassword" class="container mt-3">
           <div class="form-group row">

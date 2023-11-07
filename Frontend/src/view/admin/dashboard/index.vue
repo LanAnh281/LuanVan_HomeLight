@@ -410,7 +410,8 @@ export default {
 
 <style scoped>
 .body {
-  min-height: 110vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .select {
   background-color: var(--background);

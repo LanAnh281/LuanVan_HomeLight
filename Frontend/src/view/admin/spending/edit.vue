@@ -99,7 +99,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title title" id="exampleModalLabel">
-            Cập nhật chi phí phát sinh
+            Cập nhật chi phí
           </h5>
           <button
             type="button"
@@ -118,10 +118,10 @@ export default {
           >
             <!-- nhà trọ -->
             <div class="form-group row">
-              <label for="inputprice" class="col-sm-3 col-form-label p-0 m-0">
+              <label for="inputprice" class="col-sm-2 col-form-label p-0 m-0">
                 Nhà trọ :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <Select
                   :title="'Chọn nhà trọ'"
                   :data="data.boarding"
@@ -131,10 +131,10 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputdate" class="col-sm-3 col-form-label p-0"
+              <label for="inputdate" class="col-sm-2 col-form-label p-0"
                 >Ngày chi :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <input
                   type="date"
                   class="form-control"
@@ -147,10 +147,10 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputprice" class="col-sm-3 col-form-label p-0"
+              <label for="inputprice" class="col-sm-2 col-form-label p-0"
                 >Số tiền :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <input
                   type="number"
                   class="form-control"
@@ -163,10 +163,10 @@ export default {
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputreason" class="col-sm-3 col-form-label p-0"
+              <label for="inputreason" class="col-sm-2 col-form-label p-0"
                 >Lý do :</label
               >
-              <div class="col-sm-9">
+              <div class="col-sm-10">
                 <textarea
                   name=""
                   cols="30"

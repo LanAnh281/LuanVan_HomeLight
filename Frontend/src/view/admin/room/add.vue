@@ -1,7 +1,6 @@
 <script>
 import { reactive, ref, onBeforeMount } from "vue";
 import _ from "lodash";
-import Swal from "sweetalert2";
 //service
 import roomService from "../../../service/room.service";
 import amenitieService from "../../../service/amenitie.service";

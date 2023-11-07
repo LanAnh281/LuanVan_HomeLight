@@ -1,6 +1,6 @@
 <script>
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { reactive, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
 import VueApexCharts from "vue3-apexcharts";
 
 //service
@@ -140,7 +140,7 @@ export default {
 </script>
 
 <template>
-  <div class="body m-0">
+  <div class="body">
     <!-- box -->
     <Box></Box>
     <!-- chart -->
@@ -164,7 +164,7 @@ export default {
           <apexchart
             :options="chartOptionsProfit"
             :series="chartSeriesProfit.data"
-            height=""
+            height="500"
           />
         </div>
       </div>
@@ -174,7 +174,8 @@ export default {
 
 <style scoped>
 .body {
-  min-height: 110vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .select {
   background-color: var(--background);

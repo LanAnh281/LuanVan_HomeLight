@@ -1,12 +1,10 @@
 <script>
-import { reactive, onMounted, ref, onBeforeMount } from "vue";
+import { reactive, ref, onBeforeMount } from "vue";
 import _ from "lodash";
 
 //service
 import boardinghouseService from "../../../service/boardinghouse.service";
 import billService from "../../../service/bill.service";
-import receiptService from "../../../service/receipt.service";
-
 //component
 import Select from "../../../components/select/select.vue";
 //js
@@ -197,6 +195,10 @@ export default {
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
+          <h5 class="modal-title title" id="exampleModalLabel">
+            Thông tin hóa đơn
+          </h5>
+
           <button
             type="button"
             class="close"
@@ -228,7 +230,7 @@ export default {
               </li>
             </ul>
 
-            <div class="col-sm-9 m-0 p-0" v-if="data.active == 'bill'">
+            <div class="col-sm-9 m-0 p-0 mt-2" v-if="data.active == 'bill'">
               <div class="row justify-content-between mx-2">
                 <div class="col-9 row">
                   <div class="col-12">Nhà trọ: {{ data.boarding["name"] }}</div>
@@ -348,7 +350,7 @@ export default {
                 > -->
               </div>
             </div>
-            <div class="col-sm-9" v-else>
+            <div class="col-sm-9 m-0 p-0 mt-5" v-else>
               <!-- <div class="row justify-content-between mx-2"></div> -->
               <Table
                 :data="data.item.PAYMENTHISTORies"

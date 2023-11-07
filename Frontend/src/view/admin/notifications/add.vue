@@ -37,6 +37,7 @@ export default {
       selectedBoarding: "",
       error: { content: "" },
       flag: true,
+      btnSubmit: "Thông báo",
     });
     const isModalOpen = ref(false);
     data.length = computed(() => (data.users ? data.users.length : 0));
@@ -69,7 +70,6 @@ export default {
     };
     const closeModal = () => {
       console.log("close modal boarding");
-
       emit("closeModal");
     };
 
@@ -130,6 +130,7 @@ export default {
         }
         if (!data.flag) {
           // 1.tạo 1 thông báo mới
+          data.btnSubmit = "Đang thông báo";
           data.item.content = sanitizeInput(data.item.content);
           const documentNoti = await notificationService.create(data.item);
 
@@ -141,7 +142,9 @@ export default {
             const documentUserNoti = await user_notification.create(data);
           }
           socket.emit("createNoti", documentNoti);
+
           emit("add");
+          data.btnSubmit = "Thông báo";
         }
       } catch (error) {
         if (error.response) {
@@ -228,7 +231,7 @@ export default {
               </div>
               <div class="form-group row m-0 p-0">
                 <input
-                  class="my-2 p-1 mr-1 form-control col-6"
+                  class="my-2 p-1 mr-1 form-control col-8"
                   style="
                     border: solid 1px #ccc;
                     border-radius: 4px;
@@ -239,7 +242,7 @@ export default {
                   v-model="data.searchText"
                 />
                 <Select
-                  class="col-3 my-2 p-1"
+                  class="col my-2 p-1"
                   :title="`Chọn nhà trọ`"
                   :data="data.boarding"
                   @choose="(value) => (data.selectedBoarding = value)"
@@ -281,8 +284,12 @@ export default {
               "
             ></paginationVue>
             <div class="form-group row justify-content-around mb-0">
-              <button type="submit" class="btn btn-login col-sm-2">
-                Thông báo
+              <button
+                type="submit"
+                class="btn btn-login col-sm-2"
+                :disabled="data.btnSubmit == 'Đang thông báo'"
+              >
+                {{ data.btnSubmit }}
               </button>
             </div>
           </form>

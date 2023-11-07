@@ -243,7 +243,7 @@ export default {
 */
 </script>
 <template>
-  <div class="body m-0">
+  <div class="body m-0 px-3">
     <div class="border-radius mb-3 row m-0 justify-content-start">
       <!-- <label
         class="py-1 text-center mt-2 ml-3"
@@ -315,7 +315,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 150vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .select {
   background-color: var(--background);

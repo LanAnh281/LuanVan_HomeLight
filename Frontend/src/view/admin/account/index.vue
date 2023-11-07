@@ -42,7 +42,7 @@ export default {
       flag: true,
       positionId: "",
       pageAccounts: [],
-      sizePage: 5,
+      sizePage: 20,
       currentPage: 1,
       previousPage: 0,
       totalPage: 0,
@@ -303,7 +303,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .plus:hover > * {
   text-shadow: 0 0 2px #ffff;

@@ -2,7 +2,7 @@
 import { reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import axios from "axios";
 
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 //service
 import userService from "../../../service/user.service";
@@ -313,8 +313,8 @@ export default {
 };
 </script>
 <template>
-  <div class="body m-0">
-    <div class="border-radius mb-3 row m-0 justify-content-start">
+  <div class="body m-0 px-3">
+    <div class="border-radius mb-1 row m-0 justify-content-start">
       <div class="input-group col-2 align-items-center pr-0">
         <Select
           :title="`Chọn thành phố`"
@@ -356,7 +356,7 @@ export default {
     </div>
     <!-- Search -->
 
-    <div class="border-radius m-0">
+    <div class="border-radius m-0 p-0">
       <!-- Search -->
       <div class="my-2 mx-3 row justify-content-between">
         <input
@@ -365,9 +365,9 @@ export default {
           class="p-2 border rounded"
           style="
             background-color: var(--background);
-            width: 30%;
+            width: 33%;
             font-size: 0.9rem;
-            height: 34px;
+            height: 36px;
           "
           v-model="data.searchText"
         />
@@ -469,9 +469,9 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 200vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
-
 .select {
   background-color: var(--background);
 }

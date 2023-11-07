@@ -1,8 +1,7 @@
 <script>
-import { ref, reactive, computed, watch, onMounted, onBeforeMount } from "vue";
+import { reactive, computed, onBeforeMount } from "vue";
 // services
 import bill_userService from "../../../service/bill_user.service";
-import payService from "../../../service/pay.service";
 //component
 import Table from "../../../components/table/table.vue";
 import paginationVue from "../../../components/pagination/pagination.vue";
@@ -42,18 +41,18 @@ export default {
           )
         : []
     );
-    const now = new Date();
+
     const refresh = async () => {
       try {
         const document = await bill_userService.getAllUser();
         data.item = document.message;
-        data.item = data.item.filter((item) => {
-          const date = new Date(item.updatedAt);
-          return (
-            date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
-            date.getFullYear() == data.selectDate.getFullYear()
-          );
-        });
+        // data.item = data.item.filter((item) => {
+        //   const date = new Date(item.updatedAt);
+        //   return (
+        //     date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+        //     date.getFullYear() == data.selectDate.getFullYear()
+        //   );
+        // });
         data.item = data.item.sort(
           (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
         );
@@ -185,7 +184,7 @@ export default {
 
 <template>
   <div class="body container-fluid m-0 pr-5">
-    <div class="row m-0 text-center mt-2">
+    <!-- <div class="row m-0 text-center mt-2">
       <div class="input-group col-2">
         <input
           type="month"
@@ -194,11 +193,12 @@ export default {
           style="background-color: var(--background); border: 1px solid #ebebeb"
         />
       </div>
-    </div>
+    </div> -->
     <h5 class="text-center title mb-3">
-      Lịch sử thanh toán tháng {{ data.selectDate.getMonth() + 1 }}/{{
+      Lịch sử thanh toán
+      <!--tháng {{ data.selectDate.getMonth() + 1 }}/{{
         data.selectDate.getFullYear()
-      }}
+      }} -->
     </h5>
     <Table
       :data="data.setPage"

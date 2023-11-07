@@ -1,17 +1,10 @@
 <!-- -Thông tin chủ trọ=> nhà trọ => số phòng trọ -->
 
 <script>
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-  watch,
-} from "vue";
+import { reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import axios from "axios";
 
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 //service
 import userService from "../../../service/user.service";
@@ -19,12 +12,7 @@ import userRoomService from "../../../service/user_room.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
 import { city, district, ward } from "../../../assets/js/dependent.common";
-import {
-  deleted,
-  success,
-  successAd,
-  warning,
-} from "../../../assets/js/common.alert";
+import { deleted, success, warning } from "../../../assets/js/common.alert";
 //component
 import paginationVue from "../../../components/pagination/pagination.vue";
 import Table from "../../../components/table/tableChecked.table.vue";
@@ -48,7 +36,6 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const data = reactive({
       item: [{ userName: "" }], //list
       setPage: [],
@@ -256,7 +243,6 @@ export default {
     };
     const handleInfo = (value) => {
       data.isInfoUserModal = !data.isInfoUserModal;
-
       const user = data.item.filter((item) => item._id == value);
       data.active = user[0];
     };
@@ -316,14 +302,8 @@ export default {
 };
 </script>
 <template>
-  <!-- 
-        1. Show bảng thông tin cơ bản của chủ nhà trọ
-        2. có icon xem thông tin chi tiết chủ trọ
-        3. có chỗ lọc địa chỉ
-        4. btn soạn mail
-     -->
-  <div class="body m-0">
-    <div class="border-radius mb-3 row m-0 justify-content-start">
+  <div class="body m-0 px-3">
+    <div class="border-radius mb-1 row m-0 justify-content-start">
       <div class="input-group col-2 align-items-center pr-0">
         <Select
           :title="`Chọn thành phố`"
@@ -350,24 +330,24 @@ export default {
       </div>
     </div>
     <!-- Search -->
-    <div class="border-radius my-3">
+    <div class="border-radius">
       <!-- Search -->
-      <div class="my-2 mx-3 row justify-content-between">
+      <div class="mx-3 row justify-content-between">
         <input
           type="search"
-          placeholder="tìm kiếm theo tên khách hàng"
-          class="p-2 border rounded col-4"
+          placeholder="tìm kiếm theo tên chủ trọ"
+          class="p-2 border rounded col-4 my-2"
           style="
             background-color: var(--background);
             width: 30%;
+            height: 36px;
             font-size: 0.9rem;
           "
           v-model="data.searchText"
         />
-        <div class="row col-8 justify-content-end mr-1">
+        <div class="row col-8 justify-content-end">
           <button
             class="btn btn-primary p-0 m-0 col-3"
-            style="height: 40px"
             data-toggle="modal"
             data-target="#serviceModal"
             @click="() => (data.isService = !data.isService)"
@@ -389,7 +369,7 @@ export default {
           <Service v-if="data.isService"> </Service>
           <button
             class="btn btn-warning p-0 mt-0 mx-2 col-6"
-            style="width: 100px; height: 40px"
+            style="width: 110px; height: 36px"
             data-toggle="modal"
             data-target="#mailModal"
             @click="sendMail"
@@ -401,7 +381,9 @@ export default {
               >
                 email
               </span>
-              <span style="color: var(--white); font-size: 16px">Soạn thư</span>
+              <span style="color: var(--white); font-size: 16px" class="px-1"
+                >Soạn thư</span
+              >
             </div>
           </button>
           <!-- component -->
@@ -484,7 +466,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 200vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 
 .select {

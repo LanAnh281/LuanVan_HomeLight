@@ -249,18 +249,19 @@ export default {
         >
           {{ data.systems[0].content }}
         </p>
-        <h6
+        <h5
           style="
             line-height: 2;
             font-family: 'Amarillo';
             font-size: 20px;
-            color: #282827;
+            color: red;
+            font-weight: 600;
           "
         >
           Đơn giá :{{ formatCurrency(data.systems[0].servicePrice) }}/{{
             data.systems[0].serviceUnit
           }}
-        </h6>
+        </h5>
         <button
           class="btn btn-login blink-button"
           data-toggle="modal"

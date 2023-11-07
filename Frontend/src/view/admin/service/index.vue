@@ -23,7 +23,7 @@ export default {
       searchText: "",
       searchPage: [],
       setPage: [],
-      sizePage: 10,
+      sizePage: 20,
       currentPage: 1,
       totalPage: 0,
       length: 0,
@@ -119,7 +119,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body">
+  <div class="body px-3">
     <div class="border-radius mb-3 row m-0 justify-content-start">
       <div class="col-4 m-0 p-0 row justify-content-start">
         <input
@@ -197,7 +197,6 @@ export default {
     <!-- component Table -->
     <h5 class="title text-center my-3">Danh sách dịch vụ</h5>
     <Table
-      class="text-center"
       :data="data.setPage"
       :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
       :titles="['name', 'price', 'unit']"
@@ -242,7 +241,8 @@ export default {
 </template>
 <style scope>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 
 th,

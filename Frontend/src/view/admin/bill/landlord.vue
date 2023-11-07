@@ -223,13 +223,19 @@ export default {
         </div>
         <div class="col-3">
           <p>Ngày lập: {{ formatDateTime(data.item[0].createdAt) }}</p>
+          <!-- :class="data.item[0].isPaied ? 'btn-success' : 'btn-primary'" -->
           <button
-            class="btn"
-            :class="data.item[0].isPaied ? 'btn-success' : 'btn-primary'"
+            class="btn border border-danger w-75 text-danger"
             :disabled="data.item[0].isPaied"
             @click="handlePay"
           >
-            {{ data.item[0].isPaied ? "Đã thanh toán" : "Thanh toán PayPal" }}
+            {{ data.item[0].isPaied ? `Đã thanh toán ` : "Thanh toán PayPal" }}
+            <span
+              style="display: block"
+              class="text-danger"
+              v-if="data.item[0].isPaied"
+              >{{ formatDateTime(data.item[0].updatedAt) }}</span
+            >
           </button>
         </div>
         <div class="col-12 text-center m-0 p-0">

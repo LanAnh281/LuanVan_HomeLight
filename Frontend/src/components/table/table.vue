@@ -19,10 +19,10 @@ export default {
 };
 </script>
 <template>
-  <div class="m-0 p-0">
-    <table class="table m-0 p-0">
-      <thead class="thead-dark m-0 p-0">
-        <tr class="m-0 p-0">
+  <div>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
           <!-- <th scope="col">#</th> -->
           <th scope="col" v-for="(filed, index) in fields" :key="index">
             {{ filed }}
@@ -30,20 +30,9 @@ export default {
           <th scope="col" v-if="action"></th>
         </tr>
       </thead>
-      <tbody class="m-0 p-0">
-        <tr
-          v-for="(value, index) in data"
-          :key="index"
-          class="m-0 p-0"
-          style="line-height: 2"
-        >
-          <!-- <th scope="row">{{ (currentPage - 1) * sizePage + index + 1 }}</th> -->
-
-          <td
-            v-for="(title, index1) in titles"
-            :key="index1"
-            class="m-0 p-0 px-1"
-          >
+      <tbody>
+        <tr v-for="(value, index) in data" :key="index" style="line-height: 2">
+          <td v-for="(title, index1) in titles" :key="index1" class="p-1">
             {{ value[title] }}
           </td>
           <td v-if="action" class="ml-2 m-0 p-0 text-center">

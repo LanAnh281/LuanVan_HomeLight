@@ -20,7 +20,7 @@ export default {
       item: [], //list
       totalPage: 0,
       currentPage: 1,
-      sizePage: 10,
+      sizePage: 20,
       setPage: [],
       length: 0,
 
@@ -249,7 +249,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body m-0">
+  <div class="body m-0 px-3">
     <div class="border-radius mb-3 row m-0 p-0 justify-content-start">
       <div class="mt-1 mb-1 ml-3 mr-1">
         <input
@@ -301,7 +301,7 @@ export default {
     >
 
     <Table
-      class="text-center mt-2"
+      class="mt-2"
       :data="data.setPage"
       :fields="[
         'Phòng',
@@ -350,7 +350,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .boarding > * {
   height: 36px;

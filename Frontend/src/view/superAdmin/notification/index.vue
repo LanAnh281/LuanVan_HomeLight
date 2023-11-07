@@ -1,7 +1,6 @@
 <!-- -Tạo thông báo cho chủ trọ -->
 <script>
-import { ref, onMounted, reactive, watch, computed } from "vue";
-import socket from "../../../socket";
+import { ref, onMounted, reactive, computed } from "vue";
 
 //service
 import NotificationService from "../../../service/notification.service";
@@ -146,7 +145,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body m-0">
+  <div class="body m-0 px-3">
     <div class="border-radius mb-3 row m-0 justify-content-start">
       <div class="input-group col-2 align-items-center ml-2">
         <input
@@ -167,8 +166,8 @@ export default {
       </div>
       <div class="row justify-content-end m-0 p-0 col">
         <button
-          class="btn btn-primary p-0 mr-4 col-2"
-          style="width: 24%; height: 36px; margin-top: 6px; margin-right: -9%"
+          class="btn btn-primary p-0 mr-4 col-3"
+          style="height: 36px; margin-top: 6px; margin-right: -9%"
         >
           <div
             class="row justify-content-center plus"
@@ -179,7 +178,9 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white); font-size: 16px">Thông báo</span>
+            <span style="color: var(--white); font-size: 16px" class="px-1"
+              >Thông báo</span
+            >
           </div>
         </button>
       </div>
@@ -270,7 +271,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .select {
   background-color: var(--background);

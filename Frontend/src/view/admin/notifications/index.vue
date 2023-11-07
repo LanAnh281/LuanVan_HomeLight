@@ -19,7 +19,7 @@ export default {
       searchPage: [],
       searchText: "",
       currentPage: 1,
-      sizePage: 10,
+      sizePage: 20,
       length: 0,
       totalPage: 0,
       selectNoti: "",
@@ -144,12 +144,9 @@ export default {
 };
 </script>
 <template>
-  <div class="body m-0">
+  <div class="body m-0 px-3">
     <div class="border-radius mb-3 row m-0 justify-content-start">
-      <div
-        class="input-group col-4 row justify-content-around mx-2 m-0 pr-0"
-        style=""
-      >
+      <div class="input-group col-4 row justify-content-around mx-2 m-0 pr-0">
         <input
           type="month"
           @input="handleDate"
@@ -166,7 +163,7 @@ export default {
       </div>
       <div class="row justify-content-end m-0 p-0 col">
         <button
-          class="btn btn-primary p-0 mr-4 col-2"
+          class="btn btn-primary p-0 mr-3 col-2"
           style="width: 24%; height: 36px; margin-top: 6px; margin-right: -9%"
         >
           <div
@@ -178,7 +175,9 @@ export default {
             <span class="material-symbols-outlined" style="color: var(--white)">
               add
             </span>
-            <span style="color: var(--white); font-size: 16px">Thông báo</span>
+            <span style="color: var(--white); font-size: 16px" class="mr-2"
+              >Thông báo</span
+            >
           </div>
         </button>
       </div>
@@ -190,13 +189,11 @@ export default {
     <table class="table">
       <thead class="thead-dark">
         <tr>
-          <th>Ngày tạo</th>
-          <th class="w-100">Nội dung</th>
-
+          <th>Ngày thông báo</th>
+          <th class="w-75">Nội dung</th>
           <th scope="col"></th>
         </tr>
       </thead>
-
       <tbody>
         <tr
           v-for="(value, index) in data.setPage"
@@ -268,7 +265,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .select {
   background-color: var(--background);

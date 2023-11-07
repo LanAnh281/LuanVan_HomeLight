@@ -67,7 +67,7 @@ export default {
       ward: { data: { wards: [] } },
       flag: true,
       levels: { city: {}, district: {}, ward: {} },
-      btnSubmit: "Lưu",
+      btnSubmit: "Cập nhật",
       removeList: [],
     });
     const filesRef = ref(null);
@@ -313,7 +313,7 @@ export default {
         //   }
         // }
         // if (!data.flag) {
-        data.btnSubmit = "Đang lưu";
+        data.btnSubmit = "Đang cập nhật";
         const formData = new FormData();
         for (let key in data.item) {
           formData.append(key, data.item[key]);
@@ -338,7 +338,7 @@ export default {
         if (documentUpdateUser["status"] == "success") {
           successAd("Thành công");
           await refresh();
-          data.btnSubmit = "Lưu";
+          data.btnSubmit = "Cập nhật";
           emit("edit");
         } else {
           warning("Thất bại");
@@ -485,7 +485,7 @@ export default {
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body mx-3">
+        <div class="modal-body mx-4">
           <form
             class="row justify-content-around"
             @submit.prevent="save"
@@ -859,7 +859,7 @@ export default {
               <button
                 type="submit"
                 class="btn btn-login"
-                :disabled="data.btnSubmit == 'Đang lưu'"
+                :disabled="data.btnSubmit == 'Đang cập nhật'"
               >
                 {{ data.btnSubmit }}
               </button>

@@ -25,7 +25,7 @@ export default {
       checkedNewList: [],
       removeList: [],
       currentPage: 1,
-      sizePage: 3,
+      sizePage: 5,
       totalPage: 0,
       length: 0,
     });
@@ -203,15 +203,6 @@ export default {
   text-shadow: 0 2px 20px #fff;
   color: #fff;
 }
-table {
-  width: 100%;
-}
-
-th,
-td {
-  border: 1px solid #ccc;
-  word-wrap: break-word;
-}
 
 .close-icon {
   background-color: red;
@@ -242,5 +233,14 @@ td:nth-child(4) {
 }
 td:nth-child(5) {
   max-width: 10%; /* Đặt chiều rộng cố định cho cột "Địa chỉ" */
+}
+table {
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  word-wrap: break-word;
 }
  -->

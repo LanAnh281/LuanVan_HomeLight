@@ -133,14 +133,14 @@ export default {
           <input
             type="search"
             placeholder="tìm kiếm theo tên dịch vụ"
-            class="p-1 w-50"
+            class="p-2 w-50"
             style="border: 1px solid #ccc; border-radius: 6px"
             v-model="data.searchText"
           />
 
           <form @submit.prevent="handleEdit" class="mt-3">
             <!--Table  -->
-            <table class="table m-0 p-0">
+            <table class="table">
               <thead class="thead-dark">
                 <tr class="m-0 p-0">
                   <th scope="col">Tên dịch vụ</th>
@@ -154,28 +154,28 @@ export default {
                   :key="index"
                   :id="index"
                 >
-                  <th class="p-0">
+                  <th class="p-1">
                     <input
                       type="text"
-                      class="w-100 px-1"
+                      class="w-100 p-1"
                       v-model="value.name"
-                      style="border: 1px solid #ccc"
+                      style="border: none"
                     />
                   </th>
-                  <th class="p-0">
+                  <th class="p-1">
                     <input
                       type="text"
                       v-model="value.price"
-                      class="w-100 px-1"
-                      style="border: 1px solid #ccc"
+                      class="w-100 p-1"
+                      style="border: none"
                     />
                   </th>
-                  <th class="p-0">
+                  <th class="p-1">
                     <input
                       type="text"
-                      class="w-100 px-1"
+                      class="w-100 p-1"
                       v-model="value.unit"
-                      style="border: 1px solid #ccc"
+                      style="border: none"
                     />
                   </th>
                 </tr>

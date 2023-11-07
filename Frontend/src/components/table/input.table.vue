@@ -25,7 +25,7 @@ export default {
 </script>
 <template>
   <div>
-    <table class="table m-0 p-0">
+    <table class="table">
       <thead class="thead-dark">
         <tr>
           <th scope="col" v-for="(filed, index) in fields" :key="index">
@@ -77,6 +77,7 @@ export default {
 span {
   font-size: 24px;
 }
+
 .info-icon:hover {
   color: #00c1cf;
   text-shadow: 0 0 2px #00f0ff;

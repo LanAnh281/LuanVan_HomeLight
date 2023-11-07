@@ -79,7 +79,7 @@ export default {
             />
           </div>
 
-          <h4 class="text-center mt-3 ml-3 col-12 title">Khôi phục mật khẩu</h4>
+          <h5 class="text-center mt-3 ml-3 col-12 title">Khôi phục mật khẩu</h5>
         </div>
         <form @submit.prevent="resetPassword" class="container mt-3">
           <div class="form-group row">
@@ -125,4 +125,9 @@ export default {
     </div>
   </div>
 </template>
-<style></style>
+<style>
+.body {
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
+}
+</style>

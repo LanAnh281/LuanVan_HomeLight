@@ -6,10 +6,7 @@ import { useRoute, useRouter } from "vue-router";
 import bill_userService from "../../../service/bill_user.service";
 //asset/js
 import { checkAccessToken } from "../../../assets/js/common.login";
-import {
-  formatCurrency,
-  formatDateTime,
-} from "../../../assets/js/format.common";
+import { formatCurrency } from "../../../assets/js/format.common";
 //component
 import Select from "../../../components/select/select.vue";
 import Table from "../../../components/table/table.vue";
@@ -233,7 +230,8 @@ export default {
 </template>
 <style scoped>
 .body {
-  min-height: 100vh;
+  height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
+  overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
 }
 .boarding > * {
   height: 36px;
