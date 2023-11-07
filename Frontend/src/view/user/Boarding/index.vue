@@ -329,7 +329,7 @@ a:hover {
 #scrollToTopButton {
   display: block;
   position: fixed;
-  bottom: 50px;
+  bottom: 20px;
   right: 30px;
   z-index: 5;
   background-color: var(--chocolate);
@@ -337,8 +337,8 @@ a:hover {
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  padding: 15px;
-  font-size: 16px;
+  padding: 10px;
+  font-size: 12px;
 }
 .boarding-img:hover {
   scale: 1.05;

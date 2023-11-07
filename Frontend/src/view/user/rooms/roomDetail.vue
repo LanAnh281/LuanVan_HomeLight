@@ -160,9 +160,7 @@ export default {
 <template>
   <div class="body container-fluid m-0 mb-5 px-5 pt-3">
     <router-link :to="{ name: 'boarding' }" class="text-primary">
-      <span class="" style="font-size: 16px; text-transform: uppercase"
-        >Nhà trọ /
-      </span>
+      <span style="font-size: 16px; text-transform: uppercase">Nhà trọ / </span>
     </router-link>
 
     <span class="title" style="font-size: 16px">Phòng </span>
@@ -227,32 +225,34 @@ export default {
       <!-- Infor -->
       <div class="col mx-2">
         <div class="row p-0">
-          <h4>
+          <h4 style="font-family: Amarillo; font-weight: 700">
             Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
             {{ data.item.name }}
           </h4>
           <h6 class="col-12">
-            <span class="text-danger" style="font-size: 16px"
+            <span
+              class="text-danger"
+              style="font-size: 18px; font-family: Amarillo; font-weight: 700"
               >Giá thuê:
 
               {{ formatCurrency(data.item.price) }}
 
-              / tháng</span
+              /tháng</span
             >
             - {{ data.item.long * data.item.wide }}m²
           </h6>
         </div>
 
-        <div class="row p-0">
+        <div class="row p-0 roomInfo">
           <h6 class="m-0 col-12">Mô tả chi tiết</h6>
 
-          <p class="col-12 p-0 ml-2 mb-0">
-            <span class="mr-3"> Chiều dài: {{ data.item.long }} m</span>
-            <span>Chiều rộng: {{ data.item.wide }} m</span>
+          <p class="col-12 p-0 ml-2 mb-0 roomInfo">
+            <span class="mr-3"> Chiều dài: {{ data.item.long }}m </span>
+            <span>Chiều rộng: {{ data.item.wide }}m</span>
           </p>
         </div>
 
-        <div class="row p-0">
+        <div class="row p-0 roomInfo">
           <h6 v-if="data.item.content != 'undefined'" class="col-12 m-0">
             Mô tả thêm:
           </h6>
@@ -266,7 +266,7 @@ export default {
           </p>
         </div>
 
-        <div class="row p-0">
+        <div class="row p-0 roomInfo">
           <h6 class="col-12 m-0">Tiện ích:</h6>
           <p
             v-for="(value, index) in data.item.Amenities"
@@ -277,7 +277,7 @@ export default {
           </p>
         </div>
 
-        <div class="row p-0">
+        <div class="row p-0 roomInfo">
           <h6 class="col-12 m-0">Giá dịch vụ</h6>
           <div
             v-for="(value, index) in data.services"
@@ -289,7 +289,7 @@ export default {
           </div>
         </div>
 
-        <div class="row p-0 mb-2">
+        <div class="row p-0 mb-2 roomInfo">
           <h6 class="col-12 m-0">Liên hệ</h6>
           <p class="m-0 p-0 col-12">
             <span class="material-symbols-outlined text-danger">
@@ -302,12 +302,17 @@ export default {
               >phone
             </span>
             Điện thoại:
-            <span class="text-info"> {{ data.item.BoardingHouse.phone }}</span>
+            <span
+              class="text-info"
+              style="font-family: Amarillo; font-size: 18px"
+            >
+              {{ data.item.BoardingHouse.phone }}</span
+            >
             <!-- <img :src="data.item.qrCodeUrl" alt="QR" class="mx-2" /> -->
           </p>
         </div>
 
-        <div class="row align-items-center">
+        <div class="row align-items-center roomInfo">
           <button
             class="btn btn-login mr-1"
             style="height: 40px"
@@ -318,14 +323,9 @@ export default {
             Nhắn tin với chủ trọ
           </button>
           <strong>Hoặc</strong>
-          <div class="col-2 card mx-2 p-0 text-center">
-            <img
-              :src="data.item.qrCodeUrl"
-              alt="QR"
-              class="mx-auto p-0"
-              style="width: 100px"
-            />
-            <div class="card-body m-0 p-0 pb-2">
+          <div class="col-3 card mx-2 p-0 text-center">
+            <img :src="data.item.qrCodeUrl" alt="QR" class="mx-auto p-0" />
+            <div class="card-body m-0 p-0 pb-2 roomInfo w-100">
               <p class="card-text text-info">Liên hệ qua SĐT</p>
             </div>
           </div>
@@ -442,5 +442,9 @@ export default {
 a:hover {
   text-decoration: none;
   background: #f9f9f9;
+}
+.roomInfo > * {
+  font-family: "Amarillo";
+  font-size: 18px;
 }
 </style>

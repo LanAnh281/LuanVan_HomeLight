@@ -246,7 +246,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 mb-5 pr-5" v-if="data.items">
+  <div class="body container-fluid m-0 mb-5 pb-5 pr-5" v-if="data.items">
     <router-link :to="{ name: 'boarding' }" class="text-primary mx-2">
       <span class="" style="font-size: 16px; text-transform: uppercase"
         >Nhà trọ /
@@ -386,7 +386,7 @@ a:hover {
 #scrollToTopButton {
   display: block;
   position: fixed;
-  bottom: 50px;
+  bottom: 20px;
   right: 30px;
   z-index: 5;
   background-color: var(--chocolate);
@@ -394,8 +394,8 @@ a:hover {
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  padding: 15px;
-  font-size: 16px;
+  padding: 10px;
+  font-size: 12px;
 }
 .room-img:hover {
   scale: 1.02;

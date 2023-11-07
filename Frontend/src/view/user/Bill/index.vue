@@ -1,7 +1,5 @@
 <script>
 import { reactive, onBeforeMount, onBeforeUnmount } from "vue";
-import { useRoute } from "vue-router";
-
 //service
 import billService from "../../../service/bill.service";
 import payService from "../../../service/pay.service";
@@ -19,7 +17,6 @@ export default {
   components: { Select, selectNormal, paginationVue, Table },
 
   setup() {
-    const route = useRoute();
     const data = reactive({
       item: {
         total: 0,
@@ -34,7 +31,17 @@ export default {
                 currentWater: 0,
               },
             ],
-            Bills: [{ createdAt: new Date(), total: 0, services: "", debt: 0 }],
+            Bills: [
+              {
+                createdAt: new Date(),
+                total: 0,
+                services: "",
+                debt: 0,
+                PAYMENTHISTORies: [
+                  { content: "", method: "", money: "", createdAt: new Date() },
+                ],
+              },
+            ],
             BoardingHouse: {
               name: "",
               address: "",
@@ -191,6 +198,14 @@ export default {
             return !item.includes("Điện") && !item.includes("Nước");
           });
         }
+        data.item.Rooms[0].Bills[0].PAYMENTHISTORies =
+          data.item.Rooms[0].Bills[0].PAYMENTHISTORies.map((item) => {
+            return {
+              ...item,
+              createdAt: formatDateTime(item.createdAt),
+              money: formatCurrency(item.money),
+            };
+          });
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -231,9 +246,9 @@ export default {
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 pr-5">
+  <div class="body container-fluid pr-5 pb-5 mb-5">
     <div class="row m-0 text-center mt-2">
-      <div class="input-group col-2" style="">
+      <div class="input-group col-2">
         <input
           type="month"
           @input="handleDate"
@@ -242,146 +257,208 @@ export default {
         />
       </div>
     </div>
-    <div
-      class="row justify-content-between mx-2"
-      v-if="data.item.Rooms[0].Bills[0]"
-    >
-      <div class="col-9 row">
-        <div class="col-12">
-          Nhà trọ: {{ data.item.Rooms[0].BoardingHouse.name }}
+    <!-- Bill -->
+    <div v-if="data.item.Rooms[0].Bills[0]">
+      <div class="row justify-content-between mx-2">
+        <div class="col-9 row roomInfo">
+          <div class="col-12">
+            Nhà trọ: {{ data.item.Rooms[0].BoardingHouse.name }}
+          </div>
+          <div class="col-12">
+            Điện thoại: {{ data.item.Rooms[0].BoardingHouse.phone }}
+          </div>
+          <div class="col-12">
+            Địa chỉ: {{ data.item.Rooms[0].BoardingHouse.address }}
+          </div>
         </div>
-        <div class="col-12">
-          Điện thoại: {{ data.item.Rooms[0].BoardingHouse.phone }}
+        <div class="col-3 roomInfo">
+          <p>
+            Ngày lập:
+            {{ formatDateTime(data.item.Rooms[0].Bills[0].createdAt) }}
+          </p>
+          <button
+            v-if="data.item.Rooms[0].Bills[0].debt == 0"
+            class="btn text-danger border-danger"
+            disabled="true"
+          >
+            Đã thanh toán
+            <span style="display: block" class="text-danger"
+              >{{ formatDateTime(data.item.Rooms[0].Bills[0].updatedAt) }}
+            </span>
+          </button>
+          <button
+            v-else
+            class="btn"
+            :class="data.item.isPay == false ? 'btn-danger' : 'btn-primary'"
+            :disabled="data.item.isPay == false"
+            @click="handlePay"
+          >
+            {{
+              data.item.isPay == false ? "Chưa thanh toán" : "Thanh toán PayPal"
+            }}
+          </button>
         </div>
-        <div class="col-12">
-          Địa chỉ: {{ data.item.Rooms[0].BoardingHouse.address }}
+        <div class="col-12 text-center m-0 p-0 roomInfo">
+          <h5
+            class="title"
+            style="color: black; font-weight: 700; font-size: 24px"
+          >
+            Hóa đơn tiền trọ Tháng {{ data.selectDate.getMonth() + 1 }}/{{
+              data.selectDate.getFullYear()
+            }}
+          </h5>
+          <!-- <p>Tháng {{ now.getMonth() + 1 }} / {{ now.getFullYear() }}</p> -->
         </div>
-      </div>
-      <div class="col-3">
-        <p>
-          Ngày lập:
-          {{ formatDateTime(data.item.Rooms[0].Bills[0].createdAt) }}
-        </p>
-        <button
-          v-if="data.item.Rooms[0].Bills[0].debt == 0"
-          class="btn btn-success"
-          disabled="true"
-        >
-          Đã thanh toán
-        </button>
-        <button
-          v-else
-          class="btn"
-          :class="data.item.isPay == false ? 'btn-danger' : 'btn-primary'"
-          :disabled="data.item.isPay == false"
-          @click="handlePay"
-        >
-          {{
-            data.item.isPay == false ? "Chưa thanh toán" : "Thanh toán PayPal"
-          }}
-        </button>
-      </div>
-      <div class="col-12 text-center m-0 p-0">
-        <h5 class="title" style="color: black">
-          Hóa đơn tiền trọ Tháng {{ data.selectDate.getMonth() + 1 }}/{{
-            data.selectDate.getFullYear()
-          }}
-        </h5>
-        <!-- <p>Tháng {{ now.getMonth() + 1 }} / {{ now.getFullYear() }}</p> -->
-      </div>
-      <div class="col-12 row mx-1 m-0 px-1 p-0">
-        <p class="col-1 m-0 p-0">Phòng :</p>
-        <p class="col-10 m-0 p-0">{{ data.item.Rooms[0].name }}</p>
-      </div>
+        <div class="col-12 row mx-1 m-0 px-1 p-0 roomInfo">
+          <p class="col-1 m-0 p-0">Phòng :</p>
+          <p class="col-10 m-0 p-0">{{ data.item.Rooms[0].name }}</p>
+        </div>
 
-      <table class="table mt-2 mx-2 text-center">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Nội dung</th>
-            <th scope="col">Chỉ số cũ</th>
-            <th scope="col">Chỉ số mới</th>
-            <th scope="col">Tiêu thụ</th>
-            <th scope="col">Đơn giá (₫)</th>
-            <th scope="col">Thành tiền (₫)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(value, index) in data.service" :key="index">
-            <td>{{ value.split(" - ")[0] }}</td>
-            <td colspan="3"></td>
+        <table class="table mt-2 mx-2">
+          <thead class="thead-dark">
+            <tr class="roomInfo">
+              <th scope="col">Nội dung</th>
+              <th scope="col">Chỉ số cũ</th>
+              <th scope="col">Chỉ số mới</th>
+              <th scope="col">Tiêu thụ</th>
+              <th scope="col">Đơn giá (₫)</th>
+              <th scope="col">Thành tiền (₫)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(value, index) in data.service"
+              :key="index"
+              class="roomInfo"
+            >
+              <td>{{ value.split(" - ")[0] }}</td>
+              <td colspan="3"></td>
 
-            <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
-            <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
-          </tr>
-          <tr>
-            <td>Điện</td>
-            <td>
-              {{ data.item.Rooms[0].UtilityReadings[0].previousElectric }}
-            </td>
-            <td>{{ data.item.Rooms[0].UtilityReadings[0].currentElectric }}</td>
-            <td>
-              {{
-                data.item.Rooms[0].UtilityReadings[0].currentElectric -
-                data.item.Rooms[0].UtilityReadings[0].previousElectric
-              }}
-              Kwh
-            </td>
-            <td>{{ formatCurrency(data.item.electricPrice) }}</td>
-            <td>
-              {{
-                formatCurrency(
-                  data.item.electricPrice *
-                    (data.item.Rooms[0].UtilityReadings[0].currentElectric -
-                      data.item.Rooms[0].UtilityReadings[0].previousElectric)
-                )
-              }}
-            </td>
-          </tr>
+              <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
+              <td>{{ formatCurrency(value.split(" - ")[1]) }}</td>
+            </tr>
+            <tr class="roomInfo">
+              <td>Điện</td>
+              <td>
+                {{ data.item.Rooms[0].UtilityReadings[0].previousElectric }}
+              </td>
+              <td>
+                {{ data.item.Rooms[0].UtilityReadings[0].currentElectric }}
+              </td>
+              <td>
+                {{
+                  data.item.Rooms[0].UtilityReadings[0].currentElectric -
+                  data.item.Rooms[0].UtilityReadings[0].previousElectric
+                }}
+                Kwh
+              </td>
+              <td>{{ formatCurrency(data.item.electricPrice) }}</td>
+              <td>
+                {{
+                  formatCurrency(
+                    data.item.electricPrice *
+                      (data.item.Rooms[0].UtilityReadings[0].currentElectric -
+                        data.item.Rooms[0].UtilityReadings[0].previousElectric)
+                  )
+                }}
+              </td>
+            </tr>
 
-          <tr>
-            <td>Nước</td>
-            <td>{{ data.item.Rooms[0].UtilityReadings[0].previousWater }}</td>
-            <td>{{ data.item.Rooms[0].UtilityReadings[0].currentWater }}</td>
-            <td>
-              {{
-                data.item.Rooms[0].UtilityReadings[0].currentWater -
-                data.item.Rooms[0].UtilityReadings[0].previousWater
-              }}m³
-            </td>
-            <td>{{ formatCurrency(data.item.waterPrice) }}</td>
-            <td>
-              {{
-                formatCurrency(
-                  data.item.waterPrice *
-                    (data.item.Rooms[0].UtilityReadings[0].currentWater -
-                      data.item.Rooms[0].UtilityReadings[0].previousWater)
-                )
-              }}
-            </td>
-          </tr>
+            <tr class="roomInfo">
+              <td>Nước</td>
+              <td>{{ data.item.Rooms[0].UtilityReadings[0].previousWater }}</td>
+              <td>{{ data.item.Rooms[0].UtilityReadings[0].currentWater }}</td>
+              <td>
+                {{
+                  data.item.Rooms[0].UtilityReadings[0].currentWater -
+                  data.item.Rooms[0].UtilityReadings[0].previousWater
+                }}m³
+              </td>
+              <td>{{ formatCurrency(data.item.waterPrice) }}</td>
+              <td>
+                {{
+                  formatCurrency(
+                    data.item.waterPrice *
+                      (data.item.Rooms[0].UtilityReadings[0].currentWater -
+                        data.item.Rooms[0].UtilityReadings[0].previousWater)
+                  )
+                }}
+              </td>
+            </tr>
 
-          <tr>
-            <th>Thành tiền</th>
-            <td colspan="4"></td>
-            <td>
-              <strong>
-                {{ formatCurrency(data.item.Rooms[0].Bills[0].total) }}</strong
-              >
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- <strong class="mx-2 text-center"
+            <tr class="roomInfo">
+              <th>Thành tiền</th>
+              <td colspan="4"></td>
+              <td class="roomInfo">
+                <strong>
+                  {{
+                    formatCurrency(data.item.Rooms[0].Bills[0].total)
+                  }}</strong
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- <strong class="mx-2 text-center"
         >Thành tiền bằng chữ:
         {{ numberToWords(data.item.Rooms[0].Bills[0].total) }}</strong
       > -->
+      </div>
+      <h5
+        class="title text-center my-3"
+        style="
+          color: black;
+          font-weight: 600;
+          font-size: 24px;
+          font-family: Amarillo;
+        "
+      >
+        Lịch sử thanh toán
+      </h5>
+      <!-- <Table
+        v-if="data.item.Rooms[0].Bills[0].PAYMENTHISTORies"
+        :data="data.item.Rooms[0].Bills[0].PAYMENTHISTORies"
+        :fields="['Người trả', 'Số tiền', 'Phương thức', 'Ngày thanh toán']"
+        :titles="['content', 'money', 'method', 'createdAt']"
+      ></Table> -->
+      <table
+        class="table mt-2 mx-2"
+        v-if="data.item.Rooms[0].Bills[0].PAYMENTHISTORies"
+      >
+        <thead class="thead-dark">
+          <tr class="roomInfo">
+            <th scope="col">Người trả</th>
+            <th scope="col">Số tiền (đ)</th>
+            <th scope="col">Phương thức</th>
+            <th scope="col">Ngày thanh toán</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(value, index) in data.item.Rooms[0].Bills[0]
+              .PAYMENTHISTORies"
+            :key="index"
+            class="roomInfo"
+          >
+            <td>{{ value.content }}</td>
+            <td>{{ value.money }}</td>
+            <td>{{ value.method }}</td>
+            <td>{{ value.createdAt }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div v-else class="text-center">Không có hóa đơn</div>
+    <!-- History -->
   </div>
 </template>
 <style scoped>
 .body {
   height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
   overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
+}
+.roomInfo > * {
+  font-family: "Amarillo";
+  font-size: 16px;
 }
 </style>

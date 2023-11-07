@@ -135,127 +135,238 @@ export default {
 </script>
 <template>
   <div class="body m-0 container-fluid">
-    <h5 class="title text-center my-3">Thông tin phòng trọ</h5>
-    <div class="row mx-2">
-      <div class="col-6 m-0 mr-1 p-0">
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Tên nhà trọ:</p>
-          <p class="col-8 m-0 p-0">
-            {{ data.item.Rooms[0].BoardingHouse.name }}
-          </p>
-        </div>
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Địa chỉ:</p>
-          <p class="col-8 m-0 p-0">
-            {{ data.item.Rooms[0].BoardingHouse.address }}
-          </p>
-        </div>
-        <div class="col-12 row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Mô tả :</p>
-          <p class="col-6 p-0 m-0">
-            {{ data.item.Rooms[0].content }}
-          </p>
-        </div>
-        <div class="col-12 row justify-content-start p-0 m-0">
-          <p class="col-2 m-0 p-0">Tiện ích :</p>
-          <p
-            class="p-0 m-0"
-            v-for="(value, index) in data.item.Rooms[0].Amenities"
-            :key="index"
+    <div class="row my-3">
+      <h5 class="title text-center col-12 p-0">Thông tin phòng trọ</h5>
+      <span class="text-center p-0 mx-auto dash col-12"> </span>
+
+      <div class="row mx-2 col-12">
+        <div class="col-4">
+          <div
+            id="carouselExampleCaptions"
+            class="carousel slide"
+            style="z-index: 0"
+            data-ride="carousel"
           >
-            {{ value.name }},
-          </p>
+            <ol class="carousel-indicators">
+              <li
+                data-target="#carouselExampleCaptions"
+                data-slide-to="0"
+                class="active"
+              ></li>
+              <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+              <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+            </ol>
+
+            <div class="carousel-inner">
+              <div
+                class="carousel-item"
+                :class="index == 0 ? 'active' : ''"
+                v-for="(value, index) in data.item.Rooms[0].Media"
+                :key="(index = 1)"
+              >
+                <img
+                  :src="`http://localhost:3000/static/images/${value.name}`"
+                  class="d-block w-100"
+                  alt="ảnh nhà trọ"
+                />
+              </div>
+            </div>
+
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-target="#carouselExampleCaptions"
+              data-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Previous</span>
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-target="#carouselExampleCaptions"
+              data-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Next</span>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="col-4 p-0 m-0">
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Tên phòng :</p>
-          <p class="col-6 p-0 m-0">{{ data.item.Rooms[0].name }}</p>
-        </div>
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Diện tích:</p>
-          <p class="col-6 p-0 m-0">
-            {{ data.item.Rooms[0].long }} x {{ data.item.Rooms[0].wide }} m²
-          </p>
-        </div>
-        <div class="row justify-content-start p-0 m-0">
-          <p class="col-3 m-0 p-0">Đơn giá :</p>
-          <p class="col-6 p-0 m-0">
-            {{ formatCurrency(data.item.Rooms[0].price) }}
-          </p>
+        <!--  -->
+        <div class="col">
+          <div class="row justify-content-start p-0 m-0 roomInfo">
+            <p class="col-2">Tên nhà trọ:</p>
+            <p class="col">
+              {{ data.item.Rooms[0].BoardingHouse.name }}
+            </p>
+          </div>
+          <div class="row justify-content-start p-0 m-0 roomInfo">
+            <p class="col-2">Phòng trọ :</p>
+            <p class="col p-0 m-0">{{ data.item.Rooms[0].name }}</p>
+          </div>
+          <div class="row justify-content-start p-0 m-0 roomInfo">
+            <p class="col-2">Diện tích:</p>
+            <p class="col p-0 m-0">
+              {{ data.item.Rooms[0].long }} x {{ data.item.Rooms[0].wide }} m²
+            </p>
+          </div>
+
+          <div class="row justify-content-start p-0 m-0 roomInfo">
+            <p class="col-2">Đơn giá :</p>
+            <p class="col">
+              {{ formatCurrency(data.item.Rooms[0].price) }}
+            </p>
+          </div>
+          <div class="col-12 row justify-content-start p-0 m-0 roomInfo">
+            <p class="col-2">Mô tả :</p>
+            <p class="col">
+              {{ data.item.Rooms[0].content }}
+            </p>
+          </div>
+          <div class="col-12 row justify-content-start p-0 m-0 roomInfo">
+            <p class="col-2">Tiện ích :</p>
+            <p
+              class="p-1"
+              v-for="(value, index) in data.item.Rooms[0].Amenities"
+              :key="index"
+            >
+              {{ value.name }},
+            </p>
+          </div>
+          <div class="row justify-content-start p-0 m-0 roomInfo">
+            <p class="col-2">Địa chỉ:</p>
+            <p class="col">
+              {{ data.item.Rooms[0].BoardingHouse.address }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
-    <hr />
-    <h5 class="title text-center my-5">Dịch vụ</h5>
-    <Table
-      :data="data.services"
-      :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
-      :titles="['name', 'price', 'unit']"
-    ></Table>
-    <hr />
-    <div class="row m-0 p-0 mr-5 my-5">
-      <h5 class="title text-center col-12">Hỗ trợ</h5>
-      <div class="col-4">
-        <img src="../../../assets/image/roominfo.jpg" class="w-100 h-75" />
-      </div>
-      <div class="col">
-        <!--  -->
-        <div class="row">
-          <div class="col-9 m-0 ml-3 p-0">
-            <div class="row justify-content-start p-0 m-0">
-              <p class="col-2 m-0">Tên chủ trọ :</p>
-              <p class="col-6 m-0">
-                {{ data.item.Rooms[0].BoardingHouse.User.userName }}
-              </p>
-            </div>
-
-            <div class="row justify-content-start p-0 m-0">
-              <p class="col-2 m-0">Điện thoại :</p>
-              <p class="col-6 m-0">
-                {{ data.item.Rooms[0].BoardingHouse.User.phone }}
-              </p>
-            </div>
-            <div class="row justify-content-start p-0 m-0">
-              <p class="col-2 m-0">Email :</p>
-              <p class="col-6 m-0">
-                {{ data.item.Rooms[0].BoardingHouse.User.email }}
-              </p>
-            </div>
-            <div class="row justify-content-start p-0 m-0">
-              <p class="col-2 m-0">Địa chỉ :</p>
-              <p class="col-6 m-0">
-                {{ data.item.Rooms[0].BoardingHouse.User.address }}
-              </p>
-            </div>
-          </div>
-          <div class="col-2 m-0 p-0 card mb-5">
-            <img :src="data.item.Rooms[0].qrCodeUrl" alt="QR" class="mx-2" />
-            <p class="card-text text-center text-info">Liên hệ qua SĐT</p>
-          </div>
+    <!-- Services -->
+    <div class="row my-5 ml-3">
+      <h5 class="title text-center col-12 p-0">Dịch vụ</h5>
+      <span class="text-center p-0 mx-auto dash col-12"> </span>
+      <div class="row col-12">
+        <div class="col-8">
+          <!-- <Table
+            class="col-12 p-0"
+            :data="data.services"
+            :fields="['Tên dịch vụ', 'Đơn giá', 'Đơn vị tính']"
+            :titles="['name', 'price', 'unit']"
+          ></Table> -->
+          <table class="table">
+            <thead class="thead-dark">
+              <tr class="roomInfo">
+                <th scope="col">Tên dịch vụ</th>
+                <th scope="col">Đơn giá</th>
+                <th scope="col">Đơn vị tính</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(value, index) in data.services"
+                :key="index"
+                style="line-height: 2"
+                class="roomInfo"
+              >
+                <td class="p-1">
+                  {{ value["name"] }}
+                </td>
+                <td class="p-1">
+                  {{ value["price"] }}
+                </td>
+                <td class="p-1">
+                  {{ value["unit"] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <!--  -->
-        <form @submit.prevent="save" class="col m-0 p-0 ml-2">
-          <div class="form-group row">
-            <label for="inputroom" class="col-sm-1 m-0 col-form-label"
-              >Vấn đề :</label
-            >
-            <div class="col-sm-11">
-              <textarea
-                type="text"
-                class="form-control"
-                id="inputContent"
-                rows="10"
-                v-model="data.message.comment"
-              ></textarea>
+        <div class="col w-100">
+          <img
+            src="https://images.pexels.com/photos/1439373/pexels-photo-1439373.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            alt="ảnh dịch vụ"
+            class="w-100"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- Support -->
+    <div class="row p-0 ml-3 my-5">
+      <h5 class="title text-center col-12 p-0">Hỗ trợ</h5>
+      <span class="text-center p-0 mx-auto dash"> </span>
+      <div class="col-12 row">
+        <div class="col-4">
+          <img src="../../../assets/image/roominfo.jpg" class="w-100 h-75" />
+        </div>
+        <div class="col">
+          <!--  -->
+          <div class="row">
+            <div class="col-9 m-0 ml-3 p-0">
+              <div class="row justify-content-start p-0 m-0 roomInfo">
+                <p class="col-2 m-0">Tên chủ trọ :</p>
+                <p class="col-6 m-0">
+                  {{ data.item.Rooms[0].BoardingHouse.User.userName }}
+                </p>
+              </div>
+
+              <div class="row justify-content-start p-0 m-0 roomInfo">
+                <p class="col-2 m-0">Điện thoại :</p>
+                <p class="col-6 m-0">
+                  {{ data.item.Rooms[0].BoardingHouse.User.phone }}
+                </p>
+              </div>
+              <div class="row justify-content-start p-0 m-0 roomInfo">
+                <p class="col-2 m-0">Email :</p>
+                <p class="col-6 m-0">
+                  {{ data.item.Rooms[0].BoardingHouse.User.email }}
+                </p>
+              </div>
+              <div class="row justify-content-start p-0 m-0 roomInfo">
+                <p class="col-2 m-0">Địa chỉ :</p>
+                <p class="col-6 m-0">
+                  {{ data.item.Rooms[0].BoardingHouse.User.address }}
+                </p>
+              </div>
+            </div>
+            <div class="col-2 m-0 p-0 card mb-5 roomInfo">
+              <img :src="data.item.Rooms[0].qrCodeUrl" alt="QR" class="mx-2" />
+              <p class="card-text text-center text-info mb-3">
+                Liên hệ qua SĐT
+              </p>
             </div>
           </div>
-          <div class="form-group text-center justify-content-around mb-0 ml-3">
-            <button type="submit" class="btn btn-login col-sm-1 text-center">
-              Gửi
-            </button>
-          </div>
-        </form>
+          <!--  -->
+          <form @submit.prevent="save" class="col m-0 p-0 ml-2">
+            <div class="form-group row roomInfo">
+              <label for="inputroom" class="col-sm-2 m-0 col-form-label"
+                >Phản ánh :</label
+              >
+              <div class="col">
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="inputContent"
+                  rows="10"
+                  v-model="data.message.comment"
+                ></textarea>
+              </div>
+            </div>
+            <div
+              class="form-group text-center justify-content-around mb-0 ml-3"
+            >
+              <button type="submit" class="btn btn-login col-sm-1 text-center">
+                Gửi
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -264,5 +375,14 @@ export default {
 .body {
   height: 100vh; /* Đặt chiều cao cho .body theo chiều cao của viewport */
   overflow: auto; /* Cho phép nội dung trượt khi vượt quá chiều cao của .body */
+}
+.dash {
+  color: var(--chocolate);
+  width: 80px;
+  border: 1px var(--chocolate) solid;
+}
+.roomInfo > * {
+  font-family: "Amarillo";
+  font-size: 18px;
 }
 </style>
