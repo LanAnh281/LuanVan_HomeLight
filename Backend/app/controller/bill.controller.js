@@ -10,6 +10,7 @@ const {
   Users,
   PAYMENTHISTORY,
   Amenities,
+  Media,
 } = require("../models/index.model.js");
 const QRCode = require("qrcode");
 
@@ -132,7 +133,11 @@ exports.findAllCustomer = async (req, res, next) => {
             attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
           },
 
-          include: [{ model: Bill }, { model: Amenities }],
+          include: [
+            { model: Amenities },
+            { model: Media },
+            { model: Bill, include: [{ model: PAYMENTHISTORY }] },
+          ],
         },
       ],
     });
