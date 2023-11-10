@@ -43,7 +43,6 @@ exports.createUserAndAccount = async (req, res) => {
     isPay,
     clientId,
     secretId,
-
     file,
   } = req.body;
 
@@ -132,13 +131,11 @@ exports.createUserAccountAndUpdateRoom = async (req, res) => {
     phone,
     address,
     email,
-
     numberPlate,
     sex,
     birthday,
     securityDeposit,
     status,
-
     file,
   } = req.body;
   let start = req.body.start;
@@ -348,6 +345,7 @@ exports.getImg = async function (req, res) {
 exports.delete = async (req, res, next) => {
   try {
     const documents = await Users.destroy({});
+
     res.json({ message: documents, status: "success" });
   } catch (error) {
     res.json({ message: error, status: "fail" });
@@ -365,13 +363,24 @@ exports.deleteOne = async (req, res, next) => {
         fs.unlinkSync(filePath); //delete file
       }
     }
-
+    // xóa khách trọ của 1 chủ trọ
+    const tenant = await LandlordTenant.findAll({
+      where: {
+        landlordId: req.params.id,
+      },
+    });
+    for (let value of tenant) {
+      // console.log("Khách:", value);
+      const document = await Users.destroy({
+        where: { _id: value.tenantId },
+      });
+    }
     const document = await Users.destroy({
       where: { _id: req.params.id },
     });
     res.json({ message: document, status: "success" });
   } catch (error) {
-    res.json({ message: error, status: "fail" });
+    res.json({ message: error, status: "fail222" });
   }
 };
 exports.update = async (req, res, next) => {
