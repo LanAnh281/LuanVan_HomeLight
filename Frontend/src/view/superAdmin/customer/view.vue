@@ -159,15 +159,16 @@ export default {
     };
     const handleDelete = async () => {
       try {
-        console.log("handle Delete");
+        // console.log("handle Delete");
         const isDeleted = await deleted(
           "Xóa chủ trọ",
           "Tất cả các thông tin về tài khoản chủ trọ, khách trọ, phòng trọ, dịch vụ của chủ trọ, điện nươc, chi phí, hóa đơn, thông báo sẽ bị xóa bỏ khỏi hệ thống"
         );
-        console.log(isDeleted);
+        // console.log(isDeleted);
         if (isDeleted == true) {
           const document = await userService.delete(props._id);
-          console.log("Xóa chủ trọ:", document);
+          // console.log("Xóa chủ trọ:", document);
+          emit("delete");
         }
       } catch (error) {
         if (error.response) {

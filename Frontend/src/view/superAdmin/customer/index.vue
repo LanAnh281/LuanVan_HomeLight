@@ -454,6 +454,7 @@ export default {
       :_id="data.active._id"
       :dataProp="data.active"
       @closeModal="data.isInfoUserModal = !data.isInfoUserModal"
+      @delete="refresh"
     >
     </View>
     <Edit
