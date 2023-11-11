@@ -112,7 +112,7 @@ export default {
         <span class="sr-only">Next</span>
       </a>
     </div>
-    <div class="st__villas my-5">
+    <div class="st__villas my-3">
       <div class="st__villas__content">
         <div class="container">
           <div class="heading__st__villas text-center">
@@ -131,7 +131,7 @@ export default {
               Chúng tôi là ai
             </h3>
             <p
-              class="font-bold-itali my-3"
+              class="font-bold-itali my-2"
               style="font-family: 'Amarillo'; font-size: 26px; color: #c89310"
             >
               Sống Dễ Dàng - Tìm Nhà Trọ - Quản Lý Thuận Tiện
@@ -175,7 +175,7 @@ export default {
       </div>
     </div>
 
-    <div class="row justify-content-around mx-3 my-5">
+    <div class="row justify-content-around mx-3 my-3">
       <div class="inner col-4">
         <div class="box-icon">
           <img

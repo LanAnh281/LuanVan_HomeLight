@@ -178,7 +178,6 @@ export default {
 
         data.item.Rooms[0].Bills = data.item.Rooms[0].Bills.filter((item) => {
           const createdAt = new Date(item.createdAt);
-
           return (
             data.selectDate.getMonth() + 1 == createdAt.getMonth() + 1 &&
             data.selectDate.getFullYear() == createdAt.getFullYear()
@@ -198,6 +197,7 @@ export default {
             return !item.includes("Điện") && !item.includes("Nước");
           });
         }
+        console.log(data.item);
         data.item.Rooms[0].Bills[0].PAYMENTHISTORies =
           data.item.Rooms[0].Bills[0].PAYMENTHISTORies.map((item) => {
             return {

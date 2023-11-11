@@ -218,7 +218,7 @@ export default {
           </div>
 
           <div class="row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Đơn giá :</p>
+            <p class="col-2">Giá thuê :</p>
             <p class="col">
               {{ formatCurrency(data.item.Rooms[0].price) }}
             </p>

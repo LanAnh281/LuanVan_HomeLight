@@ -252,7 +252,7 @@ export default {
       </label> -->
       <input
         type="month"
-        class="border rounded py-1 text-center col-1 mt-2 ml-1"
+        class="border rounded py-1 text-center col-2 mt-2 mx-1"
         style="height: 33px; background-color: var(--background)"
         @input="handleDate"
       />
