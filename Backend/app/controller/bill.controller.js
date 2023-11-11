@@ -133,7 +133,11 @@ exports.findAllCustomer = async (req, res, next) => {
             attributes: [], // Bỏ qua thuộc tính của bảng trung gian (nếu bạn không muốn chúng)
           },
 
-          include: [{ model: Amenities }, { model: Media }, { model: Bill }],
+          include: [
+            { model: Amenities },
+            { model: Media },
+            { model: Bill, include: [{ model: PAYMENTHISTORY }] },
+          ],
         },
       ],
     });
