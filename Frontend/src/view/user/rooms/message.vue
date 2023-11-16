@@ -4,6 +4,9 @@ import socket from "../../../socket";
 //service
 import notificationService from "../../../service/notification.service";
 import user_notificationService from "../../../service/user_notification.service";
+import mailService from "../../../service/mail.service";
+import userService from "../../../service/user.service";
+
 //js
 import {
   checkString,
@@ -14,7 +17,11 @@ import {
 import { successAd } from "../../../assets/js/common.alert";
 export default {
   components: {},
-  props: { userId: { type: String, default: "" } },
+  props: {
+    roomName: { type: String, default: "" },
+    boardingName: { type: String, default: "" },
+    userId: { type: String, default: "" },
+  },
   setup(props, { emit }) {
     const data = reactive({
       item: { name: "", phone: "", email: "", comment: "", content: "" },
@@ -57,6 +64,27 @@ export default {
           });
           socket.emit("createNoti", data.item);
           data.submit = "Gửi tin nhắn";
+          const landlord = await userService.get(props.userId);
+          // console.log(landlord.message);
+          const documentMail = await mailService.sendMail({
+            title: "[Thông báo] Có khách trọ đang quan tâm đến nhà trọ của bạn",
+            content: `<h3>Quản lý nhà trọ HomeLight kính chào Anh/Chị: ${landlord.message.userName}</h3>
+                  <p> Anh/Chị vừa nhận được sự quan tâm của khách trọ đối với phòng trọ ${props.roomName} của nhà trọ ${props.boardingName}.
+                    <p>Dưới đây là thông tin liên hệ của khách trọ :</p>
+                  <ul>
+                    <li>Họ và tên : ${data.item.name}</li>
+                    <li>SĐT : ${data.item.phone}</li>
+                    <li>Email : ${data.item.email}</li>
+                    <li>Nội dung quan tâm của khách hàng : ${data.item.comment}</li>
+                  </ul>
+                
+                  <p>Mọi thắc mắc và góp ý, xin Anh/Chị vui lòng liên hệ với chúng tôi qua:</p>
+                  <p> Email hỗ trợ: info@maple.com.vn </p>
+                  <p> Điện thoại: 0915 85 0918</p>
+                  <p>HomeLight trân trọng cảm ơn và rất hân hạnh được phục vụ Anh/Chị.</p>`,
+            mail: landlord.message.email,
+          });
+
           refresh();
           successAd("Đã gửi tin nhắn");
         }
@@ -71,6 +99,7 @@ export default {
       }
     };
     onMounted(async () => {
+      console.log(props);
       $("#messageModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#messageModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });

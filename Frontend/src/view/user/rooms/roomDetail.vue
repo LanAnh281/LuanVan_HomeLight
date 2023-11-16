@@ -27,6 +27,7 @@ export default {
           name: "",
           long: "",
           wide: "",
+          BoardingHouse: { name: "" },
           Media: [{ name: "lightHouse.png" }],
           url: "",
         },
@@ -88,6 +89,7 @@ export default {
         });
         //gg map
         data.item.url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyCqNLriKAssr6bSDriqJg2YdfwqdBAYy30&q=${data.item.BoardingHouse.address}`;
+        // console.log(data.item);
         // //Map
         // // Tạo bản đồ
         // const map = L.map("map").setView([0, 0], 12);
@@ -337,6 +339,8 @@ export default {
         <Message
           v-if="isMessage"
           :userId="data.item.BoardingHouse.userId"
+          :boardingName="data.item.BoardingHouse.name"
+          :roomName="data.item.name"
           @closeModal="isMessage = !isMessage"
         ></Message>
       </div>
