@@ -3,11 +3,8 @@ const router = express.Router();
 const userNotification = require("../controller/user_notification.controller");
 const authorization = require("../middeware/authorization.middeware");
 
-router
-  .route("/")
-  .post(userNotification.create)
-  .get(userNotification.findAll)
-  .delete(userNotification.deleteAll);
+router.route("/").post(userNotification.create).get(userNotification.findAll);
+
 router
   .route("/:id")
   .put(
@@ -19,8 +16,8 @@ router
     authorization.authentication,
     authorization.authorization("xem thông báo"),
     userNotification.findOne
-  )
-  .delete(userNotification.delete);
+  );
+
 router
   .route("/getAll/user")
   .get(

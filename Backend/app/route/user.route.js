@@ -11,8 +11,8 @@ router.route("/").get(user.findAll).delete(user.delete);
 router
   .route("/:id")
   .get([
-    authorization.authentication,
-    authorization.authorization("xem thông tin khách trọ"),
+    // authorization.authentication,
+    // authorization.authorization("xem thông tin khách trọ"),
     user.findOne,
   ])
   .post([

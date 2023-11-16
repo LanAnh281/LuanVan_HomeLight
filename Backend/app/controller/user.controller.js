@@ -327,9 +327,9 @@ exports.findOne = async (req, res, next) => {
       include: [{ model: Rooms, include: [{ model: BorardingHouse }] }],
     });
 
-    res.json({ message: document, status: "success" });
+    return res.json({ message: document, status: "success" });
   } catch (error) {
-    res.json({ message: error, status: "fail" });
+    return res.json({ message: error, status: "fail" });
   }
 };
 exports.getImg = async function (req, res) {

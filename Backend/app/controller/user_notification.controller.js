@@ -95,25 +95,3 @@ exports.updated = async (req, res, next) => {
     res.json({ message: error, status: "faild" });
   }
 };
-exports.delete = async (req, res, next) => {
-  try {
-    const document = await User_Notification.destroy({
-      where: {
-        _id: req.params.id,
-      },
-    });
-    res.json({ message: document, status: "success" });
-  } catch (error) {
-    console.log(error);
-    res.json({ message: error, status: "faild" });
-  }
-};
-exports.deleteAll = async (req, res, next) => {
-  try {
-    const documents = await User_Notification.destroy({});
-    res.json({ message: documents, status: "success" });
-  } catch (error) {
-    console.log(error);
-    res.json({ message: error, status: "faild" });
-  }
-};
