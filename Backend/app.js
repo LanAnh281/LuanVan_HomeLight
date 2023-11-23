@@ -10,6 +10,27 @@ const bodyParser = require("body-parser");
 const schedule = require("node-schedule");
 
 const app = express();
+// //
+// const admin = require("firebase-admin");
+// const serviceAccount = require("./serviceAccountKey.json");
+
+// // Khởi tạo Firebase Admin SDK
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: "https://hlight-f4625-default-rtdb.firebaseio.com",
+// });
+
+// // Thao tác với Firebase Realtime Database
+// const db = admin.database();
+// const ref = db.ref("messages");
+
+// // Viết dữ liệu vào Firebase Realtime Database
+// ref.push({
+//   text: "Hello, Firebase!",
+// });
+
+// console.log("Data has been written to Firebase Realtime Database.");
+//
 app.use(cors());
 
 app.use(morgan("dev"));
