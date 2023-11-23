@@ -134,13 +134,13 @@ export default {
 };
 </script>
 <template>
-  <div class="body m-0 container-fluid">
+  <div class="body">
     <div class="row my-3">
       <h5 class="title text-center col-12 p-0">Thông tin phòng trọ</h5>
       <span class="text-center p-0 mx-auto dash col-12"> </span>
 
       <div class="row mx-2 col-12">
-        <div class="col-4">
+        <div class="col-md-4 col-12">
           <div
             id="carouselExampleCaptions"
             class="carousel slide"
@@ -199,38 +199,38 @@ export default {
           </div>
         </div>
         <!--  -->
-        <div class="col">
+        <div class="col-md-7 col-12">
           <div class="row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Tên nhà trọ:</p>
+            <p class="col-md-2 col-4">Tên nhà trọ:</p>
             <p class="col">
               {{ data.item.Rooms[0].BoardingHouse.name }}
             </p>
           </div>
           <div class="row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Phòng trọ :</p>
+            <p class="col-md-2 col-4">Phòng trọ :</p>
             <p class="col p-0 m-0">{{ data.item.Rooms[0].name }}</p>
           </div>
           <div class="row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Diện tích:</p>
+            <p class="col-md-2 col-4">Diện tích:</p>
             <p class="col p-0 m-0">
               {{ data.item.Rooms[0].long }} x {{ data.item.Rooms[0].wide }} m²
             </p>
           </div>
 
           <div class="row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Giá thuê :</p>
+            <p class="col-md-2 col-4">Giá thuê :</p>
             <p class="col">
               {{ formatCurrency(data.item.Rooms[0].price) }}
             </p>
           </div>
           <div class="col-12 row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Mô tả :</p>
+            <p class="col-md-2 col-4">Mô tả :</p>
             <p class="col">
               {{ data.item.Rooms[0].content }}
             </p>
           </div>
           <div class="col-12 row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Tiện ích :</p>
+            <p class="col-md-2 col-4">Tiện ích :</p>
             <p
               class="p-1"
               v-for="(value, index) in data.item.Rooms[0].Amenities"
@@ -240,7 +240,7 @@ export default {
             </p>
           </div>
           <div class="row justify-content-start p-0 m-0 roomInfo">
-            <p class="col-2">Địa chỉ:</p>
+            <p class="col-md-2 col-4">Địa chỉ:</p>
             <p class="col">
               {{ data.item.Rooms[0].BoardingHouse.address }}
             </p>
@@ -253,7 +253,7 @@ export default {
       <h5 class="title text-center col-12 p-0">Dịch vụ</h5>
       <span class="text-center p-0 mx-auto dash col-12"> </span>
       <div class="row col-12">
-        <div class="col-8">
+        <div class="col-md-8 col-12">
           <!-- <Table
             class="col-12 p-0"
             :data="data.services"
@@ -288,7 +288,7 @@ export default {
             </tbody>
           </table>
         </div>
-        <div class="col w-100">
+        <div class="col-md d-md-block d-none w-100">
           <img
             src="https://images.pexels.com/photos/1439373/pexels-photo-1439373.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             alt="ảnh dịch vụ"
@@ -302,44 +302,57 @@ export default {
       <h5 class="title text-center col-12 p-0">Hỗ trợ</h5>
       <span class="text-center p-0 mx-auto dash"> </span>
       <div class="col-12 row">
-        <div class="col-4">
+        <div class="col-md d-md-block d-none">
           <img src="../../../assets/image/roominfo.jpg" class="w-100 h-75" />
         </div>
         <div class="col">
           <!--  -->
           <div class="row">
-            <div class="col-9 m-0 ml-3 p-0">
+            <div class="col-md-8 col-12 m-0 ml-3 p-0">
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-2 m-0">Tên chủ trọ :</p>
+                <p class="col-md-2 col-5 m-0">Tên chủ trọ :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.userName }}
                 </p>
               </div>
 
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-2 m-0">Điện thoại :</p>
+                <p class="col-md-2 col-5 m-0">Điện thoại :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.phone }}
                 </p>
               </div>
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-2 m-0">Email :</p>
+                <p class="col-md-2 col-5 m-0">Email :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.email }}
                 </p>
               </div>
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-2 m-0">Địa chỉ :</p>
+                <p class="col-md-2 col-5 m-0">Địa chỉ :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.address }}
                 </p>
               </div>
             </div>
-            <div class="col-2 m-0 p-0 card mb-5 roomInfo">
+            <!-- <div class="col-md-2 d-none d-md-block m-0 p-0 card mb-5 roomInfo">
               <img :src="data.item.Rooms[0].qrCodeUrl" alt="QR" class="mx-2" />
               <p class="card-text text-center text-info mb-3">
                 Liên hệ qua SĐT
               </p>
+            </div> -->
+            <div
+              class="col-md-3 d-none d-md-block card mx-2 p-0 text-center h-50"
+            >
+              <img
+                :src="data.item.Rooms[0].qrCodeUrl"
+                alt="QR"
+                class="mx-auto p-0"
+              />
+
+              <div class="card-body m-0 p-0 pb-2 roomInfo w-100">
+                <p class="card-text text-info">Liên hệ qua SĐT</p>
+              </div>
             </div>
           </div>
           <!--  -->

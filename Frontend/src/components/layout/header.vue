@@ -48,6 +48,8 @@ export default {
       noti: 0,
       sizeNoti: 2,
       position: "",
+      screenWidth: 0,
+      screenHeight: 0,
     });
     let intervalId = null;
     const isRegistration = ref(false);
@@ -178,6 +180,17 @@ export default {
         // data.active = "homepage";
 
         await refresh();
+        data.screenWidth =
+          window.innerWidth ||
+          document.documentElement.clientWidth ||
+          document.body.clientWidth;
+        data.screenHeight =
+          window.innerHeight ||
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+
+        console.log(`Chiều rộng màn hình: ${data.screenWidth}px`);
+        console.log(`Chiều cao màn hình: ${data.screenHeight}px`);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -224,10 +237,12 @@ export default {
           style="width: 50px; height: 50px"
         />
       </div>
-      <div class="col m-0">
+      <div class="col m-0 desktop mobile">
         <div class="d-flex flex-column m-0">
           <div class="row justify-content-between mb-2 m-0 p-0">
-            <div class="col-8 row menu m-0 p-0">
+            <div
+              class="col-md-3 col-12 row menu m-0 p-0 justify-content-around"
+            >
               <router-link
                 class="mr-3 ml-2"
                 :class="value.active == data.active ? 'isActive' : ''"
@@ -246,28 +261,30 @@ export default {
               </router-link>
             </div>
             <div
-              class="row justify-content-end menu p-0 m-0 float-right"
-              :class="!position ? 'col-3' : 'col-2'"
+              class="row col-md-2 col-12 menu p-0 m-0 desktop mobile"
+              :class="[
+                !position ? 'col-3' : 'col-2',
+                data.screenWidth < 600
+                  ? 'justify-content-end'
+                  : 'justify-content-around',
+              ]"
             >
               <div
                 v-if="!position"
-                class="col-3 m-0 p-0 mt-1"
+                class="m-0 p-0 mt-1 px-2 desktop mobile"
                 data-toggle="modal"
                 data-target="#registrationModal"
-                style="font-size: 16px"
                 @click="isRegistration = !isRegistration"
               >
                 Đăng ký
               </div>
               <div
                 v-if="!position"
-                style="border-right: 1px solid #ccc; height: 24px"
-                class="mt-2"
+                style="border-right: 1px solid #ccc; height: 16px"
+                class="mt-2 desktop mobile"
               ></div>
-              <div class="col-4 m-0 p-0 px-2 mt-1" v-if="!position">
-                <router-link :to="{ name: 'login' }" style="font-size: 16px"
-                  >Đăng nhập
-                </router-link>
+              <div class="m-0 p-0 px-1 mt-1 desktop mobile" v-if="!position">
+                <router-link :to="{ name: 'login' }">Đăng nhập </router-link>
               </div>
 
               <!-- Noti -->
@@ -525,5 +542,13 @@ a:hover {
   border-radius: 50%;
   padding: 0px 4px;
   font-size: 12px;
+}
+.desktop {
+  font-size: 16px;
+}
+@media only screen and (max-width: 600px) {
+  .mobile {
+    font-size: 12px;
+  }
 }
 </style>

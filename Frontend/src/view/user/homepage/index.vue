@@ -30,6 +30,8 @@ export default {
       ],
       systems: [{ content: "" }],
       services: [{ name: "", price: "", unit: "" }],
+      screenWidth: 0,
+      screenHeight: 0,
     });
     const isRegistration = ref(false);
     const imageSrc = (url) => {
@@ -49,6 +51,18 @@ export default {
             serviceUnit: service[2],
           };
         });
+
+        data.screenWidth =
+          window.innerWidth ||
+          document.documentElement.clientWidth ||
+          document.body.clientWidth;
+        data.screenHeight =
+          window.innerHeight ||
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+
+        console.log(`Chiều rộng màn hình: ${data.screenWidth}px`);
+        console.log(`Chiều cao màn hình: ${data.screenHeight}px`);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -76,7 +90,7 @@ export default {
       id="carouselExampleControls"
       class="carousel slide col-12 m-auto"
       data-ride="carousel"
-      style="height: 640px"
+      :style="{ height: `${data.screenHeight}px` }"
     >
       <div class="carousel-inner">
         <div
@@ -86,10 +100,13 @@ export default {
           :class="{ active: index === 0 }"
         >
           <img
-            class="d-block w-100"
+            class="d-block w-100 responsive"
             :src="imageSrc(image.src)"
             :alt="image.alt"
-            style="object-fit: cover; height: 620px; width: 100wh"
+            :style="{
+              width: `${data.screenWidth}px`,
+              height: `${data.screenHeight}px`,
+            }"
           />
         </div>
       </div>
@@ -176,7 +193,7 @@ export default {
     </div>
 
     <div class="row justify-content-around mx-3 my-3">
-      <div class="inner col-4">
+      <div class="inner col-12 col-md-4">
         <div class="box-icon">
           <img
             src="../../../assets/image/homepage9.jpg"
@@ -192,7 +209,7 @@ export default {
         </div>
       </div>
       <!--  -->
-      <div class="inner col-4">
+      <div class="inner col-12 col-md-4">
         <div class="box-icon m-0 p-0">
           <img
             src="../../../assets/image/homepage10.jpg"
@@ -208,7 +225,7 @@ export default {
           dõi thông tin về phòng trọ của mình.
         </div>
       </div>
-      <div class="inner col-4">
+      <div class="inner col-12 col-md-4">
         <div class="box-icon m-0 p-0">
           <img
             src="../../../assets/image/homepage13.jpg"
@@ -227,7 +244,7 @@ export default {
     </div>
 
     <div class="mx-3 row">
-      <div class="col-4">
+      <div class="col-12 col-md-4">
         <img
           src="../../../assets/image/homepage16.jpg"
           class="w-100"
@@ -381,5 +398,8 @@ p {
   100% {
     opacity: 1;
   }
+}
+.responsive {
+  object-fit: cotain;
 }
 </style>
