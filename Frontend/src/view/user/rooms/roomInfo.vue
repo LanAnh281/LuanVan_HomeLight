@@ -208,11 +208,11 @@ export default {
           </div>
           <div class="row justify-content-start p-0 m-0 roomInfo">
             <p class="col-md-2 col-4">Phòng trọ :</p>
-            <p class="col p-0 m-0">{{ data.item.Rooms[0].name }}</p>
+            <p class="col">{{ data.item.Rooms[0].name }}</p>
           </div>
           <div class="row justify-content-start p-0 m-0 roomInfo">
             <p class="col-md-2 col-4">Diện tích:</p>
-            <p class="col p-0 m-0">
+            <p class="col">
               {{ data.item.Rooms[0].long }} x {{ data.item.Rooms[0].wide }} m²
             </p>
           </div>
@@ -232,7 +232,7 @@ export default {
           <div class="col-12 row justify-content-start p-0 m-0 roomInfo">
             <p class="col-md-2 col-4">Tiện ích :</p>
             <p
-              class="p-1"
+              style="padding: 0 5px"
               v-for="(value, index) in data.item.Rooms[0].Amenities"
               :key="index"
             >
@@ -310,26 +310,26 @@ export default {
           <div class="row">
             <div class="col-md-8 col-12 m-0 ml-3 p-0">
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-2 col-5 m-0">Tên chủ trọ :</p>
+                <p class="col-md-3 col-5 m-0">Tên chủ trọ :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.userName }}
                 </p>
               </div>
 
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-2 col-5 m-0">Điện thoại :</p>
+                <p class="col-md-3 col-5 m-0">Điện thoại :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.phone }}
                 </p>
               </div>
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-2 col-5 m-0">Email :</p>
+                <p class="col-md-3 col-5 m-0">Email :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.email }}
                 </p>
               </div>
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-2 col-5 m-0">Địa chỉ :</p>
+                <p class="col-md-3 col-5 m-0">Địa chỉ :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.address }}
                 </p>

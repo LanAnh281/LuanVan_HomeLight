@@ -88,43 +88,46 @@ export default {
           return item.userId == data.item.BoardingHouse.userId;
         });
         //gg map
-        data.item.url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyCqNLriKAssr6bSDriqJg2YdfwqdBAYy30&q=${data.item.BoardingHouse.address}`;
-        // console.log(data.item);
-        // //Map
-        // // Tạo bản đồ
-        // const map = L.map("map").setView([0, 0], 12);
 
-        // // Sử dụng dữ liệu OpenStreetMap miễn phí
-        // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-        //   map
-        // );
+        // data.item.url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAfBTUmNCOXHwBa0KNlsv4Eaxx_jBFY0EQ&q=${data.item.BoardingHouse.address}`;
+        // // AIzaSyCqNLriKAssr6bSDriqJg2YdfwqdBAYy30
+        // // console.log(data.item);
 
-        // // Tên địa điểm bạn muốn tìm
-        // const locationName = data.item.BoardingHouse.address;
+        //Map
+        // Tạo bản đồ
+        const map = L.map("map").setView([0, 0], 12);
 
-        // // Sử dụng dịch vụ OpenStreetMap Nominatim
-        // const response = await fetch(
-        //   `https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`
-        // );
-        // const dataMap = await response.json();
+        // Sử dụng dữ liệu OpenStreetMap miễn phí
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+          map
+        );
 
-        // // Kiểm tra xem có kết quả trả về từ dịch vụ geocoding không
-        // if (dataMap && dataMap.length > 0) {
-        //   // Trích xuất tọa độ từ kết quả đầu tiên
-        //   const firstResult = dataMap[0];
-        //   const coordinates = [
-        //     parseFloat(firstResult.lat),
-        //     parseFloat(firstResult.lon),
-        //   ];
+        // Tên địa điểm bạn muốn tìm
+        const locationName = data.item.BoardingHouse.address;
 
-        //   // Chuyển đến vị trí tìm thấy trên bản đồ
-        //   map.setView(coordinates, 50);
+        // Sử dụng dịch vụ OpenStreetMap Nominatim
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`
+        );
+        const dataMap = await response.json();
 
-        //   // Thêm marker cho địa điểm tìm thấy
-        //   L.marker(coordinates).addTo(map);
-        // } else {
-        //   console.error("Không tìm thấy địa điểm.");
-        // }
+        // Kiểm tra xem có kết quả trả về từ dịch vụ geocoding không
+        if (dataMap && dataMap.length > 0) {
+          // Trích xuất tọa độ từ kết quả đầu tiên
+          const firstResult = dataMap[0];
+          const coordinates = [
+            parseFloat(firstResult.lat),
+            parseFloat(firstResult.lon),
+          ];
+
+          // Chuyển đến vị trí tìm thấy trên bản đồ
+          map.setView(coordinates, 50);
+
+          // Thêm marker cho địa điểm tìm thấy
+          L.marker(coordinates).addTo(map);
+        } else {
+          console.error("Không tìm thấy địa điểm.");
+        }
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -359,17 +362,22 @@ export default {
       </div> -->
     </div>
     <hr />
-    <h5 class="my-5 title">Bản đồ</h5>
-    <!-- <div id="map" style="height: 400px; width: 100%"></div> -->
+    <h5 class="my-3 title">Bản đồ</h5>
+    <a
+      :href="`https://www.google.com/maps/place/'${data.item.BoardingHouse.address}'`"
+      >{{ data.item.BoardingHouse.address }}</a
+    >
 
-    <iframe
+    <div id="map" style="height: 400px; width: 100%"></div>
+
+    <!-- <iframe
       width="100%"
       height="450"
       frameborder="0"
       style="border: 0"
       :src="`${data.item.url}`"
       allowfullscreen
-    ></iframe>
+    ></iframe> -->
 
     <!-- Rooms -->
     <hr />

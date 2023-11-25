@@ -241,7 +241,7 @@ export default {
         <div class="d-flex flex-column m-0">
           <div class="row justify-content-between mb-2 m-0 p-0">
             <div
-              class="col-md-3 col-12 row menu m-0 p-0 justify-content-around"
+              class="col-md-2 col-12 row menu m-0 p-0 justify-content-around"
             >
               <router-link
                 class="mr-3 ml-2"
@@ -271,7 +271,7 @@ export default {
             >
               <div
                 v-if="!position"
-                class="m-0 p-0 mt-1 px-2 desktop mobile"
+                class="m-0 p-0 px-2 desktop mobile"
                 data-toggle="modal"
                 data-target="#registrationModal"
                 @click="isRegistration = !isRegistration"
@@ -281,10 +281,12 @@ export default {
               <div
                 v-if="!position"
                 style="border-right: 1px solid #ccc; height: 16px"
-                class="mt-2 desktop mobile"
+                class="mt-2 desktop"
               ></div>
-              <div class="m-0 p-0 px-1 mt-1 desktop mobile" v-if="!position">
-                <router-link :to="{ name: 'login' }">Đăng nhập </router-link>
+              <div class="px-1 desktop" v-if="!position">
+                <router-link :to="{ name: 'login' }" class="desktop mobile"
+                  >Đăng nhập
+                </router-link>
               </div>
 
               <!-- Noti -->
