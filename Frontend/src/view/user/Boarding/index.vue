@@ -212,7 +212,7 @@ export default {
 <template>
   <div class="body container-fluid m-0 pr-5" v-if="data.items">
     <div class="row m-0 text-center mt-2">
-      <div class="input-group col-2" style="margin-left: 5%">
+      <div class="input-group col-md-2 col-4">
         <Select
           :title="`Chọn thành phố`"
           :data="data.city.data"
@@ -220,7 +220,7 @@ export default {
           style="height: 38px"
         ></Select>
       </div>
-      <div class="input-group col-2">
+      <div class="input-group col-md-2 col-4">
         <Select
           :title="`Chọn quận huyện`"
           :data="data.district.data.districts"
@@ -229,7 +229,7 @@ export default {
         ></Select>
       </div>
 
-      <div class="input-group col-2">
+      <div class="input-group col-md-2 col-4">
         <Select
           :title="`Chọn phường xã`"
           :data="data.ward.data.wards"
@@ -244,7 +244,7 @@ export default {
           @choose="(value) => (data.selectPrice = value)"
         ></selectNormal>
       </div> -->
-      <div class="input-group col-3" style="z-index: 0">
+      <div class="input-group col-md-3 col-12" style="z-index: 0">
         <input
           type="search"
           v-model="data.searchText"
@@ -255,13 +255,10 @@ export default {
       </div>
     </div>
 
-    <div
-      class="row m-2"
-      style="display: grid; grid-template-columns: repeat(5, 1fr)"
-    >
+    <div class="row m-2">
       <router-link
         :to="{ name: 'rooms', query: { _id: value._id } }"
-        class="card p-2 mb-2 mx-1"
+        class="card p-2 mb-2 col-md-2 col-6"
         style=""
         v-for="(value, index) in data.setPage"
         :key="index"

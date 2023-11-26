@@ -310,8 +310,8 @@ export default {
           <!-- <p>Tháng {{ now.getMonth() + 1 }} / {{ now.getFullYear() }}</p> -->
         </div>
         <div class="col-12 row mx-1 m-0 px-1 p-0 roomInfo">
-          <p class="col-1 m-0 p-0">Phòng :</p>
-          <p class="col-10 m-0 p-0">{{ data.item.Rooms[0].name }}</p>
+          <p class="col-md-1 col-3 m-0 p-0">Phòng :</p>
+          <p class="col-md-10 col-9 m-0 p-0">{{ data.item.Rooms[0].name }}</p>
         </div>
 
         <table class="table mt-2 mx-2">

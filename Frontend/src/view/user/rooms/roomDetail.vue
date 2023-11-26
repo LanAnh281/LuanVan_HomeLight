@@ -170,16 +170,17 @@ export default {
 
     <span class="title" style="font-size: 16px">Phòng </span>
     <div class="row" v-if="data.item.BoardingHouse">
-      <img
+      <!-- <img
         v-if="data.item.status == true"
         src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
         alt="ảnh sold out"
-        style="position: absolute; z-index: 1; margin-left: 42%; width: 8%"
-      />
+        style="margin-left: 42%; width: 8%"
+        class="col-1"
+      /> -->
 
       <div
         id="carouselExampleCaptions"
-        class="carousel slide col-6"
+        class="carousel slide col-md-6 col-12"
         style="z-index: 0"
         data-ride="carousel"
       >
@@ -230,29 +231,38 @@ export default {
       <!-- Infor -->
       <div class="col mx-2">
         <div class="row p-0">
-          <h4 style="font-family: Amarillo; font-weight: 700">
-            Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
-            {{ data.item.name }}
-          </h4>
-          <h6 class="col-12">
-            <span
-              class="text-danger"
-              style="font-size: 18px; font-family: Amarillo; font-weight: 700"
-              >Giá thuê:
+          <div class="col-md-6 col-10">
+            <h4 style="font-family: Amarillo; font-weight: 700">
+              Nhà trọ {{ data.item.BoardingHouse.name }} - Phòng
+              {{ data.item.name }}
+            </h4>
+            <h6 class="">
+              <span
+                class="text-danger"
+                style="font-size: 18px; font-family: Amarillo; font-weight: 700"
+                >Giá thuê:
 
-              {{ formatCurrency(data.item.price) }}
+                {{ formatCurrency(data.item.price) }}
 
-              /tháng</span
-            >
-            - {{ data.item.long * data.item.wide }}m²
-          </h6>
+                /tháng</span
+              >
+              - {{ data.item.long * data.item.wide }}m²
+            </h6>
+          </div>
+
+          <img
+            v-if="data.item.status == true"
+            src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
+            alt="ảnh sold out"
+            style="width: 16%"
+          />
         </div>
 
         <div class="row p-0 roomInfo">
           <h6 class="m-0 col-12">Mô tả chi tiết</h6>
 
-          <p class="col-12 p-0 ml-2 mb-0 roomInfo">
-            <span class="mr-3"> Chiều dài: {{ data.item.long }}m </span>
+          <p class="col-md-12 col-12 p-0 ml-3 mb-0 roomInfo">
+            <span class="mr-3 m-0"> Chiều dài: {{ data.item.long }}m </span>
             <span>Chiều rộng: {{ data.item.wide }}m</span>
           </p>
         </div>
@@ -265,7 +275,7 @@ export default {
             v-show="data.item.content != 'undefined'"
             v-for="(value, index) in data.item.content"
             :key="index"
-            class="col-12 m-0 py-0"
+            class="col-md-12 col-12 m-0 py-0"
           >
             {{ value }}
           </p>
@@ -276,18 +286,18 @@ export default {
           <p
             v-for="(value, index) in data.item.Amenities"
             :key="index"
-            class="ml-2 m-0 pt-0"
+            class="ml-3 m-0 pt-0"
           >
             {{ value.name }} ,
           </p>
         </div>
 
         <div class="row p-0 roomInfo">
-          <h6 class="col-12 m-0">Giá dịch vụ</h6>
+          <h6 class="col-md-12 col-12 m-0">Giá dịch vụ</h6>
           <div
             v-for="(value, index) in data.services"
             :key="index"
-            class="col-3 m-0 pt-0"
+            class="col-md-3 col-12 m-0 pt-0"
           >
             {{ capitalizeFirstLetter(value.name) }} :
             {{ formatCurrency(value.price) }}/ {{ value.unit }}
@@ -295,14 +305,14 @@ export default {
         </div>
 
         <div class="row p-0 mb-2 roomInfo">
-          <h6 class="col-12 m-0">Liên hệ</h6>
-          <p class="m-0 p-0 col-12">
+          <h6 class="col-md-12 col-12 m-0">Liên hệ</h6>
+          <p class="m-0 p-0 ml-3 col-12">
             <span class="material-symbols-outlined text-danger">
               home_pin
             </span>
             Địa chỉ: {{ data.item.BoardingHouse.address }}
           </p>
-          <p class="m-0 p-0">
+          <p class="m-0 p-0 ml-3">
             <span class="material-symbols-outlined m-0 p-0 text-info"
               >phone
             </span>
@@ -328,7 +338,7 @@ export default {
             Nhắn tin với chủ trọ
           </button>
           <strong>Hoặc</strong>
-          <div class="col-3 card mx-2 p-0 text-center">
+          <div class="col-md-3 col card mx-2 p-0 text-center">
             <img :src="data.item.qrCodeUrl" alt="QR" class="mx-auto p-0" />
             <div class="card-body m-0 p-0 pb-2 roomInfo w-100">
               <p class="card-text text-info">Liên hệ qua SĐT</p>
@@ -385,7 +395,7 @@ export default {
     <div class="row m-2">
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"
-        class="card p-2 mb-2 col-2"
+        class="card p-2 mb-2 col-md-2 col-6"
         v-for="(value, index) in room.setPage"
         :key="index"
       >
