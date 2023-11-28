@@ -45,6 +45,7 @@ export default {
         data.item.forEach(async (value) => {
           value.name = sanitizeInput(value.name);
           value.unit = sanitizeInput(value.unit);
+          value.name = value.name.charAt(0).toUpperCase() + value.name.slice(1);
           const document = await serviceService.create(value);
           emit("add");
         });

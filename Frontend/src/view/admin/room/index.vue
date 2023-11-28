@@ -250,7 +250,7 @@ export default {
   <div class="body m-0 pl-3">
     <!-- Status  and fee-->
     <div class="border-radius mb-3 row m-0 justify-content-start">
-      <div class="input-group col-2 align-items-center pt-0 pr-0 mr-1 mt-1">
+      <div class="input-group col-md-2 col-3 align-items-center pt-0 pr-0 mt-1">
         <Select
           :title="`Trạng thái phòng`"
           :data="data.status"
@@ -259,7 +259,7 @@ export default {
           style="background-color: var(--background)"
         ></Select>
       </div>
-      <div class="input-group col-2 align-items-center p-0">
+      <div class="input-group col-md-2 col-3 align-items-center pt-0 pr-0 mt-1">
         <Select
           :title="`Chọn nhà trọ`"
           :data="data.boarding"
@@ -277,7 +277,9 @@ export default {
           class="select"
         ></Select>
       </div>
-      <div class="input-group col-7 align-items-center">
+      <div
+        class="input-group col-md-7 col align-items-center pt-0 pr-0 mr-1 mt-1"
+      >
         <input
           type="search"
           placeholder="tìm kiếm theo tên phòng trọ"
@@ -320,7 +322,7 @@ export default {
           </span>
         </button>
       </div> -->
-      <div class="col-8 mr-1 p-0 row justify-content-end mr-3">
+      <div class="col-md-8 col-12 mr-1 p-0 row justify-content-end mr-3">
         <div class="mr-1">
           <button
             class="btn btn-primary p-0"

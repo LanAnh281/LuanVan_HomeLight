@@ -128,6 +128,8 @@ export default {
         } else {
           console.error("Không tìm thấy địa điểm.");
         }
+
+        room.items = room.items.sort((a, b) => a.price - b.price);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -229,7 +231,7 @@ export default {
         </button>
       </div>
       <!-- Infor -->
-      <div class="col mx-2">
+      <div class="col mx-2 p-0">
         <div class="row p-0">
           <div class="col-md-6 col-10">
             <h4 style="font-family: Amarillo; font-weight: 700">
@@ -297,9 +299,9 @@ export default {
           <div
             v-for="(value, index) in data.services"
             :key="index"
-            class="col-md-3 col-12 m-0 pt-0"
+            class="col-md-4 col-12 m-0 pt-0"
           >
-            {{ capitalizeFirstLetter(value.name) }} :
+            - {{ capitalizeFirstLetter(value.name) }} :
             {{ formatCurrency(value.price) }}/ {{ value.unit }}
           </div>
         </div>
@@ -468,5 +470,8 @@ a:hover {
 .roomInfo > * {
   font-family: "Amarillo";
   font-size: 18px;
+}
+h6 {
+  font-weight: bold;
 }
 </style>

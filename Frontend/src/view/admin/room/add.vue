@@ -423,6 +423,7 @@ export default {
                   v-for="(value, index) in data.categories"
                   :key="index"
                   @click="data.active = value.active"
+                  class="ml-1"
                 >
                   <div class="row my-3 list">
                     <span class="material-symbols-outlined mr-2 py-1 icon">
@@ -438,7 +439,7 @@ export default {
                 </li>
               </ul>
               <!-- phòng trọ -->
-              <div class="col-sm-10">
+              <div class="col-sm-10 p-0">
                 <div v-if="data.active == 'room'">
                   <div class="form-group row">
                     <label

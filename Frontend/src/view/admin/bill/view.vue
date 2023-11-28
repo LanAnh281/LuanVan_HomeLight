@@ -232,7 +232,7 @@ export default {
 
             <div class="col-sm-9 m-0 p-0 mt-2" v-if="data.active == 'bill'">
               <div class="row justify-content-between mx-2">
-                <div class="col-9 row">
+                <div class="col-8 row">
                   <div class="col-12">Nhà trọ: {{ data.boarding["name"] }}</div>
                   <div class="col-12">
                     Điện thoại: {{ data.boarding["phone"] }}
@@ -241,7 +241,7 @@ export default {
                     Địa chỉ: {{ data.boarding["address"] }}
                   </div>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                   Ngày lập: {{ data.item.day }}/{{ data.item.month }}/
                   {{ data.item.year }}
                 </div>

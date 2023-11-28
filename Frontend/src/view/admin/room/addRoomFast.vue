@@ -418,7 +418,7 @@ export default {
             style="text-align: start"
           >
             <div class="form-group row">
-              <ul class="col-sm-2 p-0" style="margin-top: -3%">
+              <ul class="col-2 p-0" style="margin-top: -3%">
                 <li
                   v-for="(value, index) in data.categories"
                   :key="index"
@@ -438,16 +438,13 @@ export default {
                 </li>
               </ul>
               <!-- nhà trọ -->
-              <div class="col-sm-10">
+              <div class="col-10">
                 <div v-if="data.active == 'room'">
                   <div class="form-group row">
-                    <label
-                      for="inputname"
-                      class="col-sm-3 col-form-label p-0 m-0"
-                    >
+                    <label for="inputname" class="col-2 col-form-label p-0 m-0">
                       Nhà trọ :</label
                     >
-                    <div class="col-sm-9">
+                    <div class="col">
                       <Select
                         :title="'Chọn nhà trọ'"
                         :data="boarding"
@@ -468,12 +465,10 @@ export default {
 
                   <!--  -->
                   <div class="form-group row">
-                    <label
-                      for="inputfromroom"
-                      class="col-sm-3 col-form-label p-0"
+                    <label for="inputfromroom" class="col-2 col-form-label p-0"
                       >Từ phòng:</label
                     >
-                    <div class="col-sm-9">
+                    <div class="col">
                       <input
                         type="number"
                         class="form-control"
@@ -499,10 +494,10 @@ export default {
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="inputtoroom" class="col-sm-3 col-form-label p-0"
+                    <label for="inputtoroom" class="col-2 col-form-label p-0"
                       >Đến phòng :</label
                     >
-                    <div class="col-sm-9">
+                    <div class="col">
                       <input
                         type="number"
                         class="form-control"
@@ -528,10 +523,10 @@ export default {
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="inputprice" class="col-sm-3 col-form-label p-0"
+                    <label for="inputprice" class="col-2 col-form-label p-0"
                       >Giá phòng :</label
                     >
-                    <div class="col-sm-9">
+                    <div class="col">
                       <input
                         type="number"
                         class="form-control"
@@ -557,10 +552,10 @@ export default {
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="inputlong" class="col-sm-3 col-form-label p-0"
+                    <label for="inputlong" class="col-2 col-form-label p-0"
                       >Chiều dài :</label
                     >
-                    <div class="col-sm-9">
+                    <div class="col">
                       <input
                         type="number"
                         class="form-control"
@@ -586,10 +581,10 @@ export default {
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="inputwide" class="col-sm-3 col-form-label p-0"
+                    <label for="inputwide" class="col-2 col-form-label p-0"
                       >Chiều rộng :</label
                     >
-                    <div class="col-sm-9">
+                    <div class="col">
                       <input
                         type="number"
                         class="form-control"
@@ -616,12 +611,10 @@ export default {
                   </div>
 
                   <div class="form-group row">
-                    <label
-                      for="inputContent"
-                      class="col-sm-3 col-form-label p-0"
+                    <label for="inputContent" class="col-2 col-form-label p-0"
                       >Mô tả thêm :</label
                     >
-                    <div class="col-sm-9">
+                    <div class="col">
                       <textarea
                         type="text"
                         class="form-control"

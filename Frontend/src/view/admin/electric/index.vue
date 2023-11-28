@@ -208,7 +208,7 @@ export default {
         const documentUti = await utilityReadingsService.create(value);
 
         if (documentUti["status"] == "success") {
-          successAd("Thêm điện nước thành công");
+          successAd("Lưu điện nước thành công");
         }
       } catch (error) {
         if (error.response) {

@@ -347,7 +347,7 @@ export default {
         />
         <div class="row col-8 justify-content-end">
           <button
-            class="btn btn-primary p-0 m-0 col-3"
+            class="btn btn-primary col-2 my-2"
             data-toggle="modal"
             data-target="#serviceModal"
             @click="() => (data.isService = !data.isService)"
@@ -368,7 +368,7 @@ export default {
           <!-- component dịch vụ thuê -->
           <Service v-if="data.isService"> </Service>
           <button
-            class="btn btn-warning p-0 mt-0 mx-2 col-6"
+            class="btn btn-warning p-0 mt-0 mx-2 col-2 my-2"
             style="width: 110px; height: 36px"
             data-toggle="modal"
             data-target="#mailModal"

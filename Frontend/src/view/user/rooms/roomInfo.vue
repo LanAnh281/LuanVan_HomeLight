@@ -9,6 +9,7 @@ import serviceService from "../../../service/service.service";
 import service_roomService from "../../../service/service_room.service";
 import notificationService from "../../../service/notification.service";
 import user_notificationService from "../../../service/user_notification.service";
+import mailService from "../../../service/mail.service";
 // js
 import { formatCurrency } from "../../../assets/js/format.common";
 import { successAd } from "../../../assets/js/common.alert";
@@ -82,12 +83,31 @@ export default {
       try {
         if (!data.flag) {
           // data.submit = "Đang gửi tin...";
+          console.log(data.item);
           data.message.content = `Nhà trọ ${data.item.Rooms[0].BoardingHouse.name} - Phòng ${data.item.Rooms[0].name} - Vấn đề ${data.message.comment}`;
           const documentNoti = await notificationService.create(data.message);
-
           const documentUserNoti = await user_notificationService.create({
             NotificationId: documentNoti.message["_id"],
             UserId: data.item.Rooms[0].BoardingHouse.User._id,
+          });
+          // send mail
+          const documentMail = await mailService.sendMail({
+            title: "[Phản ánh] từ khách trọ",
+            content: `<h3>Quản lý nhà trọ HomeLight kính chào Anh/Chị: ${data.item.Rooms[0].BoardingHouse.User.userName}</h3>
+                  <p> Anh/Chị vừa nhận được sự phản ánh từ khách trọ đối với phòng trọ ${data.item.Rooms[0].name} của nhà trọ ${data.item.Rooms[0].BoardingHouse.name}.
+                    <p>Dưới đây là thông tin liên hệ của khách trọ :</p>
+                  <ul>
+                    <li>Họ và tên : ${data.item.userName}</li>
+                    <li>SĐT : ${data.item.phone}</li>
+                    <li>Email : ${data.item.email}</li>
+                    <li>Nội dung phản ánh của khách hàng : ${data.message.comment}</li>
+                  </ul>
+                
+                  <p>Mọi thắc mắc và góp ý, xin Anh/Chị vui lòng liên hệ với chúng tôi qua:</p>
+                  <p> Email hỗ trợ: info@maple.com.vn </p>
+                  <p> Điện thoại: 0915 85 0918</p>
+                  <p>HomeLight trân trọng cảm ơn và rất hân hạnh được phục vụ Anh/Chị.</p>`,
+            mail: `${data.item.Rooms[0].BoardingHouse.User.email}`,
           });
           socket.emit("createNoti", data.item);
           // data.submit = "Gửi tin nhắn";
@@ -137,9 +157,9 @@ export default {
   <div class="body">
     <div class="row my-3">
       <h5 class="title text-center col-12 p-0">Thông tin phòng trọ</h5>
-      <span class="text-center p-0 mx-auto dash col-12"> </span>
+      <span class="text-center p-0 mx-auto dash"> </span>
 
-      <div class="row mx-2 col-12">
+      <div class="row mx-2 col-12 py-2">
         <div class="col-md-4 col-12">
           <div
             id="carouselExampleCaptions"
@@ -199,7 +219,7 @@ export default {
           </div>
         </div>
         <!--  -->
-        <div class="col-md-7 col-12">
+        <div class="col-md-7 col-12 p-0">
           <div class="row justify-content-start p-0 m-0 roomInfo">
             <p class="col-md-2 col-4">Tên nhà trọ:</p>
             <p class="col">
@@ -232,9 +252,9 @@ export default {
           <div class="col-12 row justify-content-start p-0 m-0 roomInfo">
             <p class="col-md-2 col-4">Tiện ích :</p>
             <p
-              style="padding: 0 5px"
               v-for="(value, index) in data.item.Rooms[0].Amenities"
               :key="index"
+              class="px-3"
             >
               {{ value.name }},
             </p>
@@ -251,8 +271,8 @@ export default {
     <!-- Services -->
     <div class="row my-5 ml-3">
       <h5 class="title text-center col-12 p-0">Dịch vụ</h5>
-      <span class="text-center p-0 mx-auto dash col-12"> </span>
-      <div class="row col-12">
+      <span class="text-center p-0 mx-auto dash"> </span>
+      <div class="row col-12 py-2">
         <div class="col-md-8 col-12">
           <!-- <Table
             class="col-12 p-0"
@@ -301,14 +321,14 @@ export default {
     <div class="row p-0 ml-3 my-5">
       <h5 class="title text-center col-12 p-0">Hỗ trợ</h5>
       <span class="text-center p-0 mx-auto dash"> </span>
-      <div class="col-12 row">
+      <div class="col-12 row py-2">
         <div class="col-md d-md-block d-none">
           <img src="../../../assets/image/roominfo.jpg" class="w-100 h-75" />
         </div>
         <div class="col">
           <!--  -->
           <div class="row">
-            <div class="col-md-8 col-12 m-0 ml-3 p-0">
+            <div class="col-md-8 col-12 m-0 p-0">
               <div class="row justify-content-start p-0 m-0 roomInfo">
                 <p class="col-md-3 col-5 m-0">Tên chủ trọ :</p>
                 <p class="col-6 m-0">
@@ -356,12 +376,12 @@ export default {
             </div>
           </div>
           <!--  -->
-          <form @submit.prevent="save" class="col m-0 p-0 ml-2">
+          <form @submit.prevent="save" class="col m-0 p-0">
             <div class="form-group row roomInfo">
               <label for="inputroom" class="col-sm-2 m-0 col-form-label"
                 >Phản ánh :</label
               >
-              <div class="col">
+              <div class="col p-0">
                 <textarea
                   type="text"
                   class="form-control"

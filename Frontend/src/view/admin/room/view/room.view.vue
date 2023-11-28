@@ -114,8 +114,8 @@ export default {
       </div>
 
       <div class="col-12 row justify-content-start p-0 m-0">
-        <p class="col-1 mr-5 p-0">Mô tả :</p>
-        <p class="col-10 p-0 m-0">
+        <p class="col-1 p-0 mr-4">Mô tả :</p>
+        <p class="col p-0 ml-2">
           {{ data.item.content }}
         </p>
       </div>

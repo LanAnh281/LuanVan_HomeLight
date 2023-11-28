@@ -176,7 +176,7 @@ export default {
         }}
       </h5>
       <Table
-        class="text-center mt-2"
+        class="mt-2"
         :data="data.setPage"
         :fields="[
           'Tên chủ trọ',

@@ -535,7 +535,7 @@ export default {
                   </div>
                   <div class="form-group row">
                     <label for="inputwide" class="col-sm-2 col-form-label p-0"
-                      >Chiều dài :</label
+                      >Chiều rộng :</label
                     >
                     <div class="col-sm-10">
                       <input

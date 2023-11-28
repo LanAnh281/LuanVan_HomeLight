@@ -172,7 +172,7 @@ export default {
           (item) => Number(item.price) <= data.price
         );
 
-        data.items = data.items.sort((a, b) => a.status - b.status);
+        data.items = data.items.sort((a, b) => a.price - b.price);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -302,7 +302,7 @@ export default {
           v-model="data.price"
         />
 
-        {{ formatCurrency(data.price) }} đ
+        {{ formatCurrency(data.price) }}
       </div>
     </div>
     <!-- <input type="range" min="0" max="100" v-model="sliderValue" />

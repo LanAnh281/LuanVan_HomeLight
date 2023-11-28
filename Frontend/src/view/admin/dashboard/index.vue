@@ -349,12 +349,12 @@ export default {
       <div class="border-radius row m-0 justify-content-end">
         <input
           type="month"
-          class="col-2 mt-2 mr-3 select py-0"
+          class="col-md-2 col-3 mt-2 mr-3 select py-0"
           style="border: solid 1px #ccc; border-radius: 4px; height: 34px"
           @input="handleDate"
         />
         <Select
-          class="col-1 mt-2 mr-3 select"
+          class="col-md-1 col-3 mt-2 mr-3 select"
           :title="'Chọn nhà trọ'"
           :data="data.boarding"
           :selected="data.selectBoarding"

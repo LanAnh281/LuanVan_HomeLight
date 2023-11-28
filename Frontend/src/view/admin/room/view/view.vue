@@ -75,7 +75,7 @@ export default {
         </div>
         <div class="modal-body">
           <div class="form-group row">
-            <ul class="col-sm-3 p-0" style="margin-top: -3%">
+            <ul class="col-3 p-0" style="margin-top: -3%">
               <li
                 v-for="(value, index) in data.item"
                 :key="index"
@@ -95,7 +95,7 @@ export default {
               </li>
             </ul>
 
-            <div class="col-sm-9">
+            <div class="col pl-0">
               <room v-if="data.active == 'room'" :_id="_id"></room>
               <customerView
                 v-if="data.active == 'customer'"

@@ -240,20 +240,20 @@ export default {
               <tbody>
                 <tr>
                   <td>Tiền quản lý nhà trọ</td>
-                  <td class="text-center">
+                  <td class="">
                     {{ data.item[0].count }}
                   </td>
-                  <td class="text-center">
+                  <td class="">
                     {{ formatCurrency(data.item[0].servicePrice) }}
                   </td>
-                  <td class="text-center">
+                  <td class="">
                     {{ formatCurrency(data.item[0].total) }}
                   </td>
                 </tr>
                 <tr>
                   <th>Thành tiền</th>
                   <td colspan="2"></td>
-                  <td class="text-center">
+                  <td class="">
                     {{ formatCurrency(data.item[0].total) }}
                   </td>
                 </tr>

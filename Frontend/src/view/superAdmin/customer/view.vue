@@ -278,7 +278,7 @@ export default {
               </div>
               <div class="row justify-content-start p-0 m-0">
                 <label class="col-2 p-0 m-0">Địa chỉ:</label>
-                <label class="col-10 p-0 m-0">{{ dataProp.address }}</label>
+                <label class="col p-0">{{ dataProp.address }}</label>
               </div>
             </div>
           </div>
