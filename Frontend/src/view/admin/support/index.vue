@@ -27,15 +27,16 @@ export default {
       ],
       support: {
         content: "",
+        sender: "to super-admin",
       },
     });
     let intervalId = null;
     const save = async () => {
       try {
         console.log(data.item);
-        data.support.content = `Chủ trọ ${localStorage.getItem(
+        data.support.content = `${localStorage.getItem(
           "userName"
-        )} - ${localStorage.getItem("phone")} : ${data.support.content} `;
+        )}  ${localStorage.getItem("phone")} - ${data.support.content} `;
         const documentNoti = await notificationService.create(data.support);
         const documentUserNoti = await user_notificationService.create({
           NotificationId: documentNoti.message["_id"],
@@ -103,35 +104,35 @@ export default {
       <h5 class="title text-center col-12 p-0">Hỗ trợ</h5>
       <span class="text-center p-0 mx-auto dash"> </span>
       <div class="col-12 row py-2">
-        <div class="col-md-4 d-md-block d-none">
+        <!-- <div class="col-md-4 d-md-block d-none">
           <img src="../../../assets/image/homepage12.jpg" class="w-100 h-75" />
-        </div>
-        <div class="col p-0">
+        </div> -->
+        <div class="col">
           <div class="row mb-2">
-            <div class="col-md-8 col-12 m-0 p-0">
+            <div class="col-md-10 col-12 m-0 p-0">
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-3 col-5 m-0">Mô tả hệ thống :</p>
-                <p class="col m-0">{{ data.system[0].content }}</p>
+                <p class="col-md-2 col-5 m-0">Mô tả hệ thống :</p>
+                <p class="col-md m-0">{{ data.system[0].content }}</p>
               </div>
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-3 col-5 m-0">Giá thuê:</p>
-                <p class="col-6 m-0">
+                <p class="col-md-2 col-5 m-0">Giá thuê:</p>
+                <p class="col-md m-0">
                   {{ data.system[0].servicePrice }}/
                   {{ data.system[0].serviceUnit }}
                 </p>
               </div>
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-3 col-5 m-0">Điện thoại :</p>
-                <p class="col-6 m-0">{{ data.system[0].phone }}</p>
+                <p class="col-md-2 col-5 m-0">Điện thoại :</p>
+                <p class="col-md m-0">{{ data.system[0].phone }}</p>
               </div>
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-3 col-5 m-0">Email :</p>
-                <p class="col-6 m-0">{{ data.system[0].email }}</p>
+                <p class="col-md-2 col-5 m-0">Email :</p>
+                <p class="col-md m-0">{{ data.system[0].email }}</p>
               </div>
             </div>
 
             <div
-              class="col-md-3 d-none d-md-block card mx-2 p-0 text-center h-50"
+              class="col-md d-none d-md-block card mx-2 p-0 text-center h-50"
             >
               <img
                 :src="data.system[0].qrCodeUrl"
@@ -145,18 +146,17 @@ export default {
             </div>
           </div>
           <!--  -->
-          <form @submit.prevent="save" class="col m-0 p-0">
+          <form @submit.prevent="save">
             <div class="form-group row roomInfo">
-              <label for="inputroom" class="col-sm-2 m-0 col-form-label"
-                >Phản ánh :</label
-              >
-              <div class="col p-0">
+              <label for="inputroom" class="col-md-2 m-0">Phản ánh :</label>
+              <div class="col-md">
                 <textarea
                   type="text"
                   class="form-control"
                   id="inputContent"
                   rows="10"
                   v-model="data.support.content"
+                  style="margin-left: -40px"
                 ></textarea>
               </div>
             </div>

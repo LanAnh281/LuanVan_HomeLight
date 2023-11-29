@@ -81,6 +81,11 @@ export default {
           icon: "text_snippet",
           active: "reportSuperAdmin",
         },
+        {
+          name: "Hỗ trợ",
+          icon: "support",
+          active: "supportSuperAdmin",
+        },
 
         // {
         //   name: "Tài khoản",
