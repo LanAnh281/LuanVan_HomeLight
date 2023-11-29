@@ -258,7 +258,7 @@ export default {
     <div class="row m-2">
       <router-link
         :to="{ name: 'rooms', query: { _id: value._id } }"
-        class="card p-2 mb-2 col-md-2 col-6 mx-1"
+        class="card p-2 mb-2 col-md-2 col-5 mx-1"
         style=""
         v-for="(value, index) in data.setPage"
         :key="index"

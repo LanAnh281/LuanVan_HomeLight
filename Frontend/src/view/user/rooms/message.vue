@@ -146,7 +146,7 @@ export default {
           >
             <div class="form-group row">
               <label for="inputroom" class="col-sm-2 col-form-label p-0"
-                >Họ và tên :</label
+                >Họ và tên <sup class="text-danger">(*)</sup></label
               >
               <div class="col-sm-10">
                 <input
@@ -175,7 +175,7 @@ export default {
             </div>
             <div class="form-group row">
               <label for="inputroom" class="col-sm-2 col-form-label p-0"
-                >SĐT :</label
+                >SĐT <sup class="text-danger">(*)</sup></label
               >
               <div class="col-sm-10">
                 <input
@@ -204,7 +204,7 @@ export default {
             </div>
             <div class="form-group row">
               <label for="inputroom" class="col-sm-2 col-form-label p-0"
-                >Email :</label
+                >Email <sup class="text-danger">(*)</sup></label
               >
               <div class="col-sm-10">
                 <input
@@ -233,7 +233,7 @@ export default {
             </div>
             <div class="form-group row">
               <label for="inputComment" class="col-sm-2 col-form-label p-0"
-                >Tin nhắn :</label
+                >Tin nhắn <sup class="text-danger">(*)</sup></label
               >
               <div class="col-sm-10">
                 <textarea

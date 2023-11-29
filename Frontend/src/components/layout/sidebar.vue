@@ -40,7 +40,11 @@ export default {
           icon: "text_snippet",
           active: "report",
         },
-
+        {
+          name: "Hỗ trợ",
+          icon: "support",
+          active: "support",
+        },
         // {
         //   name: "Tài khoản",
         //   icon: "manage_accounts",

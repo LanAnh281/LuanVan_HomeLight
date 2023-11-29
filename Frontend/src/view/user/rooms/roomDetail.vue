@@ -43,7 +43,7 @@ export default {
       totalPage: 0,
       currentPage: 1,
       length: 0,
-      sizePage: 10,
+      sizePage: 12,
     });
     let intervalId = null;
     const isMessage = ref(false);
@@ -165,7 +165,7 @@ export default {
 };
 </script>
 <template>
-  <div class="body container-fluid m-0 mb-5 px-5 pt-3">
+  <div class="body container-fluid m-0 px-5 py-3">
     <router-link :to="{ name: 'boarding' }" class="text-primary">
       <span style="font-size: 16px; text-transform: uppercase">Nhà trọ / </span>
     </router-link>
@@ -182,7 +182,7 @@ export default {
 
       <div
         id="carouselExampleCaptions"
-        class="carousel slide col-md-6 col-12"
+        class="carousel slide col-md-6 col-12 mt-1"
         style="z-index: 0"
         data-ride="carousel"
       >
@@ -231,7 +231,7 @@ export default {
         </button>
       </div>
       <!-- Infor -->
-      <div class="col mx-2 p-0">
+      <div class="col p-0">
         <div class="row p-0">
           <div class="col-md-6 col-10">
             <h4 style="font-family: Amarillo; font-weight: 700">
@@ -256,12 +256,12 @@ export default {
             v-if="data.item.status == true"
             src="https://theme.hstatic.net/1000367813/1000963523/14/sold.png?v=170"
             alt="ảnh sold out"
-            style="width: 16%"
+            style="width: 10%"
           />
         </div>
 
         <div class="row p-0 roomInfo">
-          <h6 class="m-0 col-12">Mô tả chi tiết</h6>
+          <h6 class="m-0 col-12">Mô tả chi tiết:</h6>
 
           <p class="col-md-12 col-12 p-0 ml-3 mb-0 roomInfo">
             <span class="mr-3 m-0"> Chiều dài: {{ data.item.long }}m </span>
@@ -295,7 +295,7 @@ export default {
         </div>
 
         <div class="row p-0 roomInfo">
-          <h6 class="col-md-12 col-12 m-0">Giá dịch vụ</h6>
+          <h6 class="col-md-12 col-12 m-0">Giá dịch vụ:</h6>
           <div
             v-for="(value, index) in data.services"
             :key="index"
@@ -307,7 +307,7 @@ export default {
         </div>
 
         <div class="row p-0 mb-2 roomInfo">
-          <h6 class="col-md-12 col-12 m-0">Liên hệ</h6>
+          <h6 class="col-md-12 col-12 m-0">Liên hệ:</h6>
           <p class="m-0 p-0 ml-3 col-12">
             <span class="material-symbols-outlined text-danger">
               home_pin
@@ -329,7 +329,7 @@ export default {
           </p>
         </div>
 
-        <div class="row align-items-center roomInfo">
+        <div class="row align-items-center roomInfo mx-2">
           <button
             class="btn btn-login mr-1"
             style="height: 40px"
@@ -339,7 +339,7 @@ export default {
           >
             Nhắn tin với chủ trọ
           </button>
-          <strong>Hoặc</strong>
+          <strong> Hoặc</strong>
           <div class="col-md-3 col card mx-2 p-0 text-center">
             <img :src="data.item.qrCodeUrl" alt="QR" class="mx-auto p-0" />
             <div class="card-body m-0 p-0 pb-2 roomInfo w-100">
@@ -376,7 +376,7 @@ export default {
     <hr />
     <h5 class="my-3 title">Bản đồ</h5>
     <a
-      :href="`https://www.google.com/maps/place/'${data.item.BoardingHouse.address}'`"
+      :href="`https://www.google.com/maps/place/${data.item.BoardingHouse.address}`"
       >{{ data.item.BoardingHouse.address }}</a
     >
 
@@ -393,7 +393,7 @@ export default {
 
     <!-- Rooms -->
     <hr />
-    <h5 class="my-5 title">Phòng trọ tương tự</h5>
+    <h5 class="my-3 title">Phòng trọ tương tự</h5>
     <div class="row m-2">
       <router-link
         :to="{ name: 'roomDetail', query: { _id: value._id } }"

@@ -322,15 +322,15 @@ export default {
       <h5 class="title text-center col-12 p-0">Hỗ trợ</h5>
       <span class="text-center p-0 mx-auto dash"> </span>
       <div class="col-12 row py-2">
-        <div class="col-md d-md-block d-none">
+        <div class="col-md-4 d-md-block d-none">
           <img src="../../../assets/image/roominfo.jpg" class="w-100 h-75" />
         </div>
         <div class="col">
           <!--  -->
-          <div class="row">
+          <div class="row mb-2">
             <div class="col-md-8 col-12 m-0 p-0">
               <div class="row justify-content-start p-0 m-0 roomInfo">
-                <p class="col-md-3 col-5 m-0">Tên chủ trọ :</p>
+                <p class="col-md-3 col-5 m-0">Chủ trọ :</p>
                 <p class="col-6 m-0">
                   {{ data.item.Rooms[0].BoardingHouse.User.userName }}
                 </p>

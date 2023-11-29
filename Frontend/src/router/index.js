@@ -132,6 +132,11 @@ const routes = [
     name: "report",
     component: () => import("../view/admin/report/index.vue"),
   },
+  {
+    path: "/admin/support",
+    name: "support",
+    component: () => import("../view/admin/support/index.vue"),
+  },
   //User
 
   {

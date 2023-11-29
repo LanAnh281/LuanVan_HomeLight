@@ -316,7 +316,7 @@ export default {
 
                   <div
                     v-else
-                    class="header__noti-list header__noti-list-noti mt-5"
+                    class="header__noti-list header__noti-list-noti mt-4"
                   >
                     <p
                       class="p-1 p-0 my-2 title"
@@ -456,7 +456,7 @@ export default {
 .header__noti-list {
   position: absolute;
   top: 100%;
-  right: 0px;
+  right: -10px;
   background-color: rgb(241, 243, 241);
   width: 400px;
   border: solid 1px #fff;
@@ -538,7 +538,7 @@ a:hover {
 .notification-badge {
   position: absolute;
   top: -2px;
-  right: -14px;
+  right: -18px;
   background-color: red;
   color: white;
   border-radius: 50%;
