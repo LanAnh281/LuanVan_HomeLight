@@ -88,6 +88,7 @@ exports.login = async (req, res, next) => {
             token: data,
             position: position["name"],
             userName: documentUser["userName"],
+            phone: documentUser["phone"],
             expiresIn: expiryTime,
           });
         }
@@ -142,6 +143,7 @@ exports.refreshAccessToken = async (req, res, next) => {
             token: data,
             position: position["name"],
             userName: documentUser["userName"],
+            phone: documentUser["phone"],
             expiresIn: expiryTime,
           });
         }
