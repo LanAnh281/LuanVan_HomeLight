@@ -2,13 +2,13 @@ const { Notification } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 
 exports.create = async (req, res, next) => {
-  let { date, content } = req.body;
+  let { date, content, sender } = req.body;
   date = date == null ? null : dateTime(date);
   try {
     const document = await Notification.create({
       date: date,
       content: content,
-      sender: req.user.userId,
+      sender: sender ? sender : req.user.userId,
     });
     // io.on("connection", (socket) => {
     //   console.log("*** client đã kết nối");
