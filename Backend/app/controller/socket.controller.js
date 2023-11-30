@@ -16,7 +16,7 @@ const job = schedule.scheduleJob("0 0 0 * * *", async () => {
     currentDate.getMonth() + 1,
     0
   ).getDate();
-  console.log("tạo bill cuối tháng", lastDayOfMonth);
+  console.log("tạo bill cuối tháng", lastDayOfMonth, currentDate.getDate());
   // const billUser = await billMiddeware.createBill_user();
   // console.log("BIll Users:", billUser);
   // const bill = await billMiddeware.create();
@@ -28,7 +28,7 @@ const job = schedule.scheduleJob("0 0 0 * * *", async () => {
     // Bill dành cho chủ trọ
     const billUser = await billMiddeware.createBill_user();
     io.emit("noti", "Tạo hóa đơn tự động thành công");
-    // Đặt lệnh bạn muốn thực hiện ở đây 0 0 0 * * *, 1 phút */1 * * * *
+    // Đặt lệnh bạn muốn thực hiện ở đây 0 0 0 * * *, 1 phút */1 * * * *, 59 59 23 * * *
   }
 });
 
