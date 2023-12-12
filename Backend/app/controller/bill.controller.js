@@ -15,7 +15,7 @@ const {
 const QRCode = require("qrcode");
 
 exports.create = async (req, res, next) => {
-  const { debt, roomId } = req.body;
+  const { debt, roomId, user } = req.body;
   let endDay = new Date();
   endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
   endDay.setDate(endDay.getDate() - 1);
@@ -41,13 +41,14 @@ exports.create = async (req, res, next) => {
       },
     });
     let total = 0;
-    let services = "";
+    var services = "";
     for (let value of documentServiceRoom) {
       const documentService = await Services.findOne({
         where: { _id: value.ServiceId },
       });
       services =
         services + `${documentService["name"]} - ${documentService["price"]} ,`;
+      console.log("****SER:", services);
       const Water = ["nước", "Nước"];
       const Elec = ["điện", "Điện"];
       // const price = Number(documentService.price);
@@ -70,14 +71,22 @@ exports.create = async (req, res, next) => {
       where: { _id: roomId },
     });
     total = total + Number(documentRoom.dataValues.price);
-    services = `Phòng - ${documentRoom.dataValues.price}`;
+    services = services + `Phòng - ${documentRoom.dataValues.price}`;
+    // console.log("****SER:", services);
     const document = await Bill.create({
       end: end,
       total: total,
       services: services,
       roomId: roomId,
+      user: req.body.user,
     });
-
+    // tạo phiếu thu kèm theo hóa đơn
+    const documentReceipt = await Receipt.create({
+      receive: 0,
+      debt: total,
+      billId: document._id,
+      content: "",
+    });
     res.json({ message: document, status: "success" });
   } catch (error) {
     console.log(error);

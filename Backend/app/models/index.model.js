@@ -159,6 +159,7 @@ const Bill = sequelize.define("Bill", {
   debt: { type: DataTypes.STRING },
   total: { type: DataTypes.STRING },
   services: { type: DataTypes.TEXT },
+  user: { type: DataTypes.TEXT },
 });
 const Receipt = sequelize.define("Receipt", {
   _id: setPrimary,

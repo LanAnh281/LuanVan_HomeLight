@@ -12,6 +12,7 @@ const {
   Positions,
   Accounts,
   Bill_User,
+  Users,
 } = require("../models/index.model.js");
 exports.findAll = async (req, res, next) => {
   try {
@@ -109,13 +110,37 @@ exports.create = async () => {
       }
 
       services = services.replace(/,$/, "");
-
+      // danh sách khách trọ của 1 phòng
+      const documentUser_Room = await User_Room.findAll({
+        where: { RoomId: room._id },
+      });
+      let person = "";
+      for (let user of documentUser_Room) {
+        const documentUser_Noti = await User_Notification.create({
+          UserId: user.UserId,
+          NotificationId: documentNoti._id,
+          isDelete: false,
+          isRead: false,
+        });
+        const documentUser = await Users.findOne({
+          where: {
+            _id: user.UserId,
+          },
+        });
+        console.log(documentUser);
+        person =
+          person +
+          `- ${documentUser.dataValues["userName"]} ${documentUser.dataValues["phone"]} `;
+        console.log("////user", person);
+      }
+      // console.log("***User:", user);
       const document = await Bill.create({
         end: now,
         total: total,
         debt: total,
         services: services,
         roomId: room._id,
+        user: person,
       });
       // tạo phiếu thu kèm theo hóa đơn
       const documentReceipt = await Receipt.create({
@@ -129,17 +154,6 @@ exports.create = async () => {
       //   date: now,
       //   content: `Thông báo hóa đơn ${now.getMonth() + 1}/${now.getFullYear()}`,
       // });
-      const documentUser_Room = await User_Room.findAll({
-        where: { RoomId: room._id },
-      });
-      for (let user of documentUser_Room) {
-        const documentUser_Noti = await User_Notification.create({
-          UserId: user.UserId,
-          NotificationId: documentNoti._id,
-          isDelete: false,
-          isRead: false,
-        });
-      }
     }
 
     return documentRoom;
