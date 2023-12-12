@@ -229,8 +229,9 @@ export default {
       ></Add>
     </div>
     <h5 class="title text-center my-3">
-      Danh sách chi phí tháng {{ data.selectDate.month }}/
-      {{ data.selectDate.year }}
+      Danh sách chi phí tháng {{ data.selectDate.month }}/{{
+        data.selectDate.year
+      }}
     </h5>
 
     <Table

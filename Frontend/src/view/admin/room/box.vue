@@ -35,7 +35,7 @@ export default {
         date: new Date(),
         roomId: "",
       },
-      bill: { end: "", roomId: "" },
+      bill: { end: "", roomId: "", user: "" },
       totalPage: 0,
       length: 0,
       sizePage: 20,
@@ -132,14 +132,34 @@ export default {
 
           const creatUti = await UtilityReadingsService.create(data.uti);
           // api  tính tiền
+          // lấy thông tin phòng và thông tin khách qua api
+          const documentUserRoom = await userRoomService.get(value);
+          console.log(
+            "UserRoom:",
+            documentUserRoom,
+            documentUserRoom.message.Users.length
+          );
+          if (documentUserRoom.message.Users.length > 0) {
+            for (let i = 0; i < documentUserRoom.message.Users.length; i++) {
+              console.log(
+                `- ${documentUserRoom.message.Users[i].userName} ${documentUserRoom.message.Users[i].phone} `
+              );
+              data.bill.user =
+                data.bill.user +
+                `- ${documentUserRoom.message.Users[i].userName} ${documentUserRoom.message.Users[i].phone} `;
+            }
+          }
+
           const end = new Date();
+
           data.bill = {
             end: new Date(),
             roomId: value,
+            user: data.bill.user,
           };
+          console.log(data.bill);
           const documentBill = await billService.create(data.bill);
-          // lấy thông tin phòng và thông tin khách qua api
-          const documentUserRoom = await userRoomService.get(value);
+
           //cập nhật trạng thái phòng
           const documentRoom = await roomService.update(value, {
             name: documentUserRoom.message.name,

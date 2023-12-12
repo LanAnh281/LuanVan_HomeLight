@@ -225,8 +225,12 @@ export default {
           <p>Ngày lập: {{ formatDateTime(data.item[0].createdAt) }}</p>
           <!-- :class="data.item[0].isPaied ? 'btn-success' : 'btn-primary'" -->
           <button
-            class="btn border border-danger w-75 text-danger"
+            class="btn border w-50"
             :disabled="data.item[0].isPaied"
+            :class="[
+              data.item[0].isPaied ? 'border-danger' : 'btn-primary',
+              data.item[0].isPaied ? 'text-danger' : 'text',
+            ]"
             @click="handlePay"
           >
             {{ data.item[0].isPaied ? `Đã thanh toán ` : "Thanh toán PayPal" }}
@@ -259,20 +263,20 @@ export default {
           <tbody>
             <tr>
               <td>Tiền quản lý nhà trọ</td>
-              <td class="text-center">
+              <td>
                 {{ data.item[0].count }}
               </td>
-              <td class="text-center">
+              <td>
                 {{ formatCurrency(data.item[0].servicePrice) }}
               </td>
-              <td class="text-center">
+              <td>
                 {{ formatCurrency(data.item[0].total) }}
               </td>
             </tr>
             <tr>
               <th>Thành tiền</th>
               <td colspan="2"></td>
-              <td class="text-center">
+              <td>
                 {{ formatCurrency(data.item[0].total) }}
               </td>
             </tr>

@@ -45,7 +45,8 @@ export default {
             });
           }
           successAd("Thành công");
-          data.item.btnSubmit = "Gửi";
+          // data.item.btnSubmit = "Gửi";
+          data.item = { content: "", title: "", btnSubmit: "Gửi" };
         }
       } catch (error) {
         if (error.response) {

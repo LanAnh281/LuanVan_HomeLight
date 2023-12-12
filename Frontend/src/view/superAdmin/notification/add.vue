@@ -14,6 +14,7 @@ import {
   checkStringAndNumber,
   sanitizeInput,
 } from "../../../assets/js/checkInput.common";
+import { successAd } from "../../../assets/js/common.alert";
 export default {
   components: { Select, Table, paginationVue },
   setup(props, { emit }) {
@@ -116,6 +117,7 @@ export default {
           }
           socket.emit("createNoti", documentNoti);
           emit("add");
+          successAd("Đã thông báo");
         }
       } catch (error) {
         if (error.response) {

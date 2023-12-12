@@ -51,12 +51,14 @@ export default {
           billId: props._id,
           content: data.item.content,
         };
+        // console.log(data.item, data.item.Receipts[0]._id);
         const documentReceipt = await receiptService.update(
           data.item.Receipts[0]._id,
           dataUpdate
         );
+        // console.log(props._id);
         if (documentReceipt["status"] == "success") {
-          successAd("Thành công thanh toán");
+          successAd("Thanh toán thành công");
           const documentBill = await billService.update(props._id, {
             debt:
               Number(data.item.total) -

@@ -47,6 +47,7 @@ export default {
         // data.submit = "Gửi tin nhắn";
         refresh();
         successAd("Đã gửi");
+        data.support.content = "";
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

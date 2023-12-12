@@ -133,6 +133,7 @@ export default {
           createdAt: formatDateTime(item.createdAt),
         };
       });
+
       const documentBoarding = await boardinghouseService.get(
         data.item.Room.boardingId
       );
@@ -164,6 +165,7 @@ export default {
           return 0;
         }
       });
+
       data.item["priceElectric"] = priceElectric;
       data.item["priceWater"] = priceWater;
       data.item["createdAt"] = new Date(data.item["createdAt"]);
@@ -171,6 +173,7 @@ export default {
       data.item.month = data.item.createdAt.getMonth() + 1;
       data.item.year = data.item.createdAt.getFullYear();
       data.item.content = data.item.Receipts[0].content;
+
       $("#visibilityBillModal").on("show.bs.modal", openModal); //lắng nghe mở modal
       $("#visibilityBillModal").on("hidden.bs.modal", closeModal); //lắng nghe đóng modal
     });
@@ -253,8 +256,14 @@ export default {
                   </h6>
                 </div>
                 <div class="col-12 row mx-1 m-0 px-1 p-0">
-                  <p class="col-1 m-0 p-0">Phòng :</p>
-                  <p class="col-10 m-0 p-0">1</p>
+                  <p class="col-2 m-0 p-0">Khách trọ :</p>
+                  <p class="col-10 m-0 p-0">
+                    {{ data.item.user }}
+                  </p>
+                </div>
+                <div class="col-12 row mx-1 m-0 px-1 p-0">
+                  <p class="col-2 m-0 p-0">Phòng :</p>
+                  <p class="col-10 m-0 p-0">{{ data.item.Room.name }}</p>
                 </div>
 
                 <table class="table mt-2 mx-2 text-center">
