@@ -363,9 +363,9 @@ export default {
       </div>
       <div class="border-radius my-3 row m-0 justify-content-start">
         <div class="col-md-6 col-12 border-radius">
-          <h6 class="text-center title mt-3">
+          <h5 class="text-center title mt-3">
             Biểu đồ thể hiện trạng thái phòng
-          </h6>
+          </h5>
           <apexchart
             :options="roomStatus"
             :series="roomStatusSeries"
@@ -385,12 +385,12 @@ export default {
         </p>
       </div> -->
         <div class="col-md-6 col-12 border-radius">
-          <h6 class="text-center title mt-3">
+          <h5 class="text-center title mt-3">
             Biểu đồ thể hiện doanh thu và chi phí của nhà trọ tháng
             {{ data.selectDate.getMonth() + 1 }}/{{
               data.selectDate.getFullYear()
             }}
-          </h6>
+          </h5>
           <apexchart
             :options="chartOptionsProfit"
             :series="chartSeriesProfit.data"

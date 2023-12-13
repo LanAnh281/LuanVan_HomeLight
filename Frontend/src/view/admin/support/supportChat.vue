@@ -17,6 +17,7 @@ import {
 import boardinghouseService from "../../../service/boardinghouse.service";
 export default {
   components: { Select, Table, paginationVue },
+  props: { dataProps: { type: Object, default: {} } },
   setup(props, { emit }) {
     const data = reactive({
       item: {
@@ -200,6 +201,30 @@ export default {
           >
             <div class="form-group row">
               <label for="inputContent" class="col-sm-3 col-form-label p-0"
+                >Khách trọ:</label
+              >
+              <div class="col-sm-9 m-0 p-0 mb-2">
+                {{ dataProps.content.split("-")[2].split(":")[1] }}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputContent" class="col-sm-3 col-form-label p-0"
+                >SĐT:</label
+              >
+              <div class="col-sm-9 m-0 p-0 mb-2">
+                {{ dataProps.content.split("-")[3].split(":")[1] }}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputContent" class="col-sm-3 col-form-label p-0"
+                >Nội dung phản ánh:</label
+              >
+              <div class="col-sm-9 m-0 p-0 mb-2">
+                {{ dataProps.content.split("-")[4].split(":")[1] }}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputContent" class="col-sm-3 col-form-label p-0"
                 >Nội dung phản hồi:</label
               >
               <div class="col-sm-9 m-0 p-0 mb-2">
@@ -248,7 +273,7 @@ export default {
 </template>
 <style scoped>
 .modal-content {
-  width: 140%;
-  margin-left: -18%;
+  width: 120%;
+  margin-left: 0%;
 }
 </style>

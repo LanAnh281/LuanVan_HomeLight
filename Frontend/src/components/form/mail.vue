@@ -101,7 +101,7 @@ export default {
               <span
                 v-for="(value, index) in checkedList"
                 :key="index"
-                class="mr-2 border rounded px-1"
+                class="mr-2 border rounded px-1 bg-light"
                 >{{ value.email }}</span
               >
             </div>

@@ -56,6 +56,7 @@ export default {
       totalPage: 0,
       selectDate: new Date(),
       notiActive: "",
+      informationNoti: "",
     });
     //
     const now = new Date();
@@ -140,6 +141,21 @@ export default {
         }
       }
     };
+    const infoNoti = async (value) => {
+      try {
+        data.notiActive = value;
+        const documentNoti = await notificationService.get(data.notiActive);
+        data.informationNoti = documentNoti.message[0];
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     const refresh = async () => {
       try {
         data.system = await systemService.getAll();
@@ -203,7 +219,7 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
-    return { data, save, handleDate, respone };
+    return { data, save, handleDate, respone, infoNoti };
   },
 };
 </script>
@@ -274,13 +290,13 @@ export default {
         :actionList="['chat']"
         @chat="
           (value) => {
-            console.log('noti:', value);
-            data.notiActive = value;
+            infoNoti(value);
           }
         "
       >
       </Table>
       <supportChat
+        :dataProps="data.informationNoti"
         @add="
           (value) => {
             respone(value);
