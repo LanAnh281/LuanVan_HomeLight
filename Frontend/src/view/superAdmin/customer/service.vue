@@ -118,7 +118,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title title" id="exampleModalLabel">
-            Thông tin thuê hệ thống
+            Thông tin hệ thống
           </h5>
           <button
             type="button"

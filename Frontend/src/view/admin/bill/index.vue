@@ -260,8 +260,9 @@ export default {
       </div>
     </div> -->
     <h5 class="title text-center my-3">
-      Danh sách hóa đơn tháng {{ data.selectDate.month }}/
-      {{ data.selectDate.year }}
+      Danh sách hóa đơn tháng {{ data.selectDate.month }}/{{
+        data.selectDate.year
+      }}
     </h5>
     <Table
       class="mt-2"

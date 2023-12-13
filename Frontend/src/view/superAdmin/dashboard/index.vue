@@ -155,12 +155,12 @@ export default {
       </div>
       <div class="border-radius my-3 row m-0 justify-content-start">
         <div class="col-md-12 col-12 border-radius">
-          <h6 class="text-center title">
+          <h5 class="text-center title mt-3">
             Biểu đồ thể hiện doanh thu của hệ thống quản lý tháng
             {{ data.selectDate.getMonth() + 1 }}/{{
               data.selectDate.getFullYear()
             }}
-          </h6>
+          </h5>
           <apexchart
             :options="chartOptionsProfit"
             :series="chartSeriesProfit.data"

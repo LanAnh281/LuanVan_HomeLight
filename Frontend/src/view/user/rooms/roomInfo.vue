@@ -44,7 +44,7 @@ export default {
       },
       services: [],
       serviceRoom: [],
-      message: { comment: "", content: "" },
+      message: { comment: "", content: "", receiver: "" },
     });
     let intervalId = null;
     const refresh = async () => {
@@ -84,7 +84,8 @@ export default {
         if (!data.flag) {
           // data.submit = "Đang gửi tin...";
           console.log(data.item);
-          data.message.content = `Nhà trọ ${data.item.Rooms[0].BoardingHouse.name} - Phòng ${data.item.Rooms[0].name} - Vấn đề ${data.message.comment}`;
+          data.message.receiver = data.item.Rooms[0].BoardingHouse.User._id;
+          data.message.content = `Nhà trọ ${data.item.Rooms[0].BoardingHouse.name} - Phòng ${data.item.Rooms[0].name} - Họ và tên: ${data.item.userName} - SĐT: ${data.item.phone} - Phản ánh: ${data.message.comment}`;
           const documentNoti = await notificationService.create(data.message);
           const documentUserNoti = await user_notificationService.create({
             NotificationId: documentNoti.message["_id"],

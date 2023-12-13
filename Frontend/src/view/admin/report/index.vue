@@ -277,8 +277,9 @@ export default {
     </div>
 
     <h5 class="text-center title">
-      Báo cáo doanh thu và chi phí tháng {{ data.selectDate.getMonth() + 1 }}/
-      {{ data.selectDate.getFullYear() }}
+      Báo cáo doanh thu và chi phí tháng {{ data.selectDate.getMonth() + 1 }}/{{
+        data.selectDate.getFullYear()
+      }}
     </h5>
     <!-- <h6 class="text-center mb-3 title">
       từ ngày {{ formatDateTime(data.start) }} đến

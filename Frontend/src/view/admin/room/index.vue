@@ -200,6 +200,7 @@ export default {
             (item) => item.boardingId == data.isActiveBoarding
           );
         }
+        console.log(data.boarding);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

@@ -1,14 +1,30 @@
 <script>
-import { reactive, ref, onMounted, onBeforeUnmount } from "vue";
+import { reactive, ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+//services
+import notificationService from "../../../service/notification.service";
+import user_notificationService from "../../../service/user_notification.service";
+import socket from "../../../socket";
+//component
+import supportChat from "./supportChat.vue";
+//service
+import boardinghouseService from "../../../service/boardinghouse.service";
+//component
+import Table from "../../../components/table/table.vue";
+import paginationVue from "../../../components/pagination/pagination.vue";
+import Select from "../../../components/select/select.vue";
+// js
+import { formatDateTime } from "../../../assets/js/format.common";
+
 import { checkAccessToken } from "../../../assets/js/common.login";
 import { formatCurrency } from "../../../assets/js/format.common";
 import { successAd } from "../../../assets/js/common.alert";
 import systemService from "../../../service/system.service";
-import notificationService from "../../../service/notification.service";
-import user_notificationService from "../../../service/user_notification.service";
-import socket from "../../../socket";
+
 export default {
+  // components: { supportUser },
+  components: { Select, Table, paginationVue, supportChat },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -29,6 +45,32 @@ export default {
         content: "",
         sender: "to super-admin",
       },
+      supportName: "user",
+      //
+      item: [{}],
+      userId: "",
+      setPage: [],
+      currentPage: 1,
+      sizePage: 10,
+      length: 0,
+      totalPage: 0,
+      selectDate: new Date(),
+      notiActive: "",
+    });
+    //
+    const now = new Date();
+    data.length = computed(() => (data.item ? data.item.length : 0));
+    data.totalPage = computed(() => {
+      return data.item ? Math.ceil(data.item.length / data.sizePage) : 0;
+    });
+
+    data.setPage = computed(() => {
+      return data.item
+        ? data.item.slice(
+            (data.currentPage - 1) * data.sizePage,
+            data.currentPage * data.sizePage
+          )
+        : [];
     });
     let intervalId = null;
     const save = async () => {
@@ -58,6 +100,46 @@ export default {
         }
       }
     };
+    //
+    const handleDate = async (value) => {
+      data.selectDate = new Date(value.target.value);
+      await refresh();
+    };
+    const respone = async (value) => {
+      try {
+        // console.log("nội dung:", value, "id noti:", data.notiActive);
+        const documentNoti = await notificationService.get(data.notiActive);
+        // console.log(documentNoti);
+        const documentNotification = await notificationService.create({
+          content: value.content,
+          sender: data.userId,
+          receiver: documentNoti.message[0].sender,
+        });
+        // update
+        const documentNotificationUpdate = await notificationService.update(
+          data.notiActive,
+          {
+            isResponse: true,
+            response: value.content,
+          }
+        );
+        console.log(documentNotificationUpdate);
+        const documentUserNoti = await user_notificationService.create({
+          NotificationId: documentNotification.message["_id"],
+          UserId: documentNoti.message[0].sender,
+        });
+        // console.log(documentUserNoti);
+        socket.emit("createNoti", documentNoti);
+      } catch (error) {
+        if (error.response) {
+          console.log("Server-side errors", error.response.data);
+        } else if (error.request) {
+          console.log("Client-side errors", error.request);
+        } else {
+          console.log("Errors:", error.message);
+        }
+      }
+    };
     const refresh = async () => {
       try {
         data.system = await systemService.getAll();
@@ -72,6 +154,34 @@ export default {
           };
         });
         console.log(data.system);
+        //
+        const documentBoarding = await boardinghouseService.getAllUser();
+        data.userId = documentBoarding.message[0].userId;
+
+        const document = await notificationService.getAll();
+        data.item = document.message.filter((item) => {
+          const date = new Date(item.createdAt);
+          return (
+            item.receiver == data.userId &&
+            date.getMonth() + 1 == data.selectDate.getMonth() + 1 &&
+            date.getFullYear() == data.selectDate.getFullYear()
+          );
+        });
+        console.log("noti:", data.item);
+        data.item = data.item.map((item) => {
+          const content = item.content.split(" - ");
+          console.log(content);
+          return {
+            ...item,
+            boarding: `${content[0]}-${content[1]}`,
+            user: `${content[2].split(":")[1]}- ${content[3].split(":")[1]}`,
+            content: content[4].split(":")[1],
+            createdAt: formatDateTime(item.createdAt),
+            isStatus: item.isResponse ? "Đã phản hồi" : "Chưa phản hồi",
+          };
+        });
+        data.item.sort((a, b) => a.isResponse - b.isResponse);
+        console.log("noti:", data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -93,15 +203,114 @@ export default {
     onBeforeUnmount(() => {
       clearInterval(intervalId); // Xóa khoảng thời gian khi component bị hủy
     });
-    return { data, save };
+    return { data, save, handleDate, respone };
   },
 };
 </script>
 
 <template>
   <div class="body">
-    <!-- Infomation -->
-    <div class="row p-0 my-5">
+    <div class="border-radius mb-3 row m-0 row justify-content-end">
+      <div class="mr-1">
+        <button
+          class="btn btn-primary p-0"
+          style="width: 103px; height: 36px; margin-top: 6px"
+          data-toggle="modal"
+          data-target="#boardingModal"
+          @click="data.supportName = 'user'"
+        >
+          <div class="row justify-content-center plus">
+            <span class="material-symbols-outlined" style="color: var(--white)">
+              people
+            </span>
+            <span style="color: var(--white); font-size: 16px">Khách trọ</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="mr-1">
+        <button
+          class="btn btn-success p-0"
+          style="width: 103px; height: 36px; margin-top: 6px"
+          @click="data.supportName = 'admin'"
+        >
+          <div class="row justify-content-center plus">
+            <span class="material-symbols-outlined" style="color: var(--white)">
+              settings_applications
+            </span>
+            <span style="color: var(--white); font-size: 16px">Hệ thống</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!--  support user-->
+    <!-- <supportUser v-if="data.supportName == 'user'"></supportUser> -->
+    <div v-if="data.supportName == 'user'">
+      <div class="border-radius mb-3 row m-0 justify-content-start">
+        <input
+          type="month"
+          class="border rounded py-1 text-center col-2 mt-2 mx-1"
+          style="height: 33px; background-color: var(--background)"
+          @input="handleDate"
+        />
+      </div>
+      <h5 class="title text-center">
+        Phản ánh của khách trọ tháng {{ data.selectDate.getMonth() + 1 }}/{{
+          data.selectDate.getFullYear()
+        }}
+      </h5>
+      <Table
+        :data="data.setPage"
+        :fields="[
+          'Nhà trọ',
+          'Khách trọ',
+          'Nội dung',
+          'Thời gian',
+          'Trạng thái',
+        ]"
+        :titles="['boarding', 'user', 'content', 'createdAt', 'isStatus']"
+        :name="'support'"
+        :action="true"
+        :actionList="['chat']"
+        @chat="
+          (value) => {
+            console.log('noti:', value);
+            data.notiActive = value;
+          }
+        "
+      >
+      </Table>
+      <supportChat
+        @add="
+          (value) => {
+            respone(value);
+          }
+        "
+      ></supportChat>
+      <paginationVue
+        :currentPage="data.currentPage"
+        :totalPage="data.totalPage"
+        :size="data.sizePage"
+        :length="data.length"
+        @page="(value) => (data.currentPage = value)"
+        @previous="
+          () => {
+            if (data.currentPage > 1) {
+              data.currentPage = data.currentPage - 1;
+            }
+          }
+        "
+        @next="
+          () => {
+            if (data.currentPage < data.totalPage) {
+              data.currentPage = data.currentPage + 1;
+            }
+          }
+        "
+      ></paginationVue>
+    </div>
+    <!-- Infomation Admin-->
+    <div class="row p-0 my-5" v-if="data.supportName == 'admin'">
       <h5 class="title text-center col-12 p-0">Hỗ trợ</h5>
       <span class="text-center p-0 mx-auto dash"> </span>
       <div class="col-12 row py-2">

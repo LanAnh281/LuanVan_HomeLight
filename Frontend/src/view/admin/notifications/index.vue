@@ -183,8 +183,9 @@ export default {
       </div>
     </div>
     <h5 class="title text-center my-3">
-      Danh sách thông báo tháng {{ data.selectDate.month }}/
-      {{ data.selectDate.year }}
+      Danh sách thông báo tháng {{ data.selectDate.month }}/{{
+        data.selectDate.year
+      }}
     </h5>
     <table class="table">
       <thead class="thead-dark">
