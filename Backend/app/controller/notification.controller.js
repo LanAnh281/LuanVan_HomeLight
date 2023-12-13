@@ -2,13 +2,14 @@ const { Notification } = require("../models/index.model.js");
 const { dateTime } = require("../middeware/datetime.middeware");
 
 exports.create = async (req, res, next) => {
-  let { date, content, sender } = req.body;
+  let { date, content, sender, receiver } = req.body;
   date = date == null ? null : dateTime(date);
   try {
     const document = await Notification.create({
       date: date,
       content: content,
       sender: sender ? sender : req.user.userId,
+      receiver: receiver ? receiver : "",
     });
     // io.on("connection", (socket) => {
     //   console.log("*** client đã kết nối");
@@ -87,8 +88,8 @@ exports.updated = async (req, res, next) => {
   try {
     const document = await Notification.update(
       {
-        date: date,
-        content: content,
+        isResponse: true,
+        response: req.body.response,
       },
       {
         where: {

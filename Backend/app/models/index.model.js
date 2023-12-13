@@ -198,6 +198,9 @@ const Notification = sequelize.define("Notification", {
   date: { type: DataTypes.DATE },
   content: { type: DataTypes.TEXT },
   sender: { type: DataTypes.STRING },
+  receiver: { type: DataTypes.STRING },
+  isResponse: { type: DataTypes.BOOLEAN },
+  response: { type: DataTypes.TEXT },
 });
 const ResetPassword = sequelize.define("ResetPassword", {
   _id: setPrimary,
