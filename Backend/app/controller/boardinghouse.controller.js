@@ -2,6 +2,7 @@ const {
   BorardingHouse,
   Media,
   Amenities,
+  Users,
 } = require("../models/index.model.js");
 const { deleteBoardingAndRooms } = require("../models/transaction.service");
 const fs = require("fs");
@@ -83,7 +84,7 @@ exports.findOne = async (req, res, next) => {
       where: {
         _id: req.params.id,
       },
-      include: [{ model: Media }],
+      include: [{ model: Users }, { model: Media }],
     });
     return res.json({ message: document, status: "success" });
   } catch (error) {
