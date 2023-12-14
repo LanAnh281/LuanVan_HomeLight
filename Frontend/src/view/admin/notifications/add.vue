@@ -30,7 +30,7 @@ export default {
       searchPage: [],
       searchText: "",
       currentPage: 0,
-      sizePage: 2,
+      sizePage: 5,
       length: 0,
       totalPage: 0,
       boarding: [],

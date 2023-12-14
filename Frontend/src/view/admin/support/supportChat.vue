@@ -145,7 +145,7 @@ export default {
         //   socket.emit("createNoti", documentNoti);
 
         emit("add", data.item);
-        //   data.btnSubmit = "Thông báo";
+
         // }
       } catch (error) {
         if (error.response) {
@@ -203,7 +203,7 @@ export default {
               <label for="inputContent" class="col-sm-3 col-form-label p-0"
                 >Khách trọ:</label
               >
-              <div class="col-sm-9 m-0 p-0 mb-2">
+              <div class="col-sm-9 m-0 p-0 mb-2" v-if="dataProps.content">
                 {{ dataProps.content.split("-")[2].split(":")[1] }}
               </div>
             </div>
@@ -211,7 +211,7 @@ export default {
               <label for="inputContent" class="col-sm-3 col-form-label p-0"
                 >SĐT:</label
               >
-              <div class="col-sm-9 m-0 p-0 mb-2">
+              <div class="col-sm-9 m-0 p-0 mb-2" v-if="dataProps.content">
                 {{ dataProps.content.split("-")[3].split(":")[1] }}
               </div>
             </div>
@@ -219,7 +219,7 @@ export default {
               <label for="inputContent" class="col-sm-3 col-form-label p-0"
                 >Nội dung phản ánh:</label
               >
-              <div class="col-sm-9 m-0 p-0 mb-2">
+              <div class="col-sm-9 m-0 p-0 mb-2" v-if="dataProps.content">
                 {{ dataProps.content.split("-")[4].split(":")[1] }}
               </div>
             </div>
@@ -260,7 +260,7 @@ export default {
               <button
                 type="submit"
                 class="btn btn-login col-sm-2"
-                :disabled="data.btnSubmit == 'Đang thông báo'"
+                :disabled="data.btnSubmit == 'Đang gửi'"
               >
                 {{ data.btnSubmit }}
               </button>

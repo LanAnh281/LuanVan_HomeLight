@@ -131,6 +131,7 @@ export default {
         });
         // console.log(documentUserNoti);
         socket.emit("createNoti", documentNoti);
+        successAd("Đã gửi phản hồi");
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);
@@ -169,7 +170,7 @@ export default {
             serviceUnit: service[2],
           };
         });
-        console.log(data.system);
+        // console.log(data.system);
         //
         const documentBoarding = await boardinghouseService.getAllUser();
         data.userId = documentBoarding.message[0].userId;
@@ -183,10 +184,10 @@ export default {
             date.getFullYear() == data.selectDate.getFullYear()
           );
         });
-        console.log("noti:", data.item);
+        // console.log("noti:", data.item);
         data.item = data.item.map((item) => {
           const content = item.content.split(" - ");
-          console.log(content);
+          // console.log(content);
           return {
             ...item,
             boarding: `${content[0]}-${content[1]}`,
@@ -197,7 +198,7 @@ export default {
           };
         });
         data.item.sort((a, b) => a.isResponse - b.isResponse);
-        console.log("noti:", data.item);
+        // console.log("noti:", data.item);
       } catch (error) {
         if (error.response) {
           console.log("Server-side errors", error.response.data);

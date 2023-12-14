@@ -16,6 +16,7 @@ import { successAd } from "../../../assets/js/common.alert";
 import { checkAccessToken } from "../../../assets/js/common.login";
 //component
 import Table from "../../../components/table/table.vue";
+import boardinghouseService from "../../../service/boardinghouse.service";
 
 export default {
   components: { Table },
@@ -45,12 +46,21 @@ export default {
       services: [],
       serviceRoom: [],
       message: { comment: "", content: "", receiver: "" },
+      btnSubmit: "Gửi",
     });
     let intervalId = null;
     const refresh = async () => {
       try {
         const documentBill = await billService.getAllCustomer();
         data.item = documentBill.message;
+        // console.log(data.item);
+        // thông tin phòng trọ
+        const documentBoarding = await boardinghouseService.get(
+          data.item.Rooms[0].boardingId
+        );
+        // console.log(documentBoarding.message);
+        data.item.Rooms[0].BoardingHouse = documentBoarding.message;
+        // console.log(data.item);
         //lấy danh sách dịch vụ
 
         const documentService = await serviceService.getAll();
@@ -60,6 +70,7 @@ export default {
           data.item.Rooms[0]._id
         );
         data.serviceRoom = documentServiceRoom.message;
+
         data.services = data.services.map((item) => {
           return {
             ...item,
@@ -67,6 +78,7 @@ export default {
             checked: data.serviceRoom.some((obj) => obj.ServiceId == item._id),
           };
         });
+
         // lọc từ danh sách dịch vụ , lấy đầy đủ thông tin của dịch vụ
         data.services = data.services.filter((item) => item.checked == true);
       } catch (error) {
@@ -83,7 +95,7 @@ export default {
       try {
         if (!data.flag) {
           // data.submit = "Đang gửi tin...";
-          console.log(data.item);
+          // console.log(data.item);
           data.message.receiver = data.item.Rooms[0].BoardingHouse.User._id;
           data.message.content = `Nhà trọ ${data.item.Rooms[0].BoardingHouse.name} - Phòng ${data.item.Rooms[0].name} - Họ và tên: ${data.item.userName} - SĐT: ${data.item.phone} - Phản ánh: ${data.message.comment}`;
           const documentNoti = await notificationService.create(data.message);
@@ -91,6 +103,7 @@ export default {
             NotificationId: documentNoti.message["_id"],
             UserId: data.item.Rooms[0].BoardingHouse.User._id,
           });
+          data.btnSubmit = "Đang gửi";
           // send mail
           const documentMail = await mailService.sendMail({
             title: "[Phản ánh] từ khách trọ",
@@ -116,6 +129,7 @@ export default {
           successAd("Đã gửi");
           data.message.comment = "";
           data.message.content = "";
+          data.btnSubmit = "Gửi";
         }
       } catch (error) {
         if (error.response) {
@@ -395,8 +409,12 @@ export default {
             <div
               class="form-group text-center justify-content-around mb-0 ml-3"
             >
-              <button type="submit" class="btn btn-login col-sm-1 text-center">
-                Gửi
+              <button
+                type="submit"
+                class="btn btn-login col-sm-2 text-center"
+                :disabled="data.btnSubmit == 'Đang gửi'"
+              >
+                {{ data.btnSubmit }}
               </button>
             </div>
           </form>
